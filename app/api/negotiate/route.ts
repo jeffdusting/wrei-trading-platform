@@ -167,7 +167,9 @@ Your communication style is calibrated for warmth and professional authority:
 </personality>
 
 <knowledge>
-WREI-verified carbon credits:
+Water Roads operates in two compliance markets:
+
+**1. WREI-VERIFIED CARBON CREDITS:**
 
 PRICING (reference the WREI Pricing Index for current market context):
 - The WREI Pricing Index aggregates real-time signals from voluntary carbon market spot prices, forward removal contract pricing, and comparable digital MRV credit transactions to establish a reference base price. The current index reference is USD $100 per tonne.
@@ -200,6 +202,37 @@ AVAILABLE VOLUMES AND PROVENANCE:
 - Water Roads operates real electric hydrofoil vessels, serves real passengers, generates real fare revenue — the carbon savings are measured from physical operations, not modelled.
 - Every vessel trip generates time-stamped emission avoidance data captured through the WREI verification engine. This data feeds directly into the tokenisation pipeline — from measurement to credit issuance without manual intervention.
 - The WREI platform is designed for integration with institutional-grade tokenisation infrastructure (currently Zoniqx, with architecture supporting alternative or parallel providers). The negotiation, verification, and trading intelligence layers are proprietary to Water Roads; the tokenisation, compliance, identity, and settlement layers leverage best-in-class third-party infrastructure.
+
+**2. NSW ENERGY SAVINGS CERTIFICATES (ESCs):**
+
+ESC PRICING:
+- Current NSW ESC spot market reference: AUD $42 per ESC
+- WREI ESC anchor price: AUD $52.50 per ESC (25% premium reflecting real-time verification and institutional infrastructure)
+- Pricing denominated in AUD as per ESS scheme requirements
+
+ESC ELIGIBILITY AND GENERATION:
+- Water Roads' electric hydrofoil operations qualify under the NSW ESS as "High Efficiency Motors" and "Power Factor Correction" activities
+- Each hydrofoil voyage generates measurable energy savings compared to equivalent diesel ferry operations
+- ESCs generated through IPART-approved calculation methodology with real-time energy monitoring
+- Annual ESC generation capacity: 5,000 to 500,000 ESCs based on operational scale
+
+ESC COMPLIANCE FRAMEWORK:
+- Full NSW ESS compliance including Activity Definition compliance, measurement and verification requirements, and registry obligations
+- Energy savings measured via calibrated energy meters with 15-minute interval data logging
+- Baseline methodology approved by IPART using comparable diesel ferry energy intensity benchmarks
+- All ESCs created and registered in the NSW ESS Registry within regulatory timeframes
+
+ESC VERIFICATION ADVANTAGES:
+- Real-time energy monitoring eliminates typical 6-month verification delays
+- Blockchain verification provides immutable energy savings audit trail
+- Automated IPART reporting reduces compliance overhead for buyers
+- Integration with Zoniqx infrastructure enables institutional-grade ESC settlement
+
+ESC BUYER VALUE PROPOSITION:
+- Liability reduction: ESCs directly offset NSW ESS scheme obligations for liable entities (electricity retailers, large energy users)
+- Cost predictability: Forward ESC contracts hedge against spot market volatility (ESC prices have ranged AUD $25-65 over past 3 years)
+- Audit readiness: Full digital provenance and automated compliance reporting
+- Settlement efficiency: T+0 ESC transfer via institutional infrastructure
 </knowledge>
 
 <negotiation_rules>

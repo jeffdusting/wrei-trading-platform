@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { NegotiationState, PersonaType, ArgumentClassification, EmotionalState } from '@/lib/types';
+import { NegotiationState, PersonaType, ArgumentClassification, EmotionalState, CreditType } from '@/lib/types';
 import { PERSONA_DEFINITIONS, getPersonaById } from '@/lib/personas';
 import { getInitialState, NEGOTIATION_CONFIG } from '@/lib/negotiation-config';
 
@@ -44,6 +44,7 @@ const emotionalColors = {
 
 export default function NegotiatePage() {
   const [selectedPersona, setSelectedPersona] = useState<PersonaType | 'freeplay'>('freeplay');
+  const [selectedCreditType, setSelectedCreditType] = useState<CreditType>('carbon');
   const [negotiationState, setNegotiationState] = useState<NegotiationState | null>(null);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -69,13 +70,20 @@ export default function NegotiatePage() {
   const handlePersonaChange = (persona: PersonaType | 'freeplay') => {
     if (!negotiationStarted) {
       setSelectedPersona(persona);
-      setNegotiationState(getInitialState(persona));
+      setNegotiationState(getInitialState(persona, selectedCreditType));
+    }
+  };
+
+  const handleCreditTypeChange = (creditType: CreditType) => {
+    if (!negotiationStarted) {
+      setSelectedCreditType(creditType);
+      setNegotiationState(getInitialState(selectedPersona, creditType));
     }
   };
 
   const handleStartNegotiation = async () => {
     if (!negotiationState) {
-      setNegotiationState(getInitialState(selectedPersona));
+      setNegotiationState(getInitialState(selectedPersona, selectedCreditType));
     }
 
     setIsLoading(true);
@@ -91,7 +99,7 @@ export default function NegotiatePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: '',
-          state: negotiationState || getInitialState(selectedPersona),
+          state: negotiationState || getInitialState(selectedPersona, selectedCreditType),
           isOpening: true
         }),
         signal: controller.signal
@@ -263,15 +271,18 @@ export default function NegotiatePage() {
     setThreatLevel('none');
     setIsInitializing(false);
     setLastFailedMessage(null);
-    // Note: selectedPersona can be changed again after reset
+    // Note: selectedPersona and selectedCreditType can be changed again after reset
   };
 
   const selectedPersonaData = selectedPersona !== 'freeplay' ? getPersonaById(selectedPersona) : null;
 
   const getPriceRangePercent = () => {
     if (!negotiationState) return 50;
-    const range = NEGOTIATION_CONFIG.ANCHOR_PRICE - NEGOTIATION_CONFIG.BASE_CARBON_PRICE;
-    const position = negotiationState.currentOfferPrice - NEGOTIATION_CONFIG.BASE_CARBON_PRICE;
+    const isESC = negotiationState.creditType === 'esc';
+    const basePrice = isESC ? NEGOTIATION_CONFIG.ESC_MARKET_REFERENCE : NEGOTIATION_CONFIG.BASE_CARBON_PRICE;
+    const anchorPrice = isESC ? NEGOTIATION_CONFIG.ESC_ANCHOR_PRICE : NEGOTIATION_CONFIG.ANCHOR_PRICE;
+    const range = anchorPrice - basePrice;
+    const position = negotiationState.currentOfferPrice - basePrice;
     return Math.max(0, Math.min(100, (position / range) * 100));
   };
 
@@ -299,6 +310,58 @@ export default function NegotiatePage() {
 
           {/* Left Panel */}
           <div className="lg:w-1/3 space-y-6 order-2 lg:order-1">
+
+            {/* Credit Type Selector */}
+            <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+              <h3 className="text-lg font-semibold text-[#1E293B] mb-4">Select Credit Type</h3>
+
+              <div className="space-y-3">
+                <label className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="radio"
+                    value="carbon"
+                    checked={selectedCreditType === 'carbon'}
+                    onChange={(e) => handleCreditTypeChange(e.target.value as CreditType)}
+                    disabled={negotiationStarted}
+                    className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2"
+                  />
+                  <div className="flex-1">
+                    <div className="font-medium text-[#1E293B]">WREI Carbon Credits</div>
+                    <div className="text-sm text-[#64748B]">USD $150/tonne • Voluntary carbon market</div>
+                  </div>
+                </label>
+
+                <label className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="radio"
+                    value="esc"
+                    checked={selectedCreditType === 'esc'}
+                    onChange={(e) => handleCreditTypeChange(e.target.value as CreditType)}
+                    disabled={negotiationStarted}
+                    className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2"
+                  />
+                  <div className="flex-1">
+                    <div className="font-medium text-[#1E293B]">NSW Energy Savings Certificates</div>
+                    <div className="text-sm text-[#64748B]">AUD $52.50/ESC • NSW Energy Savings Scheme</div>
+                  </div>
+                </label>
+
+                <label className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="radio"
+                    value="both"
+                    checked={selectedCreditType === 'both'}
+                    onChange={(e) => handleCreditTypeChange(e.target.value as CreditType)}
+                    disabled={negotiationStarted}
+                    className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2"
+                  />
+                  <div className="flex-1">
+                    <div className="font-medium text-[#1E293B]">Both Credit Types</div>
+                    <div className="text-sm text-[#64748B]">Portfolio approach • Mixed allocation</div>
+                  </div>
+                </label>
+              </div>
+            </div>
 
             {/* Persona Selector */}
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
@@ -397,7 +460,7 @@ export default function NegotiatePage() {
                   <div className="flex justify-between text-sm mb-2">
                     <span className="text-[#64748B]">Agent&apos;s offer:</span>
                     <span className="font-medium text-[#1E293B]">
-                      ${negotiationState.currentOfferPrice}/t
+                      {negotiationState.creditType === 'esc' ? 'AUD' : 'USD'} ${negotiationState.currentOfferPrice}/{negotiationState.creditType === 'esc' ? 'ESC' : 't'}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm mb-3">
@@ -417,8 +480,14 @@ export default function NegotiatePage() {
                     ></div>
                   </div>
                   <div className="flex justify-between text-xs text-[#64748B]">
-                    <span>${NEGOTIATION_CONFIG.BASE_CARBON_PRICE}</span>
-                    <span>${NEGOTIATION_CONFIG.ANCHOR_PRICE}</span>
+                    <span>
+                      {negotiationState.creditType === 'esc' ? 'AUD' : 'USD'} $
+                      {negotiationState.creditType === 'esc' ? NEGOTIATION_CONFIG.ESC_MARKET_REFERENCE : NEGOTIATION_CONFIG.BASE_CARBON_PRICE}
+                    </span>
+                    <span>
+                      {negotiationState.creditType === 'esc' ? 'AUD' : 'USD'} $
+                      {negotiationState.creditType === 'esc' ? NEGOTIATION_CONFIG.ESC_ANCHOR_PRICE : NEGOTIATION_CONFIG.ANCHOR_PRICE}
+                    </span>
                   </div>
                 </div>
 
