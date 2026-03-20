@@ -28,11 +28,76 @@ export type PersonaType =
   | 'esg_fund_manager'
   | 'trading_desk'
   | 'sustainability_director'
-  | 'government_procurement';
+  | 'government_procurement'
+  // WREI Institutional Personas
+  | 'infrastructure_fund'
+  | 'esg_impact_investor'
+  | 'defi_yield_farmer'
+  | 'family_office'
+  | 'sovereign_wealth'
+  | 'pension_fund';
 
 export type NegotiationOutcome = 'agreed' | 'deferred' | 'escalated' | null;
 
 export type CreditType = 'carbon' | 'esc' | 'both';
+
+// WREI Dual Token System Types
+export type WREITokenType = 'carbon_credits' | 'asset_co' | 'dual_portfolio';
+
+export type YieldMechanism = 'revenue_share' | 'nav_accruing';
+
+export type InvestorClassification = 'retail' | 'wholesale' | 'professional' | 'sophisticated';
+
+export type MarketType = 'primary' | 'secondary';
+
+// Carbon Credit Token Specific Types
+export interface CarbonCreditToken {
+  tokenId: string;
+  tonnageCO2e: number;
+  verificationStandards: ('ISO_14064_2' | 'Verra_VCS' | 'Gold_Standard')[];
+  generationSource: 'vessel_efficiency' | 'modal_shift' | 'construction_avoidance';
+  vesselTripId?: string;
+  blockchainHash: string;
+  mintDate: string;
+  retirementStatus: 'active' | 'retired';
+  provenance: {
+    vesselId: string;
+    route: string;
+    energyData: {
+      consumption: number; // kWh/passenger-km
+      passengers: number;
+      distance: number;
+    };
+    emissionsSaved: number; // tonnes CO2e
+  };
+}
+
+// Asset Co Token Specific Types
+export interface AssetCoToken {
+  tokenId: string;
+  fractionalInterest: number; // Percentage of LeaseCo ownership
+  underlyingAssets: {
+    vesselCount: number;
+    deepPowerUnits: number;
+    totalCapex: number; // A$
+  };
+  yieldProfile: {
+    mechanism: YieldMechanism;
+    annualYield: number; // Percentage
+    distributionFrequency: 'monthly' | 'quarterly' | 'annually';
+    lastDistribution?: string;
+    nextDistribution?: string;
+  };
+  leaseIncome: {
+    annualIncome: number; // A$
+    netCashFlow: number; // A$ after debt service
+    debtServiceCoverage: number;
+  };
+  navData: {
+    currentNAV: number; // A$ per token
+    historicalNAV: { date: string; value: number }[];
+  };
+}
 
 export interface Message {
   role: 'agent' | 'buyer';
@@ -50,14 +115,35 @@ export interface BuyerProfile {
   volumeInterest: number | null;
   timelineUrgency: 'low' | 'medium' | 'high' | null;
   complianceDriver: string | null;
-  creditType: CreditType;       // What type of credits they want
+  creditType: CreditType;       // Legacy: What type of credits they want
   escEligibilityBasis: string | null;  // NSW ESS eligibility (lighting, HVAC, etc)
+
+  // WREI Dual Token System Extensions
+  wreiTokenType: WREITokenType; // Primary token interest
+  investorClassification: InvestorClassification;
+  marketPreference: MarketType;
+  yieldMechanismPreference: YieldMechanism | null;
+  portfolioContext: {
+    aum?: number; // Assets under management (A$)
+    ticketSize: { min: number; max: number }; // Investment range (A$)
+    yieldRequirement: number; // Minimum yield expectation
+    riskTolerance: 'conservative' | 'moderate' | 'aggressive';
+    liquidityNeeds: 'daily' | 'monthly' | 'quarterly' | 'annual';
+    esgFocus: boolean;
+    crossCollateralInterest: boolean;
+  };
+  complianceRequirements: {
+    aflsRequired: boolean;
+    amlCompliance: boolean;
+    taxTreatmentPreference: 'cgt' | 'income' | 'either';
+    jurisdictionalConstraints: string[];
+  };
 }
 
 export interface NegotiationState {
   round: number;
   phase: NegotiationPhase;
-  creditType: CreditType;
+  creditType: CreditType; // Legacy support
   anchorPrice: number;
   currentOfferPrice: number;
   priceFloor: number;
@@ -72,10 +158,51 @@ export interface NegotiationState {
   emotionalState: EmotionalState;
   negotiationComplete: boolean;
   outcome: NegotiationOutcome;
-  // ESC-specific fields
-  escAnchorPrice?: number;      // For ESC pricing when creditType includes ESCs
+  // ESC-specific fields (legacy)
+  escAnchorPrice?: number;
   escCurrentOfferPrice?: number;
   escPriceFloor?: number;
+
+  // WREI Dual Token System
+  wreiTokenType: WREITokenType;
+  tokenSpecificData: {
+    carbonCredits?: {
+      projectedSupply: number; // Base case: 3.12M, Expansion: 13.1M tonnes
+      currentPrice: number; // A$/tonne
+      premiumMultiplier: number; // 1.5x base price
+      totalRevenue: number; // Cumulative projection A$
+      steadyStateRevenue: number; // Annual A$
+      generationSources: {
+        vesselEfficiency: number; // % of total
+        modalShift: number; // % of total
+        constructionAvoidance: number; // % of total
+      };
+    };
+    assetCo?: {
+      equityCapitalization: number; // A$131M
+      totalCapex: number; // A$473M
+      debtFunding: number; // A$342M at 7%
+      netCashFlow: number; // A$/annual after debt service
+      equityYield: number; // 28.3% at steady state
+      cashOnCashMultiple: number; // 3.0x lifetime
+      fleetComposition: {
+        vesselCount: number; // 88 vessels
+        deepPowerUnits: number; // 22 units
+      };
+      leaseProfile: {
+        annualIncome: number; // A$61.1M steady state
+        interestCost: number; // A$23.9M annual
+        netMargin: number; // 60.8%
+      };
+    };
+  };
+
+  marketContext: {
+    marketType: MarketType;
+    liquidityConditions: 'high' | 'medium' | 'low';
+    competitivePressure: number; // 1-10 scale
+    regulatoryEnvironment: 'favorable' | 'neutral' | 'challenging';
+  };
 }
 
 export interface ClaudeResponse {
