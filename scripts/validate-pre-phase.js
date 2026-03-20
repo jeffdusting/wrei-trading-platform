@@ -36,20 +36,31 @@ console.log('1️⃣  VALIDATING TEST SUITE...');
 try {
   const testOutput = execSync('npm test', {
     cwd: PROJECT_ROOT,
-    encoding: 'utf8',
-    stdio: 'pipe'
+    encoding: 'utf8'
   });
 
   if (testOutput.includes('Test Suites:') && testOutput.includes('passed')) {
-    const passMatch = testOutput.match(/(\d+) passed/);
-    if (passMatch) {
-      console.log(`   ✅ All tests passing (${passMatch[1]} tests)`);
+    const passMatch = testOutput.match(/Tests:\s+(\d+) passed/);
+    const suiteMatch = testOutput.match(/Test Suites:\s+(\d+) passed/);
+
+    if (passMatch && suiteMatch) {
+      console.log(`   ✅ All tests passing (${passMatch[1]} tests across ${suiteMatch[1]} suites)`);
       validationResults.testsPass = true;
+    } else {
+      // Fallback parsing for different output formats
+      const altPassMatch = testOutput.match(/(\d+) passed.*total/);
+      const altSuiteMatch = testOutput.match(/(\d+) passed.*(\d+) total/);
+
+      if (altPassMatch) {
+        console.log(`   ✅ Tests passing (detected format: ${altPassMatch[0]})`);
+        validationResults.testsPass = true;
+      }
     }
   }
 } catch (error) {
   errors.push('❌ Test suite not passing - run `npm test` to diagnose');
   console.log('   ❌ Test suite failing');
+  console.log('   📄 Error:', error.message);
 }
 
 // 2. Plan File Validation

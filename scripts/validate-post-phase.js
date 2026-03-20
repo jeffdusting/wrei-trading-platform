@@ -37,13 +37,12 @@ console.log('1️⃣  VALIDATING TEST SUITE...');
 try {
   const testOutput = execSync('npm test', {
     cwd: PROJECT_ROOT,
-    encoding: 'utf8',
-    stdio: 'pipe'
+    encoding: 'utf8'
   });
 
   if (testOutput.includes('Test Suites:') && testOutput.includes('passed')) {
-    const passMatch = testOutput.match(/(\d+) passed/);
-    const suiteMatch = testOutput.match(/Test Suites: (\d+) passed/);
+    const passMatch = testOutput.match(/Tests:\s+(\d+) passed/);
+    const suiteMatch = testOutput.match(/Test Suites:\s+(\d+) passed/);
 
     if (passMatch && suiteMatch) {
       console.log(`   ✅ All tests passing (${passMatch[1]} tests across ${suiteMatch[1]} suites)`);
@@ -57,10 +56,14 @@ try {
         warnings.push('⚠️  Test count unchanged - ensure new functionality is tested');
       }
     }
+  } else {
+    console.log('   ❌ Test output format unexpected');
+    console.log('   📄 Output preview:', testOutput.substring(0, 200));
   }
 } catch (error) {
   errors.push('❌ Test suite not passing - must fix before phase completion');
   console.log('   ❌ Test suite failing');
+  console.log('   📄 Error:', error.message);
 }
 
 // 2. Test Coverage Validation
