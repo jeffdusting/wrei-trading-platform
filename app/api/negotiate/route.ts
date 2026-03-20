@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
         emotionalState: 'neutral',
         detectedWarmth: 5,
         detectedDominance: 5,
-        proposedPrice: isOpening ? 150 : null, // Set anchor price for opening
+        proposedPrice: isOpening ? state.anchorPrice : null, // Set anchor price for opening based on credit type
         suggestedConcession: null,
         escalate: false,
         escalationReason: null
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
 
     // For opening messages, ensure proposedPrice is set to anchor if not already
     if (isOpening && claudeResponse.proposedPrice === null) {
-      claudeResponse.proposedPrice = 150;
+      claudeResponse.proposedPrice = state.anchorPrice;
     }
 
     // Step 6: Output Validation
@@ -151,9 +151,14 @@ function buildSystemPrompt(state: NegotiationState): string {
     }
   }
 
+  // Credit type context
+  const creditTypeContext = getCreditTypeContext(state.creditType, state.anchorPrice);
+
   return `<role>
-You are the WREI Carbon Credit Trading Agent, representing Water Roads Pty Ltd in the negotiation of WREI-verified carbon credits. You negotiate with human buyers on behalf of Water Roads. You are NOT an autonomous AI — you represent a human-backed organisation.
+You are the WREI Trading Agent, representing Water Roads Pty Ltd in the negotiation of WREI-verified environmental credits. You negotiate with human buyers on behalf of Water Roads. You are NOT an autonomous AI — you represent a human-backed organisation.
 </role>
+
+${creditTypeContext}
 
 <personality>
 Your communication style is calibrated for warmth and professional authority:
@@ -288,13 +293,47 @@ For EVERY message, respond with ONLY a valid JSON object (no markdown, no backti
 </response_format>`;
 }
 
+function getCreditTypeContext(creditType: string, anchorPrice: number): string {
+  switch (creditType) {
+    case 'carbon':
+      return `
+CREDIT TYPE: You are negotiating WREI-verified CARBON CREDITS
+- Current anchor price: USD $${anchorPrice}/tonne
+- Currency: USD
+- Unit: tonnes CO2 equivalent (tCO2e)
+- Market: Voluntary Carbon Market (VCM)
+- Compliance: Triple-standard (ISO 14064-2, Verra VCS, Gold Standard)
+- Always specify "carbon credits" and "USD" and "per tonne" in your responses`;
+
+    case 'esc':
+      return `
+CREDIT TYPE: You are negotiating NSW ENERGY SAVINGS CERTIFICATES (ESCs)
+- Current anchor price: AUD $${anchorPrice}/ESC
+- Currency: AUD (Australian Dollars)
+- Unit: Energy Savings Certificates (ESCs)
+- Market: NSW Energy Savings Scheme (ESS)
+- Compliance: NSW ESS scheme requirements, IPART-approved methodology
+- Always specify "Energy Savings Certificates" or "ESCs" and "AUD" and "per ESC" in your responses`;
+
+    case 'both':
+      return `
+CREDIT TYPE: You are negotiating BOTH carbon credits AND ESCs
+- Ask the buyer which credit type they prefer to focus on first
+- Carbon: USD $28.12/tonne, ESCs: AUD $54.97/ESC
+- Clearly specify currency and unit for each type in your responses`;
+
+    default:
+      return '';
+  }
+}
+
 function buildMessageHistory(
   state: NegotiationState,
   message: string,
   isOpening: boolean
 ): Array<{ role: 'user' | 'assistant'; content: string }> {
   if (isOpening) {
-    let openingPrompt = "Generate a concise opening offer for this negotiation. Keep it under 150 words. Introduce yourself as the WREI trading representative, briefly mention the credits are WREI-verified with real-time blockchain verification, state the anchor price of $150/tonne, and warmly ask about their requirements. Be conversational, not formal.";
+    let openingPrompt = `Generate a concise opening offer for this negotiation. Keep it under 150 words. Introduce yourself as the WREI trading representative, specify the exact credit type you're offering (${state.creditType === 'carbon' ? 'carbon credits' : state.creditType === 'esc' ? 'Energy Savings Certificates (ESCs)' : 'both carbon credits and ESCs'}), mention WREI-verified real-time blockchain verification, state the anchor price with correct currency and unit, and warmly ask about their requirements. Be conversational, not formal.`;
 
     // Add persona-specific opening if not freeplay
     if (state.buyerProfile.persona !== 'freeplay') {
