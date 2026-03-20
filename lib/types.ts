@@ -164,8 +164,148 @@ export interface NegotiationState {
   escPriceFloor?: number;
 
   // WREI Dual Token System
-  wreiTokenType: WREITokenType;
-  tokenSpecificData: {
+  wreiTokenType?: WREITokenType;
+  marketType?: MarketType;
+  investorClassification?: InvestorClassification;
+  tokenSpecificData?: {
+    // Market Access Context
+    targetAllocation?: number; // A$ investment amount
+    primaryMarketMinimum?: number; // Minimum for primary market access
+    secondaryMarketLiquidity?: boolean; // Secondary market available
+    fractionalAccess?: boolean; // Allow fractional ownership
+    marketMakingSpread?: number; // Bid-ask spread
+    institutionalTierPricing?: boolean; // Institutional pricing available
+    wholesaleExemption?: string; // AFSL exemption category
+    minimumInvestment?: number; // Minimum investment threshold
+    primaryMarketAccess?: boolean; // Primary market eligibility
+    regulatoryPriority?: boolean; // Government/sovereign priority
+    earlyAccessTerms?: {
+      discountRate?: number; // Early allocation discount
+      lockupPeriod?: number; // Months locked
+    };
+
+    // AFSL Compliance
+    aflsCompliance?: {
+      exemptionCategory?: string; // wholesale, professional, sophisticated
+      accreditationRequired?: boolean;
+      disclosureLevel?: string; // minimal, standard, comprehensive
+    };
+
+    // Professional/Sophisticated Features
+    professionalInvestorStatus?: boolean;
+    enhancedDueDiligence?: {
+      trusteeApproval?: boolean;
+      actuarialAssessment?: boolean;
+      memberImpactAnalysis?: boolean;
+      apraCompliance?: boolean;
+    };
+    fiduciaryFramework?: {
+      memberBenefit?: string;
+      riskAssessment?: string;
+      esgAlignment?: string;
+    };
+    sophisticatedStructures?: {
+      leveragedExposure?: boolean;
+      crossCollateral?: boolean;
+      apiAccess?: boolean;
+      automatedStrategies?: boolean;
+    };
+
+    // DeFi Integration
+    defiIntegration?: {
+      smartContractAccess?: boolean;
+      protocolCompatibility?: string[];
+      ltvRatio?: number;
+    };
+
+    // Redemption Terms
+    redemptionTerms?: {
+      frequency?: string; // quarterly, monthly, etc.
+      noticePeriod?: number; // days
+      minimumHoldingPeriod?: number; // days
+      redemptionFee?: number; // percentage
+      navDiscount?: number; // discount to NAV
+      liquidityReserve?: number; // percentage kept liquid
+    };
+
+    // Trading Terms
+    tradingTerms?: {
+      immediateTrading?: boolean;
+      settlementWindow?: number; // T+0, T+1, etc.
+      liquidityProvider?: string;
+      marketMaking?: boolean;
+      bidAskSpread?: number;
+    };
+
+    // Retirement Flexibility
+    retirementFlexibility?: {
+      immediateRetirement?: boolean;
+      scheduledRetirement?: boolean;
+      batchProcessing?: boolean;
+    };
+
+    // Rebalancing Terms
+    rebalancingTerms?: {
+      frequency?: string;
+      automaticRebalancing?: boolean;
+      targetAllocation?: { carbon?: number; asset_co?: number };
+      rebalancingThreshold?: number; // deviation threshold
+      rebalancingFee?: number;
+    };
+
+    redemptionFlexibility?: {
+      partialRedemption?: boolean;
+      crossAssetRedemption?: boolean;
+      familyGovernanceApproval?: boolean;
+    };
+
+    // Cross-Collateralization
+    crossCollateralization?: {
+      maxLtv?: number; // Loan-to-value ratio
+      borrowingCurrency?: string[];
+      interestRateRange?: { min: number; max: number };
+      marginCallThreshold?: number;
+      liquidationThreshold?: number;
+      protocolIntegration?: string[];
+    };
+
+    leverageStrategies?: {
+      carbonExposure?: boolean;
+      yieldFarming?: boolean;
+      arbitrage?: boolean;
+      hedging?: boolean;
+    };
+
+    // Staking and Collateral
+    stakingMechanisms?: {
+      liquidityPooling?: boolean;
+      stakingYield?: number; // additional APY
+      impermanentLossProtection?: boolean;
+      stakingPenalty?: number; // early unstaking penalty
+    };
+
+    collateralValue?: {
+      baseValue?: number; // percentage of token value
+      volatilityDiscount?: number; // haircut for volatility
+      liquidityPremium?: number; // premium for liquidity provision
+    };
+
+    // Portfolio-Level Features
+    portfolioLeverage?: {
+      correlationBenefit?: number; // leverage increase from low correlation
+      diversificationBonus?: number; // additional LTV from diversification
+      riskWeighting?: { carbon?: number; asset_co?: number };
+      maxPortfolioLeverage?: number; // maximum combined leverage
+    };
+
+    strategicArbitrage?: {
+      yieldCurvePositioning?: boolean;
+      seasonalRebalancing?: boolean;
+      taxOptimization?: boolean;
+      generationalPlanning?: boolean;
+    };
+
+    // Legacy token data
     carbonCredits?: {
       projectedSupply: number; // Base case: 3.12M, Expansion: 13.1M tonnes
       currentPrice: number; // A$/tonne

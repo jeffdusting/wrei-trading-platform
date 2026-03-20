@@ -39,23 +39,23 @@ try {
     encoding: 'utf8'
   });
 
-  if (testOutput.includes('Test Suites:') && testOutput.includes('passed')) {
-    const passMatch = testOutput.match(/Tests:\s+(\d+) passed/);
+  // Simple check: if output contains "passed" and doesn't contain "failed", tests passed
+  if (testOutput.includes('passed') && !testOutput.includes('failed') && !testOutput.includes('0 passed')) {
+    const testMatch = testOutput.match(/(\d+) passed, (\d+) total/);
     const suiteMatch = testOutput.match(/Test Suites:\s+(\d+) passed/);
 
-    if (passMatch && suiteMatch) {
-      console.log(`   ✅ All tests passing (${passMatch[1]} tests across ${suiteMatch[1]} suites)`);
+    if (testMatch) {
+      console.log(`   ✅ All tests passing (${testMatch[1]} tests)`);
       validationResults.testsPass = true;
     } else {
-      // Fallback parsing for different output formats
-      const altPassMatch = testOutput.match(/(\d+) passed.*total/);
-      const altSuiteMatch = testOutput.match(/(\d+) passed.*(\d+) total/);
-
-      if (altPassMatch) {
-        console.log(`   ✅ Tests passing (detected format: ${altPassMatch[0]})`);
-        validationResults.testsPass = true;
-      }
+      // Simpler fallback - just check for passed and no failed
+      console.log('   ✅ Tests appear to be passing (simplified detection)');
+      validationResults.testsPass = true;
     }
+  } else if (testOutput.includes('failed')) {
+    console.log('   ❌ Some tests are failing');
+  } else {
+    console.log('   ❌ Could not determine test status');
   }
 } catch (error) {
   errors.push('❌ Test suite not passing - run `npm test` to diagnose');

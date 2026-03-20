@@ -227,13 +227,27 @@ describe('Financial Modeling', () => {
     - **Context clear trigger:** If conversation exceeds 85% capacity during persona development
     - **Continuation prompt:** "Continue WREI tokenization project from Phase 3. Read /WREI_TOKENIZATION_PROJECT.md for full context. Phase 1 (Dual Token Architecture) and Phase 2 (Financial Modeling) are complete with dual revenue models, analytics dashboard, and regulatory compliance integration. Begin Phase 3.1: Create institutional buyer personas. Current progress: 6/16 tasks (37.5%). All Phase 2 foundation code is committed at d21668e."
 
-- [ ] **3.2** Advanced negotiation contexts
-  - [ ] Primary vs secondary market dynamics
-  - [ ] Wholesale vs retail investor pathways
-  - [ ] Redemption window negotiations
-  - [ ] Cross-collateralization explanations
-  - **Files to modify:** `app/api/negotiate/route.ts`
-  - **Status:** Not Started
+- [✓] **3.2** Advanced negotiation contexts
+  - [✓] Primary vs secondary market dynamics
+  - [✓] Wholesale vs retail investor pathways
+  - [✓] Redemption window negotiations
+  - [✓] Cross-collateralization explanations
+  - **Files modified:** `app/api/negotiate/route.ts`, `lib/types.ts`, `__tests__/phase3.2-advanced-negotiation-contexts.test.ts`
+  - **Status:** ✅ COMPLETE
+  - **Implementation Notes:**
+    - Enhanced `getWREITokenContext()` function with comprehensive market access, redemption, and cross-collateral contexts
+    - Added `getMarketAccessContext()`, `getRedemptionWindowContext()`, and `getCrossCollateralizationContext()` helper functions
+    - Primary market: Institutional minimums (A$50M+), AFSL exemptions, early access terms, regulatory priority
+    - Secondary market: Fractional access (A$1K+), T+0 settlement, market maker spreads, immediate liquidity
+    - Wholesale pathway: s708 exemption, minimal disclosure, enhanced due diligence, API access
+    - Professional pathway: Trustee approval, APRA compliance, fiduciary frameworks, member impact analysis
+    - Sophisticated pathway: Leveraged exposure, cross-collateral strategies, DeFi integration, automated rebalancing
+    - Redemption windows: Quarterly cycles for Asset Co, immediate trading for Carbon Credits, flexible dual portfolio
+    - Cross-collateralization: 80% LTV for Asset Co, 75% for Carbon Credits, 90% for dual portfolio with correlation benefits
+    - Extended `NegotiationState` types with 40+ new properties supporting advanced institutional features
+    - Created comprehensive test suite with 85 total tests validating market dynamics and investor pathways
+    - All institutional personas now support sophisticated negotiation contexts based on investor classification
+    - Integration with existing Phase 3.1 personas maintains backward compatibility while enabling advanced features
   - **Process Requirements:**
     - **Pre-Phase:** Run `npm test` (must pass), write Phase 3.2 tests first, validate context <85%
     - **During-Phase:** Update plan with IN PROGRESS status, document implementation decisions
@@ -488,20 +502,20 @@ interface InstitutionalDashboard {
 ### **Overall Progress**
 - [✅] Phase 1: Dual Token Architecture (3/3 tasks complete) ✅ **PHASE COMPLETE**
 - [✅] Phase 2: Financial Modeling (3/3 tasks complete) ✅ **PHASE COMPLETE**
-- [ ] Phase 3: Negotiation Intelligence (1/3 tasks complete)
+- [ ] Phase 3: Negotiation Intelligence (2/3 tasks complete)
 - [ ] Phase 4: Technical Architecture (0/3 tasks complete)
 - [ ] Phase 5: Market Intelligence (0/2 tasks complete)
 - [ ] Phase 6: Professional UI/UX (0/2 tasks complete)
 
-**Total Progress: 7/16 major tasks complete (43.75%)**
+**Total Progress: 8/16 major tasks complete (50.0%)**
 
 ### **Current Status**
 - **Completed Phases:** Phase 1 (Dual Token Architecture) ✅ Phase 2 (Financial Modeling) ✅ **COMPLETE**
-- **Current Phase:** Phase 3 (Enhanced Negotiation Intelligence) - 1/3 tasks complete 🔄
-- **Last Completed:** Task 3.1 - Create institutional buyer personas ✅ **COMPLETE**
-- **Next Milestone:** Phase 3.2 - Advanced negotiation contexts
-- **Blockers:** None - ready to begin Phase 3.2
-- **Latest Commit:** `d21668e` - Complete Phase 2.3: Regulatory Compliance Integration
+- **Current Phase:** Phase 3 (Enhanced Negotiation Intelligence) - 2/3 tasks complete 🔄
+- **Last Completed:** Task 3.2 - Advanced negotiation contexts ✅ **COMPLETE**
+- **Next Milestone:** Phase 3.3 - Risk profile integration
+- **Blockers:** None - ready to begin Phase 3.3
+- **Latest Achievement:** Enhanced API route with primary/secondary market dynamics, wholesale/retail pathways, redemption windows, and cross-collateralization explanations
 - **Estimated Completion:** August 2026
 
 ### **✅ PHASE 1 COMPLETION SUMMARY**
