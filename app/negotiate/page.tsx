@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { NegotiationState, PersonaType, ArgumentClassification, EmotionalState, CreditType } from '@/lib/types';
+import { NegotiationState, PersonaType, ArgumentClassification, EmotionalState, CreditType, WREITokenType } from '@/lib/types';
 import { PERSONA_DEFINITIONS, getPersonaById } from '@/lib/personas';
-import { getInitialState, NEGOTIATION_CONFIG } from '@/lib/negotiation-config';
+import { getInitialState, getInitialWREIState, NEGOTIATION_CONFIG, WREI_TOKEN_CONFIG } from '@/lib/negotiation-config';
 
 interface APIResponse {
   agentMessage: string;
@@ -45,6 +45,7 @@ const emotionalColors = {
 export default function NegotiatePage() {
   const [selectedPersona, setSelectedPersona] = useState<PersonaType | 'freeplay'>('freeplay');
   const [selectedCreditType, setSelectedCreditType] = useState<CreditType>('carbon');
+  const [selectedWREITokenType, setSelectedWREITokenType] = useState<WREITokenType>('carbon_credits');
   const [negotiationState, setNegotiationState] = useState<NegotiationState | null>(null);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -70,20 +71,29 @@ export default function NegotiatePage() {
   const handlePersonaChange = (persona: PersonaType | 'freeplay') => {
     if (!negotiationStarted) {
       setSelectedPersona(persona);
-      setNegotiationState(getInitialState(persona, selectedCreditType));
+      // Use WREI token system for new negotiations
+      setNegotiationState(getInitialWREIState(persona, selectedWREITokenType, selectedCreditType));
     }
   };
 
   const handleCreditTypeChange = (creditType: CreditType) => {
     if (!negotiationStarted) {
       setSelectedCreditType(creditType);
-      setNegotiationState(getInitialState(selectedPersona, creditType));
+      // Update legacy credit type but keep WREI token as primary
+      setNegotiationState(getInitialWREIState(selectedPersona, selectedWREITokenType, creditType));
+    }
+  };
+
+  const handleWREITokenTypeChange = (tokenType: WREITokenType) => {
+    if (!negotiationStarted) {
+      setSelectedWREITokenType(tokenType);
+      setNegotiationState(getInitialWREIState(selectedPersona, tokenType, selectedCreditType));
     }
   };
 
   const handleStartNegotiation = async () => {
     if (!negotiationState) {
-      setNegotiationState(getInitialState(selectedPersona, selectedCreditType));
+      setNegotiationState(getInitialWREIState(selectedPersona, selectedWREITokenType, selectedCreditType));
     }
 
     setIsLoading(true);
@@ -99,7 +109,7 @@ export default function NegotiatePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: '',
-          state: negotiationState || getInitialState(selectedPersona, selectedCreditType),
+          state: negotiationState || getInitialWREIState(selectedPersona, selectedWREITokenType, selectedCreditType),
           isOpening: true
         }),
         signal: controller.signal
@@ -278,17 +288,44 @@ export default function NegotiatePage() {
 
   const getPriceRangePercent = () => {
     if (!negotiationState) return 50;
-    const isESC = negotiationState.creditType === 'esc';
-    const basePrice = isESC ? NEGOTIATION_CONFIG.ESC_MARKET_REFERENCE : NEGOTIATION_CONFIG.BASE_CARBON_PRICE;
-    const anchorPrice = isESC ? NEGOTIATION_CONFIG.ESC_ANCHOR_PRICE : NEGOTIATION_CONFIG.ANCHOR_PRICE;
-    const range = anchorPrice - basePrice;
-    const position = negotiationState.currentOfferPrice - basePrice;
-    return Math.max(0, Math.min(100, (position / range) * 100));
+
+    const tokenType = negotiationState.wreiTokenType || 'carbon_credits';
+
+    if (tokenType === 'asset_co') {
+      // For Asset Co tokens, show yield range (20% to 30%)
+      const minYield = 20;
+      const maxYield = 30;
+      const range = maxYield - minYield;
+      const position = negotiationState.currentOfferPrice - minYield;
+      return Math.max(0, Math.min(100, (position / range) * 100));
+    } else if (tokenType === 'dual_portfolio') {
+      // For dual portfolio, show balanced position
+      return 50;
+    } else {
+      // Use WREI document pricing for carbon credits
+      const basePrice = WREI_TOKEN_CONFIG.CARBON_CREDITS.BASE_PRICE;
+      const anchorPrice = WREI_TOKEN_CONFIG.CARBON_CREDITS.ANCHOR_PRICE;
+      const range = anchorPrice - basePrice;
+      const position = negotiationState.currentOfferPrice - basePrice;
+      return Math.max(0, Math.min(100, (position / range) * 100));
+    }
   };
 
   const getConcessionPercent = () => {
     if (!negotiationState) return 0;
-    return Math.round((negotiationState.totalConcessionGiven / NEGOTIATION_CONFIG.ANCHOR_PRICE) * 100);
+    const tokenType = negotiationState.wreiTokenType || 'carbon_credits';
+
+    if (tokenType === 'asset_co') {
+      // For Asset Co, calculate based on yield concession from anchor yield
+      const anchorYield = WREI_TOKEN_CONFIG.ASSET_CO.STEADY_STATE.EQUITY_YIELD * 100;
+      return Math.round((negotiationState.totalConcessionGiven / anchorYield) * 100);
+    } else if (tokenType === 'dual_portfolio') {
+      // For dual portfolio, show blended concession
+      return Math.round((negotiationState.totalConcessionGiven / negotiationState.anchorPrice) * 100);
+    } else {
+      // For carbon credits, use WREI anchor price
+      return Math.round((negotiationState.totalConcessionGiven / WREI_TOKEN_CONFIG.CARBON_CREDITS.ANCHOR_PRICE) * 100);
+    }
   };
 
   return (
@@ -311,56 +348,83 @@ export default function NegotiatePage() {
           {/* Left Panel */}
           <div className="lg:w-1/3 space-y-6 order-2 lg:order-1">
 
-            {/* Credit Type Selector */}
+            {/* WREI Token Type Selector */}
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-              <h3 className="text-lg font-semibold text-[#1E293B] mb-4">Select Credit Type</h3>
+              <h3 className="text-lg font-semibold text-[#1E293B] mb-4">Select WREI Investment Product</h3>
 
-              <div className="space-y-3">
-                <label className="flex items-center space-x-3 cursor-pointer">
+              <div className="space-y-4">
+                <label className="flex items-start space-x-3 cursor-pointer p-3 rounded-lg border border-transparent hover:border-[#0EA5E9] hover:bg-blue-50 transition-colors">
                   <input
                     type="radio"
-                    value="carbon"
-                    checked={selectedCreditType === 'carbon'}
-                    onChange={(e) => handleCreditTypeChange(e.target.value as CreditType)}
+                    value="carbon_credits"
+                    checked={selectedWREITokenType === 'carbon_credits'}
+                    onChange={(e) => handleWREITokenTypeChange(e.target.value as WREITokenType)}
                     disabled={negotiationStarted}
-                    className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2"
+                    className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2 mt-1"
                   />
                   <div className="flex-1">
-                    <div className="font-medium text-[#1E293B]">WREI Carbon Credits</div>
-                    <div className="text-sm text-[#64748B]">USD ${NEGOTIATION_CONFIG.ANCHOR_PRICE}/tonne • Based on live dMRV market</div>
+                    <div className="font-semibold text-[#1E293B]">🌱 WREI Carbon Credit Tokens</div>
+                    <div className="text-base font-medium text-green-600 mt-1">A${WREI_TOKEN_CONFIG.CARBON_CREDITS.ANCHOR_PRICE}/tonne</div>
+                    <div className="text-sm text-[#64748B] mt-1">
+                      Native digital carbon credits • Triple-standard verification • 3.12M-13.1M supply projection
+                    </div>
+                    <div className="text-xs text-[#64748B] mt-2">
+                      <span className="font-medium">Base Case:</span> A${Math.round(WREI_TOKEN_CONFIG.CARBON_CREDITS.BASE_CASE.TOTAL_REVENUE / 1_000_000)}M revenue •
+                      <span className="font-medium"> Expansion:</span> A${Math.round(WREI_TOKEN_CONFIG.CARBON_CREDITS.EXPANSION_CASE.TOTAL_REVENUE / 1_000_000)}M revenue
+                    </div>
                   </div>
                 </label>
 
-                <label className="flex items-center space-x-3 cursor-pointer">
+                <label className="flex items-start space-x-3 cursor-pointer p-3 rounded-lg border border-transparent hover:border-[#0EA5E9] hover:bg-blue-50 transition-colors">
                   <input
                     type="radio"
-                    value="esc"
-                    checked={selectedCreditType === 'esc'}
-                    onChange={(e) => handleCreditTypeChange(e.target.value as CreditType)}
+                    value="asset_co"
+                    checked={selectedWREITokenType === 'asset_co'}
+                    onChange={(e) => handleWREITokenTypeChange(e.target.value as WREITokenType)}
                     disabled={negotiationStarted}
-                    className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2"
+                    className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2 mt-1"
                   />
                   <div className="flex-1">
-                    <div className="font-medium text-[#1E293B]">NSW Energy Savings Certificates</div>
-                    <div className="text-sm text-[#64748B]">AUD ${NEGOTIATION_CONFIG.ESC_ANCHOR_PRICE}/ESC • Based on live AEMO data</div>
+                    <div className="font-semibold text-[#1E293B]">🏗️ WREI Asset Co Tokens</div>
+                    <div className="text-base font-medium text-blue-600 mt-1">{(WREI_TOKEN_CONFIG.ASSET_CO.STEADY_STATE.EQUITY_YIELD * 100).toFixed(1)}% Infrastructure Yield</div>
+                    <div className="text-sm text-[#64748B] mt-1">
+                      Fractional vessel fleet ownership • Predictable lease income • A${Math.round(WREI_TOKEN_CONFIG.ASSET_CO.TOKEN_EQUITY / 1_000_000)}M equity cap
+                    </div>
+                    <div className="text-xs text-[#64748B] mt-2">
+                      <span className="font-medium">Fleet:</span> {WREI_TOKEN_CONFIG.ASSET_CO.FLEET.VESSEL_COUNT} vessels + {WREI_TOKEN_CONFIG.ASSET_CO.FLEET.DEEP_POWER_UNITS} Deep Power •
+                      <span className="font-medium"> Cash Flow:</span> A${Math.round(WREI_TOKEN_CONFIG.ASSET_CO.STEADY_STATE.NET_CASH_FLOW / 1_000_000)}M annually
+                    </div>
                   </div>
                 </label>
 
-                <label className="flex items-center space-x-3 cursor-pointer">
+                <label className="flex items-start space-x-3 cursor-pointer p-3 rounded-lg border border-transparent hover:border-[#0EA5E9] hover:bg-blue-50 transition-colors">
                   <input
                     type="radio"
-                    value="both"
-                    checked={selectedCreditType === 'both'}
-                    onChange={(e) => handleCreditTypeChange(e.target.value as CreditType)}
+                    value="dual_portfolio"
+                    checked={selectedWREITokenType === 'dual_portfolio'}
+                    onChange={(e) => handleWREITokenTypeChange(e.target.value as WREITokenType)}
                     disabled={negotiationStarted}
-                    className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2"
+                    className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2 mt-1"
                   />
                   <div className="flex-1">
-                    <div className="font-medium text-[#1E293B]">Both Credit Types</div>
-                    <div className="text-sm text-[#64748B]">Portfolio approach • Mixed allocation</div>
+                    <div className="font-semibold text-[#1E293B]">🎯 WREI Dual Token Portfolio</div>
+                    <div className="text-base font-medium text-purple-600 mt-1">Diversified Strategy</div>
+                    <div className="text-sm text-[#64748B] mt-1">
+                      Carbon Credits + Asset Co • Risk diversification • Cross-collateralization opportunities
+                    </div>
+                    <div className="text-xs text-[#64748B] mt-2">
+                      <span className="font-medium">Yield Stability:</span> Infrastructure income + carbon upside •
+                      <span className="font-medium"> DeFi Ready:</span> Use Asset Co as collateral
+                    </div>
                   </div>
                 </label>
               </div>
+
+              {negotiationStarted && (
+                <div className="mt-4 p-3 bg-gray-100 rounded-lg text-sm text-gray-600">
+                  Investment product locked
+                </div>
+              )}
             </div>
 
             {/* Persona Selector */}
@@ -460,15 +524,33 @@ export default function NegotiatePage() {
                   <div className="flex justify-between text-sm mb-2">
                     <span className="text-[#64748B]">Agent&apos;s offer:</span>
                     <span className="font-medium text-[#1E293B]">
-                      {negotiationState.creditType === 'esc' ? 'AUD' : 'USD'} ${negotiationState.currentOfferPrice}/{negotiationState.creditType === 'esc' ? 'ESC' : 't'}
+                      {(() => {
+                        const tokenType = negotiationState.wreiTokenType || 'carbon_credits';
+                        if (tokenType === 'asset_co') {
+                          return `${negotiationState.currentOfferPrice.toFixed(1)}% yield`;
+                        } else if (tokenType === 'dual_portfolio') {
+                          return 'Portfolio terms';
+                        } else if (negotiationState.creditType === 'esc') {
+                          return `AUD $${negotiationState.currentOfferPrice}/ESC`;
+                        } else {
+                          return `A$${negotiationState.currentOfferPrice}/tonne`;
+                        }
+                      })()}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm mb-3">
                     <span className="text-[#64748B]">Your anchor:</span>
                     <span className="font-medium text-[#1E293B]">
-                      {negotiationState.buyerProfile.priceAnchor ?
-                        `$${negotiationState.buyerProfile.priceAnchor}/t` : '—'
-                      }
+                      {negotiationState.buyerProfile.priceAnchor ? (
+                        (() => {
+                          const tokenType = negotiationState.wreiTokenType || 'carbon_credits';
+                          if (tokenType === 'asset_co') {
+                            return `${negotiationState.buyerProfile.priceAnchor}% yield`;
+                          } else {
+                            return `A$${negotiationState.buyerProfile.priceAnchor}/${negotiationState.creditType === 'esc' ? 'ESC' : 't'}`;
+                          }
+                        })()
+                      ) : '—'}
                     </span>
                   </div>
 
@@ -481,12 +563,28 @@ export default function NegotiatePage() {
                   </div>
                   <div className="flex justify-between text-xs text-[#64748B]">
                     <span>
-                      {negotiationState.creditType === 'esc' ? 'AUD' : 'USD'} $
-                      {negotiationState.creditType === 'esc' ? NEGOTIATION_CONFIG.ESC_MARKET_REFERENCE : NEGOTIATION_CONFIG.BASE_CARBON_PRICE}
+                      {(() => {
+                        const tokenType = negotiationState.wreiTokenType || 'carbon_credits';
+                        if (tokenType === 'asset_co') {
+                          return '20% yield';
+                        } else if (tokenType === 'dual_portfolio') {
+                          return 'Conservative';
+                        } else {
+                          return `A$${WREI_TOKEN_CONFIG.CARBON_CREDITS.BASE_PRICE}`;
+                        }
+                      })()}
                     </span>
                     <span>
-                      {negotiationState.creditType === 'esc' ? 'AUD' : 'USD'} $
-                      {negotiationState.creditType === 'esc' ? NEGOTIATION_CONFIG.ESC_ANCHOR_PRICE : NEGOTIATION_CONFIG.ANCHOR_PRICE}
+                      {(() => {
+                        const tokenType = negotiationState.wreiTokenType || 'carbon_credits';
+                        if (tokenType === 'asset_co') {
+                          return '30% yield';
+                        } else if (tokenType === 'dual_portfolio') {
+                          return 'Aggressive';
+                        } else {
+                          return `A$${WREI_TOKEN_CONFIG.CARBON_CREDITS.ANCHOR_PRICE}`;
+                        }
+                      })()}
                     </span>
                   </div>
                 </div>
@@ -494,7 +592,9 @@ export default function NegotiatePage() {
                 {/* Concession Tracker */}
                 <div className="mb-4">
                   <div className="text-sm text-[#64748B] mb-1">
-                    Agent has adjusted {getConcessionPercent()}% from opening price
+                    Agent has adjusted {getConcessionPercent()}% from opening {
+                      negotiationState.wreiTokenType === 'asset_co' ? 'yield' : 'price'
+                    }
                   </div>
                 </div>
 
@@ -749,11 +849,23 @@ export default function NegotiatePage() {
                       <div className="text-xl font-bold text-[#1E293B]">{negotiationState.round}</div>
                     </div>
                     <div className="bg-white rounded-lg p-4 border border-slate-200">
-                      <div className="text-xs font-medium text-[#64748B] mb-1">FINAL PRICE</div>
-                      <div className="text-xl font-bold text-[#1E293B]">${negotiationState.currentOfferPrice}/t</div>
+                      <div className="text-xs font-medium text-[#64748B] mb-1">FINAL TERMS</div>
+                      <div className="text-xl font-bold text-[#1E293B]">
+                        {(() => {
+                          const tokenType = negotiationState.wreiTokenType || 'carbon_credits';
+                          if (tokenType === 'asset_co') {
+                            return `${negotiationState.currentOfferPrice.toFixed(1)}%`;
+                          } else if (tokenType === 'dual_portfolio') {
+                            return 'Portfolio';
+                          } else {
+                            return `A$${negotiationState.currentOfferPrice}/t`;
+                          }
+                        })()}
+                      </div>
                       {negotiationState.outcome === 'agreed' && (
                         <div className="text-xs text-[#64748B] mt-1">
-                          {Math.round(((negotiationState.anchorPrice - negotiationState.currentOfferPrice) / negotiationState.anchorPrice) * 100)}% discount
+                          {Math.round(((negotiationState.anchorPrice - negotiationState.currentOfferPrice) / negotiationState.anchorPrice) * 100)}%
+                          {negotiationState.wreiTokenType === 'asset_co' ? ' yield reduction' : ' discount'}
                         </div>
                       )}
                     </div>
