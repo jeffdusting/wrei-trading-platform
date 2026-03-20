@@ -32,6 +32,8 @@ export type PersonaType =
 
 export type NegotiationOutcome = 'agreed' | 'deferred' | 'escalated' | null;
 
+export type CreditType = 'carbon' | 'esc' | 'both';
+
 export interface Message {
   role: 'agent' | 'buyer';
   content: string;
@@ -48,11 +50,14 @@ export interface BuyerProfile {
   volumeInterest: number | null;
   timelineUrgency: 'low' | 'medium' | 'high' | null;
   complianceDriver: string | null;
+  creditType: CreditType;       // What type of credits they want
+  escEligibilityBasis: string | null;  // NSW ESS eligibility (lighting, HVAC, etc)
 }
 
 export interface NegotiationState {
   round: number;
   phase: NegotiationPhase;
+  creditType: CreditType;
   anchorPrice: number;
   currentOfferPrice: number;
   priceFloor: number;
@@ -67,6 +72,10 @@ export interface NegotiationState {
   emotionalState: EmotionalState;
   negotiationComplete: boolean;
   outcome: NegotiationOutcome;
+  // ESC-specific fields
+  escAnchorPrice?: number;      // For ESC pricing when creditType includes ESCs
+  escCurrentOfferPrice?: number;
+  escPriceFloor?: number;
 }
 
 export interface ClaudeResponse {

@@ -14,15 +14,28 @@ export const PRICING_INDEX = {
 } as const;
 
 export const NEGOTIATION_CONFIG = {
+  // Carbon Credit Pricing
   BASE_CARBON_PRICE: 100,          // WREI Pricing Index reference (USD/tonne)
   WREI_PREMIUM_MULTIPLIER: 1.5,
   ANCHOR_PRICE: 150,               // 1.5× index reference
   PRICE_FLOOR: 120,                // 1.2× index reference — absolute minimum
+
+  // NSW ESS/ESC Pricing (AUD per ESC)
+  ESC_MARKET_REFERENCE: 42,        // Current NSW ESC spot price (AUD)
+  ESC_WREI_PREMIUM_MULTIPLIER: 1.25,
+  ESC_ANCHOR_PRICE: 52.50,         // 1.25× market reference (AUD per ESC)
+  ESC_PRICE_FLOOR: 45,             // 1.07× market reference — absolute minimum
+
+  // Common negotiation parameters
   MAX_CONCESSION_PER_ROUND: 0.05,  // 5%
   MAX_TOTAL_CONCESSION: 0.20,      // 20% from anchor
   MIN_ROUNDS_BEFORE_PRICE_CONCESSION: 3,
   MAX_ROUNDS_BEFORE_ESCALATION: 8,
-  AVAILABLE_VOLUMES: [1000, 5000, 10000, 50000, 100000],
+
+  // Volume ranges
+  AVAILABLE_CARBON_VOLUMES: [1000, 5000, 10000, 50000, 100000], // tCO2e
+  AVAILABLE_ESC_VOLUMES: [5000, 25000, 50000, 100000, 500000],   // ESCs
+
   // Infrastructure references (displayed in UI and used in agent knowledge)
   SETTLEMENT_PROVIDER: 'Zoniqx zConnect',
   TOKEN_STANDARD: 'Zoniqx zProtocol (DyCIST / ERC-7518)',
@@ -30,13 +43,19 @@ export const NEGOTIATION_CONFIG = {
   IDENTITY_PROVIDER: 'Zoniqx zIdentity',
 } as const;
 
-export function getInitialState(persona: PersonaType | 'freeplay'): NegotiationState {
+export function getInitialState(persona: PersonaType | 'freeplay', creditType: CreditType = 'carbon'): NegotiationState {
+  // Use carbon credit pricing by default, ESC pricing when specified
+  const isESC = creditType === 'esc';
+  const anchorPrice = isESC ? NEGOTIATION_CONFIG.ESC_ANCHOR_PRICE : NEGOTIATION_CONFIG.ANCHOR_PRICE;
+  const priceFloor = isESC ? NEGOTIATION_CONFIG.ESC_PRICE_FLOOR : NEGOTIATION_CONFIG.PRICE_FLOOR;
+
   return {
     round: 0,
     phase: 'opening',
-    anchorPrice: NEGOTIATION_CONFIG.ANCHOR_PRICE,
-    currentOfferPrice: NEGOTIATION_CONFIG.ANCHOR_PRICE,
-    priceFloor: NEGOTIATION_CONFIG.PRICE_FLOOR,
+    creditType,
+    anchorPrice,
+    currentOfferPrice: anchorPrice,
+    priceFloor,
     maxConcessionPerRound: NEGOTIATION_CONFIG.MAX_CONCESSION_PER_ROUND,
     maxTotalConcession: NEGOTIATION_CONFIG.MAX_TOTAL_CONCESSION,
     totalConcessionGiven: 0,
@@ -51,10 +70,16 @@ export function getInitialState(persona: PersonaType | 'freeplay'): NegotiationS
       volumeInterest: null,
       timelineUrgency: null,
       complianceDriver: null,
+      creditType,
+      escEligibilityBasis: null,
     },
     argumentHistory: [],
     emotionalState: 'neutral',
     negotiationComplete: false,
     outcome: null,
+    // ESC-specific pricing (when applicable)
+    escAnchorPrice: isESC ? NEGOTIATION_CONFIG.ESC_ANCHOR_PRICE : undefined,
+    escCurrentOfferPrice: isESC ? NEGOTIATION_CONFIG.ESC_ANCHOR_PRICE : undefined,
+    escPriceFloor: isESC ? NEGOTIATION_CONFIG.ESC_PRICE_FLOOR : undefined,
   };
 }
