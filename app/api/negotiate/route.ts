@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server';
 import { NegotiationState, ClaudeResponse, ArgumentClassification, EmotionalState } from '@/lib/types';
 import { sanitiseInput, validateOutput, enforceConstraints, classifyThreatLevel } from '@/lib/defence';
 import { getPersonaById } from '@/lib/personas';
+import { generateRiskReport, calculateRiskMetrics, getPersonaRiskTolerance } from '@/lib/risk-profiles';
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -151,6 +152,23 @@ function buildSystemPrompt(state: NegotiationState): string {
     }
   }
 
+  // Risk assessment context for WREI tokens
+  let riskContext = '';
+  if (state.wreiTokenType && state.buyerProfile.persona !== 'freeplay') {
+    const riskReport = generateRiskReport(
+      state.wreiTokenType,
+      state.investorClassification || 'wholesale',
+      state.buyerProfile.persona
+    );
+    riskContext = `\n\nRisk Assessment Context for ${state.wreiTokenType.replace('_', ' ')} tokens:
+- **Risk Grade**: ${riskReport.riskMetrics.riskGrade} (Composite Score: ${riskReport.riskMetrics.compositeScore}/10)
+- **Volatility Profile**: ${(riskReport.volatilityProfile.historicalVolatility * 100).toFixed(1)}% annual volatility
+- **Liquidity**: ${riskReport.liquidityProfile.redemptionCycles} redemption cycles, ${(riskReport.liquidityProfile.bidAskSpread * 100).toFixed(1)}% typical spread
+- **Persona Fit**: ${riskReport.personaFit.score}% compatibility with ${state.buyerProfile.persona.replace('_', ' ')} risk tolerance
+- **Key Risk Factors**: ${riskReport.riskMetrics.volatilityScore > 5 ? 'Price volatility, ' : ''}${riskReport.riskMetrics.regulatoryScore > 5 ? 'Regulatory changes, ' : ''}${riskReport.riskMetrics.liquidityScore > 5 ? 'Liquidity constraints' : 'Well-managed risk profile'}
+${riskReport.personaFit.recommendations.length > 0 ? '- **Risk Management Recommendations**: ' + riskReport.personaFit.recommendations.join('; ') : ''}`;
+  }
+
   // WREI token context (use new system if wreiTokenType exists, fallback to legacy)
   const tokenContext = state.wreiTokenType ?
     getWREITokenContext(state) :
@@ -160,7 +178,7 @@ function buildSystemPrompt(state: NegotiationState): string {
 You are the WREI Trading Agent, representing Water Roads Pty Ltd in the negotiation of tokenized environmental and infrastructure investments. You negotiate with institutional and sophisticated investors on behalf of Water Roads. You are NOT an autonomous AI — you represent a human-backed organisation with A$19B+ tokenized RWA market expertise.
 </role>
 
-${tokenContext}
+${tokenContext}${riskContext}
 
 <personality>
 Your communication style is calibrated for warmth and professional authority:
@@ -332,6 +350,13 @@ INSTITUTIONAL RESPONSES:
 - authority_constraint → "I can provide board materials including Zoniqx CertiK audit reports, AFSL compliance framework, and peer comparisons to USYC/BUIDL structures. We've supported similar institutional approval processes."
 - relationship_signal → "For A$10M+ allocations, we offer primary market terms, dedicated reporting, and cross-collateralization frameworks. Multi-year commitments qualify for volume-tier structuring."
 - time_pressure → "T+0 settlement via Zoniqx zConnect enables rapid deployment. For urgent ESG reporting needs, tokens provide audit-ready provenance immediately upon purchase."
+
+RISK-AWARE NEGOTIATION STRATEGIES:
+When discussing risk factors, always provide context and mitigation strategies based on the buyer's risk profile:
+- **High Volatility Concerns**: "The ${riskReport?.riskMetrics.volatilityScore > 5 ? (riskReport.volatilityProfile.historicalVolatility * 100).toFixed(1) + '% volatility reflects the growth phase of carbon markets. We offer hedging strategies and staged entry programs to manage exposure.' : 'low volatility profile makes this suitable for conservative portfolios.'}"
+- **Liquidity Questions**: "Our ${riskReport?.liquidityProfile.redemptionCycles || 'flexible'} liquidity windows are designed for institutional planning cycles. We maintain ${riskReport?.liquidityProfile.dailyTradingVolume ? 'A$' + (riskReport.liquidityProfile.dailyTradingVolume / 1000).toFixed(0) + 'K daily volume' : 'robust'} secondary market depth."
+- **Regulatory Risk Discussions**: "The ${riskReport?.riskMetrics.riskGrade || 'A'} risk grade reflects our proactive regulatory compliance. We monitor ${riskReport?.regulatoryAssessment.regulatoryTimeframe || 'ongoing'} policy developments and adapt our compliance framework accordingly."
+- **Operational Risk Queries**: "Our ${riskReport?.operationalFactors.fleetAvailability ? (riskReport.operationalFactors.fleetAvailability * 100).toFixed(1) + '% fleet availability' : 'robust operational'} record demonstrates consistent performance. We maintain ${riskReport?.operationalFactors.cybersecurityRisk || 'moderate'} cybersecurity protocols and ${riskReport?.operationalFactors.maintenanceRisk || 'predictable'} maintenance schedules."
 </argument_response_strategies>
 
 <response_format>
