@@ -231,3 +231,81 @@ export interface PersonaDefinition {
   briefing: string;       // shown to the human tester
   agentStrategy: string;  // embedded in the system prompt for Claude
 }
+
+// =============================================================================
+// PHASE 2: FINANCIAL MODELING INTERFACES
+// =============================================================================
+
+export interface FinancialMetrics {
+  irr: number; // Internal Rate of Return (annualised)
+  cashOnCash: number; // Cash-on-cash return multiple
+  npv: number; // Net Present Value at discount rate
+  paybackPeriod: number; // Years to recover initial investment
+  riskAdjustedReturn: number; // Risk-adjusted IRR
+  totalReturn: number; // Total return over holding period
+  yieldOnCost: number; // Annual yield on initial investment
+  compoundAnnualGrowthRate: number; // CAGR
+}
+
+export interface CashFlow {
+  date: string; // ISO date string
+  amount: number; // A$ cash flow (positive = inflow, negative = outflow)
+  type: 'initial_investment' | 'quarterly_distribution' | 'lease_income' | 'capital_appreciation' | 'exit_value';
+  description: string;
+  taxable: boolean;
+  taxRate?: number;
+}
+
+export interface InvestmentScenario {
+  initialInvestment: number; // A$
+  holdingPeriod: number; // Years
+  exitMultiple?: number; // Exit value as multiple of initial investment
+  discountRate: number; // Required return for NPV calculation
+  taxRate: number; // Marginal tax rate
+  inflationRate: number; // Annual inflation rate
+}
+
+export interface RiskProfile {
+  volatility: number; // Annualised volatility (standard deviation)
+  sharpeRatio: number; // Risk-adjusted return ratio
+  maxDrawdown: number; // Maximum peak-to-trough decline
+  correlationToMarket: number; // Correlation with broader market
+  liquidityRisk: 'low' | 'medium' | 'high';
+  operationalRisk: 'low' | 'medium' | 'high';
+  regulatoryRisk: 'low' | 'medium' | 'high';
+}
+
+export interface YieldModelDefinition {
+  type: 'revenue_share' | 'nav_accruing';
+  tokenType: WREITokenType;
+  description: string;
+  distributionFrequency: 'quarterly' | 'annual' | 'continuous';
+  expectedYield: number; // Annual expected yield
+  riskProfile: RiskProfile;
+  taxImplications: {
+    incomeTax: boolean;
+    capitalGainsTax: boolean;
+    dividendImputation: boolean;
+  };
+}
+
+export interface DistributionSchedule {
+  date: string; // ISO date string
+  amount: number; // A$ per token
+  type: 'interest' | 'dividend' | 'capital_gain' | 'lease_income';
+  taxTreatment: 'income' | 'capital_gains' | 'dividend_imputation';
+}
+
+export interface PortfolioAnalysis {
+  tokenType: WREITokenType;
+  allocation: number; // Percentage of total portfolio
+  financialMetrics: FinancialMetrics;
+  riskProfile: RiskProfile;
+  yieldModel: YieldModelDefinition;
+  distributionSchedule: DistributionSchedule[];
+  complianceStatus: {
+    aflsCompliant: boolean;
+    amlCompliant: boolean;
+    jurisdictionalApproval: boolean;
+  };
+}

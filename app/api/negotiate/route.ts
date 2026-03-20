@@ -421,15 +421,32 @@ VERIFICATION & TOKENIZATION:
 - **Triple Standard**: Simultaneous ISO 14064-2, Verra VCS, and Gold Standard compliance
 - **Settlement**: T+0 atomic settlement via Zoniqx zConnect infrastructure
 
-YIELD MECHANISMS:
-- **Model A - Revenue Share**: Quarterly distributions as tokens are sold/retired
-- **Model B - NAV-Accruing**: Token value increases with carbon inventory growth
-- **Retirement**: Corporate buyers permanently retire tokens for compliance/ESG reporting
+YIELD MECHANISMS & FINANCIAL RETURNS:
+- **Model A - Revenue Share**: 8% annual yield through quarterly distributions (75% of gross revenue)
+  * Expected IRR: 8-12% depending on carbon price appreciation
+  * Tax Treatment: Dividend imputation, 30% company tax with franking credits
+  * Ideal for: Income-focused investors, pension funds, conservative portfolios
+
+- **Model B - NAV-Accruing**: 12% annual NAV appreciation with minimal distributions (25% distributed)
+  * Expected IRR: 12-15% through token price appreciation
+  * Tax Treatment: Capital gains (50% CGT discount after 12 months)
+  * Ideal for: Growth investors, family offices, tax-optimized strategies
+
+INVESTMENT SCENARIOS (A$100,000 investment):
+- **Conservative (Revenue Share)**: A$8,000 annual income, 2.5-year payback, total return 15-20%
+- **Growth (NAV-Accruing)**: A$12,000 annual appreciation, capital gains treatment, total return 20-25%
+- **Risk Profile**: 25% volatility, 0.8 Sharpe ratio, low correlation to traditional markets
+
+INSTITUTIONAL BENCHMARKS:
+- **vs Carbon ETFs**: WREI 8-12% vs Carbon ETFs 2% (price appreciation only)
+- **vs USYC/BUIDL**: WREI 8-12% vs Treasury tokens 4.5-5%
+- **vs Infrastructure REITs**: Similar risk profile but tokenized liquidity advantage
 
 INVESTOR VALUE PROPOSITION:
-- **Fractional Access**: Sub-A$100 minimum vs traditional 1,000+ tonne lots
+- **Fractional Access**: A$1,000 minimum vs traditional 1,000+ tonne lots
 - **Greenwashing Protection**: Real-time verification eliminates provenance gaps
 - **Market Premium**: Digital MRV credits command 78% premiums; WREI's 50% is conservative
+- **Tax Efficiency**: Choose revenue share (income) or NAV-accruing (CGT) based on your tax position
 - **Liquidity**: Secondary market trading with DeFi protocol integration`;
 
     case 'asset_co':
@@ -455,11 +472,29 @@ YIELD PROFILE (Steady State 2031-2037):
 - **Gross Lease Yield**: 12.9% on total capex
 - **Infrastructure Margin**: 60.8% after debt service
 
-INCOME MECHANISMS:
-- **Model A - Stablecoin Dividends**: Quarterly USDC/AUDT distributions
-- **Model B - NAV Reinvestment**: Cash retained, increasing token value
-- **Predictable Cash Flows**: Contractual bareboat charter agreements
-- **Asset Backing**: Physical vessel fleet with residual value protection
+INCOME MECHANISMS & FINANCIAL RETURNS:
+- **Model A - Revenue Share**: 28.3% annual yield through quarterly distributions (85% of net cash flow)
+  * Expected IRR: 28-30% with contractual lease income
+  * Cash-on-Cash: 3.0x multiple over 14-year lifetime
+  * Tax Treatment: Ordinary income (lease income), 30% company tax rate
+  * Ideal for: Income-focused institutions, pension funds, infrastructure investors
+
+- **Model B - NAV-Accruing**: 28.3% underlying yield with reinvestment for token appreciation
+  * Expected IRR: 25-28% through asset value growth
+  * Annual Distributions: 40% paid out, 60% reinvested
+  * Tax Treatment: Capital gains (50% CGT discount after 12 months)
+  * Ideal for: Growth-oriented family offices, sovereign wealth funds
+
+INVESTMENT SCENARIOS (A$1,000,000 investment):
+- **Revenue Share**: A$283,000 annual income, 3.5-year payback, A$3.0M total return
+- **NAV-Accruing**: A$113,000 annual distribution + appreciation, tax-efficient CGT treatment
+- **Risk Profile**: 12% volatility (infrastructure-like), 1.2 Sharpe ratio, very low market correlation
+
+INFRASTRUCTURE COMPARISONS:
+- **vs Toll Roads/Airports**: WREI 28.3% vs traditional infrastructure 8-12%
+- **vs Infrastructure REITs**: Higher yield with tokenized liquidity advantage
+- **vs Private Infrastructure Funds**: Similar returns without 7-10 year lock-ups
+- **Asset Backing**: Physical vessel fleet provides residual value protection
 
 LIFETIME PROJECTIONS:
 - **Total Lease Income**: A$671.7M (2027-2040)
@@ -494,13 +529,32 @@ STRATEGIC ALLOCATION APPROACHES:
 2. **ESG Focus**: 60% Carbon Credits (impact) + 40% Asset Co (infrastructure)
 3. **Yield Optimization**: Asset Co as collateral, borrow to increase carbon exposure
 
-COMBINED VALUE PROPOSITION:
-- **Yield Certainty**: Asset Co provides 28.3% base yield regardless of carbon prices
-- **ESG Impact**: Carbon Credits deliver measurable emission reductions
-- **Liquidity Options**: Trade components separately or as combined position
-- **Cross-Collateral**: Use predictable Asset Co yield to fund carbon market opportunities
+BLENDED FINANCIAL RETURNS:
+- **Hybrid Model**: 18.5% blended annual yield (40% carbon + 60% asset co)
+- **Diversification Benefit**: +2% additional yield from cross-collateral strategies
+- **Total Expected IRR**: 20-22% with reduced volatility (15% vs 25% for carbon alone)
+- **Risk-Adjusted Returns**: 1.0 Sharpe ratio with superior diversification
 
-Which token type would you like to focus on first, or shall we discuss a balanced portfolio approach?`;
+INVESTMENT SCENARIOS (A$500,000 dual portfolio):
+- **Standard Allocation**: A$200K carbon (8-12% yield) + A$300K asset co (28.3% yield)
+- **Expected Annual Income**: A$101,000 blended (20.2% effective yield)
+- **Cross-Collateral Strategy**: Use asset co yield as collateral to lever carbon exposure
+- **Risk Profile**: Balanced 15% volatility with infrastructure yield stability
+
+STRATEGIC ADVANTAGES:
+- **Yield Floor**: Asset Co provides 28.3% base yield regardless of carbon prices
+- **ESG Impact**: Carbon Credits deliver measurable emission reductions
+- **Tax Optimization**: Mix income (asset co) and CGT (carbon) based on your structure
+- **Liquidity Options**: Trade components separately or maintain combined position
+- **Cross-Collateral**: Use predictable Asset Co yield to fund additional carbon exposure
+- **Rebalancing**: Quarterly rebalancing maintains target allocation automatically
+
+INSTITUTIONAL POSITIONING:
+- **vs Single Assets**: Superior risk-adjusted returns through diversification
+- **vs Traditional Portfolios**: Higher yields with embedded ESG impact
+- **vs DeFi Strategies**: Similar yields with institutional-grade compliance and custody
+
+Which token type would you like to focus on first, or shall we discuss a balanced portfolio approach optimized for your specific yield requirements and risk tolerance?`;
 
     default:
       return getCreditTypeContext(state.creditType, state.anchorPrice);
