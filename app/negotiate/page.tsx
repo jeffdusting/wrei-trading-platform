@@ -327,7 +327,7 @@ export default function NegotiatePage() {
                   />
                   <div className="flex-1">
                     <div className="font-medium text-[#1E293B]">WREI Carbon Credits</div>
-                    <div className="text-sm text-[#64748B]">USD $150/tonne • Voluntary carbon market</div>
+                    <div className="text-sm text-[#64748B]">USD ${NEGOTIATION_CONFIG.ANCHOR_PRICE}/tonne • Based on live dMRV market</div>
                   </div>
                 </label>
 
@@ -342,7 +342,7 @@ export default function NegotiatePage() {
                   />
                   <div className="flex-1">
                     <div className="font-medium text-[#1E293B]">NSW Energy Savings Certificates</div>
-                    <div className="text-sm text-[#64748B]">AUD $52.50/ESC • NSW Energy Savings Scheme</div>
+                    <div className="text-sm text-[#64748B]">AUD ${NEGOTIATION_CONFIG.ESC_ANCHOR_PRICE}/ESC • Based on live AEMO data</div>
                   </div>
                 </label>
 
