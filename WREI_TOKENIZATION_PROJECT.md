@@ -234,11 +234,15 @@ describe('Financial Modeling', () => {
   - [ ] Cross-collateralization explanations
   - **Files to modify:** `app/api/negotiate/route.ts`
   - **Status:** Not Started
+  - **Process Requirements:**
+    - **Pre-Phase:** Run `npm test` (must pass), write Phase 3.2 tests first, validate context <85%
+    - **During-Phase:** Update plan with IN PROGRESS status, document implementation decisions
+    - **Post-Phase:** All tests pass, update TEST_REPORT.md, mark phase complete with ✅, commit changes
   - **Context Management:**
-    - **Pre-task validation:** Read /WREI_TOKENIZATION_PROJECT.md. Confirm Phase 3.1 persona updates accessible.
-    - **Context items needed:** `app/api/negotiate/route.ts`, new persona definitions, financial models
-    - **Context clear trigger:** If API route modifications exceed context capacity (route file is large)
-    - **Continuation prompt:** "Continue WREI tokenization project from Phase 3.2. Read /WREI_TOKENIZATION_PROJECT.md for full context. Phase 1-2 complete, Phase 3.1 (institutional personas) complete. Begin Phase 3.2: Advanced negotiation contexts. Update app/api/negotiate/route.ts with primary/secondary market dynamics, wholesale/retail pathways, redemption windows, cross-collateral explanations."
+    - **Pre-task validation:** Read /WREI_TOKENIZATION_PROJECT.md ✅ Read /DEVELOPMENT_PROCESS.md for process requirements ✅ Confirm Phase 3.1 persona updates accessible ✅ Validate context capacity <85%
+    - **Context items needed:** `app/api/negotiate/route.ts`, new persona definitions, financial models, development process framework
+    - **Context clear trigger:** If API route modifications + process framework exceed context capacity (route file is large)
+    - **Continuation prompt:** "Continue WREI tokenization project from Phase 3.2. Read /WREI_TOKENIZATION_PROJECT.md for full context. Read /DEVELOPMENT_PROCESS.md for process requirements. Phase 1-2 complete, Phase 3.1 (institutional personas) complete with 68-test suite established. Begin Phase 3.2: Advanced negotiation contexts. Update app/api/negotiate/route.ts with primary/secondary market dynamics, wholesale/retail pathways, redemption windows, cross-collateral explanations. Follow TDD: write tests first, update plan during implementation, complete testing validation post-phase."
 
 - [ ] **3.3** Risk profile integration
   - [ ] Carbon price volatility discussions

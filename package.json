@@ -13,7 +13,10 @@
     "test:phase1": "jest --testPathPatterns=phase1",
     "test:phase2": "jest --testPathPatterns=phase2",
     "test:phase3": "jest --testPathPatterns=phase3",
-    "test:integration": "jest --testPathPatterns=integration"
+    "test:integration": "jest --testPathPatterns=integration",
+    "validate:pre-phase": "node scripts/validate-pre-phase.js",
+    "validate:post-phase": "node scripts/validate-post-phase.js",
+    "validate:plan-consistency": "echo 'Plan consistency check - manual review required'"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",
