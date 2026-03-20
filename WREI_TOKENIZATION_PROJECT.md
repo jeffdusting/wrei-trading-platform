@@ -53,12 +53,19 @@ Transform the WREI trading platform from a basic carbon credit negotiation syste
     - Implemented WREI document pricing specifications (A$150/tonne carbon, 28.3% asset yield)
     - Created `getInitialWREIState()` function with backward compatibility
 
-- [ ] **1.2** Create token-specific knowledge bases
-  - [ ] Carbon Credit Token knowledge (vessel efficiency, modal shift, construction avoidance)
-  - [ ] Asset Co Token knowledge (LeaseCo financial model, yield mechanisms)
-  - [ ] Integration with system prompt generation
-  - **Files to modify:** `app/api/negotiate/route.ts`
-  - **Status:** Not Started
+- [✓] **1.2** Create token-specific knowledge bases
+  - [✓] Carbon Credit Token knowledge (vessel efficiency, modal shift, construction avoidance)
+  - [✓] Asset Co Token knowledge (LeaseCo financial model, yield mechanisms)
+  - [✓] Integration with system prompt generation
+  - **Files modified:** `app/api/negotiate/route.ts`
+  - **Status:** ✅ COMPLETE
+  - **Implementation Notes:**
+    - Added comprehensive `getWREITokenContext()` function with institutional-grade details
+    - Carbon Credits: 3 emission sources, 47.2% vessel efficiency, 4.8% construction avoidance
+    - Asset Co: A$473M capex, 28.3% yield, A$131M equity cap, 60.8% margins
+    - Market context: A$19B tokenized RWA market, USYC/BUIDL comparisons
+    - Institutional negotiation strategies for different investor types
+    - Updated opening prompts to specify exact token types and sophistication matching
 
 - [ ] **1.3** Update pricing models with document specifications
   - [ ] Carbon: A$150/tonne (1.5× A$100 base)
@@ -379,20 +386,20 @@ interface InstitutionalDashboard {
 ## 📊 IMPLEMENTATION TRACKING
 
 ### **Overall Progress**
-- [ ] Phase 1: Dual Token Architecture (1/3 tasks complete)
+- [ ] Phase 1: Dual Token Architecture (2/3 tasks complete)
 - [ ] Phase 2: Financial Modeling (0/3 tasks complete)
 - [ ] Phase 3: Negotiation Intelligence (0/3 tasks complete)
 - [ ] Phase 4: Technical Architecture (0/3 tasks complete)
 - [ ] Phase 5: Market Intelligence (0/2 tasks complete)
 - [ ] Phase 6: Professional UI/UX (0/2 tasks complete)
 
-**Total Progress: 1/16 major tasks complete (6.25%)**
+**Total Progress: 2/16 major tasks complete (12.5%)**
 
 ### **Current Status**
 - **Active Phase:** Phase 1 (Dual Token Architecture)
-- **Last Completed:** Task 1.1 - Dual token type system expansion ✅
-- **Next Milestone:** Task 1.2 - Token-specific knowledge bases
-- **Blockers:** None - ready to continue Phase 1
+- **Last Completed:** Task 1.2 - Token-specific knowledge bases ✅
+- **Next Milestone:** Task 1.3 - Updated pricing models with document specs
+- **Blockers:** None - ready to complete Phase 1
 - **Estimated Completion:** August 2026
 
 ---
