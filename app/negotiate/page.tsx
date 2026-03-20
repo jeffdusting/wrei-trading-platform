@@ -537,7 +537,16 @@ export default function NegotiatePage() {
                             ? 'bg-[#E2E8F0] text-[#1E293B]'
                             : 'bg-[#0EA5E9] text-white'
                         }`}>
-                          <div className="text-sm md:text-base">{message.content}</div>
+                          <div className="text-sm md:text-base whitespace-pre-wrap prose prose-sm max-w-none"
+                               dangerouslySetInnerHTML={{
+                                 __html: message.content
+                                   .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                   .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                                   .replace(/^- (.+)$/gm, '• $1')
+                                   .replace(/^\* (.+)$/gm, '• $1')
+                                   .replace(/\n/g, '<br>')
+                               }}
+                          />
                           <div className={`text-xs mt-2 ${
                             message.role === 'buyer' ? 'text-[#64748B]' : 'text-blue-100'
                           }`}>
