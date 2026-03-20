@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
 
     // Step 4: Claude API Call
     const response = await client.messages.create({
-      model: 'claude-opus-4-20250514',
+      model: 'claude-opus-4-6',
       max_tokens: 1024,
       system: systemPrompt,
       messages: messageHistory,
@@ -114,6 +114,15 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('[WREI API Error]', error);
+
+    // Log more specific error details for debugging
+    if (error instanceof Error) {
+      console.error('[WREI API Error Details]', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack?.substring(0, 500)
+      });
+    }
 
     // Graceful error handling - never expose internal errors
     return Response.json({
