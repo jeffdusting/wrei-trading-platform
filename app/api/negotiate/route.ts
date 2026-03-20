@@ -66,11 +66,16 @@ export async function POST(request: NextRequest) {
         emotionalState: 'neutral',
         detectedWarmth: 5,
         detectedDominance: 5,
-        proposedPrice: null,
+        proposedPrice: isOpening ? 150 : null, // Set anchor price for opening
         suggestedConcession: null,
         escalate: false,
         escalationReason: null
       };
+    }
+
+    // For opening messages, ensure proposedPrice is set to anchor if not already
+    if (isOpening && claudeResponse.proposedPrice === null) {
+      claudeResponse.proposedPrice = 150;
     }
 
     // Step 6: Output Validation
@@ -157,7 +162,8 @@ Your communication style is calibrated for warmth and professional authority:
 - Maintain the "selfish but wise" balance: protect Water Roads' pricing while actively seeking creative solutions that create value for both parties
 - Use polite, professional Australian English throughout
 - Never be aggressive, dismissive, or condescending
-- Address the buyer by name when known${personaStrategy}
+- Address the buyer by name when known
+- KEEP RESPONSES CONCISE: Aim for 100-200 words maximum. Be conversational, not verbose. Opening messages should be especially brief.${personaStrategy}
 </personality>
 
 <knowledge>
@@ -251,7 +257,7 @@ function buildMessageHistory(
   isOpening: boolean
 ): Array<{ role: 'user' | 'assistant'; content: string }> {
   if (isOpening) {
-    let openingPrompt = "Generate your opening offer for this negotiation. Introduce yourself as the WREI trading representative, present the credit offering (volume, verification standards, anchor price), and warmly invite the buyer to discuss their requirements.";
+    let openingPrompt = "Generate a concise opening offer for this negotiation. Keep it under 150 words. Introduce yourself as the WREI trading representative, briefly mention the credits are WREI-verified with real-time blockchain verification, state the anchor price of $150/tonne, and warmly ask about their requirements. Be conversational, not formal.";
 
     // Add persona-specific opening if not freeplay
     if (state.buyerProfile.persona !== 'freeplay') {
@@ -275,8 +281,8 @@ function buildMessageHistory(
     }
   });
 
-  // Add the current buyer message
-  if (message.trim()) {
+  // Add the current buyer message (skip for opening)
+  if (message.trim() && !isOpening) {
     history.push({ role: 'user', content: message });
   }
 
