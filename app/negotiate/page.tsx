@@ -252,6 +252,20 @@ export default function NegotiatePage() {
     }
   };
 
+  const handleResetNegotiation = () => {
+    // Reset all state to start fresh
+    setNegotiationStarted(false);
+    setNegotiationState(null);
+    setInputMessage('');
+    setError(null);
+    setCurrentClassification('general');
+    setCurrentEmotion('neutral');
+    setThreatLevel('none');
+    setIsInitializing(false);
+    setLastFailedMessage(null);
+    // Note: selectedPersona can be changed again after reset
+  };
+
   const selectedPersonaData = selectedPersona !== 'freeplay' ? getPersonaById(selectedPersona) : null;
 
   const getPriceRangePercent = () => {
@@ -326,8 +340,17 @@ export default function NegotiatePage() {
               </div>
 
               {negotiationStarted && (
-                <div className="mt-4 p-3 bg-gray-100 rounded-lg text-sm text-gray-600">
-                  Persona locked
+                <div className="mt-4 p-3 bg-gray-100 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Persona locked</span>
+                    <button
+                      onClick={handleResetNegotiation}
+                      disabled={isLoading}
+                      className="text-xs text-[#0EA5E9] hover:text-[#0284C7] font-medium disabled:opacity-50"
+                    >
+                      Start New
+                    </button>
+                  </div>
                 </div>
               )}
 
@@ -571,25 +594,55 @@ export default function NegotiatePage() {
                 <div className="mx-6 mb-4">
                   {negotiationState.outcome === 'agreed' && (
                     <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
-                      <div className="font-semibold">Negotiation Complete — Terms Agreed</div>
-                      <div className="text-sm mt-1">
-                        Final price: ${negotiationState.currentOfferPrice}/t
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="font-semibold">Negotiation Complete — Terms Agreed</div>
+                          <div className="text-sm mt-1">
+                            Final price: ${negotiationState.currentOfferPrice}/t
+                          </div>
+                        </div>
+                        <button
+                          onClick={handleResetNegotiation}
+                          className="bg-green-700 text-white px-3 py-1 rounded text-sm font-medium hover:bg-green-800 transition-colors"
+                        >
+                          Start New Negotiation
+                        </button>
                       </div>
                     </div>
                   )}
                   {negotiationState.outcome === 'deferred' && (
                     <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800">
-                      <div className="font-semibold">Negotiation Paused — Follow-up Scheduled</div>
-                      <div className="text-sm mt-1">
-                        Thank you for your interest. We&apos;ll follow up with additional options.
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="font-semibold">Negotiation Paused — Follow-up Scheduled</div>
+                          <div className="text-sm mt-1">
+                            Thank you for your interest. We&apos;ll follow up with additional options.
+                          </div>
+                        </div>
+                        <button
+                          onClick={handleResetNegotiation}
+                          className="bg-amber-700 text-white px-3 py-1 rounded text-sm font-medium hover:bg-amber-800 transition-colors"
+                        >
+                          Start New Negotiation
+                        </button>
                       </div>
                     </div>
                   )}
                   {negotiationState.outcome === 'escalated' && (
                     <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-800">
-                      <div className="font-semibold">Connecting with Water Roads Team</div>
-                      <div className="text-sm mt-1">
-                        Contact: trading@waterroads.com.au | +61 3 8456 7890
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="font-semibold">Connecting with Water Roads Team</div>
+                          <div className="text-sm mt-1">
+                            Contact: trading@waterroads.com.au | +61 3 8456 7890
+                          </div>
+                        </div>
+                        <button
+                          onClick={handleResetNegotiation}
+                          className="bg-blue-700 text-white px-3 py-1 rounded text-sm font-medium hover:bg-blue-800 transition-colors"
+                        >
+                          Start New Negotiation
+                        </button>
                       </div>
                     </div>
                   )}
@@ -849,6 +902,13 @@ export default function NegotiatePage() {
                         className="text-[#F59E0B] hover:text-[#D97706] text-sm font-medium disabled:opacity-50"
                       >
                         Request Human Representative
+                      </button>
+                      <button
+                        onClick={handleResetNegotiation}
+                        disabled={isLoading}
+                        className="text-[#0EA5E9] hover:text-[#0284C7] text-sm font-medium disabled:opacity-50"
+                      >
+                        Start New Negotiation
                       </button>
                     </div>
                     <div className="text-xs text-[#64748B]">
