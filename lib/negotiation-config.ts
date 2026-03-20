@@ -1,4 +1,4 @@
-import { NegotiationState, PersonaType } from './types';
+import { NegotiationState, PersonaType, CreditType } from './types';
 
 // WREI Pricing Index — LIVE MARKET REFERENCES
 // In production, these are fed from real-time market data APIs:
