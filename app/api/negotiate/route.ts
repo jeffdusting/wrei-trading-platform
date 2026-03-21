@@ -6,6 +6,7 @@ import { getPersonaById } from '@/lib/personas';
 import { generateRiskReport, calculateRiskMetrics, getPersonaRiskTolerance } from '@/lib/risk-profiles';
 import { tokenMetadataSystem, getTokenMetadata } from '@/lib/token-metadata';
 import { measurementLayer } from '@/lib/architecture-layers/measurement';
+import { verificationLayer } from '@/lib/architecture-layers/verification';
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -1007,13 +1008,23 @@ function updateNegotiationState(
       const modalShiftData = measurementLayer.calculateModalShift();
       const constructionAvoidanceData = measurementLayer.calculateConstructionAvoidance();
 
-      // Create enhanced provenance with real measurement data
+      // Verify emissions through triple-standard verification layer
+      const tripleStandardVerification = verificationLayer.verifyTripleStandard(measurementResult);
+
+      // Get individual verification results for enhanced metadata
+      const iso14064Verification = verificationLayer.verifyISO14064(measurementResult.ghgCalculation);
+      const verraVerification = verificationLayer.verifyVerra(measurementResult.ghgCalculation);
+      const goldStandardVerification = verificationLayer.verifyGoldStandard(measurementResult.ghgCalculation);
+
+      // Create enhanced provenance with real verification data
       const provenance = tokenMetadataSystem.createEnhancedProvenance({
         vesselTelemetry: realVesselTelemetry,
         verification: {
-          consensusHash: '0x' + Math.random().toString(16).substr(2, 8),
+          consensusHash: tripleStandardVerification.consensusHash,
           carbonCreditsGenerated: measurementResult.carbonCreditsGenerated,
-          verificationConfidence: measurementResult.measurementVerified ? 'high' : 'medium'
+          verificationConfidence: tripleStandardVerification.verificationConfidence,
+          allStandardsVerified: tripleStandardVerification.allStandardsVerified,
+          compositeScore: tripleStandardVerification.compositeScore
         },
         tokenization: {
           tokenType: newState.wreiTokenType,
@@ -1021,7 +1032,7 @@ function updateNegotiationState(
         }
       });
 
-      // Track real environmental impact
+      // Track environmental impact with verified data
       const environmentalImpact = tokenMetadataSystem.trackEnvironmentalImpact({
         tokenId,
         baselineEmissions: measurementResult.ghgCalculation.scope1 + measurementResult.ghgCalculation.scope2 + measurementResult.ghgCalculation.scope3 + measurementResult.ghgCalculation.avoidedEmissions,
@@ -1029,6 +1040,19 @@ function updateNegotiationState(
         modalShiftBenefit: modalShiftData.modalShiftPercentage,
         constructionAvoidance: constructionAvoidanceData.constructionAvoidancePercentage
       });
+
+      // Enhanced environmental verification with verification layer data
+      environmentalImpact.impactVerification.verified = tripleStandardVerification.allStandardsVerified;
+      environmentalImpact.impactVerification.confidence = tripleStandardVerification.verificationConfidence === 'high' ? 0.98 :
+                                                         tripleStandardVerification.verificationConfidence === 'medium' ? 0.85 : 0.72;
+      environmentalImpact.impactVerification.verificationSource = 'Triple Standard Verification (ISO 14064-2, Verra VCS, Gold Standard)';
+      environmentalImpact.sustainabilityMetrics.certifications = [
+        iso14064Verification.standard,
+        verraVerification.standard,
+        goldStandardVerification.standard
+      ];
+      environmentalImpact.sustainabilityMetrics.esgScore = tripleStandardVerification.compositeScore;
+      environmentalImpact.sustainabilityMetrics.sdgAlignment = goldStandardVerification.sdgAlignment;
 
       // Generate operational metadata with real vessel data
       const operationalMetadata = tokenMetadataSystem.linkOperationalMetadata({
