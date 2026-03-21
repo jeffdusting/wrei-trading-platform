@@ -7,6 +7,7 @@ import { generateRiskReport, calculateRiskMetrics, getPersonaRiskTolerance } fro
 import { tokenMetadataSystem, getTokenMetadata } from '@/lib/token-metadata';
 import { measurementLayer } from '@/lib/architecture-layers/measurement';
 import { verificationLayer } from '@/lib/architecture-layers/verification';
+import { tokenizationLayer } from '@/lib/architecture-layers/tokenization';
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -1062,23 +1063,48 @@ function updateNegotiationState(
         efficiency: measurementResult.vesselEfficiency
       });
 
-      // Handle Asset Co specific metadata
+      // Handle Asset Co specific metadata with real tokenization
       let leasePaymentData = undefined;
-      if (newState.wreiTokenType === 'asset_co' && adjustedPrice) {
+      if (newState.wreiTokenType === 'asset_co') {
+        // Get real Asset Co tokenization data
+        const assetCoData = {
+          vesselAssetValue: fleetData.fleetSize * 4_300_000, // Fleet value based on real fleet size
+          equityShare: 0.277, // From WREI config
+          yieldRate: 0.283 // 28.3% yield
+        };
+
+        const assetCoTokenization = tokenizationLayer.tokenizeAssetCo(assetCoData);
+
+        // Generate realistic payment history based on tokenization data
+        const quarterlyPayment = assetCoTokenization.leaseIncome / 4;
+        const actualPayments = [
+          {
+            amount: quarterlyPayment * (0.95 + Math.random() * 0.1), // Slight variance around expected
+            date: '2026-Q1',
+            verified: true
+          },
+          {
+            amount: quarterlyPayment * (0.98 + Math.random() * 0.04),
+            date: '2026-Q2',
+            verified: true
+          }
+        ];
+
+        // Verify lease payments with real tokenization data
         const leaseVerification = tokenMetadataSystem.verifyLeasePayments({
-          assetId: `ASSET_${tokenId}`,
-          expectedAnnualIncome: adjustedPrice * 0.283, // 28.3% yield
-          actualPayments: [
-            { amount: (adjustedPrice * 0.283) / 4, date: '2026-Q1', verified: true },
-            { amount: (adjustedPrice * 0.283) / 4, date: '2026-Q2', verified: true }
-          ]
+          assetId: assetCoTokenization.assetId,
+          expectedAnnualIncome: assetCoTokenization.leaseIncome,
+          actualPayments
         });
 
         leasePaymentData = {
-          expectedAnnualIncome: adjustedPrice * 0.283,
+          expectedAnnualIncome: assetCoTokenization.leaseIncome,
           yieldPerformance: leaseVerification.yieldCalculation.actualYield,
           incomeConsistency: leaseVerification.incomeConsistency,
-          lastPaymentVerified: new Date().toISOString()
+          lastPaymentVerified: new Date().toISOString(),
+          tokenPrice: assetCoTokenization.tokenPrice,
+          dividendMechanism: assetCoTokenization.dividendMechanism,
+          smartContractAddress: assetCoTokenization.smartContractAddress
         };
       }
 

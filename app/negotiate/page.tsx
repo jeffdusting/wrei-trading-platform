@@ -763,8 +763,17 @@ export default function NegotiatePage() {
                 {/* Lease Payment Data (Asset Co only) */}
                 {negotiationState.wreiTokenType === 'asset_co' && negotiationState.tokenMetadata.leasePaymentData && (
                   <div className="mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                    <h4 className="text-sm font-medium text-[#1E293B] mb-2">💰 Lease Payment Verification</h4>
+                    <h4 className="text-sm font-medium text-[#1E293B] mb-2">💰 Asset Co Token & Lease Data</h4>
                     <div className="text-xs text-[#64748B] space-y-1">
+                      <div className="flex justify-between">
+                        <span>Token Price:</span>
+                        <span className="text-[#0EA5E9] font-medium">
+                          {negotiationState.tokenMetadata.leasePaymentData.tokenPrice ?
+                            `A$${negotiationState.tokenMetadata.leasePaymentData.tokenPrice.toLocaleString()}` :
+                            'Calculating...'
+                          }
+                        </span>
+                      </div>
                       <div className="flex justify-between">
                         <span>Expected Annual Income:</span>
                         <span className="text-[#0EA5E9] font-medium">
@@ -781,6 +790,18 @@ export default function NegotiatePage() {
                         <span>Income Consistency:</span>
                         <span className="text-[#10B981] font-medium">
                           {(negotiationState.tokenMetadata.leasePaymentData.incomeConsistency * 100).toFixed(1)}%
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Dividend Mechanism:</span>
+                        <span className="text-[#64748B]">
+                          {negotiationState.tokenMetadata.leasePaymentData.dividendMechanism?.replace('_', ' ') || 'Quarterly'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Smart Contract:</span>
+                        <span className="font-mono text-[#0EA5E9] text-xs">
+                          {negotiationState.tokenMetadata.leasePaymentData.smartContractAddress?.slice(0, 10)}...
                         </span>
                       </div>
                       <div className="flex justify-between">
