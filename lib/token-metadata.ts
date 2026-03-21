@@ -159,6 +159,169 @@ export interface MetadataQualityAssessment {
   recommendations: string[];
 }
 
+// =================== METADATA PERSISTENCE SYSTEM ===================
+
+interface PersistedTokenMetadata {
+  tokenId: string;
+  tokenType: 'carbon_credits' | 'asset_co' | 'dual_portfolio';
+  createdAt: string;
+  lastUpdated: string;
+  provenance: EnhancedProvenance;
+  operationalMetadata: OperationalMetadata;
+  environmentalImpact: EnvironmentalImpactData;
+  leasePaymentData?: any;
+  qualityMetrics: MetadataQualityAssessment;
+  negotiationContext: {
+    round: number;
+    vesselId: string;
+    fleetType: string;
+    verificationResults: any;
+  };
+}
+
+interface MetadataQuery {
+  tokenType?: 'carbon_credits' | 'asset_co' | 'dual_portfolio';
+  vesselId?: string;
+  dateRange?: { from: string; to: string };
+  minQualityScore?: number;
+  verificationStatus?: boolean;
+}
+
+interface QueryResult {
+  totalCount: number;
+  metadata: PersistedTokenMetadata[];
+  aggregates: {
+    averageQualityScore: number;
+    totalCarbonGenerated: number;
+    verificationRate: number;
+  };
+}
+
+// In-memory metadata storage (in production, this would be a database)
+class MetadataPersistence {
+  private metadataStore: Map<string, PersistedTokenMetadata> = new Map();
+
+  /**
+   * Store token metadata
+   */
+  store(tokenId: string, metadata: Partial<PersistedTokenMetadata>): void {
+    const existing = this.metadataStore.get(tokenId);
+    const now = new Date().toISOString();
+
+    const persistedMetadata: PersistedTokenMetadata = {
+      tokenId,
+      createdAt: existing?.createdAt || now,
+      lastUpdated: now,
+      ...existing,
+      ...metadata
+    } as PersistedTokenMetadata;
+
+    this.metadataStore.set(tokenId, persistedMetadata);
+  }
+
+  /**
+   * Retrieve token metadata by ID
+   */
+  retrieve(tokenId: string): PersistedTokenMetadata | null {
+    return this.metadataStore.get(tokenId) || null;
+  }
+
+  /**
+   * Query metadata with filters
+   */
+  query(query: MetadataQuery = {}): QueryResult {
+    const allMetadata = Array.from(this.metadataStore.values());
+
+    let filteredMetadata = allMetadata.filter(metadata => {
+      if (query.tokenType && metadata.tokenType !== query.tokenType) return false;
+      if (query.vesselId && metadata.negotiationContext?.vesselId !== query.vesselId) return false;
+      if (query.minQualityScore && metadata.qualityMetrics.qualityScore < query.minQualityScore) return false;
+      if (query.verificationStatus !== undefined &&
+          metadata.environmentalImpact?.impactVerification?.verified !== query.verificationStatus) return false;
+
+      if (query.dateRange) {
+        const createdDate = new Date(metadata.createdAt);
+        const fromDate = new Date(query.dateRange.from);
+        const toDate = new Date(query.dateRange.to);
+        if (createdDate < fromDate || createdDate > toDate) return false;
+      }
+
+      return true;
+    });
+
+    // Calculate aggregates
+    const averageQualityScore = filteredMetadata.length > 0
+      ? filteredMetadata.reduce((sum, m) => sum + m.qualityMetrics.qualityScore, 0) / filteredMetadata.length
+      : 0;
+
+    const totalCarbonGenerated = filteredMetadata
+      .reduce((sum, m) => sum + (m.operationalMetadata?.efficiencyTracking?.current || 0), 0);
+
+    const verificationRate = filteredMetadata.length > 0
+      ? filteredMetadata.filter(m => m.environmentalImpact?.impactVerification?.verified).length / filteredMetadata.length
+      : 0;
+
+    return {
+      totalCount: filteredMetadata.length,
+      metadata: filteredMetadata,
+      aggregates: {
+        averageQualityScore,
+        totalCarbonGenerated,
+        verificationRate
+      }
+    };
+  }
+
+  /**
+   * Get all token IDs
+   */
+  getAllTokenIds(): string[] {
+    return Array.from(this.metadataStore.keys());
+  }
+
+  /**
+   * Get metadata statistics
+   */
+  getStatistics() {
+    const allMetadata = Array.from(this.metadataStore.values());
+
+    return {
+      totalTokens: allMetadata.length,
+      tokensByType: {
+        carbon_credits: allMetadata.filter(m => m.tokenType === 'carbon_credits').length,
+        asset_co: allMetadata.filter(m => m.tokenType === 'asset_co').length,
+        dual_portfolio: allMetadata.filter(m => m.tokenType === 'dual_portfolio').length
+      },
+      averageQualityScore: allMetadata.length > 0
+        ? allMetadata.reduce((sum, m) => sum + m.qualityMetrics.qualityScore, 0) / allMetadata.length
+        : 0,
+      verificationRate: allMetadata.length > 0
+        ? allMetadata.filter(m => m.environmentalImpact?.impactVerification?.verified).length / allMetadata.length
+        : 0,
+      oldestToken: allMetadata.length > 0
+        ? allMetadata.reduce((oldest, current) =>
+            new Date(current.createdAt) < new Date(oldest.createdAt) ? current : oldest
+          ).createdAt
+        : null,
+      latestToken: allMetadata.length > 0
+        ? allMetadata.reduce((latest, current) =>
+            new Date(current.createdAt) > new Date(latest.createdAt) ? current : latest
+          ).createdAt
+        : null
+    };
+  }
+
+  /**
+   * Clear all metadata (for testing/demo purposes)
+   */
+  clear(): void {
+    this.metadataStore.clear();
+  }
+}
+
+// Global persistence instance
+const metadataPersistence = new MetadataPersistence();
+
 // =================== TOKEN METADATA SYSTEM IMPLEMENTATION ===================
 
 class TokenMetadataSystem {
@@ -665,6 +828,69 @@ class TokenMetadataSystem {
       issues: qualityScore < 0.9 ? ['Minor data gaps in operational history'] : [],
       recommendations: qualityScore < 0.95 ? ['Increase telemetry frequency'] : []
     };
+  }
+
+  // =================== PERSISTENCE METHODS ===================
+
+  /**
+   * Store complete token metadata for persistence
+   */
+  storeTokenMetadata(tokenId: string, completeMetadata: {
+    tokenType: 'carbon_credits' | 'asset_co' | 'dual_portfolio';
+    provenance: any;
+    operationalMetadata: any;
+    environmentalImpact: any;
+    leasePaymentData?: any;
+    qualityMetrics: any;
+    negotiationContext: any;
+  }): void {
+    const persistedMetadata: Partial<PersistedTokenMetadata> = {
+      tokenId,
+      tokenType: completeMetadata.tokenType,
+      provenance: completeMetadata.provenance,
+      operationalMetadata: completeMetadata.operationalMetadata,
+      environmentalImpact: completeMetadata.environmentalImpact,
+      leasePaymentData: completeMetadata.leasePaymentData,
+      qualityMetrics: completeMetadata.qualityMetrics,
+      negotiationContext: completeMetadata.negotiationContext
+    };
+
+    metadataPersistence.store(tokenId, persistedMetadata);
+  }
+
+  /**
+   * Retrieve stored token metadata
+   */
+  retrieveTokenMetadata(tokenId: string): PersistedTokenMetadata | null {
+    return metadataPersistence.retrieve(tokenId);
+  }
+
+  /**
+   * Query tokens with filters
+   */
+  queryTokens(query: MetadataQuery = {}): QueryResult {
+    return metadataPersistence.query(query);
+  }
+
+  /**
+   * Get metadata statistics
+   */
+  getMetadataStatistics() {
+    return metadataPersistence.getStatistics();
+  }
+
+  /**
+   * Get all stored token IDs
+   */
+  getAllTokenIds(): string[] {
+    return metadataPersistence.getAllTokenIds();
+  }
+
+  /**
+   * Clear all stored metadata (for testing/demo purposes)
+   */
+  clearAllMetadata(): void {
+    metadataPersistence.clear();
   }
 
   // =================== UTILITY METHODS ===================

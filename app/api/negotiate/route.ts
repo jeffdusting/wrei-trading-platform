@@ -1136,6 +1136,36 @@ function updateNegotiationState(
           integrityScore: measurementResult.measurementVerified ? 0.96 : 0.82
         }
       };
+
+      // Store metadata for persistence and future retrieval
+      try {
+        const qualityScore = (newState.tokenMetadata.qualityMetrics.completeness +
+                             newState.tokenMetadata.qualityMetrics.accuracy +
+                             newState.tokenMetadata.qualityMetrics.dataFreshness +
+                             newState.tokenMetadata.qualityMetrics.integrityScore) / 4;
+
+        tokenMetadataSystem.storeTokenMetadata(tokenId, {
+          tokenType: newState.wreiTokenType,
+          provenance,
+          operationalMetadata,
+          environmentalImpact,
+          leasePaymentData,
+          qualityMetrics: {
+            ...newState.tokenMetadata.qualityMetrics,
+            qualityScore
+          },
+          negotiationContext: {
+            round: newState.round,
+            vesselId,
+            fleetType,
+            verificationResults: tripleStandardVerification
+          }
+        });
+
+        console.log(`[WREI Metadata] Stored metadata for token: ${tokenId}`);
+      } catch (persistenceError) {
+        console.error('[WREI Metadata] Error storing token metadata:', persistenceError);
+      }
     } catch (error) {
       console.error('[WREI Metadata] Error generating token metadata:', error);
       // Continue without metadata if generation fails
