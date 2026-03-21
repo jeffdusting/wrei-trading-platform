@@ -11,6 +11,7 @@ interface APIResponse {
   classification: ArgumentClassification;
   emotionalState: EmotionalState;
   threatLevel: 'none' | 'low' | 'medium' | 'high';
+  tokenMetadata?: any; // Token metadata from API response
   error?: string;
 }
 
@@ -655,6 +656,197 @@ export default function NegotiatePage() {
                     <span className="text-xs font-medium">
                       Unusual negotiation pattern detected
                     </span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Token Metadata Panel */}
+            {negotiationState?.tokenMetadata && (
+              <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+                <h3 className="text-lg font-semibold text-[#1E293B] mb-4 flex items-center">
+                  <span className="bg-[#0EA5E9] w-2 h-2 rounded-full mr-2"></span>
+                  Token Metadata & Transparency
+                </h3>
+
+                {/* Provenance Section */}
+                {negotiationState.tokenMetadata.immutableProvenance && (
+                  <div className="mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                    <h4 className="text-sm font-medium text-[#1E293B] mb-2">🔗 Immutable Provenance</h4>
+                    <div className="text-xs text-[#64748B] space-y-1">
+                      <div className="flex justify-between">
+                        <span>Provenance ID:</span>
+                        <span className="font-mono text-[#0EA5E9]">
+                          {negotiationState.tokenMetadata.provenanceId?.slice(0, 12)}...
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Chain Steps:</span>
+                        <span className="text-[#10B981] font-medium">
+                          {negotiationState.tokenMetadata.immutableProvenance.provenanceChain?.length || 0} verified
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Integrity:</span>
+                        <span className="text-[#10B981] font-medium">✓ Verified</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Operational Data Section */}
+                {negotiationState.tokenMetadata.operationalData && (
+                  <div className="mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                    <h4 className="text-sm font-medium text-[#1E293B] mb-2">⚙️ Real-time Operations</h4>
+                    <div className="text-xs text-[#64748B] space-y-1">
+                      <div className="flex justify-between">
+                        <span>Vessel ID:</span>
+                        <span className="font-mono text-[#0EA5E9]">
+                          {negotiationState.tokenMetadata.operationalData.vesselId}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Efficiency:</span>
+                        <span className="text-[#10B981] font-medium">
+                          {negotiationState.tokenMetadata.operationalData.efficiency.toFixed(1)}%
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Carbon Generated:</span>
+                        <span className="text-[#0EA5E9] font-medium">
+                          {negotiationState.tokenMetadata.operationalData.carbonGeneration.toFixed(1)} tonnes
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Last Update:</span>
+                        <span className="text-[#64748B]">
+                          {new Date(negotiationState.tokenMetadata.operationalData.lastTelemetryUpdate).toLocaleTimeString()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Environmental Impact Section */}
+                {negotiationState.tokenMetadata.environmentalImpact && (
+                  <div className="mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                    <h4 className="text-sm font-medium text-[#1E293B] mb-2">🌱 Environmental Impact</h4>
+                    <div className="text-xs text-[#64748B] space-y-1">
+                      <div className="flex justify-between">
+                        <span>Total CO₂ Reduced:</span>
+                        <span className="text-[#10B981] font-medium">
+                          {negotiationState.tokenMetadata.environmentalImpact.totalCO2Reduced.toFixed(1)} tonnes
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Modal Shift Benefit:</span>
+                        <span className="text-[#0EA5E9] font-medium">
+                          {negotiationState.tokenMetadata.environmentalImpact.modalShiftBenefit.toFixed(1)}%
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Sustainability Score:</span>
+                        <span className="text-[#10B981] font-medium">
+                          {negotiationState.tokenMetadata.environmentalImpact.sustainabilityScore}/100
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Verification:</span>
+                        <span className={negotiationState.tokenMetadata.environmentalImpact.verified ? 'text-[#10B981]' : 'text-[#EF4444]'}>
+                          {negotiationState.tokenMetadata.environmentalImpact.verified ? '✓ Verified' : '⚠ Pending'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Lease Payment Data (Asset Co only) */}
+                {negotiationState.wreiTokenType === 'asset_co' && negotiationState.tokenMetadata.leasePaymentData && (
+                  <div className="mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                    <h4 className="text-sm font-medium text-[#1E293B] mb-2">💰 Lease Payment Verification</h4>
+                    <div className="text-xs text-[#64748B] space-y-1">
+                      <div className="flex justify-between">
+                        <span>Expected Annual Income:</span>
+                        <span className="text-[#0EA5E9] font-medium">
+                          A${negotiationState.tokenMetadata.leasePaymentData.expectedAnnualIncome.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Yield Performance:</span>
+                        <span className="text-[#10B981] font-medium">
+                          {(negotiationState.tokenMetadata.leasePaymentData.yieldPerformance * 100).toFixed(1)}%
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Income Consistency:</span>
+                        <span className="text-[#10B981] font-medium">
+                          {(negotiationState.tokenMetadata.leasePaymentData.incomeConsistency * 100).toFixed(1)}%
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Last Verified:</span>
+                        <span className="text-[#64748B]">
+                          {new Date(negotiationState.tokenMetadata.leasePaymentData.lastPaymentVerified).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Quality Metrics */}
+                {negotiationState.tokenMetadata.qualityMetrics && (
+                  <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                    <h4 className="text-sm font-medium text-[#1E293B] mb-2">📊 Data Quality Metrics</h4>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="flex justify-between">
+                        <span className="text-[#64748B]">Completeness:</span>
+                        <span className="text-[#10B981] font-medium">
+                          {(negotiationState.tokenMetadata.qualityMetrics.completeness * 100).toFixed(1)}%
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-[#64748B]">Accuracy:</span>
+                        <span className="text-[#10B981] font-medium">
+                          {(negotiationState.tokenMetadata.qualityMetrics.accuracy * 100).toFixed(1)}%
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-[#64748B]">Freshness:</span>
+                        <span className="text-[#0EA5E9] font-medium">
+                          {(negotiationState.tokenMetadata.qualityMetrics.dataFreshness * 100).toFixed(1)}%
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-[#64748B]">Integrity:</span>
+                        <span className="text-[#10B981] font-medium">
+                          {(negotiationState.tokenMetadata.qualityMetrics.integrityScore * 100).toFixed(1)}%
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Overall Score Bar */}
+                    <div className="mt-3">
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className="text-[#64748B]">Overall Quality Score</span>
+                        <span className="text-[#1E293B] font-medium">
+                          {(((negotiationState.tokenMetadata.qualityMetrics.completeness +
+                             negotiationState.tokenMetadata.qualityMetrics.accuracy +
+                             negotiationState.tokenMetadata.qualityMetrics.dataFreshness +
+                             negotiationState.tokenMetadata.qualityMetrics.integrityScore) / 4) * 100).toFixed(1)}%
+                        </span>
+                      </div>
+                      <div className="h-2 bg-gray-200 rounded-full">
+                        <div
+                          className="h-2 bg-gradient-to-r from-[#0EA5E9] to-[#10B981] rounded-full transition-all duration-500"
+                          style={{
+                            width: `${((negotiationState.tokenMetadata.qualityMetrics.completeness +
+                                       negotiationState.tokenMetadata.qualityMetrics.accuracy +
+                                       negotiationState.tokenMetadata.qualityMetrics.dataFreshness +
+                                       negotiationState.tokenMetadata.qualityMetrics.integrityScore) / 4) * 100}%`
+                          }}
+                        ></div>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
