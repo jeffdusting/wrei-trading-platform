@@ -343,6 +343,40 @@ export interface NegotiationState {
     competitivePressure: number; // 1-10 scale
     regulatoryEnvironment: 'favorable' | 'neutral' | 'challenging';
   };
+
+  // Token Metadata System Integration
+  tokenMetadata?: {
+    provenanceId?: string;
+    immutableProvenance?: {
+      provenanceChain: string[];
+      verificationProof: string;
+      merkleRoot: string;
+    };
+    operationalData?: {
+      vesselId: string;
+      lastTelemetryUpdate: string;
+      efficiency: number;
+      carbonGeneration: number;
+    };
+    environmentalImpact?: {
+      totalCO2Reduced: number;
+      modalShiftBenefit: number;
+      sustainabilityScore: number;
+      verified: boolean;
+    };
+    leasePaymentData?: {
+      expectedAnnualIncome: number;
+      yieldPerformance: number;
+      incomeConsistency: number;
+      lastPaymentVerified: string;
+    };
+    qualityMetrics?: {
+      completeness: number;
+      accuracy: number;
+      dataFreshness: number;
+      integrityScore: number;
+    };
+  };
 }
 
 export interface ClaudeResponse {
