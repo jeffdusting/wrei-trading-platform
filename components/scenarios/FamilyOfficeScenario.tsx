@@ -18,7 +18,7 @@ interface ScenarioResult {
   generationalPlan: any;
 }
 
-export const FamilyOfficeScenario: React.FC<FamilyOfficeScenarioScenarioProps> = ({
+export const FamilyOfficeScenario: React.FC<FamilyOfficeScenarioProps> = ({
   onComplete,
   onExit
 }) => {
@@ -77,10 +77,10 @@ export const FamilyOfficeScenario: React.FC<FamilyOfficeScenarioScenarioProps> =
 
     if (data) {
       if (stepId.includes('tax')) {
-        setTaxAnalysis(prev => ({ ...prev, [stepId]: data }));
+        setTaxAnalysis((prev: any) => ({ ...prev, [stepId]: data }));
       }
       if (stepId.includes('conservative') || stepId.includes('risk')) {
-        setConservativeMetrics(prev => ({ ...prev, [stepId]: data }));
+        setConservativeMetrics((prev: any) => ({ ...prev, [stepId]: data }));
       }
     }
 
@@ -288,7 +288,7 @@ const OrientationPhase: React.FC<{
           marginBottom: tokens.spacing[4],
           color: tokens.colors.text.primary
         }}>
-          Welcome to WREI's Family Office Investment Platform
+          Welcome to WREI&apos;s Family Office Investment Platform
         </h3>
 
         <p style={{
@@ -740,7 +740,7 @@ const FamilyGovernancePhase: React.FC<{
               <div><strong>Principal:</strong> Margaret Thompson, CFA</div>
               <div><strong>Authority:</strong> Up to A$50M per decision</div>
               <div><strong>Committee:</strong> Quarterly review required</div>
-              <div><strong>Family Approval:</strong> >A$25M investments</div>
+              <div><strong>Family Approval:</strong> &gt;A$25M investments</div>
             </div>
           </div>
 

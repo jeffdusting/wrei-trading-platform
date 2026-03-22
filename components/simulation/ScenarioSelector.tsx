@@ -3,7 +3,7 @@
 import { FC, useState, useMemo } from 'react';
 import { useDesignTokens } from '@/design-system/tokens/professional-tokens';
 
-interface Scenario {
+export interface Scenario {
   id: string;
   title: string;
   description: string;
@@ -20,7 +20,7 @@ interface Scenario {
   };
 }
 
-interface InvestorPersona {
+export interface InvestorPersona {
   id: string;
   name: string;
   role: string;
@@ -510,7 +510,7 @@ function generateScenarios(): Scenario[] {
       },
       complexity: 'Advanced',
       duration: '45-60 minutes',
-      outcome: 'Investment Decision',
+      outcome: 'Purchase Decision',
       tags: ['Infrastructure', 'Portfolio Analysis', 'Risk Assessment', 'Committee Reporting', 'Professional Interface'],
       estimatedTime: 55,
       successMetrics: {
@@ -536,7 +536,7 @@ function generateScenarios(): Scenario[] {
       },
       complexity: 'Advanced',
       duration: '60-75 minutes',
-      outcome: 'Impact Investment Decision',
+      outcome: 'Purchase Decision',
       tags: ['ESG', 'Impact Investing', 'Sustainability', 'Premium Analysis', 'Third-Party Validation'],
       estimatedTime: 65,
       successMetrics: {
@@ -562,7 +562,7 @@ function generateScenarios(): Scenario[] {
       },
       complexity: 'Expert',
       duration: '75-90 minutes',
-      outcome: 'Automated Strategy Deployment',
+      outcome: 'Portfolio Optimization',
       tags: ['DeFi', 'Yield Farming', 'Smart Contracts', 'Cross-Collateral', 'API Integration', 'Automation'],
       estimatedTime: 80,
       successMetrics: {
@@ -614,7 +614,7 @@ function generateScenarios(): Scenario[] {
       },
       complexity: 'Expert',
       duration: '75-90 minutes',
-      outcome: 'Strategic Portfolio Allocation',
+      outcome: 'Portfolio Optimization',
       tags: ['Sovereign Wealth', 'Macro Analysis', 'Geopolitical Risk', 'National Strategy', 'Multi-Currency'],
       estimatedTime: 85,
       successMetrics: {

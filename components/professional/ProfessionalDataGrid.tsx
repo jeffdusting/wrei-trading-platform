@@ -3,7 +3,7 @@
 import { FC, useMemo } from 'react';
 import { useDesignTokens } from '@/design-system/tokens/professional-tokens';
 
-interface DataGridColumn {
+export interface DataGridColumn {
   key: string;
   header: string;
   type: 'text' | 'number' | 'currency' | 'percentage' | 'date' | 'status';
@@ -12,7 +12,7 @@ interface DataGridColumn {
   sortable?: boolean;
 }
 
-interface DataGridRow {
+export interface DataGridRow {
   id: string;
   [key: string]: any;
 }

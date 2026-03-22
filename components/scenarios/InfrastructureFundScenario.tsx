@@ -81,7 +81,7 @@ export const InfrastructureFundScenario: React.FC<InfrastructureFundScenarioProp
 
     // Update analysis data if provided
     if (data) {
-      setAnalysisData(prev => ({ ...prev, [stepId]: data }));
+      setAnalysisData((prev: any) => ({ ...prev, [stepId]: data }));
     }
 
     // Progress to next phase based on completed steps

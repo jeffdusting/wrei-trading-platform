@@ -4,7 +4,6 @@ import { defineConfig, devices } from '@playwright/test';
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
-  testDir: './e2e',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -21,8 +20,9 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     actionTimeout: 15000,
-    testTimeout: 60000,
   },
+
+  timeout: 60000,
 
   projects: [
     {
@@ -103,12 +103,10 @@ export default defineConfig({
     timeout: 10000,
     toHaveScreenshot: {
       threshold: 0.2,
-      mode: 'pixel',
       animations: 'disabled'
     },
     toMatchSnapshot: {
-      threshold: 0.2,
-      mode: 'pixel'
+      threshold: 0.2
     },
   },
 

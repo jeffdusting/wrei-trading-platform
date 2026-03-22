@@ -50,7 +50,6 @@ export default function SimulatePage() {
         >
           <ScenarioSimulationEngine
             scenario={selectedScenario}
-            onComplete={handleScenarioComplete}
             onExit={handleScenarioExit}
           />
         </BloombergLayout>

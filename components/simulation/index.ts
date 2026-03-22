@@ -8,5 +8,4 @@ export { ScenarioSelector } from './ScenarioSelector';
 export { ScenarioSimulationEngine } from './ScenarioSimulationEngine';
 
 // Export types
-export type { default as Scenario } from './ScenarioSelector';
-export type { default as InvestorPersona } from './ScenarioSelector';
+export type { Scenario, InvestorPersona } from './ScenarioSelector';

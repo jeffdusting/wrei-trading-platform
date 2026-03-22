@@ -77,10 +77,10 @@ export const DeFiYieldFarmingScenario: React.FC<DeFiYieldFarmingScenarioProps> =
 
     if (data) {
       if (stepId.includes('yield') || stepId.includes('apy')) {
-        setYieldStrategies(prev => ({ ...prev, [stepId]: data }));
+        setYieldStrategies((prev: any) => ({ ...prev, [stepId]: data }));
       }
       if (stepId.includes('defi') || stepId.includes('collateral')) {
-        setDeFiMetrics(prev => ({ ...prev, [stepId]: data }));
+        setDeFiMetrics((prev: any) => ({ ...prev, [stepId]: data }));
       }
     }
 
@@ -982,7 +982,7 @@ const TechnicalInfoPanel: React.FC<{
     }}>
       {content.map((item, index) => (
         <li key={index} style={{ marginBottom: tokens.spacing[1] }}>
-          > {item}
+          &gt; {item}
         </li>
       ))}
     </ul>

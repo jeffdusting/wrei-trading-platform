@@ -77,10 +77,10 @@ export const ESGImpactScenario: React.FC<ESGImpactScenarioProps> = ({
 
     if (data) {
       if (stepId.includes('esg')) {
-        setESGData(prev => ({ ...prev, [stepId]: data }));
+        setESGData((prev: any) => ({ ...prev, [stepId]: data }));
       }
       if (stepId.includes('impact')) {
-        setImpactMetrics(prev => ({ ...prev, [stepId]: data }));
+        setImpactMetrics((prev: any) => ({ ...prev, [stepId]: data }));
       }
     }
 

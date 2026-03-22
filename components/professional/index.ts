@@ -13,8 +13,7 @@ export {
 } from './ProfessionalDataGrid';
 
 // Export types
-export type { default as DataGridColumn } from './ProfessionalDataGrid';
-export type { default as DataGridRow } from './ProfessionalDataGrid';
+export type { DataGridColumn, DataGridRow } from './ProfessionalDataGrid';
 
 // Re-export design tokens for easy access
 export { professionalTokens, useDesignTokens } from '../../design-system/tokens/professional-tokens';

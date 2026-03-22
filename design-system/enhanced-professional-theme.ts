@@ -581,7 +581,7 @@ export const professionalComponentStyles = {
         backgroundColor: theme.colors.primary[800]
       },
       '&:disabled': {
-        backgroundColor: theme.colors.interactive.disabled,
+        backgroundColor: theme.colors.terminal.text.disabled,
         cursor: 'not-allowed'
       }
     }),

@@ -201,7 +201,7 @@ export const SovereignWealthFundScenario: FC<SovereignWealthFundScenarioProps> =
             {[
               { label: 'Expected Return', value: '8-12%', trend: 'positive' },
               { label: 'Risk Budget', value: '15%', trend: 'neutral' },
-              { label: 'ESG Score Target', value: '>8.5/10', trend: 'positive' },
+              { label: 'ESG Score Target', value: '&gt;8.5/10', trend: 'positive' },
               { label: 'Currency Exposure', value: 'Multi-currency', trend: 'neutral' }
             ].map(metric => (
               <div
@@ -238,10 +238,10 @@ export const SovereignWealthFundScenario: FC<SovereignWealthFundScenarioProps> =
       </div>
 
       <div style={{
-        backgroundColor: tokens.colors.status.info + '20',
+        backgroundColor: tokens.colors.accent.info + '20',
         padding: tokens.spacing[4],
         borderRadius: tokens.borderRadius.md,
-        border: `1px solid ${tokens.colors.status.info}`,
+        border: `1px solid ${tokens.colors.accent.info}`,
         marginBottom: tokens.spacing[6]
       }}>
         <h4 style={{
@@ -258,7 +258,7 @@ export const SovereignWealthFundScenario: FC<SovereignWealthFundScenarioProps> =
           margin: 0,
           lineHeight: tokens.typography.lineHeights.normal
         }}>
-          This analysis must align with Singapore's national climate commitments, regional leadership position,
+          This analysis must align with Singapore&apos;s national climate commitments, regional leadership position,
           and long-term economic development strategy. Consider geopolitical implications and currency exposures.
         </p>
       </div>
@@ -968,7 +968,7 @@ export const SovereignWealthFundScenario: FC<SovereignWealthFundScenarioProps> =
                 lineHeight: tokens.typography.lineHeights.normal,
                 paddingLeft: tokens.spacing[4]
               }}>
-                <li>Strong alignment with Singapore's 2050 carbon neutrality commitment</li>
+                <li>Strong alignment with Singapore&apos;s 2050 carbon neutrality commitment</li>
                 <li>Significant portfolio diversification benefits</li>
                 <li>Access to high-quality, dMRV-verified carbon credits</li>
                 <li>Long-term growth potential in expanding carbon markets</li>
@@ -1049,7 +1049,7 @@ export const SovereignWealthFundScenario: FC<SovereignWealthFundScenarioProps> =
       padding: tokens.spacing[6],
       backgroundColor: tokens.colors.surface.primary,
       minHeight: '100vh',
-      fontFamily: tokens.typography.fontFamily
+      fontFamily: tokens.typography.families.interface
     }}>
       {/* Header */}
       <div style={{
