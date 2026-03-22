@@ -121,8 +121,8 @@ class WREITokenizationLayer implements TokenizationLayer {
     const tokenPrice = vesselAssetValue * equityShare;
     const expectedYield = yieldRate;
 
-    // Annual lease income calculation
-    const leaseIncome = assetData.leaseIncome || (vesselAssetValue * 0.12); // 12% of asset value
+    // Annual lease income calculation based on expected yield rate
+    const leaseIncome = assetData.leaseIncome || (vesselAssetValue * yieldRate); // Use actual yield rate
 
     // Generate smart contract address
     const smartContractAddress = this.generateContractAddress('ASSET');

@@ -31,7 +31,7 @@ import type {
 
 // =================== DISTRIBUTION CONSTANTS ===================
 
-const WREI_DISTRIBUTION_CONFIG = {
+const WREI_DISTRIBUTION_CONFIG: any = {
   // Settlement Configuration
   SETTLEMENT_TIMES: {
     ATOMIC: 'T+0', // Immediate settlement

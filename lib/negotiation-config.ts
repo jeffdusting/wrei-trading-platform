@@ -620,24 +620,24 @@ function getTokenSpecificYieldRequirement(
     case 'infrastructure_fund':
     case 'pension_fund':
     case 'sovereign_wealth':
-      return benchmarks.conservative_return || 0.08;
+      return (benchmarks as any).conservative_return || 0.08;
 
     case 'family_office':
     case 'esg_fund_manager':
     case 'compliance_officer':
-      return benchmarks.moderate_return || 0.10;
+      return (benchmarks as any).moderate_return || 0.10;
 
     case 'defi_yield_farmer':
     case 'trading_desk':
-      return benchmarks.aggressive_return || 0.15;
+      return (benchmarks as any).aggressive_return || 0.15;
 
     case 'esg_impact_investor':
       // ESG investors may accept lower returns for carbon credits
       return tokenType === 'carbon_credits'
-        ? (benchmarks.conservative_return || 0.06)
-        : (benchmarks.moderate_return || 0.10);
+        ? ((benchmarks as any).conservative_return || 0.06)
+        : ((benchmarks as any).moderate_return || 0.10);
 
     default:
-      return benchmarks.moderate_return || 0.08;
+      return (benchmarks as any).moderate_return || 0.08;
   }
 }

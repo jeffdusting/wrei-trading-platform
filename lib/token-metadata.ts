@@ -639,6 +639,7 @@ class TokenMetadataSystem {
     assetId: string;
     expectedAnnualIncome: number;
     actualPayments: Array<{ amount: number; date: string; verified: boolean }>;
+    assetValue?: number; // Optional: specific asset value for yield calculation
   }): LeasePaymentVerification {
     const totalActualPayments = data.actualPayments.reduce((sum, payment) => sum + payment.amount, 0);
     // Assuming quarterly payments: 2 payments = 6 months, so multiply by (12/6) = 2
@@ -648,7 +649,9 @@ class TokenMetadataSystem {
     const variance = Math.abs(annualizedActual - data.expectedAnnualIncome) / data.expectedAnnualIncome;
     const incomeConsistency = Math.max(0, 1 - variance);
 
-    const actualYield = annualizedActual / 4_300_000; // Assuming A$4.3M asset value
+    // Use provided asset value or estimate based on income (assuming ~12% income-to-value ratio)
+    const assetValueForYield = data.assetValue || (data.expectedAnnualIncome / 0.12);
+    const actualYield = annualizedActual / assetValueForYield;
     const expectedYield = 0.283;
 
     return {

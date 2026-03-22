@@ -409,7 +409,7 @@ export function getOptimalTaxTreatment(
     yieldMechanism,
     classification: {
       income: isRevenueShare, // Revenue share distributions are ordinary income
-      capitalGains: !isRevenueShare || yieldMechanism === 'nav_accruing', // NAV appreciation is CGT
+      capitalGains: yieldMechanism === 'nav_accruing', // NAV appreciation is CGT
       dividendImputation: isAssetCo && isRevenueShare && investorProfile.taxResident, // Asset Co distributions may be franked
       deductibility: investorProfile.classification === 'professional' // Professional investors may claim deductions
     },

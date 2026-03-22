@@ -33,5 +33,18 @@
     ],
     "deny": []
   },
-  "model": "claude-sonnet-4-20250514"
+  "model": "claude-sonnet-4-20250514",
+  "enabledPlugins": {
+    "playwright@claude-plugins-official": true,
+    "frontend-design@claude-code-plugins": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-code-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-code"
+      },
+      "autoUpdate": true
+    }
+  }
 }

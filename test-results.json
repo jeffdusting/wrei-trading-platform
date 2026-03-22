@@ -1,0 +1,1637 @@
+{
+  "config": {
+    "configFile": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/playwright.config.ts",
+    "rootDir": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 5
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 10000
+      },
+      {
+        "outputDir": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 10000
+      },
+      {
+        "outputDir": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 10000
+      },
+      {
+        "outputDir": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "Mobile Chrome",
+        "name": "Mobile Chrome",
+        "testDir": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 10000
+      },
+      {
+        "outputDir": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "Mobile Safari",
+        "name": "Mobile Safari",
+        "testDir": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 10000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.2",
+    "workers": 5,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:3000",
+      "reuseExistingServer": true
+    }
+  },
+  "suites": [
+    {
+      "title": "scenario-flows/infrastructure-fund-complete.spec.ts",
+      "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Infrastructure Fund Complete Scenario",
+          "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+          "line": 8,
+          "column": 6,
+          "specs": [
+            {
+              "title": "completes full infrastructure fund discovery workflow",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 6772,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:28:82",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 82,
+                          "line": 28
+                        },
+                        "snippet": "  26 |\n  27 |     // Should now be in the Infrastructure Fund scenario\n> 28 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n     |                                                                                  ^\n  29 |     await expect(page.getByText('Sarah Chen')).toBeVisible();\n  30 |     await expect(page.getByText('Australian Infrastructure Fund')).toBeVisible();\n  31 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 82,
+                            "line": 28
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n\n  26 |\n  27 |     // Should now be in the Infrastructure Fund scenario\n> 28 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n     |                                                                                  ^\n  29 |     await expect(page.getByText('Sarah Chen')).toBeVisible();\n  30 |     await expect(page.getByText('Australian Infrastructure Fund')).toBeVisible();\n  31 |\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:28:82"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:21.296Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2c5df-ure-fund-discovery-workflow-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2c5df-ure-fund-discovery-workflow-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2c5df-ure-fund-discovery-workflow-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 82,
+                        "line": 28
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-47976a84a19e1e76261d",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "validates professional interface elements",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 6786,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:106:82",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 82,
+                          "line": 106
+                        },
+                        "snippet": "  104 |\n  105 |     // Verify professional interface elements are present\n> 106 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  107 |\n  108 |     // Check for professional styling elements\n  109 |     await expect(page.getByText('Senior Portfolio Manager')).toBeVisible();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 82,
+                            "line": 106
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n\n  104 |\n  105 |     // Verify professional interface elements are present\n> 106 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  107 |\n  108 |     // Check for professional styling elements\n  109 |     await expect(page.getByText('Senior Portfolio Manager')).toBeVisible();\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:106:82"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:21.286Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-03223-essional-interface-elements-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-03223-essional-interface-elements-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-03223-essional-interface-elements-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 82,
+                        "line": 106
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-91b34a70c8e2b216becf",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 96,
+              "column": 7
+            },
+            {
+              "title": "validates scenario progression and state management",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 1655,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('DISCOVERY')\nExpected: visible\nError: strict mode violation: getByText('DISCOVERY') resolved to 2 elements:\n    1) <h3>Infrastructure Fund Discovery</h3> aka locator('h3').filter({ hasText: 'Infrastructure Fund Discovery' })\n    2) <h2>Infrastructure Fund Discovery</h2> aka locator('h2')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('DISCOVERY')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('DISCOVERY')\nExpected: visible\nError: strict mode violation: getByText('DISCOVERY') resolved to 2 elements:\n    1) <h3>Infrastructure Fund Discovery</h3> aka locator('h3').filter({ hasText: 'Infrastructure Fund Discovery' })\n    2) <h2>Infrastructure Fund Discovery</h2> aka locator('h2')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('DISCOVERY')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:135:47",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 47,
+                          "line": 135
+                        },
+                        "snippet": "  133 |\n  134 |     // Initial state validation\n> 135 |     await expect(page.getByText('DISCOVERY')).toBeVisible();\n      |                                               ^\n  136 |     await expect(page.getByText('0 / 8')).toBeVisible(); // Should show 0 steps completed initially\n  137 |\n  138 |     // Execute first action"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 47,
+                            "line": 135
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('DISCOVERY')\nExpected: visible\nError: strict mode violation: getByText('DISCOVERY') resolved to 2 elements:\n    1) <h3>Infrastructure Fund Discovery</h3> aka locator('h3').filter({ hasText: 'Infrastructure Fund Discovery' })\n    2) <h2>Infrastructure Fund Discovery</h2> aka locator('h2')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('DISCOVERY')\u001b[22m\n\n\n  133 |\n  134 |     // Initial state validation\n> 135 |     await expect(page.getByText('DISCOVERY')).toBeVisible();\n      |                                               ^\n  136 |     await expect(page.getByText('0 / 8')).toBeVisible(); // Should show 0 steps completed initially\n  137 |\n  138 |     // Execute first action\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:135:47"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:21.258Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2fc92-ession-and-state-management-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2fc92-ession-and-state-management-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2fc92-ession-and-state-management-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 47,
+                        "line": 135
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-106f3e2fdd7c5dd4d60c",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 126,
+              "column": 7
+            },
+            {
+              "title": "handles scenario exit gracefully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 6753,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:162:82",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 82,
+                          "line": 162
+                        },
+                        "snippet": "  160 |\n  161 |     // Verify we're in the scenario\n> 162 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  163 |\n  164 |     // Find and click exit button\n  165 |     const exitButton = page.getByText('Exit Scenario');"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 82,
+                            "line": 162
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n\n  160 |\n  161 |     // Verify we're in the scenario\n> 162 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  163 |\n  164 |     // Find and click exit button\n  165 |     const exitButton = page.getByText('Exit Scenario');\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:162:82"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:21.281Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-54311-es-scenario-exit-gracefully-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-54311-es-scenario-exit-gracefully-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-54311-es-scenario-exit-gracefully-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 82,
+                        "line": 162
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-6e0710958c235b0b3c11",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 153,
+              "column": 7
+            },
+            {
+              "title": "completes full infrastructure fund discovery workflow",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 6997,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:28:82",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 82,
+                          "line": 28
+                        },
+                        "snippet": "  26 |\n  27 |     // Should now be in the Infrastructure Fund scenario\n> 28 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n     |                                                                                  ^\n  29 |     await expect(page.getByText('Sarah Chen')).toBeVisible();\n  30 |     await expect(page.getByText('Australian Infrastructure Fund')).toBeVisible();\n  31 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 82,
+                            "line": 28
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n\n  26 |\n  27 |     // Should now be in the Infrastructure Fund scenario\n> 28 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n     |                                                                                  ^\n  29 |     await expect(page.getByText('Sarah Chen')).toBeVisible();\n  30 |     await expect(page.getByText('Australian Infrastructure Fund')).toBeVisible();\n  31 |\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:28:82"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:21.254Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2c5df-ure-fund-discovery-workflow-firefox/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2c5df-ure-fund-discovery-workflow-firefox/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2c5df-ure-fund-discovery-workflow-firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 82,
+                        "line": 28
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-c333c09061b3a3684f4c",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "validates professional interface elements",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 6415,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:106:82",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 82,
+                          "line": 106
+                        },
+                        "snippet": "  104 |\n  105 |     // Verify professional interface elements are present\n> 106 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  107 |\n  108 |     // Check for professional styling elements\n  109 |     await expect(page.getByText('Senior Portfolio Manager')).toBeVisible();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 82,
+                            "line": 106
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n\n  104 |\n  105 |     // Verify professional interface elements are present\n> 106 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  107 |\n  108 |     // Check for professional styling elements\n  109 |     await expect(page.getByText('Senior Portfolio Manager')).toBeVisible();\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:106:82"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:23.964Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-03223-essional-interface-elements-firefox/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-03223-essional-interface-elements-firefox/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-03223-essional-interface-elements-firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 82,
+                        "line": 106
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-7198d8623e3358e9f949",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 96,
+              "column": 7
+            },
+            {
+              "title": "validates scenario progression and state management",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 1843,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('DISCOVERY')\nExpected: visible\nError: strict mode violation: getByText('DISCOVERY') resolved to 2 elements:\n    1) <h3>Infrastructure Fund Discovery</h3> aka locator('h3').filter({ hasText: 'Infrastructure Fund Discovery' })\n    2) <h2>Infrastructure Fund Discovery</h2> aka locator('h2')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('DISCOVERY')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('DISCOVERY')\nExpected: visible\nError: strict mode violation: getByText('DISCOVERY') resolved to 2 elements:\n    1) <h3>Infrastructure Fund Discovery</h3> aka locator('h3').filter({ hasText: 'Infrastructure Fund Discovery' })\n    2) <h2>Infrastructure Fund Discovery</h2> aka locator('h2')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('DISCOVERY')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:135:47",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 47,
+                          "line": 135
+                        },
+                        "snippet": "  133 |\n  134 |     // Initial state validation\n> 135 |     await expect(page.getByText('DISCOVERY')).toBeVisible();\n      |                                               ^\n  136 |     await expect(page.getByText('0 / 8')).toBeVisible(); // Should show 0 steps completed initially\n  137 |\n  138 |     // Execute first action"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 47,
+                            "line": 135
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('DISCOVERY')\nExpected: visible\nError: strict mode violation: getByText('DISCOVERY') resolved to 2 elements:\n    1) <h3>Infrastructure Fund Discovery</h3> aka locator('h3').filter({ hasText: 'Infrastructure Fund Discovery' })\n    2) <h2>Infrastructure Fund Discovery</h2> aka locator('h2')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('DISCOVERY')\u001b[22m\n\n\n  133 |\n  134 |     // Initial state validation\n> 135 |     await expect(page.getByText('DISCOVERY')).toBeVisible();\n      |                                               ^\n  136 |     await expect(page.getByText('0 / 8')).toBeVisible(); // Should show 0 steps completed initially\n  137 |\n  138 |     // Execute first action\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:135:47"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:29.100Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2fc92-ession-and-state-management-firefox/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2fc92-ession-and-state-management-firefox/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2fc92-ession-and-state-management-firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 47,
+                        "line": 135
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-7346ff4cf71661c09692",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 126,
+              "column": 7
+            },
+            {
+              "title": "handles scenario exit gracefully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 6824,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:162:82",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 82,
+                          "line": 162
+                        },
+                        "snippet": "  160 |\n  161 |     // Verify we're in the scenario\n> 162 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  163 |\n  164 |     // Find and click exit button\n  165 |     const exitButton = page.getByText('Exit Scenario');"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 82,
+                            "line": 162
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n\n  160 |\n  161 |     // Verify we're in the scenario\n> 162 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  163 |\n  164 |     // Find and click exit button\n  165 |     const exitButton = page.getByText('Exit Scenario');\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:162:82"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:29.106Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-54311-es-scenario-exit-gracefully-firefox/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-54311-es-scenario-exit-gracefully-firefox/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-54311-es-scenario-exit-gracefully-firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 82,
+                        "line": 162
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-b25da4d13a0a5f07c4f5",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 153,
+              "column": 7
+            },
+            {
+              "title": "completes full infrastructure fund discovery workflow",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 6417,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:28:82",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 82,
+                          "line": 28
+                        },
+                        "snippet": "  26 |\n  27 |     // Should now be in the Infrastructure Fund scenario\n> 28 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n     |                                                                                  ^\n  29 |     await expect(page.getByText('Sarah Chen')).toBeVisible();\n  30 |     await expect(page.getByText('Australian Infrastructure Fund')).toBeVisible();\n  31 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 82,
+                            "line": 28
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n\n  26 |\n  27 |     // Should now be in the Infrastructure Fund scenario\n> 28 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n     |                                                                                  ^\n  29 |     await expect(page.getByText('Sarah Chen')).toBeVisible();\n  30 |     await expect(page.getByText('Australian Infrastructure Fund')).toBeVisible();\n  31 |\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:28:82"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:29.128Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2c5df-ure-fund-discovery-workflow-webkit/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2c5df-ure-fund-discovery-workflow-webkit/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2c5df-ure-fund-discovery-workflow-webkit/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 82,
+                        "line": 28
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-5aa9557df6a32aec43f0",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "validates professional interface elements",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 6209,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:106:82",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 82,
+                          "line": 106
+                        },
+                        "snippet": "  104 |\n  105 |     // Verify professional interface elements are present\n> 106 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  107 |\n  108 |     // Check for professional styling elements\n  109 |     await expect(page.getByText('Senior Portfolio Manager')).toBeVisible();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 82,
+                            "line": 106
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n\n  104 |\n  105 |     // Verify professional interface elements are present\n> 106 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  107 |\n  108 |     // Check for professional styling elements\n  109 |     await expect(page.getByText('Senior Portfolio Manager')).toBeVisible();\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:106:82"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:29.884Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-03223-essional-interface-elements-webkit/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-03223-essional-interface-elements-webkit/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-03223-essional-interface-elements-webkit/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 82,
+                        "line": 106
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-389a5e30d0a56c6d206e",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 96,
+              "column": 7
+            },
+            {
+              "title": "validates scenario progression and state management",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 979,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('DISCOVERY')\nExpected: visible\nError: strict mode violation: getByText('DISCOVERY') resolved to 2 elements:\n    1) <h3>Infrastructure Fund Discovery</h3> aka locator('h3').filter({ hasText: 'Infrastructure Fund Discovery' })\n    2) <h2>Infrastructure Fund Discovery</h2> aka locator('h2')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('DISCOVERY')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('DISCOVERY')\nExpected: visible\nError: strict mode violation: getByText('DISCOVERY') resolved to 2 elements:\n    1) <h3>Infrastructure Fund Discovery</h3> aka locator('h3').filter({ hasText: 'Infrastructure Fund Discovery' })\n    2) <h2>Infrastructure Fund Discovery</h2> aka locator('h2')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('DISCOVERY')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:135:47",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 47,
+                          "line": 135
+                        },
+                        "snippet": "  133 |\n  134 |     // Initial state validation\n> 135 |     await expect(page.getByText('DISCOVERY')).toBeVisible();\n      |                                               ^\n  136 |     await expect(page.getByText('0 / 8')).toBeVisible(); // Should show 0 steps completed initially\n  137 |\n  138 |     // Execute first action"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 47,
+                            "line": 135
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('DISCOVERY')\nExpected: visible\nError: strict mode violation: getByText('DISCOVERY') resolved to 2 elements:\n    1) <h3>Infrastructure Fund Discovery</h3> aka locator('h3').filter({ hasText: 'Infrastructure Fund Discovery' })\n    2) <h2>Infrastructure Fund Discovery</h2> aka locator('h2')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('DISCOVERY')\u001b[22m\n\n\n  133 |\n  134 |     // Initial state validation\n> 135 |     await expect(page.getByText('DISCOVERY')).toBeVisible();\n      |                                               ^\n  136 |     await expect(page.getByText('0 / 8')).toBeVisible(); // Should show 0 steps completed initially\n  137 |\n  138 |     // Execute first action\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:135:47"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:31.487Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2fc92-ession-and-state-management-webkit/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2fc92-ession-and-state-management-webkit/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2fc92-ession-and-state-management-webkit/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 47,
+                        "line": 135
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-bd6fdbcd5cf28e169930",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 126,
+              "column": 7
+            },
+            {
+              "title": "handles scenario exit gracefully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 6017,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:162:82",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 82,
+                          "line": 162
+                        },
+                        "snippet": "  160 |\n  161 |     // Verify we're in the scenario\n> 162 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  163 |\n  164 |     // Find and click exit button\n  165 |     const exitButton = page.getByText('Exit Scenario');"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 82,
+                            "line": 162
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n\n  160 |\n  161 |     // Verify we're in the scenario\n> 162 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  163 |\n  164 |     // Find and click exit button\n  165 |     const exitButton = page.getByText('Exit Scenario');\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:162:82"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:32.539Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-54311-es-scenario-exit-gracefully-webkit/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-54311-es-scenario-exit-gracefully-webkit/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-54311-es-scenario-exit-gracefully-webkit/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 82,
+                        "line": 162
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-da4e223a92463f749cc2",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 153,
+              "column": 7
+            },
+            {
+              "title": "completes full infrastructure fund discovery workflow",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 5944,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:28:82",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 82,
+                          "line": 28
+                        },
+                        "snippet": "  26 |\n  27 |     // Should now be in the Infrastructure Fund scenario\n> 28 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n     |                                                                                  ^\n  29 |     await expect(page.getByText('Sarah Chen')).toBeVisible();\n  30 |     await expect(page.getByText('Australian Infrastructure Fund')).toBeVisible();\n  31 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 82,
+                            "line": 28
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n\n  26 |\n  27 |     // Should now be in the Infrastructure Fund scenario\n> 28 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n     |                                                                                  ^\n  29 |     await expect(page.getByText('Sarah Chen')).toBeVisible();\n  30 |     await expect(page.getByText('Australian Infrastructure Fund')).toBeVisible();\n  31 |\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:28:82"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:33.085Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2c5df-ure-fund-discovery-workflow-Mobile-Chrome/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2c5df-ure-fund-discovery-workflow-Mobile-Chrome/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2c5df-ure-fund-discovery-workflow-Mobile-Chrome/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 82,
+                        "line": 28
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-6dab57c246ccea6380f0",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "validates professional interface elements",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 5928,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:106:82",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 82,
+                          "line": 106
+                        },
+                        "snippet": "  104 |\n  105 |     // Verify professional interface elements are present\n> 106 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  107 |\n  108 |     // Check for professional styling elements\n  109 |     await expect(page.getByText('Senior Portfolio Manager')).toBeVisible();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 82,
+                            "line": 106
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n\n  104 |\n  105 |     // Verify professional interface elements are present\n> 106 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  107 |\n  108 |     // Check for professional styling elements\n  109 |     await expect(page.getByText('Senior Portfolio Manager')).toBeVisible();\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:106:82"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:36.221Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-03223-essional-interface-elements-Mobile-Chrome/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-03223-essional-interface-elements-Mobile-Chrome/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-03223-essional-interface-elements-Mobile-Chrome/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 82,
+                        "line": 106
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-56efd5557f96c3a6e855",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 96,
+              "column": 7
+            },
+            {
+              "title": "validates scenario progression and state management",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 808,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('DISCOVERY')\nExpected: visible\nError: strict mode violation: getByText('DISCOVERY') resolved to 2 elements:\n    1) <h3>Infrastructure Fund Discovery</h3> aka locator('h3').filter({ hasText: 'Infrastructure Fund Discovery' })\n    2) <h2>Infrastructure Fund Discovery</h2> aka locator('h2')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('DISCOVERY')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('DISCOVERY')\nExpected: visible\nError: strict mode violation: getByText('DISCOVERY') resolved to 2 elements:\n    1) <h3>Infrastructure Fund Discovery</h3> aka locator('h3').filter({ hasText: 'Infrastructure Fund Discovery' })\n    2) <h2>Infrastructure Fund Discovery</h2> aka locator('h2')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('DISCOVERY')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:135:47",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 47,
+                          "line": 135
+                        },
+                        "snippet": "  133 |\n  134 |     // Initial state validation\n> 135 |     await expect(page.getByText('DISCOVERY')).toBeVisible();\n      |                                               ^\n  136 |     await expect(page.getByText('0 / 8')).toBeVisible(); // Should show 0 steps completed initially\n  137 |\n  138 |     // Execute first action"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 47,
+                            "line": 135
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('DISCOVERY')\nExpected: visible\nError: strict mode violation: getByText('DISCOVERY') resolved to 2 elements:\n    1) <h3>Infrastructure Fund Discovery</h3> aka locator('h3').filter({ hasText: 'Infrastructure Fund Discovery' })\n    2) <h2>Infrastructure Fund Discovery</h2> aka locator('h2')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('DISCOVERY')\u001b[22m\n\n\n  133 |\n  134 |     // Initial state validation\n> 135 |     await expect(page.getByText('DISCOVERY')).toBeVisible();\n      |                                               ^\n  136 |     await expect(page.getByText('0 / 8')).toBeVisible(); // Should show 0 steps completed initially\n  137 |\n  138 |     // Execute first action\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:135:47"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:36.748Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2fc92-ession-and-state-management-Mobile-Chrome/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2fc92-ession-and-state-management-Mobile-Chrome/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2fc92-ession-and-state-management-Mobile-Chrome/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 47,
+                        "line": 135
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-e87ac56c0409a6d4599d",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 126,
+              "column": 7
+            },
+            {
+              "title": "handles scenario exit gracefully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 15,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 5890,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:162:82",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 82,
+                          "line": 162
+                        },
+                        "snippet": "  160 |\n  161 |     // Verify we're in the scenario\n> 162 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  163 |\n  164 |     // Find and click exit button\n  165 |     const exitButton = page.getByText('Exit Scenario');"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 82,
+                            "line": 162
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n\n  160 |\n  161 |     // Verify we're in the scenario\n> 162 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  163 |\n  164 |     // Find and click exit button\n  165 |     const exitButton = page.getByText('Exit Scenario');\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:162:82"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:37.147Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-54311-es-scenario-exit-gracefully-Mobile-Chrome/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-54311-es-scenario-exit-gracefully-Mobile-Chrome/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-54311-es-scenario-exit-gracefully-Mobile-Chrome/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 82,
+                        "line": 162
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-2058eced47604dc6b225",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 153,
+              "column": 7
+            },
+            {
+              "title": "completes full infrastructure fund discovery workflow",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 16,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 6063,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:28:82",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 82,
+                          "line": 28
+                        },
+                        "snippet": "  26 |\n  27 |     // Should now be in the Infrastructure Fund scenario\n> 28 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n     |                                                                                  ^\n  29 |     await expect(page.getByText('Sarah Chen')).toBeVisible();\n  30 |     await expect(page.getByText('Australian Infrastructure Fund')).toBeVisible();\n  31 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 82,
+                            "line": 28
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n\n  26 |\n  27 |     // Should now be in the Infrastructure Fund scenario\n> 28 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n     |                                                                                  ^\n  29 |     await expect(page.getByText('Sarah Chen')).toBeVisible();\n  30 |     await expect(page.getByText('Australian Infrastructure Fund')).toBeVisible();\n  31 |\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:28:82"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:38.199Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2c5df-ure-fund-discovery-workflow-Mobile-Safari/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2c5df-ure-fund-discovery-workflow-Mobile-Safari/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2c5df-ure-fund-discovery-workflow-Mobile-Safari/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 82,
+                        "line": 28
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-39b2cb15486d726503a1",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "validates professional interface elements",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 17,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 6061,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:106:82",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 82,
+                          "line": 106
+                        },
+                        "snippet": "  104 |\n  105 |     // Verify professional interface elements are present\n> 106 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  107 |\n  108 |     // Check for professional styling elements\n  109 |     await expect(page.getByText('Senior Portfolio Manager')).toBeVisible();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 82,
+                            "line": 106
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n\n  104 |\n  105 |     // Verify professional interface elements are present\n> 106 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  107 |\n  108 |     // Check for professional styling elements\n  109 |     await expect(page.getByText('Senior Portfolio Manager')).toBeVisible();\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:106:82"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:39.089Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-03223-essional-interface-elements-Mobile-Safari/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-03223-essional-interface-elements-Mobile-Safari/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-03223-essional-interface-elements-Mobile-Safari/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 82,
+                        "line": 106
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-5a807bddcb47bf692f31",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 96,
+              "column": 7
+            },
+            {
+              "title": "validates scenario progression and state management",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 18,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 926,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('DISCOVERY')\nExpected: visible\nError: strict mode violation: getByText('DISCOVERY') resolved to 2 elements:\n    1) <h3>Infrastructure Fund Discovery</h3> aka locator('h3').filter({ hasText: 'Infrastructure Fund Discovery' })\n    2) <h2>Infrastructure Fund Discovery</h2> aka locator('h2')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('DISCOVERY')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('DISCOVERY')\nExpected: visible\nError: strict mode violation: getByText('DISCOVERY') resolved to 2 elements:\n    1) <h3>Infrastructure Fund Discovery</h3> aka locator('h3').filter({ hasText: 'Infrastructure Fund Discovery' })\n    2) <h2>Infrastructure Fund Discovery</h2> aka locator('h2')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('DISCOVERY')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:135:47",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 47,
+                          "line": 135
+                        },
+                        "snippet": "  133 |\n  134 |     // Initial state validation\n> 135 |     await expect(page.getByText('DISCOVERY')).toBeVisible();\n      |                                               ^\n  136 |     await expect(page.getByText('0 / 8')).toBeVisible(); // Should show 0 steps completed initially\n  137 |\n  138 |     // Execute first action"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 47,
+                            "line": 135
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('DISCOVERY')\nExpected: visible\nError: strict mode violation: getByText('DISCOVERY') resolved to 2 elements:\n    1) <h3>Infrastructure Fund Discovery</h3> aka locator('h3').filter({ hasText: 'Infrastructure Fund Discovery' })\n    2) <h2>Infrastructure Fund Discovery</h2> aka locator('h2')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('DISCOVERY')\u001b[22m\n\n\n  133 |\n  134 |     // Initial state validation\n> 135 |     await expect(page.getByText('DISCOVERY')).toBeVisible();\n      |                                               ^\n  136 |     await expect(page.getByText('0 / 8')).toBeVisible(); // Should show 0 steps completed initially\n  137 |\n  138 |     // Execute first action\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:135:47"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:39.755Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2fc92-ession-and-state-management-Mobile-Safari/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2fc92-ession-and-state-management-Mobile-Safari/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-2fc92-ession-and-state-management-Mobile-Safari/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 47,
+                        "line": 135
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-4511cce3947690b8c6fb",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 126,
+              "column": 7
+            },
+            {
+              "title": "handles scenario exit gracefully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 10000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 19,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 5986,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:162:82",
+                        "location": {
+                          "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                          "column": 82,
+                          "line": 162
+                        },
+                        "snippet": "  160 |\n  161 |     // Verify we're in the scenario\n> 162 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  163 |\n  164 |     // Find and click exit button\n  165 |     const exitButton = page.getByText('Exit Scenario');"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                            "column": 82,
+                            "line": 162
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Infrastructure Fund Carbon Credit Evaluation')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Infrastructure Fund Carbon Credit Evaluation')\u001b[22m\n\n\n  160 |\n  161 |     // Verify we're in the scenario\n> 162 |     await expect(page.getByText('Infrastructure Fund Carbon Credit Evaluation')).toBeVisible();\n      |                                                                                  ^\n  163 |\n  164 |     // Find and click exit button\n  165 |     const exitButton = page.getByText('Exit Scenario');\n    at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts:162:82"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T01:37:41.181Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-54311-es-scenario-exit-gracefully-Mobile-Safari/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-54311-es-scenario-exit-gracefully-Mobile-Safari/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/test-results/scenario-flows-infrastruct-54311-es-scenario-exit-gracefully-Mobile-Safari/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jeffdusting/Desktop/Projects/wrei-trading-platform/e2e/scenario-flows/infrastructure-fund-complete.spec.ts",
+                        "column": 82,
+                        "line": 162
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "53b6c4c5821fb48fbaa7-fef02b9ab8cc4a17e8ad",
+              "file": "scenario-flows/infrastructure-fund-complete.spec.ts",
+              "line": 153,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-03-22T01:37:18.242Z",
+    "duration": 29094.585000000003,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 20,
+    "flaky": 0
+  }
+}

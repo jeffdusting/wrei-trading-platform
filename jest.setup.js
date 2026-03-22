@@ -4,6 +4,9 @@
  * Global test setup and configuration for all test files
  */
 
+// Setup testing library for React component testing
+require('@testing-library/jest-dom');
+
 // Extend Jest matchers for better testing
 expect.extend({
   toBeValidAUM(received) {
