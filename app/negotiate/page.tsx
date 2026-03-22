@@ -9,6 +9,8 @@ import ProfessionalInterface from '@/components/ProfessionalInterface';
 import { calculateProfessionalMetrics, generateScenarioAnalysis } from '@/lib/professional-analytics';
 import { exportReport } from '@/lib/export-utilities';
 import type { ReportData, ExportOptions } from '@/lib/export-utilities';
+import { NegotiationStrategyExplanation } from '@/lib/negotiation-strategy';
+import NegotiationStrategyPanel from '@/components/NegotiationStrategyPanel';
 
 interface APIResponse {
   agentMessage: string;
@@ -17,6 +19,7 @@ interface APIResponse {
   emotionalState: EmotionalState;
   threatLevel: 'none' | 'low' | 'medium' | 'high';
   tokenMetadata?: any; // Token metadata from API response
+  strategyExplanation?: NegotiationStrategyExplanation; // AI strategy explanation
   error?: string;
 }
 
@@ -70,6 +73,10 @@ export default function NegotiatePage() {
   const [investmentSize, setInvestmentSize] = useState(25_000_000); // A$25M default
   const [timeHorizon, setTimeHorizon] = useState(5); // 5 year default
   const [showExportOptions, setShowExportOptions] = useState(false);
+
+  // Phase 1 Milestone 1.1: AI Strategy Enhancement
+  const [currentStrategyExplanation, setCurrentStrategyExplanation] = useState<NegotiationStrategyExplanation | null>(null);
+  const [showStrategyPanel, setShowStrategyPanel] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -158,6 +165,12 @@ export default function NegotiatePage() {
         setCurrentClassification(data.classification);
         setCurrentEmotion(data.emotionalState);
         setThreatLevel(data.threatLevel);
+
+        // Update strategy explanation for institutional investors
+        if (data.strategyExplanation) {
+          setCurrentStrategyExplanation(data.strategyExplanation);
+          setShowStrategyPanel(true); // Auto-show for institutional investors
+        }
       }
     } catch (err) {
       if (err instanceof Error && err.name === 'AbortError') {
@@ -213,6 +226,11 @@ export default function NegotiatePage() {
         setCurrentClassification(data.classification);
         setCurrentEmotion(data.emotionalState);
         setThreatLevel(data.threatLevel);
+
+        // Update strategy explanation for institutional investors
+        if (data.strategyExplanation) {
+          setCurrentStrategyExplanation(data.strategyExplanation);
+        }
       }
     } catch (err) {
       setLastFailedMessage(messageToSend);
@@ -1796,6 +1814,17 @@ export default function NegotiatePage() {
             <div>
               WREI Trading Platform | Water Roads Pty Ltd
             </div>
+          </div>
+        )}
+
+        {/* AI Strategy Panel - Milestone 1.1 Enhancement */}
+        {isInstitutionalPersona(selectedPersona) && negotiationStarted && (
+          <div className={`fixed ${showStrategyPanel ? 'right-4 top-20 w-96' : 'bottom-4 right-4'} z-50 transition-all duration-300`}>
+            <NegotiationStrategyPanel
+              explanation={currentStrategyExplanation}
+              isVisible={showStrategyPanel}
+              onToggle={() => setShowStrategyPanel(!showStrategyPanel)}
+            />
           </div>
         )}
           </div>

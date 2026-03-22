@@ -9,6 +9,12 @@ import { measurementLayer } from '@/lib/architecture-layers/measurement';
 import { verificationLayer } from '@/lib/architecture-layers/verification';
 import { tokenizationLayer } from '@/lib/architecture-layers/tokenization';
 import { marketIntelligenceSystem } from '@/lib/market-intelligence';
+import {
+  generateStrategyExplanation,
+  createMockPortfolioContext,
+  NegotiationStrategyExplanation,
+  InstitutionalNegotiationContext
+} from '@/lib/negotiation-strategy';
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -114,7 +120,43 @@ export async function POST(request: NextRequest) {
       isOpening
     );
 
-    // Step 9: Return Response
+    // Step 9: Generate Strategy Explanation for Institutional Investors
+    let strategyExplanation: NegotiationStrategyExplanation | null = null;
+
+    // Check if this is an institutional persona
+    const institutionalPersonas = [
+      'esg_impact_investor', 'defi_yield_farmer', 'family_office', 'sovereign_wealth',
+      'infrastructure_fund', 'pension_fund'
+    ];
+
+    if (institutionalPersonas.includes(state.buyerProfile.persona as string)) {
+      try {
+        const portfolioContext = createMockPortfolioContext(state.buyerProfile.persona as any);
+        const negotiationContext: InstitutionalNegotiationContext = {
+          persona: state.buyerProfile.persona as any,
+          portfolioContext,
+          investorClassification: state.buyerProfile.investorClassification || 'wholesale',
+          negotiationObjective: 'acquisition',
+          mandateConstraints: {
+            priceFloor: state.priceFloor,
+            priceCeiling: state.anchorPrice * 1.2, // 20% above anchor as ceiling
+            volumeMin: state.buyerProfile.volumeInterest || undefined,
+            timeConstraints: state.phase === 'closure' ? 'Negotiation reaching final phase' : undefined
+          }
+        };
+
+        strategyExplanation = generateStrategyExplanation(
+          updatedState,
+          negotiationContext,
+          `${claudeResponse.response + premiumDefence}`
+        );
+      } catch (error) {
+        console.error('[Strategy Explanation Error]', error);
+        // Continue without strategy explanation if generation fails
+      }
+    }
+
+    // Step 10: Return Response
     return Response.json({
       agentMessage: claudeResponse.response + premiumDefence,
       state: updatedState,
@@ -122,6 +164,7 @@ export async function POST(request: NextRequest) {
       emotionalState: claudeResponse.emotionalState,
       threatLevel,
       tokenMetadata: updatedState.tokenMetadata || null, // Include metadata in response
+      strategyExplanation, // Add strategy explanation for institutional investors
     });
 
   } catch (error) {
