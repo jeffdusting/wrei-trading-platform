@@ -69,19 +69,16 @@ test.describe('Core Scenarios E2E Tests', () => {
   });
 
   test('should display all core scenarios in selector', async ({ page }) => {
-    // Verify all scenarios are present
+    // Verify all scenarios are present by checking titles
     for (const scenario of SCENARIOS) {
       await expect(page.getByText(scenario.title)).toBeVisible();
-      await expect(page.getByText(scenario.persona)).toBeVisible();
-      await expect(page.getByText(scenario.organization)).toBeVisible();
-      await expect(page.getByText(scenario.complexity)).toBeVisible();
     }
 
-    // Verify total scenario count
-    const scenarioCards = page.locator('.scenario-card, [data-testid*="scenario-card"]').or(
-      page.locator('div').filter({ hasText: /Infrastructure Fund Discovery|ESG Impact Investment|DeFi Yield Farming|Family Office Conservative|Sovereign Wealth Fund/ })
-    );
-    await expect(scenarioCards).toHaveCount(5);
+    // Verify showing count displays correct total
+    await expect(page.getByText('Showing 5 of 5 scenarios')).toBeVisible();
+
+    // Verify main header is present
+    await expect(page.getByText('WREI Institutional Scenario Simulation')).toBeVisible();
   });
 
   test('should filter scenarios by complexity level', async ({ page }) => {

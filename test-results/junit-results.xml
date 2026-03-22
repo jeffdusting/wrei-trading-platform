@@ -1,0 +1,43 @@
+<testsuites id="" name="" tests="1" failures="1" skipped="0" errors="0" time="16.412329999999997">
+<testsuite name="__tests__/core-scenarios-e2e.test.ts" timestamp="2026-03-22T12:32:14.802Z" hostname="chromium" tests="1" failures="1" skipped="0" time="15.769" errors="0">
+<testcase name="Core Scenarios E2E Tests › Family Office Conservative Analysis Scenario › should emphasize conservative analysis and tax optimization" classname="__tests__/core-scenarios-e2e.test.ts" time="15.769">
+<failure message="core-scenarios-e2e.test.ts:216:9 should emphasize conservative analysis and tax optimization" type="FAILURE">
+<![CDATA[  [chromium] › __tests__/core-scenarios-e2e.test.ts:216:9 › Core Scenarios E2E Tests › Family Office Conservative Analysis Scenario › should emphasize conservative analysis and tax optimization 
+
+    TimeoutError: locator.click: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for locator('button:text("Continue"), button:text("Next"), button:text("→")').first()
+
+
+      222 |       // Navigate through phases
+      223 |       let continueButton = page.locator('button:text("Continue"), button:text("Next"), button:text("→")').first();
+    > 224 |       await continueButton.click();
+          |                            ^
+      225 |
+      226 |       // Conservative Analysis phase
+      227 |       await expect(page.getByText(/Conservative|Risk|Preservation/)).toBeVisible();
+        at /Users/jeffdusting/Desktop/Projects/wrei-trading-platform/__tests__/core-scenarios-e2e.test.ts:224:28
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/__tests__-core-scenarios-e-f8c0d-alysis-and-tax-optimization-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/__tests__-core-scenarios-e-f8c0d-alysis-and-tax-optimization-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/__tests__-core-scenarios-e-f8c0d-alysis-and-tax-optimization-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|__tests__-core-scenarios-e-f8c0d-alysis-and-tax-optimization-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|__tests__-core-scenarios-e-f8c0d-alysis-and-tax-optimization-chromium/video.webm]]
+
+[[ATTACHMENT|__tests__-core-scenarios-e-f8c0d-alysis-and-tax-optimization-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>

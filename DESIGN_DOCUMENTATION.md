@@ -1,18 +1,20 @@
 # WREI Tokenization Platform - Design Documentation
 
-**Version**: 6.2.1
-**Last Updated**: March 21, 2026
-**Status**: Production Ready
+**Version**: 6.3.0
+**Last Updated**: March 22, 2026
+**Status**: Production Ready with Complete Scenario Suite
 
 ## Table of Contents
 1. [System Overview](#system-overview)
 2. [Architecture Design](#architecture-design)
 3. [Component Design](#component-design)
-4. [Data Flow Design](#data-flow-design)
-5. [Security Design](#security-design)
-6. [Performance Design](#performance-design)
-7. [Integration Design](#integration-design)
-8. [User Experience Design](#user-experience-design)
+4. [Scenario Simulation System](#scenario-simulation-system)
+5. [Enhanced Testing Framework](#enhanced-testing-framework)
+6. [Data Flow Design](#data-flow-design)
+7. [Security Design](#security-design)
+8. [Performance Design](#performance-design)
+9. [Integration Design](#integration-design)
+10. [User Experience Design](#user-experience-design)
 
 ---
 
@@ -144,6 +146,18 @@ components/
 ├── InstitutionalDashboard.tsx  // Phase 6.1 dashboard
 ├── ProfessionalInterface.tsx   // Phase 6.2 professional interface
 ├── AdvancedAnalytics.tsx       // Analytics components
+├── scenarios/                  // Institutional investor scenarios
+│   ├── InfrastructureFundScenario.tsx
+│   ├── ESGImpactScenario.tsx
+│   ├── DeFiYieldFarmingScenario.tsx
+│   ├── FamilyOfficeScenario.tsx
+│   └── SovereignWealthFundScenario.tsx
+├── simulation/                 // Scenario simulation engine
+│   ├── ScenarioSimulationEngine.tsx
+│   └── ScenarioSelector.tsx
+├── ui/professional/            // Enhanced professional UI
+│   ├── ProfessionalDataGrid.tsx
+│   └── ProfessionalMetricsDashboard.tsx
 lib/
 ├── types.ts                    // TypeScript definitions
 ├── personas.ts                 // Buyer persona definitions
@@ -216,6 +230,201 @@ tokenizedRWAMarket: {
   totalValue: 19_000_000_000,    // A$19B current market
   growthRate: 1.4,               // 140% growth in 15 months
   treasuryDominance: 0.47        // 47% treasury token dominance
+}
+```
+
+## Scenario Simulation System
+
+### Institutional Investor Scenarios
+
+The platform includes 5 comprehensive institutional investor scenarios, each tailored to specific investor personas and complexity levels:
+
+```typescript
+interface ScenarioArchitecture {
+  scenarios: {
+    "scenario-01": {
+      title: "Infrastructure Fund Discovery";
+      persona: "Sarah Chen - Senior Portfolio Manager";
+      organization: "Australian Infrastructure Fund";
+      complexity: "Advanced";
+      estimatedTime: 55;
+      phases: ["orientation", "portfolio-analysis", "risk-assessment", "committee-review", "recommendation"];
+    };
+    "scenario-02": {
+      title: "ESG Impact Investment Analysis";
+      persona: "James Rodriguez - Chief Investment Officer";
+      organization: "Sustainable Capital Partners";
+      complexity: "Advanced";
+      estimatedTime: 65;
+      phases: ["orientation", "esg-analysis", "impact-measurement", "premium-analysis", "recommendation"];
+    };
+    "scenario-03": {
+      title: "DeFi Yield Farming Integration";
+      persona: "Alex Kim - Crypto Portfolio Manager";
+      organization: "Digital Asset Management";
+      complexity: "Expert";
+      estimatedTime: 80;
+      phases: ["orientation", "protocol-analysis", "yield-optimization", "automation-setup", "recommendation"];
+    };
+    "scenario-04": {
+      title: "Family Office Conservative Analysis";
+      persona: "Margaret Thompson - CFA, Principal";
+      organization: "Thompson Family Office";
+      complexity: "Intermediate";
+      estimatedTime: 50;
+      phases: ["orientation", "conservative-analysis", "tax-optimization", "family-governance", "recommendation"];
+    };
+    "scenario-05": {
+      title: "Sovereign Wealth Fund Macro Analysis";
+      persona: "Dr. Li Wei Chen - Chief Investment Officer";
+      organization: "Singapore Sovereign Wealth Fund";
+      complexity: "Expert";
+      estimatedTime: 85;
+      phases: ["orientation", "macro-analysis", "geopolitical-assessment", "sovereign-integration", "recommendation"];
+    };
+  };
+}
+```
+
+### Scenario Component Architecture
+
+#### 1. Scenario Simulation Engine (`components/simulation/ScenarioSimulationEngine.tsx`)
+**Purpose**: Central routing and management system for all institutional scenarios
+**Features**:
+- Dynamic component routing based on scenario ID
+- Consistent onComplete/onExit handler interface
+- Progress tracking and context management
+- Error handling and graceful fallbacks
+
+#### 2. Scenario Selector (`components/simulation/ScenarioSelector.tsx`)
+**Purpose**: Professional selection interface with filtering and search capabilities
+**Features**:
+- Grid-based scenario display with preview functionality
+- Multi-criteria filtering (complexity, outcome type, persona)
+- Real-time search across scenario metadata
+- Professional Bloomberg Terminal-style aesthetics
+
+#### 3. Individual Scenario Components
+Each scenario follows a consistent 5-phase workflow pattern:
+
+```typescript
+interface ScenarioPhaseFlow {
+  phase1: "Orientation - Persona introduction and investment mandate";
+  phase2: "Analysis - Core analytical workflow (specific to scenario type)";
+  phase3: "Assessment - Risk, compliance, or specialized evaluation";
+  phase4: "Integration - Portfolio fit and strategic considerations";
+  phase5: "Recommendation - Final analysis and investment decision";
+}
+```
+
+### Professional UI Enhancement System
+
+#### 1. Enhanced Professional Theme (`design-system/enhanced-professional-theme.ts`)
+**Purpose**: Bloomberg Terminal-inspired design system
+**Features**:
+- Sophisticated color palettes for financial data visualization
+- Professional typography with mono-space fonts for data
+- Institutional investor persona color coding
+- Financial trend indicators and risk level styling
+
+#### 2. Professional Data Grid (`components/ui/professional/ProfessionalDataGrid.tsx`)
+**Purpose**: Institutional-grade data table component
+**Features**:
+- Sortable columns with financial data type awareness
+- Advanced filtering with real-time search
+- Professional pagination with row count display
+- Bloomberg Terminal-style hover states and interactions
+
+#### 3. Professional Metrics Dashboard (`components/ui/professional/ProfessionalMetricsDashboard.tsx`)
+**Purpose**: Sophisticated metrics display for institutional analytics
+**Features**:
+- Multi-metric group organization with category theming
+- Real-time data updates with trend indicators
+- Professional tooltip and description system
+- Threshold-based color coding for risk assessment
+
+## Enhanced Testing Framework
+
+### Comprehensive Test Architecture
+
+```typescript
+interface TestingFramework {
+  unitTests: {
+    framework: "Jest + @testing-library/react";
+    coverage: "242 tests across all components";
+    focus: "Component functionality and business logic";
+  };
+  e2eTests: {
+    framework: "Playwright";
+    scenarios: "Complete workflow testing for all 5 scenarios";
+    browsers: ["Chromium", "Firefox", "WebKit", "Mobile Chrome", "Mobile Safari"];
+    viewports: ["Standard Desktop", "Bloomberg Terminal", "Trading Workstation", "Mobile", "Tablet"];
+  };
+  visualRegressionTests: {
+    type: "Screenshot comparison testing";
+    coverage: "UI consistency across browsers and viewports";
+    baseline: "Professional interface visual standards";
+  };
+  performanceTests: {
+    metrics: ["Load time", "Interaction responsiveness", "Memory usage"];
+    targets: ["<3s initial load", "<200ms interface updates", "<100MB memory"];
+  };
+  accessibilityTests: {
+    standard: "WCAG 2.1 AA compliance";
+    coverage: "Keyboard navigation, screen readers, color contrast";
+    automation: "Integrated into CI/CD pipeline";
+  };
+}
+```
+
+### Test Suite Organization
+
+#### 1. Core Scenarios E2E Tests (`__tests__/core-scenarios-e2e.test.ts`)
+**Purpose**: Comprehensive end-to-end testing of all 5 institutional scenarios
+**Coverage**:
+- Complete workflow testing for each scenario
+- Cross-scenario consistency validation
+- Error handling and recovery testing
+- Performance monitoring during scenario execution
+
+#### 2. Enhanced Playwright Configuration (`playwright.config.ts`)
+**Features**:
+- Professional trading workstation viewport support (1920x1080, 2560x1440)
+- Multiple browser engine testing with mobile devices
+- Visual regression testing with threshold management
+- Comprehensive reporting with video capture on failures
+
+#### 3. Test Utility Framework (`__tests__/utils/scenario-test-helpers.ts`)
+**Purpose**: Reusable testing utilities for complex scenario workflows
+**Components**:
+- `ScenarioNavigator`: Navigation helpers for scenario phases
+- `FormInteractor`: Professional form interaction utilities
+- `ScenarioAssertions`: Specialized assertion helpers for financial data
+- `PerformanceMonitor`: Load time and responsiveness measurement
+- `AccessibilityChecker`: WCAG compliance validation utilities
+
+### Visual Regression Testing
+
+```typescript
+interface VisualTestingStrategy {
+  baselineImages: {
+    "scenario-selector.png": "Main scenario selection interface";
+    "infrastructure-scenario.png": "Infrastructure Fund scenario layout";
+    "esg-scenario.png": "ESG Investment scenario interface";
+    "professional-dashboard.png": "Bloomberg-style dashboard view";
+  };
+  viewportTesting: {
+    mobile: "375x667 (iPhone SE)";
+    tablet: "768x1024 (iPad)";
+    desktop: "1200x800 (Standard)";
+    bloomberg: "1920x1080 (Bloomberg Terminal)";
+    trading: "2560x1440 (Trading Workstation)";
+  };
+  thresholdSettings: {
+    pixelThreshold: 0.2;
+    animations: "disabled";
+    mode: "pixel-perfect comparison";
+  };
 }
 ```
 
@@ -417,6 +626,16 @@ interface PhaseIntegration {
     component: "Professional Interface";
     provides: ["Institutional UI", "Export capabilities"];
     consumes: ["Market intelligence from Phase 5"];
+  };
+  scenarios: {
+    component: "Institutional Investor Scenarios";
+    provides: ["Complete workflow simulations", "Persona-driven experiences"];
+    consumes: ["Professional interface from Phase 6", "All previous phase capabilities"];
+  };
+  testing: {
+    component: "Enhanced Testing Framework";
+    provides: ["Comprehensive test coverage", "Visual regression testing", "Performance validation"];
+    consumes: ["All system components", "Scenario simulation engine"];
   };
 }
 ```

@@ -84,6 +84,9 @@ export default defineConfig({
     '**/__tests__/**/*-e2e.{ts,js}',
   ],
 
+  /* Include both e2e and __tests__ directories */
+  testDir: './',
+
   /* Test ignore patterns */
   testIgnore: [
     '**/node_modules/**',

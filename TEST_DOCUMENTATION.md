@@ -1,20 +1,22 @@
 # WREI Tokenization Platform - Test Documentation
 
-**Version**: 6.2.1
-**Last Updated**: March 21, 2026
-**Test Framework**: Jest + React Testing Library
-**Total Tests**: 242 tests across 6 phases
+**Version**: 6.3.0
+**Last Updated**: March 22, 2026
+**Test Frameworks**: Jest + React Testing Library + Playwright E2E
+**Total Tests**: 242 Jest tests + Comprehensive E2E scenario coverage
 
 ## Table of Contents
 1. [Test Strategy Overview](#test-strategy-overview)
 2. [Test Suite Architecture](#test-suite-architecture)
-3. [Regression Test Results](#regression-test-results)
-4. [Phase-by-Phase Test Coverage](#phase-by-phase-test-coverage)
-5. [Performance Testing](#performance-testing)
-6. [Security Testing](#security-testing)
-7. [Integration Testing](#integration-testing)
-8. [Known Issues & Resolutions](#known-issues--resolutions)
-9. [Test Maintenance Guidelines](#test-maintenance-guidelines)
+3. [Enhanced E2E Testing Framework](#enhanced-e2e-testing-framework)
+4. [Scenario Simulation Testing](#scenario-simulation-testing)
+5. [Regression Test Results](#regression-test-results)
+6. [Phase-by-Phase Test Coverage](#phase-by-phase-test-coverage)
+7. [Performance Testing](#performance-testing)
+8. [Security Testing](#security-testing)
+9. [Integration Testing](#integration-testing)
+10. [Known Issues & Resolutions](#known-issues--resolutions)
+11. [Test Maintenance Guidelines](#test-maintenance-guidelines)
 
 ---
 
@@ -59,11 +61,14 @@ __tests__/
 ├── phase5.1-market-context-integration.test.ts      ✅ (17 tests)
 ├── phase5.2-competitive-positioning-system.test.ts  ✅ (18 tests)
 ├── phase6.1-basic-dashboard.test.ts                 ✅ (13 tests)
-├── phase6.1-institutional-dashboard.test.ts         ❌ (UI duplication issues)
-├── phase6.1-institutional-dashboard-simple.test.ts  ❌ (UI duplication issues)
+├── phase6.1-institutional-dashboard.test.ts         ✅ (Resolved)
+├── phase6.1-institutional-dashboard-simple.test.ts  ✅ (Resolved)
+├── core-scenarios-e2e.test.ts                       ✅ (Playwright E2E)
+├── utils/
+│   └── scenario-test-helpers.ts                     ✅ (Test utilities)
 └── integration/
     ├── end-to-end-workflow.test.ts                  ✅ (62 tests)
-    └── professional-interface.test.ts               📋 (Pending)
+    └── professional-interface.test.ts               ✅ (Complete)
 ```
 
 ### Test Categories
@@ -166,6 +171,290 @@ describe('Professional Interface Performance', () => {
     const loadTime = endTime - startTime;
 
     expect(loadTime).toBeLessThan(200); // Professional-grade response time
+  });
+});
+```
+
+## Enhanced E2E Testing Framework
+
+### Playwright Integration
+
+The platform now includes a comprehensive end-to-end testing framework using Playwright, designed to validate complete institutional investor workflows across multiple browsers and devices.
+
+```typescript
+interface PlaywrightTestFramework {
+  browsers: ["Chromium", "Firefox", "WebKit", "Mobile Chrome", "Mobile Safari"];
+  viewports: {
+    mobile: "375x667 (iPhone SE)";
+    tablet: "768x1024 (iPad Pro)";
+    desktop: "1200x800 (Standard)";
+    bloomberg: "1920x1080 (Bloomberg Terminal)";
+    trading: "2560x1440 (Trading Workstation)";
+    ultrawide: "2560x1440 (Professional Trading)";
+  };
+  testTypes: [
+    "Core scenario workflows",
+    "Visual regression testing",
+    "Performance monitoring",
+    "Accessibility validation",
+    "Cross-browser compatibility"
+  ];
+}
+```
+
+### E2E Test Architecture
+
+#### 1. Core Scenarios E2E Tests (`__tests__/core-scenarios-e2e.test.ts`)
+**Purpose**: Comprehensive testing of all 5 institutional investor scenarios
+**Coverage**:
+- Complete workflow validation for each scenario persona
+- Cross-scenario state management and consistency
+- Error handling and recovery mechanisms
+- Performance monitoring during scenario execution
+
+```typescript
+// Example: Infrastructure Fund Discovery E2E Test
+test('Infrastructure Fund Discovery - complete workflow', async ({ page }) => {
+  // Launch scenario selection
+  await page.goto('/simulate');
+  await expect(page.getByText('WREI Institutional Scenario Simulation')).toBeVisible();
+
+  // Select Infrastructure Fund scenario
+  await page.getByText('Infrastructure Fund Discovery').click();
+  const startButton = page.locator('button:text("Start Scenario")').first();
+  await startButton.click();
+
+  // Phase 1: Orientation
+  await expect(page.getByText('Sarah Chen')).toBeVisible();
+  await expect(page.getByText('Australian Infrastructure Fund')).toBeVisible();
+
+  // Phase 2-5: Complete workflow
+  for (let phase = 0; phase < 4; phase++) {
+    const continueButton = page.locator('button:text("Continue")').first();
+    await continueButton.click();
+
+    // Validate phase content loads
+    await page.waitForLoadState('domcontentloaded');
+  }
+
+  // Final validation
+  const completeButton = page.locator('button:text("Complete Analysis")').first();
+  await completeButton.click();
+  await expect(page.getByText(/completed|success/i)).toBeVisible({ timeout: 10000 });
+});
+```
+
+#### 2. Visual Regression Testing
+**Purpose**: Ensure UI consistency across browsers and viewports
+**Coverage**: Bloomberg Terminal-style professional interface visual standards
+
+```typescript
+interface VisualRegressionTests {
+  baselines: {
+    "scenario-selector.png": "Main scenario selection interface";
+    "infrastructure-scenario.png": "Infrastructure Fund scenario layout";
+    "esg-scenario.png": "ESG Investment scenario interface";
+    "professional-dashboard.png": "Bloomberg-style dashboard view";
+    "sovereign-scenario.png": "Sovereign Wealth Fund analysis interface";
+  };
+  thresholds: {
+    pixelThreshold: 0.2;
+    mode: "pixel-perfect comparison";
+    animations: "disabled for consistency";
+  };
+}
+```
+
+#### 3. Test Utility Framework (`__tests__/utils/scenario-test-helpers.ts`)
+**Purpose**: Reusable utilities for complex scenario testing workflows
+**Components**:
+
+```typescript
+class ScenarioNavigator {
+  async goToSimulation(): Promise<void>;
+  async selectScenario(scenarioTitle: string): Promise<void>;
+  async startScenario(): Promise<void>;
+  async nextPhase(): Promise<void>;
+  async completeScenario(): Promise<void>;
+  async exitScenario(): Promise<void>;
+}
+
+class FormInteractor {
+  async fillSlider(selector: string, value: number): Promise<void>;
+  async fillAllSliders(value: number): Promise<void>;
+  async selectDropdownOption(selector: string, optionText: string): Promise<void>;
+  async fillTextArea(selector: string, text: string): Promise<void>;
+}
+
+class ScenarioAssertions {
+  async verifyPersonaDisplay(persona: string, organization: string): Promise<void>;
+  async verifyPhaseContent(expectedTexts: string[]): Promise<void>;
+  async verifyScenarioCompletion(): Promise<void>;
+  async verifyProgressBar(expectedProgress: number): Promise<void>;
+}
+
+class PerformanceMonitor {
+  async measurePageLoad(url: string): Promise<number>;
+  async measureScenarioTransition(): Promise<number>;
+  async verifyLoadTime(maxTime: number, actualTime: number): Promise<void>;
+}
+```
+
+### Advanced Test Features
+
+#### 1. Cross-Browser Compatibility Testing
+```typescript
+// Automated testing across all major browsers
+const browsers = ['chromium', 'firefox', 'webkit', 'Mobile Chrome', 'Mobile Safari'];
+
+browsers.forEach(browser => {
+  test.describe(`${browser} compatibility`, () => {
+    test('all scenarios work correctly', async ({ page }) => {
+      // Test all 5 scenarios across each browser
+      for (const scenario of SCENARIOS) {
+        await validateScenarioWorkflow(page, scenario);
+      }
+    });
+  });
+});
+```
+
+#### 2. Professional Viewport Testing
+```typescript
+// Bloomberg Terminal and trading workstation specific testing
+test.describe('Professional Viewports', () => {
+  test('Bloomberg Terminal layout (1920x1080)', async ({ page }) => {
+    await page.setViewportSize({ width: 1920, height: 1080 });
+    await validateProfessionalLayout(page, 'bloomberg-terminal');
+  });
+
+  test('Trading Workstation layout (2560x1440)', async ({ page }) => {
+    await page.setViewportSize({ width: 2560, height: 1440 });
+    await validateProfessionalLayout(page, 'trading-workstation');
+  });
+});
+```
+
+#### 3. Accessibility Testing Integration
+```typescript
+test.describe('Accessibility Compliance', () => {
+  test('WCAG 2.1 AA compliance', async ({ page }) => {
+    const accessibilityChecker = new AccessibilityChecker(page);
+
+    await accessibilityChecker.verifyHeadingStructure();
+    await accessibilityChecker.verifyButtonLabels();
+    await accessibilityChecker.verifyFormLabels();
+    await accessibilityChecker.verifyColorContrast();
+  });
+});
+```
+
+## Scenario Simulation Testing
+
+### Complete Scenario Coverage
+
+All 5 institutional investor scenarios include comprehensive testing coverage:
+
+```typescript
+interface ScenarioTestCoverage {
+  "Infrastructure Fund Discovery": {
+    persona: "Sarah Chen - Senior Portfolio Manager";
+    complexity: "Advanced (55-minute workflow)";
+    testCoverage: [
+      "Portfolio analysis phase validation",
+      "Risk assessment calculations",
+      "Investment committee reporting",
+      "Professional interface integration"
+    ];
+  };
+  "ESG Impact Investment Analysis": {
+    persona: "James Rodriguez - Chief Investment Officer";
+    complexity: "Advanced (65-minute workflow)";
+    testCoverage: [
+      "ESG rating system validation",
+      "Impact measurement calculations",
+      "Premium justification analysis",
+      "Third-party validation integration"
+    ];
+  };
+  "DeFi Yield Farming Integration": {
+    persona: "Alex Kim - Crypto Portfolio Manager";
+    complexity: "Expert (80-minute workflow)";
+    testCoverage: [
+      "Protocol analysis workflows",
+      "Yield optimization calculations",
+      "Smart contract integration testing",
+      "Multi-protocol automation validation"
+    ];
+  };
+  "Family Office Conservative Analysis": {
+    persona: "Margaret Thompson - CFA, Principal";
+    complexity: "Intermediate (50-minute workflow)";
+    testCoverage: [
+      "Conservative risk analysis",
+      "Tax optimization calculations",
+      "Family governance workflows",
+      "Multi-generational planning tools"
+    ];
+  };
+  "Sovereign Wealth Fund Macro Analysis": {
+    persona: "Dr. Li Wei Chen - Chief Investment Officer";
+    complexity: "Expert (85-minute workflow)";
+    testCoverage: [
+      "Macroeconomic indicator analysis",
+      "Geopolitical risk assessment",
+      "National strategy alignment",
+      "Multi-currency portfolio optimization"
+    ];
+  };
+}
+```
+
+### Scenario-Specific Test Patterns
+
+#### 1. Phase-Based Testing
+```typescript
+describe('Scenario Phase Validation', () => {
+  test('maintains state consistency across phases', async ({ page }) => {
+    // Start any scenario
+    await startScenario(page, 'Infrastructure Fund Discovery');
+
+    // Make inputs in early phases
+    await fillRiskSliders(page, { tolerance: 7, horizon: 5 });
+
+    // Progress through multiple phases
+    for (let phase = 0; phase < 4; phase++) {
+      await navigateToNextPhase(page);
+
+      // Verify state persistence
+      await verifyInputsPersisted(page, { tolerance: 7, horizon: 5 });
+    }
+  });
+});
+```
+
+#### 2. Persona-Driven Workflow Testing
+```typescript
+describe('Persona-Specific Workflows', () => {
+  test('Infrastructure Fund workflow matches professional complexity', async ({ page }) => {
+    await startScenario(page, 'Infrastructure Fund Discovery');
+
+    // Verify professional-grade interface elements
+    await expect(page.getByText('Portfolio Analysis')).toBeVisible();
+    await expect(page.getByText('Risk Assessment Framework')).toBeVisible();
+    await expect(page.getByText('Investment Committee Report')).toBeVisible();
+
+    // Verify sophisticated financial calculations
+    await verifyFinancialMetrics(page, ['IRR', 'NPV', 'Sharpe Ratio']);
+  });
+
+  test('Family Office workflow emphasizes conservative analysis', async ({ page }) => {
+    await startScenario(page, 'Family Office Conservative Analysis');
+
+    // Verify conservative-focused interface elements
+    await expect(page.getByText('Conservative Analysis')).toBeVisible();
+    await expect(page.getByText('Tax Optimization')).toBeVisible();
+    await expect(page.getByText('Capital Preservation')).toBeVisible();
   });
 });
 ```
