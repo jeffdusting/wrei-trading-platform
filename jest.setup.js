@@ -97,6 +97,76 @@ global.WREI_CONSTANTS = {
 process.env.NODE_ENV = 'test';
 process.env.ANTHROPIC_API_KEY = 'test-api-key-placeholder';
 
+// Mock Web APIs for Next.js API route testing
+const { TextEncoder, TextDecoder } = require('util');
+
+// Polyfill Web APIs in Node.js environment
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
+
+// Simple Request/Response mocks for API testing
+global.Request = class MockRequest {
+  constructor(url, options = {}) {
+    this.url = url;
+    this.method = options.method || 'GET';
+    this.headers = new Map();
+    this.body = options.body;
+
+    if (options.headers) {
+      Object.entries(options.headers).forEach(([key, value]) => {
+        this.headers.set(key, value);
+      });
+    }
+  }
+
+  async json() {
+    return JSON.parse(this.body);
+  }
+
+  async text() {
+    return this.body || '';
+  }
+};
+
+global.Response = class MockResponse {
+  constructor(body, options = {}) {
+    this.body = body;
+    this.status = options.status || 200;
+    this.headers = new Map();
+
+    if (options.headers) {
+      Object.entries(options.headers).forEach(([key, value]) => {
+        this.headers.set(key, value);
+      });
+    }
+  }
+
+  static json(data, options = {}) {
+    return new MockResponse(JSON.stringify(data), {
+      ...options,
+      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }
+    });
+  }
+
+  async json() {
+    return JSON.parse(this.body);
+  }
+
+  async text() {
+    return this.body;
+  }
+};
+
+global.Headers = class MockHeaders extends Map {
+  get(name) {
+    return super.get(name.toLowerCase());
+  }
+
+  set(name, value) {
+    return super.set(name.toLowerCase(), value);
+  }
+};
+
 // Global test utilities
 global.testUtils = {
   formatCurrency: (amount) => {
