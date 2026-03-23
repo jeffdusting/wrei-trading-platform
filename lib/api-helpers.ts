@@ -148,7 +148,7 @@ export function apiError(
 /**
  * Generate unique request ID for tracking
  */
-function generateRequestId(): string {
+export function generateRequestId(): string {
   return `wrei_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
