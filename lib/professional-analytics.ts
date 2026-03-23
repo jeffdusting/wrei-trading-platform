@@ -13,7 +13,7 @@
  * - Real-time performance attribution analysis
  */
 
-import type { WREITokenType, InvestorClassification, FinancialMetrics } from './types';
+import type { WREITokenType, InvestorClassification, FinancialMetrics, PersonaType } from './types';
 import { WREI_FINANCIAL_CONSTANTS } from './financial-calculations';
 
 // =============================================================================
@@ -47,6 +47,11 @@ export interface ProfessionalMetrics {
   cgtDiscount: number;           // CGT discount benefit
   negativeGearing: number;       // Negative gearing benefit
   effectiveTaxRate: number;      // After all tax considerations
+
+  // Additional Risk Metrics
+  maxDrawdown: number;           // Maximum portfolio drawdown
+  volatility: number;            // Annualized volatility
+  correlationScore: number;      // Portfolio correlation score
 
   // Institutional Benchmarks
   benchmarkOutperformance: { [benchmark: string]: number };
@@ -629,6 +634,258 @@ export function generateScenarioAnalysis(
   );
 
   return results as ScenarioAnalysis;
+}
+
+// =============================================================================
+// SIMPLIFIED API FUNCTIONS FOR DASHBOARD INTEGRATION
+// =============================================================================
+
+/**
+ * Calculate professional metrics for a specific persona and portfolio
+ */
+export function calculateProfessionalMetrics(
+  portfolioValue: number,
+  persona: PersonaType,
+  timeHorizon: number,
+  riskTolerance: 'conservative' | 'moderate' | 'aggressive'
+): ProfessionalMetrics {
+  // Map persona to appropriate token type and parameters
+  let tokenType: WREITokenType = 'carbon_credits';
+  let expectedReturn = 0.12; // 12% base return
+  let volatility = 0.18; // 18% volatility
+  let beta = 1.0;
+
+  switch (persona) {
+    case 'esg_impact_investor':
+      tokenType = 'carbon_credits';
+      expectedReturn = 0.15; // Higher return for ESG focus
+      volatility = 0.20;
+      beta = 0.8;
+      break;
+    case 'family_office':
+      tokenType = 'asset_co';
+      expectedReturn = 0.10; // Conservative return for family office
+      volatility = 0.12;
+      beta = 0.6;
+      break;
+    case 'defi_yield_farmer':
+      tokenType = 'dual_portfolio';
+      expectedReturn = 0.18; // Higher return for DeFi
+      volatility = 0.25;
+      beta = 1.2;
+      break;
+    default:
+      // Default to moderate ESG investor
+      tokenType = 'carbon_credits';
+      expectedReturn = 0.12;
+      volatility = 0.18;
+      beta = 1.0;
+  }
+
+  // Adjust for risk tolerance
+  switch (riskTolerance) {
+    case 'conservative':
+      expectedReturn *= 0.8;
+      volatility *= 0.7;
+      break;
+    case 'aggressive':
+      expectedReturn *= 1.3;
+      volatility *= 1.4;
+      break;
+    // moderate stays as-is
+  }
+
+  // Calculate core metrics directly
+  const annualCashFlow = portfolioValue * expectedReturn;
+  const riskFreeRate = 0.04;
+  const marketReturn = 0.08;
+
+  // IRR calculation (for consistent cash flows, equals expected return)
+  const irr = expectedReturn;
+
+  // Modified IRR (assumes reinvestment at risk-free rate)
+  const mirr = Math.pow(
+    (annualCashFlow * timeHorizon * (1 + riskFreeRate)) / portfolioValue,
+    1 / timeHorizon
+  ) - 1;
+
+  // NPV calculation
+  let npv = -portfolioValue;
+  for (let year = 1; year <= timeHorizon; year++) {
+    npv += annualCashFlow / Math.pow(1 + riskFreeRate, year);
+  }
+
+  // Other core metrics
+  const cashOnCash = expectedReturn;
+  const cagr = expectedReturn;
+  const totalReturn = Math.pow(1 + expectedReturn, timeHorizon) - 1;
+
+  // Risk-adjusted metrics
+  const sharpeRatio = (expectedReturn - riskFreeRate) / volatility;
+  const sortinoRatio = sharpeRatio * 1.2; // Approximate
+  const calmarRatio = expectedReturn / (volatility * 0.6); // Approximate max drawdown
+  const treynorRatio = (expectedReturn - riskFreeRate) / beta;
+  const informationRatio = (expectedReturn - marketReturn) / (volatility * 0.3);
+
+  // Calculate optimized allocation based on persona
+  const optimizedAllocation = {
+    carbon_credits: persona === 'esg_impact_investor' ? 0.6 : persona === 'family_office' ? 0.2 : 0.4,
+    asset_co: persona === 'family_office' ? 0.7 : persona === 'esg_impact_investor' ? 0.3 : 0.4,
+    dual_portfolio: persona === 'defi_yield_farmer' ? 0.2 : 0.1
+  };
+
+  // Portfolio construction metrics
+  const riskContribution = {
+    carbon_credits: optimizedAllocation.carbon_credits * volatility,
+    asset_co: optimizedAllocation.asset_co * volatility * 0.8, // Lower risk
+    dual_portfolio: optimizedAllocation.dual_portfolio * volatility * 1.1 // Higher risk
+  };
+
+  const diversificationRatio = 1.2; // Assume some diversification benefit
+  const concentrationRisk = Math.max(...Object.values(optimizedAllocation));
+
+  // Australian tax considerations
+  const frankingCreditValue = portfolioValue * 0.02; // 2% franking benefit
+  const cgtDiscount = expectedReturn * 0.5; // 50% CGT discount for long-term
+  const negativeGearing = 0; // Not applicable for these assets
+  const effectiveTaxRate = 0.25; // Effective tax rate after considerations
+
+  const detailedMetrics = {
+    irr,
+    npv,
+    mirr,
+    cashOnCash,
+    cagr,
+    totalReturn,
+    sharpeRatio,
+    sortinoRatio,
+    calmarRatio,
+    treynorRatio,
+    informationRatio,
+    riskContribution,
+    diversificationRatio,
+    concentrationRisk,
+    frankingCreditValue,
+    cgtDiscount,
+    negativeGearing,
+    effectiveTaxRate
+  };
+
+  // Calculate optimized allocation based on persona
+  const optimizedAllocation = {
+    carbon_credits: persona === 'esg_impact_investor' ? 0.6 : persona === 'family_office' ? 0.2 : 0.4,
+    asset_co: persona === 'family_office' ? 0.7 : persona === 'esg_impact_investor' ? 0.3 : 0.4,
+    dual_portfolio: persona === 'defi_yield_farmer' ? 0.2 : 0.1
+  };
+
+  return {
+    ...detailedMetrics,
+    optimizedAllocation,
+    maxDrawdown: volatility * 0.6, // Estimated max drawdown as 60% of volatility
+    volatility,
+    correlationScore: beta
+  };
+}
+
+/**
+ * Generate portfolio optimization recommendations
+ */
+export interface PortfolioOptimization {
+  recommendedAllocation: { [key in WREITokenType]: number };
+  expectedReturn: number;
+  expectedRisk: number;
+  sharpeRatio: number;
+  improvementPotential: number;
+}
+
+export function generatePortfolioOptimization(
+  currentAllocation: { [key in WREITokenType]: number },
+  riskTolerance: 'conservative' | 'moderate' | 'aggressive',
+  timeHorizon: number
+): PortfolioOptimization {
+  // Define optimal allocations based on risk tolerance
+  const optimalAllocations = {
+    conservative: { carbon_credits: 0.3, asset_co: 0.6, dual_portfolio: 0.1 },
+    moderate: { carbon_credits: 0.4, asset_co: 0.4, dual_portfolio: 0.2 },
+    aggressive: { carbon_credits: 0.5, asset_co: 0.3, dual_portfolio: 0.2 }
+  };
+
+  const recommended = optimalAllocations[riskTolerance];
+
+  // Expected returns by asset class
+  const expectedReturns = { carbon_credits: 0.15, asset_co: 0.12, dual_portfolio: 0.18 };
+  const risks = { carbon_credits: 0.20, asset_co: 0.12, dual_portfolio: 0.25 };
+
+  // Calculate portfolio expected return and risk
+  const expectedReturn = Object.entries(recommended).reduce((sum, [asset, weight]) => {
+    return sum + weight * expectedReturns[asset as WREITokenType];
+  }, 0);
+
+  const expectedRisk = Math.sqrt(Object.entries(recommended).reduce((sum, [asset, weight]) => {
+    return sum + Math.pow(weight * risks[asset as WREITokenType], 2);
+  }, 0));
+
+  const sharpeRatio = (expectedReturn - 0.04) / expectedRisk; // Assuming 4% risk-free rate
+
+  // Calculate improvement potential
+  const currentReturn = Object.entries(currentAllocation).reduce((sum, [asset, weight]) => {
+    return sum + weight * expectedReturns[asset as WREITokenType];
+  }, 0);
+
+  const improvementPotential = Math.abs(((expectedReturn - currentReturn) / Math.abs(currentReturn || 0.01)) * 100);
+
+  return {
+    recommendedAllocation: recommended,
+    expectedReturn,
+    expectedRisk,
+    sharpeRatio,
+    improvementPotential
+  };
+}
+
+/**
+ * Calculate risk-adjusted returns with multiple metrics
+ */
+export function calculateRiskAdjustedReturns(
+  portfolioValue: number,
+  expectedReturn: number,
+  volatility: number,
+  timeHorizon: number
+): {
+  sharpeRatio: number;
+  sortinoRatio: number;
+  calmarRatio: number;
+  maxDrawdown: number;
+  var95: number; // 95% Value at Risk
+  cvar95: number; // 95% Conditional Value at Risk
+} {
+  const riskFreeRate = 0.04;
+
+  // Sharpe Ratio
+  const sharpeRatio = (expectedReturn - riskFreeRate) / volatility;
+
+  // Sortino Ratio (assuming downside deviation is 70% of total volatility)
+  const downsideDeviation = volatility * 0.7;
+  const sortinoRatio = (expectedReturn - riskFreeRate) / downsideDeviation;
+
+  // Calmar Ratio (return / max drawdown)
+  const maxDrawdown = volatility * 0.6; // Estimated as 60% of volatility
+  const calmarRatio = expectedReturn / maxDrawdown;
+
+  // Value at Risk (95% confidence)
+  const var95 = portfolioValue * (expectedReturn - 1.645 * volatility); // 1.645 is 95% z-score
+
+  // Conditional Value at Risk (expected loss beyond VaR)
+  const cvar95 = var95 * 1.3; // Approximation
+
+  return {
+    sharpeRatio,
+    sortinoRatio,
+    calmarRatio,
+    maxDrawdown,
+    var95: Math.abs(var95),
+    cvar95: Math.abs(cvar95)
+  };
 }
 
 // =============================================================================

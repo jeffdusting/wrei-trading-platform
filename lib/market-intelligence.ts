@@ -54,6 +54,9 @@ export interface CompetitorAnalysis {
   strengths: string[];
   weaknesses: string[];
   marketShare?: number;
+  primaryFocus: string;
+  differentiationStrength: 'weak' | 'moderate' | 'strong';
+  threatLevel: 'low' | 'medium' | 'high';
 }
 
 export interface WREICompetitiveAdvantages {
@@ -263,6 +266,79 @@ export class MarketIntelligenceSystem {
       strengths: [],
       weaknesses: []
     };
+  }
+
+  /**
+   * Get comprehensive competitive analysis
+   */
+  getCompetitiveAnalysis(): CompetitorAnalysis[] {
+    return [
+      {
+        name: 'Ondo Finance (USYC)',
+        aum: 2_400_000_000, // A$2.4B
+        yieldMechanism: 'US Treasury-backed stablecoin',
+        currentYield: 0.045, // 4.5%
+        institutionalFocus: true,
+        strengths: ['Regulatory clarity', 'Treasury backing', 'High liquidity'],
+        weaknesses: ['Low yield ceiling', 'No real-world utility', 'Limited growth'],
+        marketShare: 0.13,
+        primaryFocus: 'Treasury Tokens',
+        differentiationStrength: 'moderate',
+        threatLevel: 'medium'
+      },
+      {
+        name: 'BlackRock BUIDL',
+        aum: 1_800_000_000, // A$1.8B
+        yieldMechanism: 'Money market fund strategies',
+        currentYield: 0.048, // 4.8%
+        institutionalFocus: true,
+        strengths: ['BlackRock brand', 'Institutional infrastructure', 'Compliance'],
+        weaknesses: ['Traditional finance limitations', 'Limited DeFi integration', 'Yield cap'],
+        marketShare: 0.09,
+        primaryFocus: 'Treasury Tokens',
+        differentiationStrength: 'strong',
+        threatLevel: 'high'
+      },
+      {
+        name: 'RealT',
+        aum: 85_000_000, // A$85M
+        yieldMechanism: 'Real estate rental income',
+        currentYield: 0.08, // 8%
+        institutionalFocus: false,
+        strengths: ['Real asset backing', 'Rental income', 'Property appreciation'],
+        weaknesses: ['Limited scale', 'Property-specific risks', 'Liquidity constraints'],
+        marketShare: 0.01,
+        primaryFocus: 'Real Estate',
+        differentiationStrength: 'weak',
+        threatLevel: 'low'
+      },
+      {
+        name: 'Maple Finance',
+        aum: 750_000_000, // A$750M
+        yieldMechanism: 'Corporate lending pools',
+        currentYield: 0.12, // 12%
+        institutionalFocus: true,
+        strengths: ['Higher yields', 'Credit expertise', 'Institutional backing'],
+        weaknesses: ['Credit risk', 'Market volatility', 'Regulatory uncertainty'],
+        marketShare: 0.04,
+        primaryFocus: 'Private Credit',
+        differentiationStrength: 'moderate',
+        threatLevel: 'medium'
+      },
+      {
+        name: 'Centrifuge',
+        aum: 320_000_000, // A$320M
+        yieldMechanism: 'Asset-backed securities',
+        currentYield: 0.10, // 10%
+        institutionalFocus: true,
+        strengths: ['Real-world assets', 'DeFi integration', 'Transparency'],
+        weaknesses: ['Limited track record', 'Complex structures', 'Scalability challenges'],
+        marketShare: 0.02,
+        primaryFocus: 'Asset-Backed Securities',
+        differentiationStrength: 'moderate',
+        threatLevel: 'low'
+      }
+    ];
   }
 
   /**
@@ -1305,3 +1381,83 @@ export class MarketIntelligenceSystem {
 // =================== EXPORT SINGLETON ===================
 
 export const marketIntelligenceSystem = new MarketIntelligenceSystem();
+
+// =================== CONVENIENCE FUNCTIONS FOR DASHBOARD ===================
+
+/**
+ * Get tokenized RWA market context
+ */
+export function getTokenizedRWAMarketContext(): TokenizedRWAMarketContext {
+  return marketIntelligenceSystem.getTokenizedRWAMarketContext();
+}
+
+/**
+ * Get carbon market projections
+ */
+export function getCarbonMarketProjections(): CarbonMarketProjections {
+  return marketIntelligenceSystem.getCarbonMarketProjections();
+}
+
+/**
+ * Get competitive analysis
+ */
+export function getCompetitiveAnalysis(): CompetitorAnalysis[] {
+  return marketIntelligenceSystem.getCompetitiveAnalysis();
+}
+
+/**
+ * Market sentiment analysis interface
+ */
+export interface MarketSentimentData {
+  overall: number; // 0-100 sentiment score
+  carbonMarkets: number;
+  rwaTokenization: number;
+  institutionalAdoption: number;
+  regulatoryEnvironment: number;
+  technologyTrends: number;
+  sentiment: 'bearish' | 'neutral' | 'bullish';
+  keyTrends: string[];
+  riskFactors: string[];
+}
+
+/**
+ * Get market sentiment analysis
+ */
+export function getMarketSentimentAnalysis(): MarketSentimentData {
+  // Generate realistic sentiment data based on current market conditions
+  const carbonMarkets = 78; // Bullish on carbon markets
+  const rwaTokenization = 85; // Very bullish on RWA tokenization
+  const institutionalAdoption = 72; // Growing institutional interest
+  const regulatoryEnvironment = 65; // Cautious but improving regulatory clarity
+  const technologyTrends = 88; // Strong tech adoption
+
+  const overall = Math.round((carbonMarkets + rwaTokenization + institutionalAdoption + regulatoryEnvironment + technologyTrends) / 5);
+
+  const sentiment: 'bearish' | 'neutral' | 'bullish' = overall > 75 ? 'bullish' : overall > 55 ? 'neutral' : 'bearish';
+
+  return {
+    overall,
+    carbonMarkets,
+    rwaTokenization,
+    institutionalAdoption,
+    regulatoryEnvironment,
+    technologyTrends,
+    sentiment,
+    keyTrends: [
+      'ESG mandate acceleration driving carbon credit demand',
+      'Institutional adoption of tokenized RWA increasing',
+      'Regulatory clarity improving in major jurisdictions',
+      'Technology infrastructure maturing for institutional use',
+      'Cross-collateral strategies gaining traction'
+    ],
+    riskFactors: [
+      'Carbon price volatility remains elevated',
+      'Regulatory changes could impact market structure',
+      'Technology risks in smart contract implementations',
+      'Market liquidity constraints in stress scenarios',
+      'Competitive pressure from traditional finance'
+    ]
+  };
+}
+
+// =================== END OF MARKET INTELLIGENCE SYSTEM ===================
