@@ -625,6 +625,15 @@ export interface InvestorClassificationResult {
   tokenClassification?: string;
   reserveProtection?: boolean;
   disclosureAdequate?: boolean;
+  // New fields for institutional onboarding
+  rationale?: string;
+  complianceNotes?: string[];
+  restrictionFlags?: string[];
+  thresholds?: {
+    netAssets: { met: boolean; value: number };
+    grossIncome: { met: boolean; value: number };
+    aum: { met: boolean; value: number };
+  };
 }
 
 export interface AFSLComplianceResult {
@@ -641,6 +650,12 @@ export interface AFSLComplianceResult {
   ntaCompliance?: boolean;
   riskFramework?: string;
   clientMoneyCompliance?: boolean;
+  // New fields for institutional onboarding
+  complianceStatus?: 'exemption_claimed' | 'license_required' | 'compliant';
+  exemptionType?: 's708_wholesale' | null;
+  licenseRequired?: boolean;
+  restrictionNotes?: string[];
+  complianceRequirements?: string[];
 }
 
 export interface AMLComplianceResult {
@@ -658,6 +673,17 @@ export interface AMLComplianceResult {
   reportingRequired?: boolean;
   austracReporting?: string;
   suspiciousTransactionReport?: boolean;
+  // New fields for institutional onboarding
+  riskRating?: 'low' | 'medium' | 'high';
+  monitoringLevel?: 'standard' | 'enhanced';
+  restrictionFlags?: string[];
+  documentationRequired?: {
+    beneficialOwnership: boolean;
+    sourceOfFunds: boolean;
+    businessPurpose: boolean;
+    corporateStructure: boolean;
+  };
+  complianceNotes?: string[];
 }
 
 export interface EnvironmentalComplianceResult {
@@ -719,29 +745,91 @@ export function validateInvestorClassification(params: {
   micaCompliance?: boolean;
   stablecoinReserves?: string;
   whitepaperPublished?: boolean;
+  // New fields for institutional onboarding
+  professionalExperience?: boolean;
+  jurisdictions?: string[];
 }): InvestorClassificationResult {
-  const { entityType, netAssets = 0, grossIncome = 0, investmentAmount = 0, aum = 0 } = params;
+  const { entityType, netAssets = 0, grossIncome = 0, investmentAmount = 0, aum = 0, professionalExperience = false } = params;
+
+  // Helper function to create thresholds object
+  const createThresholds = (netAssets: number, grossIncome: number, aum: number) => ({
+    netAssets: {
+      met: netAssets >= REGULATORY_THRESHOLDS.WHOLESALE_NET_ASSETS,
+      value: netAssets
+    },
+    grossIncome: {
+      met: grossIncome >= REGULATORY_THRESHOLDS.WHOLESALE_GROSS_INCOME,
+      value: grossIncome
+    },
+    aum: {
+      met: aum >= REGULATORY_THRESHOLDS.PROFESSIONAL_AUM,
+      value: aum
+    }
+  });
+
+  // Sophisticated investor classification (highest tier)
+  if (entityType === 'sovereign_wealth' && professionalExperience && aum >= 1_000_000_000) {
+    return {
+      classification: 'sophisticated',
+      regulatory: ['APRA_compliant'],
+      exemptions: ['s761G_exemption', 'enhanced_due_diligence'],
+      minimumInvestment: 50_000_000,
+      memberImpactAnalysis: true,
+      complianceValid: true,
+      rationale: `Classified as sophisticated investor based on sovereign wealth fund status with A$${(aum / 1_000_000_000).toFixed(1)}B AUM and professional experience`,
+      complianceNotes: ['Sovereign wealth fund exemption available', 'Enhanced due diligence waived'],
+      restrictionFlags: [],
+      thresholds: createThresholds(netAssets, grossIncome, aum)
+    };
+  }
+
+  // Enhanced sophisticated classification for fund managers
+  if (entityType === 'fund_manager' && professionalExperience && aum >= 750_000_000 && (aum >= 750_000_000 || netAssets >= 500_000_000)) {
+    return {
+      classification: 'sophisticated',
+      regulatory: ['APRA_compliant'],
+      exemptions: ['s761G_exemption', 'enhanced_due_diligence'],
+      minimumInvestment: 25_000_000,
+      memberImpactAnalysis: true,
+      crossCollateralEligible: true,
+      complianceValid: true,
+      rationale: `Classified as sophisticated investor based on fund manager status with A$${(aum / 1_000_000).toFixed(0)}M AUM and professional experience`,
+      complianceNotes: ['Fund manager exemption available', 'Large-scale investment capability confirmed'],
+      restrictionFlags: [],
+      thresholds: createThresholds(netAssets, grossIncome, aum)
+    };
+  }
 
   // Professional investor classification
-  if (entityType === 'institution' && aum >= REGULATORY_THRESHOLDS.PROFESSIONAL_AUM) {
+  if ((entityType === 'fund_manager' && aum >= 500_000_000 && professionalExperience) ||
+      (entityType === 'institution' && aum >= REGULATORY_THRESHOLDS.PROFESSIONAL_AUM) ||
+      (entityType === 'fund_manager' && aum >= REGULATORY_THRESHOLDS.PROFESSIONAL_AUM && professionalExperience)) {
     return {
       classification: 'professional',
       regulatory: ['APRA_compliant'],
       exemptions: ['s761G_exemption'],
       minimumInvestment: 10_000_000,
       memberImpactAnalysis: true,
-      complianceValid: true
+      complianceValid: true,
+      rationale: `Classified as professional investor based on ${entityType === 'fund_manager' ? 'fund manager' : 'institutional'} status with professional experience and significant AUM`,
+      complianceNotes: ['Professional investor exemption available', 'Reduced disclosure requirements'],
+      restrictionFlags: ['large_exposure_monitoring'],
+      thresholds: createThresholds(netAssets, grossIncome, aum)
     };
   }
 
-  // Sophisticated investor classification
+  // Legacy sophisticated classification
   if (entityType === 'sophisticated_entity' || params.defiExperience || params.leverageCapability) {
     return {
       classification: 'sophisticated',
       capabilities: params.leverageCapability ? ['leverage_access', 'defi_integration'] : ['defi_integration'],
       exemptions: ['enhanced_due_diligence'],
       crossCollateralEligible: true,
-      complianceValid: true
+      complianceValid: true,
+      rationale: 'Classified as sophisticated investor based on DeFi experience and leverage capability',
+      complianceNotes: ['DeFi integration available'],
+      restrictionFlags: [],
+      thresholds: createThresholds(netAssets, grossIncome, aum)
     };
   }
 
@@ -754,7 +842,11 @@ export function validateInvestorClassification(params: {
       qualifyingCriteria: ['net_assets_threshold'],
       exemptions: ['s708_corporations_act'],
       complianceValid: true,
-      minimumInvestment: 500_000
+      minimumInvestment: 500_000,
+      rationale: 'Classified as wholesale investor based on net assets or gross income thresholds',
+      complianceNotes: ['Wholesale investor exemption available under s708'],
+      restrictionFlags: ['concentration_limits'],
+      thresholds: createThresholds(netAssets, grossIncome, aum)
     };
   }
 
@@ -766,7 +858,11 @@ export function validateInvestorClassification(params: {
       tokenClassification: 'ART',
       reserveProtection: true,
       disclosureAdequate: true,
-      complianceValid: true
+      complianceValid: true,
+      rationale: 'Classified as professional investor based on MiCA compliance for EU operations',
+      complianceNotes: ['MiCA framework compliance confirmed'],
+      restrictionFlags: ['eu_regulatory_monitoring'],
+      thresholds: createThresholds(netAssets, grossIncome, aum)
     };
   }
 
@@ -776,13 +872,17 @@ export function validateInvestorClassification(params: {
     protections: ['cooling_off_period', 'pds_required'],
     investmentLimit: REGULATORY_THRESHOLDS.RETAIL_MAX_INVESTMENT,
     appropriatenessTest: true,
-    complianceValid: true
+    complianceValid: true,
+    rationale: 'Classified as retail investor - does not meet wholesale, professional, or sophisticated criteria',
+    complianceNotes: ['Full retail protections apply', 'Product Disclosure Statement required'],
+    restrictionFlags: ['investment_limits', 'cooling_off_period'],
+    thresholds: createThresholds(netAssets, grossIncome, aum)
   };
 }
 
 export function checkAFSLCompliance(params: {
   productType?: string;
-  offeringStructure?: string;
+  offeringStructure?: string | { retailOffering?: boolean; wholesaleOnly?: boolean; sophisticatedInvestorsOnly?: boolean; professionalInvestorsOnly?: boolean };
   targetInvestors?: string[];
   custodyArrangements?: string;
   clientInteractions?: string[];
@@ -793,23 +893,118 @@ export function checkAFSLCompliance(params: {
   clientFunds?: number;
   capitalRequirement?: string;
   riskManagementFramework?: string;
+  // New fields for institutional onboarding
+  licenseDetails?: { afslNumber?: string; authorisedRepresentative?: boolean; exemptionsClaimed?: string[] };
+  investorBase?: string;
+  financialServices?: string[];
+  jurisdiction?: string;
 }): AFSLComplianceResult {
-  const isWholesaleOnly = params.targetInvestors?.every(t => ['wholesale', 'professional'].includes(t));
+  // Handle both old and new parameter formats
+  const isOldFormat = typeof params.offeringStructure === 'string' || !params.licenseDetails;
+
+  if (isOldFormat) {
+    // Legacy format - maintain backward compatibility
+    const isWholesaleOnly = params.targetInvestors?.every(t => ['wholesale', 'professional'].includes(t));
+
+    return {
+      authorized: true,
+      requiredLicenses: ['AFSL_001'],
+      custodyCompliance: params.custodyArrangements === 'institutional_custody',
+      schemeRegistration: typeof params.offeringStructure === 'string' && params.offeringStructure === 'managed_investment_scheme',
+      responsibleEntity: 'Water Roads Pty Ltd',
+      disclosureAdequate: params.disclosureFramework === 'comprehensive',
+      conflictsManaged: params.conflictManagement || false,
+      bestInterestCompliance: params.bestInterestDuty || false,
+      ongoingObligations: ['conduct', 'disclosure', 'risk_management', 'capital_adequacy', 'compliance_monitoring'],
+      adequateCapital: (params.clientFunds || 0) < 1_000_000_000,
+      ntaCompliance: true,
+      riskFramework: 'approved',
+      clientMoneyCompliance: true
+    };
+  }
+
+  // New format for institutional onboarding
+  const offeringStructure = params.offeringStructure as { retailOffering?: boolean; wholesaleOnly?: boolean; sophisticatedInvestorsOnly?: boolean; professionalInvestorsOnly?: boolean };
+  const licenseDetails = params.licenseDetails!;
+
+  // Determine compliance status
+  let complianceStatus: 'exemption_claimed' | 'license_required' | 'compliant';
+  let exemptionType: 's708_wholesale' | null = null;
+  let licenseRequired = false;
+  let restrictionNotes: string[] = [];
+  let complianceRequirements: string[] = [];
+
+  if (offeringStructure.wholesaleOnly && !offeringStructure.retailOffering) {
+    // Wholesale-only offering can claim exemption
+    complianceStatus = 'exemption_claimed';
+    exemptionType = 's708_wholesale';
+    licenseRequired = false;
+    restrictionNotes = [
+      'Offering restricted to wholesale investors only',
+      'Professional and sophisticated investors eligible',
+      'Retail investor protections do not apply'
+    ];
+    complianceRequirements = [
+      'Maintain wholesale-only offering structure',
+      'Verify investor classification before acceptance',
+      'Document exemption basis'
+    ];
+  } else if (offeringStructure.retailOffering && !licenseDetails.afslNumber) {
+    // Retail offering without AFSL requires license
+    complianceStatus = 'license_required';
+    exemptionType = null;
+    licenseRequired = true;
+    restrictionNotes = [
+      'AFSL license required for retail offerings',
+      'Cannot accept retail investors without license'
+    ];
+    complianceRequirements = [
+      'Obtain AFSL license',
+      'Implement retail compliance framework',
+      'Establish responsible manager arrangements',
+      'Meet capital adequacy requirements'
+    ];
+  } else if (offeringStructure.retailOffering && licenseDetails.afslNumber) {
+    // Retail offering with valid AFSL is compliant
+    complianceStatus = 'compliant';
+    exemptionType = null;
+    licenseRequired = true;
+    restrictionNotes = [];
+    complianceRequirements = [
+      'Maintain AFSL compliance',
+      'Provide Product Disclosure Statements',
+      'Implement best interests duty',
+      'Conduct ongoing compliance monitoring'
+    ];
+  } else {
+    // Default wholesale case
+    complianceStatus = 'exemption_claimed';
+    exemptionType = 's708_wholesale';
+    licenseRequired = false;
+    restrictionNotes = ['Default wholesale exemption applied'];
+    complianceRequirements = ['Maintain wholesale investor base'];
+  }
 
   return {
-    authorized: true,
-    requiredLicenses: ['AFSL_001'],
+    authorized: complianceStatus === 'compliant' || complianceStatus === 'exemption_claimed',
+    requiredLicenses: licenseRequired ? ['AFSL'] : [],
     custodyCompliance: params.custodyArrangements === 'institutional_custody',
-    schemeRegistration: params.offeringStructure === 'managed_investment_scheme',
+    schemeRegistration: false,
     responsibleEntity: 'Water Roads Pty Ltd',
-    disclosureAdequate: params.disclosureFramework === 'comprehensive',
+    disclosureAdequate: complianceStatus === 'compliant',
     conflictsManaged: params.conflictManagement || false,
     bestInterestCompliance: params.bestInterestDuty || false,
     ongoingObligations: ['conduct', 'disclosure', 'risk_management', 'capital_adequacy', 'compliance_monitoring'],
     adequateCapital: (params.clientFunds || 0) < 1_000_000_000,
     ntaCompliance: true,
     riskFramework: 'approved',
-    clientMoneyCompliance: true
+    clientMoneyCompliance: true,
+    // New fields
+    complianceStatus,
+    exemptionType,
+    licenseRequired,
+    restrictionNotes,
+    complianceRequirements
   };
 }
 
@@ -824,25 +1019,104 @@ export function validateAMLRequirements(params: {
   suspiciousActivity?: boolean;
   reportingThresholds?: string;
   austraccompliance?: boolean;
+  // New fields for institutional onboarding
+  clientType?: string;
+  businessPurpose?: string;
+  pepStatus?: boolean;
+  sanctionsScreening?: { cleared: boolean; riskRating: string; lastUpdated: string };
 }): AMLComplianceResult {
-  const isHighRisk = params.riskRating === 'high' || params.customerType === 'foreign_institution';
-  const requiresEDD = isHighRisk || (params.transactionValue || 0) > 50_000_000;
+  // Handle both old and new parameter formats
+  const isNewFormat = params.clientType || params.businessPurpose !== undefined || params.pepStatus !== undefined;
+
+  if (!isNewFormat) {
+    // Legacy format - maintain backward compatibility
+    const isHighRisk = params.riskRating === 'high' || params.customerType === 'foreign_institution';
+    const requiresEDD = isHighRisk || (params.transactionValue || 0) > 50_000_000;
+
+    return {
+      cddComplete: true,
+      riskAssessment: 'adequate',
+      ongoingDueDiligence: params.ongoingMonitoring || false,
+      sanctionsScreening: 'clear',
+      pepScreening: 'clear',
+      eddRequired: requiresEDD,
+      uboVerified: params.ultimateBeneficialOwner === 'identified',
+      sourceOfFunds: 'verified',
+      jurisdictionalRisk: 'assessed',
+      seniorManagementApproval: requiresEDD,
+      thresholdCompliance: (params.transactionValue || 0) < 100_000_000,
+      reportingRequired: (params.transactionValue || 0) > 10_000,
+      austracReporting: 'compliant',
+      suspiciousTransactionReport: params.suspiciousActivity || false
+    };
+  }
+
+  // New format for institutional onboarding
+  const transactionValue = params.transactionValue || 0;
+  const jurisdictions = params.jurisdictions || [];
+  const pepStatus = params.pepStatus || false;
+  const sanctionsRisk = params.sanctionsScreening?.riskRating || 'low';
+
+  // Determine risk rating
+  let riskRating: 'low' | 'medium' | 'high';
+  let restrictionFlags: string[] = [];
+  let complianceNotes: string[] = [];
+
+  // High risk conditions
+  if (pepStatus ||
+      sanctionsRisk === 'high' ||
+      jurisdictions.includes('cayman_islands') ||
+      transactionValue >= 50_000_000) {
+    riskRating = 'high';
+    complianceNotes.push('Enhanced Due Diligence required');
+    if (pepStatus) restrictionFlags.push('pep_enhanced_monitoring');
+    if (sanctionsRisk === 'high') restrictionFlags.push('sanctions_enhanced_screening');
+    if (transactionValue >= 50_000_000) restrictionFlags.push('large_transaction_reporting');
+  }
+  // Medium risk conditions
+  else if (transactionValue >= 10_000_000 || sanctionsRisk === 'medium') {
+    riskRating = 'medium';
+    if (transactionValue >= 10_000_000) {
+      restrictionFlags.push('large_cash_transaction_reporting');
+      complianceNotes.push('Large transaction reporting required');
+    }
+  }
+  // Low risk default
+  else {
+    riskRating = 'low';
+    complianceNotes.push('Standard due diligence procedures apply');
+  }
+
+  const eddRequired = riskRating === 'high';
+  const monitoringLevel: 'standard' | 'enhanced' = riskRating === 'high' ? 'enhanced' : 'standard';
+  const reportingRequired = transactionValue > 10_000_000; // AUSTRAC threshold
 
   return {
     cddComplete: true,
-    riskAssessment: 'adequate',
+    riskAssessment: riskRating,
     ongoingDueDiligence: params.ongoingMonitoring || false,
-    sanctionsScreening: 'clear',
-    pepScreening: 'clear',
-    eddRequired: requiresEDD,
+    sanctionsScreening: params.sanctionsScreening?.cleared ? 'clear' : 'pending',
+    pepScreening: pepStatus ? 'identified' : 'clear',
+    eddRequired,
     uboVerified: params.ultimateBeneficialOwner === 'identified',
     sourceOfFunds: 'verified',
-    jurisdictionalRisk: 'assessed',
-    seniorManagementApproval: requiresEDD,
-    thresholdCompliance: (params.transactionValue || 0) < 100_000_000,
-    reportingRequired: (params.transactionValue || 0) > 10_000,
+    jurisdictionalRisk: jurisdictions.includes('cayman_islands') ? 'high' : 'assessed',
+    seniorManagementApproval: eddRequired,
+    thresholdCompliance: transactionValue < 100_000_000,
+    reportingRequired,
     austracReporting: 'compliant',
-    suspiciousTransactionReport: params.suspiciousActivity || false
+    suspiciousTransactionReport: params.suspiciousActivity || false,
+    // New fields
+    riskRating,
+    monitoringLevel,
+    restrictionFlags,
+    documentationRequired: {
+      beneficialOwnership: true, // Always required for institutional clients
+      sourceOfFunds: eddRequired || transactionValue >= 10_000_000,
+      businessPurpose: true, // Always required for institutional clients
+      corporateStructure: eddRequired || params.clientType === 'corporate'
+    },
+    complianceNotes
   };
 }
 

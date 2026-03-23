@@ -62,6 +62,21 @@ expect.extend({
         pass: false,
       };
     }
+  },
+
+  toBeOneOf(received, expectedValues) {
+    const pass = expectedValues.includes(received);
+    if (pass) {
+      return {
+        message: () => `expected ${received} not to be one of ${expectedValues.join(', ')}`,
+        pass: true,
+      };
+    } else {
+      return {
+        message: () => `expected ${received} to be one of ${expectedValues.join(', ')}`,
+        pass: false,
+      };
+    }
   }
 });
 
