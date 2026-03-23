@@ -618,7 +618,7 @@ export const MarketIntelligenceDashboard: React.FC<MarketIntelligenceDashboardPr
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-600">Opportunity score</span>
-                <span className="font-medium text-slate-800">> 75/100</span>
+                <span className="font-medium text-slate-800">&gt; 75/100</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-600">Portfolio rebalancing</span>

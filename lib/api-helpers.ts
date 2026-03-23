@@ -82,8 +82,10 @@ function cleanupRateLimitMap() {
   }
 }
 
-// Clean up every 5 minutes
-setInterval(cleanupRateLimitMap, 5 * 60 * 1000);
+// Clean up every 5 minutes (skip in test environment)
+if (process.env.NODE_ENV !== 'test') {
+  setInterval(cleanupRateLimitMap, 5 * 60 * 1000);
+}
 
 // =============================================================================
 // API RESPONSE UTILITIES
@@ -193,10 +195,9 @@ export function validateNumericRange(
  */
 export function validateTokenType(tokenType: string): tokenType is WREITokenType {
   const validTypes: WREITokenType[] = [
-    'carbon_credit',
+    'carbon_credits',
     'asset_co',
-    'dual_token',
-    'infrastructure_reit'
+    'dual_portfolio'
   ];
 
   return validTypes.includes(tokenType as WREITokenType);

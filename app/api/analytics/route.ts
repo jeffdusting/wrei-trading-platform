@@ -434,7 +434,7 @@ async function handleRiskProfile(body: any) {
 
   // Validate token type
   if (!validateTokenType(body.tokenType)) {
-    throw new Error('tokenType must be one of: carbon_credit, asset_co, dual_token, infrastructure_reit');
+    throw new Error('tokenType must be one of: carbon_credits, asset_co, dual_portfolio');
   }
 
   const riskProfile = calculateRiskProfile(body.tokenType);
@@ -498,7 +498,7 @@ async function handleScenarioAnalysis(body: any) {
   if (amountError) throw new Error(amountError);
 
   if (!validateTokenType(body.tokenType)) {
-    throw new Error('tokenType must be one of: carbon_credit, asset_co, dual_token, infrastructure_reit');
+    throw new Error('tokenType must be one of: carbon_credits, asset_co, dual_portfolio');
   }
 
   const validInvestorTypes = ['retail', 'wholesale', 'professional', 'sophisticated'];
@@ -547,10 +547,9 @@ async function handlePortfolioOptimization(body: any) {
 
   // Create a current allocation baseline (equal weights as starting point)
   const currentAllocation = {
-    carbon_credit: 0.33,
+    carbon_credits: 0.33,
     asset_co: 0.33,
-    dual_token: 0.34,
-    infrastructure_reit: 0.0
+    dual_portfolio: 0.34
   };
 
   const optimization = generatePortfolioOptimization(
@@ -588,7 +587,7 @@ async function handleMonteCarlo(body: any) {
   if (horizonError) throw new Error(horizonError);
 
   if (!validateTokenType(body.tokenType)) {
-    throw new Error('tokenType must be one of: carbon_credit, asset_co, dual_token, infrastructure_reit');
+    throw new Error('tokenType must be one of: carbon_credits, asset_co, dual_portfolio');
   }
 
   const simulationsError = validateNumericRange(body.simulations, 100, 10000, 'simulations');
@@ -630,7 +629,7 @@ async function handleProfessionalMetrics(body: any) {
   if (amountError) throw new Error(amountError);
 
   if (!validateTokenType(body.tokenType)) {
-    throw new Error('tokenType must be one of: carbon_credit, asset_co, dual_token, infrastructure_reit');
+    throw new Error('tokenType must be one of: carbon_credits, asset_co, dual_portfolio');
   }
 
   const validClassifications = ['retail', 'wholesale', 'professional', 'sophisticated'];

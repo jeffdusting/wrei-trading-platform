@@ -290,7 +290,7 @@ async function handleDigitalAssetsFramework() {
     status: dafCompliance.status || 'in_force',
     effectiveDate: dafCompliance.effectiveDate || '2024-01-01',
     applicabilityAssessment: {
-      tokenTypes: ['carbon_credit', 'asset_co', 'dual_token', 'infrastructure_reit'],
+      tokenTypes: ['carbon_credits', 'asset_co', 'dual_portfolio'],
       complianceRequired: true,
       exemptions: [],
       additionalRequirements: [
@@ -561,7 +561,7 @@ async function handleTaxTreatment(body: any) {
 
   // Validate token type
   if (!validateTokenType(body.tokenType)) {
-    throw new Error('tokenType must be one of: carbon_credit, asset_co, dual_token, infrastructure_reit');
+    throw new Error('tokenType must be one of: carbon_credits, asset_co, dual_portfolio');
   }
 
   const validYieldMechanisms = ['revenue_share', 'nav_accruing'];

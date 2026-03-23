@@ -148,10 +148,9 @@ describe('Milestone 2.2: Compliance API', () => {
 
       const assessment = data.data.applicabilityAssessment;
       expect(Array.isArray(assessment.tokenTypes)).toBe(true);
-      expect(assessment.tokenTypes).toContain('carbon_credit');
+      expect(assessment.tokenTypes).toContain('carbon_credits');
       expect(assessment.tokenTypes).toContain('asset_co');
-      expect(assessment.tokenTypes).toContain('dual_token');
-      expect(assessment.tokenTypes).toContain('infrastructure_reit');
+      expect(assessment.tokenTypes).toContain('dual_portfolio');
       expect(typeof assessment.complianceRequired).toBe('boolean');
       expect(Array.isArray(assessment.exemptions)).toBe(true);
       expect(Array.isArray(assessment.additionalRequirements)).toBe(true);
@@ -302,7 +301,7 @@ describe('Milestone 2.2: Compliance API', () => {
     test('POST full_report generates comprehensive compliance assessment', async () => {
       const request = createPostRequest({
         action: 'full_report',
-        tokenType: 'carbon_credit',
+        tokenType: 'carbon_credits',
         platform: 'WREI',
         frameworks: ['AUSTRAC', 'ASIC', 'APRA'],
         jurisdiction: 'australia',
@@ -335,7 +334,7 @@ describe('Milestone 2.2: Compliance API', () => {
     test('POST tax_treatment provides optimized tax structure advice', async () => {
       const request = createPostRequest({
         action: 'tax_treatment',
-        tokenType: 'dual_token',
+        tokenType: 'dual_portfolio',
         yieldMechanism: 'revenue_share',
         investorProfile: 'sophisticated',
         holdingPeriod: 18,
@@ -351,7 +350,7 @@ describe('Milestone 2.2: Compliance API', () => {
 
       const result = data.data;
       expect(result.taxTreatment).toBeDefined();
-      expect(result.inputParameters.tokenType).toBe('dual_token');
+      expect(result.inputParameters.tokenType).toBe('dual_portfolio');
       expect(result.inputParameters.yieldMechanism).toBe('revenue_share');
       expect(result.inputParameters.investorProfile).toBe('sophisticated');
       expect(result.optimizationSummary).toBeDefined();
@@ -476,7 +475,7 @@ describe('Milestone 2.2: Compliance API', () => {
       // Test tax treatment missing required fields
       const taxRequest = createPostRequest({
         action: 'tax_treatment',
-        tokenType: 'carbon_credit'
+        tokenType: 'carbon_credits'
         // Missing yieldMechanism and investorProfile
       });
 
@@ -517,12 +516,12 @@ describe('Milestone 2.2: Compliance API', () => {
 
       expect(tokenStatus).toBe(500);
       expect(tokenData.success).toBe(false);
-      expect(tokenData.error).toContain('tokenType must be one of: carbon_credit, asset_co, dual_token, infrastructure_reit');
+      expect(tokenData.error).toContain('tokenType must be one of: carbon_credits, asset_co, dual_portfolio');
 
       // Test invalid yield mechanism for tax treatment
       const invalidYieldRequest = createPostRequest({
         action: 'tax_treatment',
-        tokenType: 'carbon_credit',
+        tokenType: 'carbon_credits',
         yieldMechanism: 'invalid_mechanism',
         investorProfile: 'sophisticated'
       });

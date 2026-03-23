@@ -791,9 +791,9 @@ export const FamilyOfficeJourney: React.FC = () => {
                     <div className="p-3 bg-green-50 border border-green-200 rounded">
                       <h5 className="font-medium text-green-900">Investment Decision Authority</h5>
                       <ul className="text-sm text-green-800 mt-1 space-y-1">
-                        <li>• < A$25M: CIO discretionary authority</li>
+                        <li>• &lt; A$25M: CIO discretionary authority</li>
                         <li>• A$25M-75M: Investment committee approval</li>
-                        <li>• > A$75M: Full family council approval</li>
+                        <li>• &gt; A$75M: Full family council approval</li>
                         <li>• Exit decisions: Always require committee approval</li>
                       </ul>
                       <div className="text-xs text-green-600 mt-2">Current Investment: Committee Approved</div>

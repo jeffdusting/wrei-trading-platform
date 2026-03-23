@@ -200,7 +200,7 @@ describe('Milestone 2.2: Analytics API', () => {
 
   describe('Advanced Analytics Endpoints', () => {
     test('POST risk_profile returns correct risk profile for each token type', async () => {
-      const tokenTypes = ['carbon_credit', 'asset_co', 'dual_token', 'infrastructure_reit'];
+      const tokenTypes = ['carbon_creditss', 'asset_co', 'dual_portfolio'];
 
       for (const tokenType of tokenTypes) {
         const request = createPostRequest({
@@ -231,7 +231,7 @@ describe('Milestone 2.2: Analytics API', () => {
       const request = createPostRequest({
         action: 'scenario_analysis',
         investmentAmount: 750000,
-        tokenType: 'dual_token',
+        tokenType: 'dual_portfolio',
         investorType: 'professional',
         timeHorizon: 8,
         scenarios: ['base', 'bull', 'bear', 'stress']
@@ -247,7 +247,7 @@ describe('Milestone 2.2: Analytics API', () => {
       const result = data.data;
       expect(result.scenarioAnalysis).toBeDefined();
       expect(result.inputParameters.investmentAmount).toBe(750000);
-      expect(result.inputParameters.tokenType).toBe('dual_token');
+      expect(result.inputParameters.tokenType).toBe('dual_portfolio');
       expect(result.inputParameters.investorType).toBe('professional');
       expect(result.inputParameters.timeHorizon).toBe(8);
       expect(result.calculationTimestamp).toBeDefined();
@@ -285,7 +285,7 @@ describe('Milestone 2.2: Analytics API', () => {
       const request = createPostRequest({
         action: 'monte_carlo',
         investmentAmount: 1500000,
-        tokenType: 'carbon_credit',
+        tokenType: 'carbon_credits',
         simulations: 1000,
         timeHorizon: 10,
         volatilityAssumptions: {
@@ -304,7 +304,7 @@ describe('Milestone 2.2: Analytics API', () => {
       const result = data.data;
       expect(result.monteCarloResults).toBeDefined();
       expect(result.simulationParameters.investmentAmount).toBe(1500000);
-      expect(result.simulationParameters.tokenType).toBe('carbon_credit');
+      expect(result.simulationParameters.tokenType).toBe('carbon_credits');
       expect(result.simulationParameters.simulations).toBe(1000);
       expect(result.simulationParameters.timeHorizon).toBe(10);
       expect(result.calculationTimestamp).toBeDefined();
@@ -421,7 +421,7 @@ describe('Milestone 2.2: Analytics API', () => {
       const request = createPostRequest({
         action: 'professional_metrics',
         investmentAmount: 10000000,
-        tokenType: 'infrastructure_reit',
+        tokenType: 'asset_co',
         investorClassification: 'sophisticated',
         timeHorizon: 20,
         customParameters: {
@@ -440,7 +440,7 @@ describe('Milestone 2.2: Analytics API', () => {
       const result = data.data;
       expect(result.professionalMetrics).toBeDefined();
       expect(result.inputParameters.investmentAmount).toBe(10000000);
-      expect(result.inputParameters.tokenType).toBe('infrastructure_reit');
+      expect(result.inputParameters.tokenType).toBe('asset_co');
       expect(result.inputParameters.investorClassification).toBe('sophisticated');
       expect(result.inputParameters.timeHorizon).toBe(20);
       expect(result.calculationTimestamp).toBeDefined();
