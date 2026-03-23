@@ -8,6 +8,7 @@
 import { NextRequest } from 'next/server';
 import { sanitiseInput } from './defence';
 import type { WREITokenType } from './types';
+import { performanceMonitor } from './performance-monitor';
 
 // =============================================================================
 // API AUTHENTICATION & RATE LIMITING
@@ -375,5 +376,58 @@ export function logApiError(
 
   if (additionalContext) {
     console.error(`[WREI API Error Context] [${requestId}]`, additionalContext);
+  }
+}
+
+// =============================================================================
+// PERFORMANCE MONITORING INTEGRATION
+// =============================================================================
+
+/**
+ * Start performance tracking for an API request
+ */
+export function startApiPerformanceTracking(
+  endpoint: string,
+  action: string,
+  requestId: string
+): string {
+  return performanceMonitor.startMetric(
+    'api_request',
+    { endpoint, action, requestId },
+    ['api', endpoint.split('/').pop() || 'unknown']
+  );
+}
+
+/**
+ * End performance tracking for an API request
+ */
+export function endApiPerformanceTracking(
+  metricId: string,
+  success: boolean,
+  statusCode: number
+): void {
+  performanceMonitor.endMetric(metricId, { success, statusCode });
+}
+
+/**
+ * Track calculation performance
+ */
+export function trackCalculationPerformance<T>(
+  calculationName: string,
+  calculation: () => T
+): T {
+  const metricId = performanceMonitor.startMetric(
+    'calculation',
+    { calculationName },
+    ['calculation', 'analytics']
+  );
+
+  try {
+    const result = calculation();
+    performanceMonitor.endMetric(metricId, { success: true });
+    return result;
+  } catch (error) {
+    performanceMonitor.endMetric(metricId, { success: false, error: error.message });
+    throw error;
   }
 }
