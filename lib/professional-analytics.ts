@@ -470,6 +470,108 @@ export function generateProfessionalChartData(
 // SCENARIO ANALYSIS
 // =============================================================================
 
+/**
+ * Calculate professional metrics for scenario analysis with variable expected return
+ */
+function calculateScenarioMetrics(
+  tokenType: WREITokenType,
+  investmentAmount: number,
+  timeHorizon: number,
+  expectedReturn: number,
+  volatility: number,
+  investorClassification: InvestorClassification
+): ProfessionalMetrics {
+  const portfolioValue = investmentAmount;
+  const riskFreeRate = 0.04;
+  const beta = 1.0;
+
+  // Calculate core metrics directly using the provided expected return
+  const annualCashFlow = portfolioValue * expectedReturn;
+
+  // Calculate risk-adjusted returns
+  const sharpeRatio = (expectedReturn - riskFreeRate) / volatility;
+  const sortinoRatio = sharpeRatio * 1.2; // Approximate, assuming downside deviation is lower
+  const calmarRatio = expectedReturn / (volatility * 0.25); // Approximate max drawdown
+  const maxDrawdown = volatility * 0.25;
+  const var95 = portfolioValue * volatility * 1.645; // 95% VaR
+  const cvar95 = var95 * 1.2;
+
+  // Calculate tracking metrics
+  const trackingError = volatility * 0.3; // Approximate
+  const informationRatio = (expectedReturn - 0.08) / trackingError; // vs market benchmark of 8%
+
+  // Calculate growth metrics
+  const totalReturn = Math.pow(1 + expectedReturn, timeHorizon) * portfolioValue - portfolioValue;
+  const annualisedReturn = expectedReturn;
+  const cagr = expectedReturn;
+
+  // Calculate additional required metrics
+  const npv = totalReturn; // Simplified for scenario analysis
+  const irr = expectedReturn;
+  const mirr = expectedReturn * 0.9; // Simplified
+  const cashOnCash = annualCashFlow / portfolioValue;
+  const treynorRatio = (expectedReturn - riskFreeRate) / beta;
+
+  // Portfolio construction metrics (simplified for scenario analysis)
+  const optimizedAllocation: { [key in WREITokenType]: number } = {
+    carbon_credits: tokenType === 'carbon_credits' ? 1.0 : 0.3,
+    asset_co: tokenType === 'asset_co' ? 1.0 : 0.4,
+    dual_portfolio: tokenType === 'dual_portfolio' ? 1.0 : 0.3
+  };
+
+  const riskContribution: { [key in WREITokenType]: number } = {
+    carbon_credits: 0.35,
+    asset_co: 0.45,
+    dual_portfolio: 0.2
+  };
+
+  // Australian tax metrics (simplified)
+  const frankingCreditValue = portfolioValue * 0.015; // 1.5% franking benefit
+  const cgtDiscount = investorClassification === 'sophisticated' ? 0.5 : 0.5; // 50% CGT discount
+  const negativeGearing = 0; // Not applicable for these instruments
+  const effectiveTaxRate = investorClassification === 'sophisticated' ? 0.25 : 0.30;
+
+  return {
+    // Core Investment Returns
+    irr,
+    npv,
+    mirr,
+    cashOnCash,
+    cagr,
+    totalReturn,
+
+    // Risk-Adjusted Metrics
+    sharpeRatio,
+    sortinoRatio,
+    calmarRatio,
+    treynorRatio,
+    informationRatio,
+
+    // Portfolio Construction Metrics
+    optimizedAllocation,
+    riskContribution,
+    diversificationRatio: tokenType === 'dual_portfolio' ? 1.25 : 1.0,
+    concentrationRisk: tokenType === 'dual_portfolio' ? 0.15 : 0.35,
+
+    // Australian Tax Considerations
+    frankingCreditValue,
+    cgtDiscount,
+    negativeGearing,
+    effectiveTaxRate,
+
+    // Additional Risk Metrics
+    maxDrawdown,
+    volatility,
+    correlationScore: beta,
+
+    // Institutional Benchmarks
+    benchmarkOutperformance: { 'ASX 200': expectedReturn - 0.08 },
+    trackingError,
+    activeReturn: expectedReturn - 0.08, // vs 8% benchmark
+    betaToMarket: beta
+  };
+}
+
 export function generateScenarioAnalysis(
   tokenType: WREITokenType,
   investmentAmount: number,
@@ -488,15 +590,12 @@ export function generateScenarioAnalysis(
   const results: Partial<ScenarioAnalysis> = {};
 
   Object.entries(scenarios).forEach(([scenario, expectedReturn]) => {
-    results[scenario as keyof ScenarioAnalysis] = calculateProfessionalMetrics(
+    results[scenario as keyof ScenarioAnalysis] = calculateScenarioMetrics(
       tokenType,
       investmentAmount,
       timeHorizon,
       expectedReturn,
-      0.04, // Risk-free rate
-      0.08, // Market return
       volatility,
-      1.0,  // Beta
       investorClassification
     );
   });
@@ -507,15 +606,12 @@ export function generateScenarioAnalysis(
     return sum + ret * weights[scenario as keyof typeof weights];
   }, 0);
 
-  results.probabilityWeighted = calculateProfessionalMetrics(
+  results.probabilityWeighted = calculateScenarioMetrics(
     tokenType,
     investmentAmount,
     timeHorizon,
     probabilityWeightedReturn,
-    0.04,
-    0.08,
     volatility,
-    1.0,
     investorClassification
   );
 
