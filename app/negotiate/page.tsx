@@ -348,16 +348,24 @@ export default function NegotiatePage() {
     const volatility = tokenType === 'carbon_credits' ? 0.25 :
                       tokenType === 'asset_co' ? 0.12 : 0.15;
 
+    // Map persona to risk tolerance for new function signature
+    const getRiskTolerance = (persona: PersonaType | 'freeplay'): 'conservative' | 'moderate' | 'aggressive' => {
+      const riskMap: Record<string, 'conservative' | 'moderate' | 'aggressive'> = {
+        infrastructure_fund: 'moderate',
+        family_office: 'conservative',
+        esg_impact_investor: 'moderate',
+        pension_fund: 'conservative',
+        sovereign_wealth: 'aggressive',
+        insurance_company: 'conservative'
+      };
+      return riskMap[persona] || 'moderate';
+    };
+
     const professionalMetrics = calculateProfessionalMetrics(
-      tokenType,
-      investmentSize,
-      timeHorizon,
-      expectedReturn,
-      0.04, // Risk-free rate
-      0.08, // Market return
-      volatility,
-      1.0,  // Beta
-      investorClassification
+      investmentSize, // portfolioValue
+      selectedPersona as PersonaType, // persona
+      timeHorizon, // timeHorizon
+      getRiskTolerance(selectedPersona) // riskTolerance
     );
 
     const scenarioAnalysis = generateScenarioAnalysis(
