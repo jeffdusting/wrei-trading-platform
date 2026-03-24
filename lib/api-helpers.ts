@@ -76,7 +76,7 @@ export function checkRateLimit(
  */
 function cleanupRateLimitMap() {
   const now = Date.now();
-  for (const [key, record] of rateLimitMap.entries()) {
+  for (const [key, record] of Array.from(rateLimitMap.entries())) {
     if (record.resetTime <= now) {
       rateLimitMap.delete(key);
     }
@@ -294,13 +294,21 @@ export function getQueryParam(
  */
 export async function parseJsonBody(request: NextRequest): Promise<any> {
   try {
-    const text = await request.text();
+    // Try to use text() first, fallback to json() for tests
+    if (typeof request.text === 'function') {
+      const text = await request.text();
 
-    if (!text.trim()) {
-      throw new Error('Request body is empty');
+      if (!text.trim()) {
+        throw new Error('Request body is empty');
+      }
+
+      return JSON.parse(text);
+    } else if (typeof (request as any).json === 'function') {
+      // Fallback for test mocks that provide json() directly
+      return await (request as any).json();
+    } else {
+      throw new Error('Request object missing text() or json() method');
     }
-
-    return JSON.parse(text);
   } catch (error) {
     throw new Error(`Invalid JSON in request body: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
@@ -427,7 +435,7 @@ export function trackCalculationPerformance<T>(
     performanceMonitor.endMetric(metricId, { success: true });
     return result;
   } catch (error) {
-    performanceMonitor.endMetric(metricId, { success: false, error: error.message });
+    performanceMonitor.endMetric(metricId, { success: false, error: error instanceof Error ? error.message : String(error) });
     throw error;
   }
 }

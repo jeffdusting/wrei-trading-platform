@@ -196,7 +196,7 @@ export function withPerformanceMonitoring<T extends any[], R>(
       performanceMonitor.endMetric(metricId, { success: true });
       return result;
     } catch (error) {
-      performanceMonitor.endMetric(metricId, { success: false, error: error.message });
+      performanceMonitor.endMetric(metricId, { success: false, error: error instanceof Error ? error.message : String(error) });
       throw error;
     }
   };
@@ -217,7 +217,7 @@ export function monitorPerformance<T extends any[], R>(
       performanceMonitor.endMetric(metricId, { success: true });
       return result;
     } catch (error) {
-      performanceMonitor.endMetric(metricId, { success: false, error: error.message });
+      performanceMonitor.endMetric(metricId, { success: false, error: error instanceof Error ? error.message : String(error) });
       throw error;
     }
   };
@@ -271,7 +271,7 @@ export class PerformanceOptimizer {
     }
 
     const regex = new RegExp(pattern);
-    for (const key of this.cache.keys()) {
+    for (const key of Array.from(this.cache.keys())) {
       if (regex.test(key)) {
         this.cache.delete(key);
       }

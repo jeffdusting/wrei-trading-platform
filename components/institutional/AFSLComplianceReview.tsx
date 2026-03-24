@@ -34,7 +34,7 @@ export const AFSLComplianceReview: React.FC<AFSLComplianceReviewProps> = ({
       professionalInvestorsOnly: false,
     },
     licenseDetails: {
-      afslNumber: onboardingState.institutionalIdentity?.regulatoryLicense || null,
+      afslNumber: onboardingState.institutionalIdentity?.regulatoryLicense || undefined,
       authorisedRepresentative: false,
       exemptionsClaimed: ['s708_wholesale'] as string[],
     },
@@ -179,7 +179,7 @@ export const AFSLComplianceReview: React.FC<AFSLComplianceReviewProps> = ({
                 value={complianceParams.licenseDetails.afslNumber || ''}
                 onChange={(e) => setComplianceParams(prev => ({
                   ...prev,
-                  licenseDetails: { ...prev.licenseDetails, afslNumber: e.target.value || null }
+                  licenseDetails: { ...prev.licenseDetails, afslNumber: e.target.value || undefined }
                 }))}
                 className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                 placeholder="e.g., 123456"

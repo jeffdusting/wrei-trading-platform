@@ -104,9 +104,17 @@ export const WREI_FINANCIAL_CONSTANTS = {
 /**
  * Calculate Internal Rate of Return (IRR) using Newton-Raphson method
  */
-export function calculateIRR(cashFlows: CashFlow[]): number {
-  // Sort cash flows by date
-  const sortedFlows = cashFlows.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+export function calculateIRR(cashFlows: CashFlow[] | Array<{year: number; amount: number}>): number {
+  // Handle both CashFlow format and simple {year, amount} format
+  const sortedFlows = cashFlows.map((cf: any) => {
+    if ('year' in cf) {
+      // Convert year-based format to date-based
+      const date = new Date(2024, 0, 1);
+      date.setFullYear(date.getFullYear() + cf.year);
+      return { ...cf, date: date.toISOString() };
+    }
+    return cf;
+  }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   if (sortedFlows.length < 2) return 0;
 
@@ -443,7 +451,7 @@ function calculateMetricsFromCashFlows(
 
   // Exit value calculation
   const exitValue = cashFlows.find(cf => cf.type === 'exit_value')?.amount || scenario.initialInvestment;
-  const totalReturn = (totalDistributions + exitValue) / scenario.initialInvestment - 1;
+  const totalReturn = totalDistributions + exitValue - scenario.initialInvestment;
 
   const compoundAnnualGrowthRate = calculateCAGR(
     scenario.initialInvestment,
@@ -493,8 +501,8 @@ export function formatFinancialMetrics(metrics: FinancialMetrics): Record<string
 
 // Add overloaded functions to match test expectations
 
-// Override calculateCarbonCreditMetrics to accept different parameter formats
-export function calculateCarbonCreditMetrics(params: any, yieldModel?: any): any {
+// Alternative calculateCarbonCreditMetrics to accept different parameter formats
+export function calculateCarbonCreditMetricsFlexible(params: any, yieldModel?: any): any {
   // If called with test parameter format (has investmentAmount instead of initialInvestment)
   if (params.investmentAmount || params.carbonCredits) {
     const {
@@ -567,7 +575,7 @@ export function calculateCarbonCreditMetrics(params: any, yieldModel?: any): any
 }
 
 // Override calculateAssetCoMetrics to accept different parameter formats
-export function calculateAssetCoMetrics(params: any): any {
+export function calculateAssetCoMetricsFlexible(params: any): any {
   // If called with scenario and yield model (existing function)
   if (params.initialInvestment && params.holdingPeriod) {
     return calculateMetricsFromCashFlows([], params);
@@ -610,7 +618,7 @@ export function calculateAssetCoMetrics(params: any): any {
 }
 
 // Override calculateDualPortfolioMetrics to accept different parameter formats
-export function calculateDualPortfolioMetrics(params: any): any {
+export function calculateDualPortfolioMetricsFlexible(params: any): any {
   // If called with scenario and weights (existing function)
   if (params.initialInvestment && params.holdingPeriod) {
     return calculateDualPortfolioMetrics(params, 0.4, 0.6);
@@ -676,7 +684,7 @@ export function calculateDualPortfolioMetrics(params: any): any {
 }
 
 // Add formatFinancialMetrics overload for different input types
-export function formatFinancialMetrics(input: any): any {
+export function formatFinancialMetricsFlexible(input: any): any {
   // If it's already financial metrics, format normally
   if (typeof input.irr === 'number') {
     return {

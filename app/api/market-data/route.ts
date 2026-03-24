@@ -311,7 +311,7 @@ async function handleHistoricalData(request: NextRequest) {
     maxDataPoints: maxPointsNum
   };
 
-  const historicalData = realTimeDataConnector.getHistoricalData(historicalRequest);
+  const historicalData = await realTimeDataConnector.getHistoricalData(historicalRequest);
 
   if (!historicalData || !historicalData.dataPoints) {
     // Return empty historical data if none available
@@ -338,13 +338,23 @@ async function handleHistoricalData(request: NextRequest) {
   }
 
   return {
-    historical: historicalData,
+    historical: {
+      dataPoints: historicalData.dataPoints,
+      metadata: {
+        feedType: historicalData.feedType,
+        timeRange: historicalData.timeRange,
+        maxDataPoints: maxPointsNum,
+        actualDataPoints: historicalData.dataPoints.length,
+        oldestTimestamp: historicalData.fromTime,
+        newestTimestamp: historicalData.toTime
+      }
+    },
     request: historicalRequest,
     timestamp: new Date().toISOString(),
     dataPoints: historicalData.dataPoints.length,
     timespan: {
-      from: historicalData.metadata.oldestTimestamp,
-      to: historicalData.metadata.newestTimestamp
+      from: historicalData.fromTime,
+      to: historicalData.toTime
     }
   };
 }

@@ -21,7 +21,7 @@ import {
   validateAMLRequirements,
   assessEnvironmentalCompliance,
   verifyTokenizationStandards,
-  generateComplianceReport,
+  generateDetailedComplianceReport as generateComplianceReport,
   REGULATORY_THRESHOLDS,
   COMPLIANCE_FRAMEWORKS
 } from '@/lib/regulatory-compliance';

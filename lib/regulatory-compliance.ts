@@ -1179,7 +1179,7 @@ export function verifyTokenizationStandards(params: {
   };
 }
 
-export function generateComplianceReport(params: {
+export function generateDetailedComplianceReport(params: {
   assessmentDate?: string;
   platform?: string;
   scope?: string;

@@ -21,6 +21,7 @@ import {
 } from '@/lib/market-intelligence';
 import {
   calculateProfessionalMetrics,
+  calculatePersonaMetrics,
   generatePortfolioOptimization,
   calculateRiskAdjustedReturns,
   type ProfessionalMetrics,
@@ -79,7 +80,7 @@ export const MarketIntelligenceDashboard: React.FC<MarketIntelligenceDashboardPr
         setCompetitorAnalysis(getCompetitiveAnalysis());
 
         // Calculate portfolio metrics for the specific persona
-        const metrics = calculateProfessionalMetrics(
+        const metrics = calculatePersonaMetrics(
           portfolioValue,
           persona,
           timeHorizon,
@@ -451,7 +452,7 @@ export const MarketIntelligenceDashboard: React.FC<MarketIntelligenceDashboardPr
               </span>
             </div>
             <p className="text-green-700 text-sm mb-3">
-              Market projections indicate 34% CAGR in carbon credits through 2030. WREI's dMRV verification
+              Market projections indicate 34% CAGR in carbon credits through 2030. WREI&apos;s dMRV verification
               provides competitive advantage in institutional market.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">

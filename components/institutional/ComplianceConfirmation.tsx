@@ -7,7 +7,7 @@
 
 import { useState, useEffect } from 'react';
 import type { InstitutionalOnboardingState } from '@/lib/institutional-onboarding';
-import { generateComplianceReport, getComplianceAlerts } from '@/lib/regulatory-compliance';
+import { generateComplianceReport, generateDetailedComplianceReport, getComplianceAlerts } from '@/lib/regulatory-compliance';
 
 interface ComplianceConfirmationProps {
   onComplete: (data: any) => void;
@@ -53,11 +53,17 @@ export const ComplianceConfirmation: React.FC<ComplianceConfirmationProps> = ({
         jurisdiction: onboardingState.institutionalIdentity?.jurisdiction || 'australia',
       };
 
-      const report = generateComplianceReport(reportParams);
+      const report = generateDetailedComplianceReport({
+        platform: 'WREI',
+        frameworks: ['AUSTRAC', 'ASIC', 'APRA'],
+        jurisdictions: [reportParams.jurisdiction || 'australia'],
+        scope: 'comprehensive',
+        assessmentDate: new Date().toISOString()
+      });
       setComplianceReport(report);
 
       // Get compliance alerts
-      const alerts = getComplianceAlerts(reportParams);
+      const alerts = getComplianceAlerts();
       setComplianceAlerts(alerts);
     } catch (error) {
       console.error('Error generating compliance report:', error);

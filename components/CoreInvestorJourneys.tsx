@@ -177,7 +177,7 @@ export const CoreInvestorJourneys: React.FC = () => {
                     onClick={() => setActiveJourney(persona.id)}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-semibold transition-colors"
                   >
-                    Start {persona.name}'s Journey →
+                    Start {persona.name}&apos;s Journey →
                   </button>
                 </div>
               </div>

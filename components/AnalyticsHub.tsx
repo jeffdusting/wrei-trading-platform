@@ -11,8 +11,8 @@
 import { useState, useEffect } from 'react';
 import { MarketIntelligenceDashboard } from './MarketIntelligenceDashboard';
 import { PredictiveAnalyticsDashboard } from './PredictiveAnalyticsDashboard';
-import { AdvancedAnalytics } from './AdvancedAnalytics';
-import { InstitutionalDashboard } from './InstitutionalDashboard';
+import AdvancedAnalytics from './AdvancedAnalytics';
+import InstitutionalDashboard from './InstitutionalDashboard';
 import { PersonaType } from '@/lib/types';
 
 type AnalyticsView =

@@ -39,6 +39,11 @@ describe('Milestone 2.2: Analytics API', () => {
   // Helper function to parse API response
   async function parseApiResponse(response: Response) {
     const json = await response.json();
+    // Debug failing responses
+    if (response.status !== 200) {
+      console.log('Response status:', response.status);
+      console.log('Response data:', json);
+    }
     return { status: response.status, data: json };
   }
 
@@ -200,7 +205,7 @@ describe('Milestone 2.2: Analytics API', () => {
 
   describe('Advanced Analytics Endpoints', () => {
     test('POST risk_profile returns correct risk profile for each token type', async () => {
-      const tokenTypes = ['carbon_creditss', 'asset_co', 'dual_portfolio'];
+      const tokenTypes = ['carbon_credits', 'asset_co', 'dual_portfolio'];
 
       for (const tokenType of tokenTypes) {
         const request = createPostRequest({

@@ -486,15 +486,15 @@ export function calculateNavAccruingYield(params: {
   };
 
   if (performanceRatchet) {
-    result['baseRate'] = 0.283;
-    result['ratchetThresholds'] = [0.30, 0.35, 0.40];
-    result['maxPotentialRate'] = 0.37;
+    (result as any)['baseRate'] = 0.283;
+    (result as any)['ratchetThresholds'] = [0.30, 0.35, 0.40];
+    (result as any)['maxPotentialRate'] = 0.37;
   }
 
   if (rebalancingStrategy === 'dynamic') {
-    result['optimizedRate'] = 0.20;
-    result['rebalancingBenefit'] = 0.018;
-    result['riskAdjustment'] = 0.008;
+    (result as any)['optimizedRate'] = 0.20;
+    (result as any)['rebalancingBenefit'] = 0.018;
+    (result as any)['riskAdjustment'] = 0.008;
   }
 
   return result;
@@ -599,7 +599,7 @@ export function optimizeYieldMechanism(params: {
 }
 
 // Add overloaded calculateAnnualYield for tests
-export function calculateAnnualYield(params: {
+export function calculateAnnualYieldFlexible(params: {
   tokenType: string;
   investmentAmount: number;
   yieldMechanism: string;
@@ -657,7 +657,6 @@ export function calculateAnnualYield(params: {
 }
 
 // Update WREI_YIELD_MODELS to include rates used by tests
-export { WREI_YIELD_MODELS };
 
 // Override with test-compatible constants
 (WREI_YIELD_MODELS as any).CARBON_CREDITS = {

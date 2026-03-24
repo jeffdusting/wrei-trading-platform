@@ -10,7 +10,15 @@ import { useState, useEffect } from 'react';
 import { PortfolioManager } from './PortfolioManager';
 import { NegotiationStrategyPanel } from './NegotiationStrategyPanel';
 import { NegotiationStrategyExplanation, createMockPortfolioContext } from '@/lib/negotiation-strategy';
-import { PersonaType, NegotiationState, APIResponse } from '@/lib/types';
+import { PersonaType, NegotiationState } from '@/lib/types';
+
+interface APIResponse {
+  success: boolean;
+  response?: string;
+  strategyExplanation?: any;
+  data?: any;
+  error?: string;
+}
 
 interface JourneyStep {
   id: string;
@@ -205,7 +213,7 @@ export const FamilyOfficeJourney: React.FC = () => {
       if (data.success) {
         setMessages(prev => [...prev,
           { role: 'user', content: userMessage },
-          { role: 'assistant', content: data.response }
+          { role: 'assistant', content: data.response || 'No response received' }
         ]);
 
         if (data.strategyExplanation) {
@@ -339,7 +347,7 @@ export const FamilyOfficeJourney: React.FC = () => {
               </button>
             </div>
 
-            <PortfolioManager persona="family_office_cio" />
+            <PortfolioManager persona="family_office" />
           </div>
         );
 

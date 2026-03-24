@@ -262,7 +262,7 @@ async function handleSystemHealth(): Promise<SystemHealthReport> {
   const healthPriority = { healthy: 0, warning: 1, critical: 2 };
   const overallHealth = [apiHealth, analyticsHealth, complianceHealth, marketDataHealth]
     .reduce((worst, current) =>
-      healthPriority[current] > healthPriority[worst] ? current : worst
+      healthPriority[current as keyof typeof healthPriority] > healthPriority[worst as keyof typeof healthPriority] ? current : worst
     ) as 'healthy' | 'warning' | 'critical';
 
   const alerts = [];
@@ -405,7 +405,7 @@ const handleStressTest = withPerformanceMonitoring(
     let totalRequests = 0;
     let successfulRequests = 0;
     let failedRequests = 0;
-    const responseTimes = [];
+    const responseTimes: number[] = [];
 
     const workers = Array.from({ length: concurrency }, async () => {
       while (Date.now() < endTime) {

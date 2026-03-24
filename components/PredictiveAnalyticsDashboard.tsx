@@ -11,6 +11,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import {
   calculateProfessionalMetrics,
+  calculatePersonaMetrics,
   generatePortfolioOptimization,
   calculateRiskAdjustedReturns,
   type ProfessionalMetrics,
@@ -120,7 +121,7 @@ export const PredictiveAnalyticsDashboard: React.FC<PredictiveAnalyticsDashboard
         });
 
         // Calculate portfolio metrics
-        const metrics = calculateProfessionalMetrics(portfolioValue, persona, timeHorizon, riskTolerance);
+        const metrics = calculatePersonaMetrics(portfolioValue, persona, timeHorizon, riskTolerance);
         setPortfolioMetrics(metrics);
 
         // Generate optimization recommendations

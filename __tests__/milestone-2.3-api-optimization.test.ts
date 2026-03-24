@@ -333,9 +333,9 @@ describe('Milestone 2.3: API Performance Optimization', () => {
 
     test('compliance API performance consistency', async () => {
       const endpoints = [
-        '/api/compliance?action=investor_classification',
+        '/api/compliance?action=status',
         '/api/compliance?action=digital_assets_framework',
-        '/api/compliance?action=aml_requirements'
+        '/api/compliance?action=regulatory_framework'
       ];
 
       const responseTimes = [];

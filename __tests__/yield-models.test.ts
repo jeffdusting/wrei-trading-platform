@@ -16,7 +16,7 @@
 
 import {
   WREI_YIELD_MODELS,
-  calculateAnnualYield,
+  calculateAnnualYieldFlexible as calculateAnnualYield,
   calculateRevenueshareYield,
   calculateNavAccruingYield,
   calculateHybridYield,

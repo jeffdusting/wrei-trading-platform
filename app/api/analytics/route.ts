@@ -29,13 +29,16 @@ import {
   calculateCarbonCreditMetrics,
   calculateAssetCoMetrics,
   calculateDualPortfolioMetrics,
-  calculateRiskProfile
+  calculateRiskProfile,
+  calculateCarbonCreditMetricsFlexible,
+  calculateAssetCoMetricsFlexible,
+  calculateDualPortfolioMetricsFlexible
 } from '@/lib/financial-calculations';
 
 import {
-  calculateProfessionalMetrics,
-  runMonteCarloAnalysis,
+  calculatePersonaMetrics,
   generateScenarioAnalysis,
+  runMonteCarloAnalysis,
   generatePortfolioOptimization,
   calculateRiskAdjustedReturns
 } from '@/lib/professional-analytics';
@@ -193,7 +196,7 @@ async function handleIRRCalculation(body: any) {
     cashFlows.push({
       date: flowDate.toISOString(),
       amount: cf.amount,
-      type: cf.year === 0 ? 'initial_investment' : 'quarterly_distribution',
+      type: (cf.year === 0 ? 'initial_investment' : 'quarterly_distribution') as 'initial_investment' | 'quarterly_distribution',
       description: cf.year === 0 ? 'Initial investment' : `Year ${cf.year} cash flow`,
       taxable: cf.year > 0
     });
@@ -254,7 +257,7 @@ async function handleNPVCalculation(body: any) {
     cashFlows.push({
       date: flowDate.toISOString(),
       amount: cf.amount,
-      type: cf.year === 0 ? 'initial_investment' : 'quarterly_distribution',
+      type: (cf.year === 0 ? 'initial_investment' : 'quarterly_distribution') as 'initial_investment' | 'quarterly_distribution',
       description: cf.year === 0 ? 'Initial investment' : `Year ${cf.year} cash flow`,
       taxable: cf.year > 0
     });
@@ -301,7 +304,7 @@ async function handleCarbonMetrics(body: any) {
     throw new Error('yieldMechanism must be either "revenue_share" or "nav_accruing"');
   }
 
-  const metrics = calculateCarbonCreditMetrics({
+  const metrics = calculateCarbonCreditMetricsFlexible({
     investmentAmount: body.investmentAmount,
     carbonCredits: body.carbonCredits,
     yieldMechanism: body.yieldMechanism,
@@ -350,7 +353,7 @@ async function handleAssetCoMetrics(body: any) {
     throw new Error(`region must be one of: ${validRegions.join(', ')}`);
   }
 
-  const metrics = calculateAssetCoMetrics({
+  const metrics = calculateAssetCoMetricsFlexible({
     investmentAmount: body.investmentAmount,
     assetType: body.assetType,
     region: body.region,
@@ -398,7 +401,7 @@ async function handleDualPortfolio(body: any) {
     throw new Error('carbonAllocation + assetCoAllocation must equal 1.0');
   }
 
-  const metrics = calculateDualPortfolioMetrics({
+  const metrics = calculateDualPortfolioMetricsFlexible({
     totalInvestment: body.totalInvestment,
     carbonAllocation: body.carbonAllocation,
     assetCoAllocation: body.assetCoAllocation,
@@ -506,13 +509,14 @@ async function handleScenarioAnalysis(body: any) {
     throw new Error(`investorType must be one of: ${validInvestorTypes.join(', ')}`);
   }
 
-  const analysis = generateScenarioAnalysis({
-    investmentAmount: body.investmentAmount,
-    tokenType: body.tokenType,
-    investorType: body.investorType,
-    timeHorizon: body.timeHorizon || 10,
-    scenarios: body.scenarios || ['base', 'bull', 'bear', 'stress']
-  });
+  const analysis = generateScenarioAnalysis(
+    body.tokenType,
+    body.investmentAmount,
+    body.timeHorizon || 10,
+    0.08, // baseExpectedReturn - default 8%
+    0.15, // volatility - default 15%
+    body.investorType === 'institutional' ? 'sophisticated' : 'retail'
+  );
 
   return {
     scenarioAnalysis: analysis,
@@ -593,14 +597,14 @@ async function handleMonteCarlo(body: any) {
   const simulationsError = validateNumericRange(body.simulations, 100, 10000, 'simulations');
   if (simulationsError) throw new Error(simulationsError);
 
-  const results = runMonteCarloAnalysis({
-    investmentAmount: body.investmentAmount,
-    tokenType: body.tokenType,
-    simulations: body.simulations,
-    timeHorizon: body.timeHorizon,
-    volatilityAssumptions: body.volatilityAssumptions || {},
-    correlationMatrix: body.correlationMatrix || null
-  });
+  const results = runMonteCarloAnalysis(
+    body.tokenType,
+    body.investmentAmount,
+    body.timeHorizon,
+    0.08, // expectedReturn - default 8%
+    0.15, // volatility - default 15%
+    body.simulations
+  );
 
   return {
     monteCarloResults: results,
@@ -637,13 +641,13 @@ async function handleProfessionalMetrics(body: any) {
     throw new Error(`investorClassification must be one of: ${validClassifications.join(', ')}`);
   }
 
-  const metrics = calculateProfessionalMetrics({
-    investmentAmount: body.investmentAmount,
-    tokenType: body.tokenType,
-    investorClassification: body.investorClassification,
-    timeHorizon: body.timeHorizon || 10,
-    customParameters: body.customParameters || {}
-  });
+  const metrics = calculatePersonaMetrics(
+    body.investmentAmount,
+    body.tokenType === 'carbon_credits' ? 'compliance_officer' :
+    body.tokenType === 'asset_co' ? 'esg_fund_manager' : 'government_procurement',
+    body.timeHorizon || 10,
+    'moderate'
+  );
 
   return {
     professionalMetrics: metrics,

@@ -233,7 +233,10 @@ export class MarketIntelligenceSystem {
           'Single asset class',
           'Limited growth potential'
         ],
-        marketShare: 0.13 // 13% of treasury token market
+        marketShare: 0.13, // 13% of treasury token market
+        primaryFocus: 'Treasury-backed stable yield',
+        differentiationStrength: 'moderate' as const,
+        threatLevel: 'medium' as const
       },
       'BUIDL': {
         name: 'BUIDL',
@@ -253,7 +256,10 @@ export class MarketIntelligenceSystem {
           'Yield cap constraints',
           'No infrastructure exposure'
         ],
-        marketShare: 0.09 // 9% of treasury token market
+        marketShare: 0.09, // 9% of treasury token market
+        primaryFocus: 'Institutional money market funds',
+        differentiationStrength: 'strong' as const,
+        threatLevel: 'low' as const
       }
     };
 
@@ -264,7 +270,11 @@ export class MarketIntelligenceSystem {
       currentYield: 0,
       institutionalFocus: false,
       strengths: [],
-      weaknesses: []
+      weaknesses: [],
+      marketShare: 0,
+      primaryFocus: 'Unknown',
+      differentiationStrength: 'weak' as const,
+      threatLevel: 'low' as const
     };
   }
 

@@ -90,7 +90,7 @@ export default function InstitutionalPortalPage() {
 
             {/* Next Steps */}
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-slate-900">What's Next?</h2>
+              <h2 className="text-lg font-semibold text-slate-900">What&apos;s Next?</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-sky-50 border border-sky-200 rounded-lg p-4">
                   <div className="w-8 h-8 bg-sky-500 rounded-full flex items-center justify-center mx-auto mb-3">

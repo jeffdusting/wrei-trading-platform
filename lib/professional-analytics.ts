@@ -366,120 +366,6 @@ export function calculatePerformanceAttribution(
 // COMPREHENSIVE PROFESSIONAL METRICS CALCULATION
 // =============================================================================
 
-export function calculateProfessionalMetrics(
-  tokenType: WREITokenType,
-  investmentAmount: number,
-  timeHorizon: number,
-  expectedReturn: number,
-  riskFreeRate: number = 0.04,
-  marketReturn: number = 0.08,
-  volatility: number,
-  beta: number = 1.0,
-  investorClassification: InvestorClassification = 'wholesale',
-  benchmarks: { [benchmark: string]: number } = {}
-): ProfessionalMetrics {
-  // Basic cash flow calculations
-  const annualCashFlow = investmentAmount * expectedReturn;
-  const terminalValue = investmentAmount * Math.pow(1 + expectedReturn, timeHorizon);
-
-  // IRR (for consistent cash flows, equals expected return)
-  const irr = expectedReturn;
-
-  // Modified IRR (assumes reinvestment at risk-free rate)
-  const mirr = Math.pow(
-    (annualCashFlow * timeHorizon * (1 + riskFreeRate)) / investmentAmount,
-    1 / timeHorizon
-  ) - 1;
-
-  // NPV calculation
-  let npv = -investmentAmount;
-  for (let year = 1; year <= timeHorizon; year++) {
-    npv += annualCashFlow / Math.pow(1 + riskFreeRate, year);
-  }
-
-  // Other metrics
-  const cashOnCash = expectedReturn;
-  const cagr = expectedReturn; // For consistent returns
-  const totalReturn = Math.pow(1 + expectedReturn, timeHorizon) - 1;
-
-  // Risk-adjusted metrics
-  const sharpeRatio = (expectedReturn - riskFreeRate) / volatility;
-  const sortinoRatio = sharpeRatio * 1.2; // Approximate (downside deviation typically lower)
-  const calmarRatio = expectedReturn / (volatility * 0.5); // Approximate max drawdown
-  const treynorRatio = (expectedReturn - riskFreeRate) / beta;
-  const informationRatio = (expectedReturn - marketReturn) / (volatility * 0.3); // Tracking error estimate
-
-  // Portfolio optimization (equal weights for simplicity in single asset analysis)
-  const optimizedAllocation: { [key in WREITokenType]: number } = {
-    carbon_credits: tokenType === 'carbon_credits' ? 1 : 0,
-    asset_co: tokenType === 'asset_co' ? 1 : 0,
-    dual_portfolio: tokenType === 'dual_portfolio' ? 1 : 0
-  };
-
-  const riskContribution = optimizedAllocation;
-  const diversificationRatio = tokenType === 'dual_portfolio' ? 1.2 : 1.0; // Dual portfolio gets diversification benefit
-  const concentrationRisk = tokenType === 'dual_portfolio' ? 0.3 : 1.0; // Lower concentration risk for dual
-
-  // Australian tax calculations
-  const taxCalculation = calculateAustralianTaxTreatment(
-    investmentAmount,
-    annualCashFlow,
-    terminalValue - investmentAmount,
-    timeHorizon,
-    annualCashFlow * 0.3, // Assume 30% franking
-    investorClassification
-  );
-
-  const frankingCreditValue = taxCalculation.frankingBenefit / investmentAmount;
-  const cgtDiscount = timeHorizon >= 1 ? 0.25 : 0; // 25% effective benefit from CGT discount
-  const negativeGearing = 0; // Not applicable for positive yield investments
-  const effectiveTaxRate = taxCalculation.totalTax / (annualCashFlow + terminalValue - investmentAmount);
-
-  // Benchmark comparisons
-  const defaultBenchmarks = {
-    'ASX 200': 0.08,
-    'USYC': 0.05,
-    'BUIDL': 0.045,
-    'Infrastructure REITs': 0.075,
-    'Carbon ETFs': 0.03
-  };
-
-  const allBenchmarks = { ...defaultBenchmarks, ...benchmarks };
-  const benchmarkOutperformance: { [benchmark: string]: number } = {};
-  Object.entries(allBenchmarks).forEach(([name, returns]) => {
-    benchmarkOutperformance[name] = expectedReturn - returns;
-  });
-
-  const trackingError = volatility * 0.3; // Estimate
-  const activeReturn = expectedReturn - marketReturn;
-  const betaToMarket = beta;
-
-  return {
-    irr,
-    npv,
-    mirr,
-    cashOnCash,
-    cagr,
-    totalReturn,
-    sharpeRatio,
-    sortinoRatio,
-    calmarRatio,
-    treynorRatio,
-    informationRatio,
-    optimizedAllocation,
-    riskContribution,
-    diversificationRatio,
-    concentrationRisk,
-    frankingCreditValue,
-    cgtDiscount,
-    negativeGearing,
-    effectiveTaxRate,
-    benchmarkOutperformance,
-    trackingError,
-    activeReturn,
-    betaToMarket
-  };
-}
 
 // =============================================================================
 // CHART DATA GENERATION FOR PROFESSIONAL INTERFACE
@@ -642,8 +528,21 @@ export function generateScenarioAnalysis(
 
 /**
  * Calculate professional metrics for a specific persona and portfolio
+ * This is the main function that tests expect
  */
 export function calculateProfessionalMetrics(
+  portfolioValue: number,
+  persona: PersonaType,
+  timeHorizon: number,
+  riskTolerance: 'conservative' | 'moderate' | 'aggressive'
+): ProfessionalMetrics {
+  return calculatePersonaMetrics(portfolioValue, persona, timeHorizon, riskTolerance);
+}
+
+/**
+ * Calculate professional metrics for a specific persona and portfolio (internal implementation)
+ */
+export function calculatePersonaMetrics(
   portfolioValue: number,
   persona: PersonaType,
   timeHorizon: number,
@@ -727,8 +626,8 @@ export function calculateProfessionalMetrics(
   const treynorRatio = (expectedReturn - riskFreeRate) / beta;
   const informationRatio = (expectedReturn - marketReturn) / (volatility * 0.3);
 
-  // Calculate optimized allocation based on persona
-  const optimizedAllocation = {
+  // Calculate persona-specific allocation
+  const personaAllocation = {
     carbon_credits: persona === 'esg_impact_investor' ? 0.6 : persona === 'family_office' ? 0.2 : 0.4,
     asset_co: persona === 'family_office' ? 0.7 : persona === 'esg_impact_investor' ? 0.3 : 0.4,
     dual_portfolio: persona === 'defi_yield_farmer' ? 0.2 : 0.1
@@ -736,13 +635,13 @@ export function calculateProfessionalMetrics(
 
   // Portfolio construction metrics
   const riskContribution = {
-    carbon_credits: optimizedAllocation.carbon_credits * volatility,
-    asset_co: optimizedAllocation.asset_co * volatility * 0.8, // Lower risk
-    dual_portfolio: optimizedAllocation.dual_portfolio * volatility * 1.1 // Higher risk
+    carbon_credits: personaAllocation.carbon_credits * volatility,
+    asset_co: personaAllocation.asset_co * volatility * 0.8, // Lower risk
+    dual_portfolio: personaAllocation.dual_portfolio * volatility * 1.1 // Higher risk
   };
 
   const diversificationRatio = 1.2; // Assume some diversification benefit
-  const concentrationRisk = Math.max(...Object.values(optimizedAllocation));
+  const concentrationRisk = Math.max(...Object.values(personaAllocation));
 
   // Australian tax considerations
   const frankingCreditValue = portfolioValue * 0.02; // 2% franking benefit
@@ -771,19 +670,16 @@ export function calculateProfessionalMetrics(
     effectiveTaxRate
   };
 
-  // Calculate optimized allocation based on persona
-  const optimizedAllocation = {
-    carbon_credits: persona === 'esg_impact_investor' ? 0.6 : persona === 'family_office' ? 0.2 : 0.4,
-    asset_co: persona === 'family_office' ? 0.7 : persona === 'esg_impact_investor' ? 0.3 : 0.4,
-    dual_portfolio: persona === 'defi_yield_farmer' ? 0.2 : 0.1
-  };
-
   return {
     ...detailedMetrics,
-    optimizedAllocation,
+    optimizedAllocation: personaAllocation,
     maxDrawdown: volatility * 0.6, // Estimated max drawdown as 60% of volatility
     volatility,
-    correlationScore: beta
+    correlationScore: beta,
+    benchmarkOutperformance: { 'ASX 200': expectedReturn - 0.08 },
+    trackingError: volatility * 0.3,
+    activeReturn: expectedReturn - 0.08, // Assuming market return of 8%
+    betaToMarket: beta
   };
 }
 
