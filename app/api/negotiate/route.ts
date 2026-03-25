@@ -15,6 +15,13 @@ import {
   NegotiationStrategyExplanation,
   InstitutionalNegotiationContext
 } from '@/lib/negotiation-strategy';
+import {
+  CommitteeConfig,
+  CommitteeResponse,
+  buildCommitteeSystemPromptSection,
+  parseCommitteeResponse,
+  advanceSpeaker,
+} from '@/lib/committee-mode';
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -26,12 +33,16 @@ export async function POST(request: NextRequest) {
   try {
     // Step 1: Input Processing
     const body = await request.json();
-    const { message, state: requestState, isOpening } = body as {
+    const { message, state: requestState, isOpening, committee: committeeConfig } = body as {
       message: string;
       state: NegotiationState;
       isOpening: boolean;
+      committee?: CommitteeConfig;
     };
     state = requestState;
+
+    // Determine if committee mode is active
+    const isCommitteeMode = committeeConfig?.enabled === true;
 
     let sanitizedMessage = message;
     let threatLevel: 'none' | 'low' | 'medium' | 'high' = 'none';
@@ -51,7 +62,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 2: System Prompt Construction
-    const systemPrompt = buildSystemPrompt(state);
+    let systemPrompt = buildSystemPrompt(state);
+
+    // Step 2a: Append committee mode instructions if active
+    if (isCommitteeMode && committeeConfig) {
+      systemPrompt += buildCommitteeSystemPromptSection(committeeConfig);
+    }
 
     // Step 3: Build Message History
     const messageHistory = buildMessageHistory(state, sanitizedMessage, isOpening);
@@ -59,7 +75,7 @@ export async function POST(request: NextRequest) {
     // Step 4: Claude API Call
     const response = await client.messages.create({
       model: 'claude-opus-4-6',
-      max_tokens: 1024,
+      max_tokens: isCommitteeMode ? 2048 : 1024, // Committee mode needs more tokens for multiple perspectives
       system: systemPrompt,
       messages: messageHistory,
     });
@@ -156,6 +172,71 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Step 9a: Process Committee Mode Response (if active)
+    let committeeResponse: CommitteeResponse | null = null;
+    let updatedCommitteeConfig: CommitteeConfig | null = null;
+
+    if (isCommitteeMode && committeeConfig) {
+      try {
+        // Parse the raw Claude response for committee perspectives
+        const rawParsed = JSON.parse(responseText);
+        committeeResponse = parseCommitteeResponse(
+          rawParsed,
+          committeeConfig,
+          adjustedPrice || state.currentOfferPrice,
+          state.anchorPrice,
+          state.round,
+          state.phase
+        );
+
+        // Advance the speaker for next round
+        updatedCommitteeConfig = advanceSpeaker({
+          ...committeeConfig,
+          roundsCompleted: committeeResponse.roundsCompleted,
+          currentSpeakerIndex: committeeResponse.currentSpeakerIndex,
+        });
+
+        // Update member stances in committee config based on perspectives
+        if (committeeResponse.perspectives.length > 0) {
+          updatedCommitteeConfig.members = updatedCommitteeConfig.members.map(member => {
+            const perspective = committeeResponse!.perspectives.find(p => p.role === member.role);
+            if (perspective) {
+              return {
+                ...member,
+                stance: perspective.stance,
+                reasoning: perspective.response,
+                concerns: perspective.concerns,
+                conditions: perspective.conditions,
+              };
+            }
+            return member;
+          });
+        }
+
+        // Store committee decisions
+        if (committeeResponse.decision) {
+          updatedCommitteeConfig.decisions = [
+            ...updatedCommitteeConfig.decisions,
+            committeeResponse.decision,
+          ];
+        }
+
+        console.log(`[WREI Committee] Round ${committeeConfig.roundsCompleted + 1} processed. Perspectives: ${committeeResponse.perspectives.length}. Decision: ${committeeResponse.decision?.outcome || 'pending'}`);
+      } catch (committeeError) {
+        console.error('[WREI Committee] Error processing committee response:', committeeError);
+        // Fall back to default committee response based on negotiation state
+        committeeResponse = parseCommitteeResponse(
+          {},
+          committeeConfig,
+          adjustedPrice || state.currentOfferPrice,
+          state.anchorPrice,
+          state.round,
+          state.phase
+        );
+        updatedCommitteeConfig = advanceSpeaker(committeeConfig);
+      }
+    }
+
     // Step 10: Return Response
     return Response.json({
       agentMessage: claudeResponse.response + premiumDefence,
@@ -165,6 +246,11 @@ export async function POST(request: NextRequest) {
       threatLevel,
       tokenMetadata: updatedState.tokenMetadata || null, // Include metadata in response
       strategyExplanation, // Add strategy explanation for institutional investors
+      // Committee mode data (only present when committee mode is active)
+      ...(isCommitteeMode && {
+        committeeResponse,
+        committeeConfig: updatedCommitteeConfig,
+      }),
     });
 
   } catch (error) {
