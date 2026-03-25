@@ -26,6 +26,7 @@ import { carbonPricingFeed } from '@/lib/data-feeds/carbon-pricing-feed';
 import { rwaMarketFeed } from '@/lib/data-feeds/rwa-market-feed';
 import { realTimeDataConnector } from '@/lib/data-feeds/real-time-connector';
 import { marketIntelligenceSystem } from '@/lib/market-intelligence';
+import { handleLiveMarketData } from '@/lib/api-routes/live-market-data-handler';
 
 export async function GET(request: NextRequest) {
   const startTime = Date.now();
@@ -101,10 +102,13 @@ export async function GET(request: NextRequest) {
         source = 'WREI_FEED_STATUS';
         break;
 
+      case 'live_data':
+        return await handleLiveMarketData(request, action, requestId);
+
       default:
         logApiError('/api/market-data', action, requestId, 'Invalid action');
         return apiError(
-          `Invalid action: ${action}. Valid actions: carbon_pricing, carbon_analytics, rwa_market, rwa_analytics, market_sentiment, competitive_analysis, carbon_projections, historical, feed_status`,
+          `Invalid action: ${action}. Valid actions: carbon_pricing, carbon_analytics, rwa_market, rwa_analytics, market_sentiment, competitive_analysis, carbon_projections, historical, feed_status, live_data`,
           400
         );
     }
