@@ -80,7 +80,7 @@ export default function DemoControlBar() {
   };
 
   return (
-    <div className="bg-[#1B2A4A]/95 border-b border-slate-600/50 backdrop-blur-sm sticky top-16 z-40">
+    <div className="bg-[#1B2A4A]/95 border-b border-slate-600/50 backdrop-blur-sm sticky top-16 z-50">
       <div className="mx-auto px-4 sm:px-6 lg:px-8 h-10">
         <div className="flex items-center justify-between h-full overflow-hidden">
 
