@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import NavigationShell from '@/components/navigation/NavigationShell'
+import { DemoDataProvider } from '@/components/demo/DemoDataProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -44,7 +45,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <NavigationShell>{children}</NavigationShell>
+        <DemoDataProvider>
+          <NavigationShell>{children}</NavigationShell>
+        </DemoDataProvider>
       </body>
     </html>
   )

@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { MarketTicker } from '../market'
+import DemoModeToggle, { DemoPresentationStatus, DemoDataIndicator } from '../demo/DemoModeToggle'
+import TourOverlay from '../demo/TourOverlay'
 
 interface NavigationItem {
   label: string
@@ -13,6 +15,7 @@ interface NavigationItem {
 
 const navigationItems: NavigationItem[] = [
   { label: 'Home', href: '/', description: 'Water Roads WREI Platform' },
+  { label: 'Demo', href: '/demo', description: 'Demo Mode & Presentations' },
   { label: 'Negotiate', href: '/negotiate', description: 'AI Carbon Credit Trading' },
   { label: 'Calculator', href: '/calculator', description: 'Investment Calculator' },
   { label: 'Institutional', href: '/institutional/portal', description: 'Institutional Onboarding' },
@@ -53,22 +56,30 @@ export default function NavigationShell({ children }: { children: React.ReactNod
               </Link>
             </div>
 
-            {/* Desktop Navigation Links */}
-            <div className="hidden md:flex items-center space-x-8">
-              {navigationItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                    isActive(item.href)
-                      ? 'bg-[#0EA5E9] text-white'
-                      : 'text-slate-300 hover:text-white hover:bg-slate-700'
-                  }`}
-                  title={item.description}
-                >
-                  {item.label}
-                </Link>
-              ))}
+            {/* Desktop Navigation Links and Demo Mode */}
+            <div className="hidden md:flex items-center space-x-6">
+              {/* Navigation Links */}
+              <div className="flex items-center space-x-6">
+                {navigationItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                      isActive(item.href)
+                        ? 'bg-[#0EA5E9] text-white'
+                        : 'text-slate-300 hover:text-white hover:bg-slate-700'
+                    }`}
+                    title={item.description}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+
+              {/* Demo Mode Toggle */}
+              <div className="border-l border-slate-600 pl-6">
+                <DemoModeToggle />
+              </div>
             </div>
 
             {/* Mobile menu button */}
@@ -127,6 +138,11 @@ export default function NavigationShell({ children }: { children: React.ReactNod
       <main className="flex-1">
         {children}
       </main>
+
+      {/* Demo Mode Overlays and Indicators */}
+      <TourOverlay />
+      <DemoPresentationStatus />
+      <DemoDataIndicator />
 
       {/* Footer */}
       <footer className="bg-[#1B2A4A] text-slate-300 py-8">
