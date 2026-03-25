@@ -36,6 +36,12 @@ import {
 } from '@/lib/financial-calculations';
 
 import {
+  calculateInvestment,
+  validateCalculatorInputs,
+  type CalculatorInputs,
+} from '@/lib/investment-calculator';
+
+import {
   calculatePersonaMetrics,
   generateScenarioAnalysis,
   runMonteCarloAnalysis,
@@ -125,10 +131,15 @@ export async function POST(request: NextRequest) {
         source = 'WREI_PROFESSIONAL_ANALYTICS';
         break;
 
+      case 'calculate':
+        result = await handleCalculate(body);
+        source = 'WREI_INVESTMENT_CALCULATOR';
+        break;
+
       default:
         logApiError('/api/analytics', action, requestId, 'Invalid action');
         return apiError(
-          `Invalid action: ${action}. Valid actions: irr, npv, carbon_metrics, asset_co_metrics, dual_portfolio, risk_profile, scenario_analysis, portfolio_optimization, monte_carlo, professional_metrics`,
+          `Invalid action: ${action}. Valid actions: irr, npv, carbon_metrics, asset_co_metrics, dual_portfolio, risk_profile, scenario_analysis, portfolio_optimization, monte_carlo, professional_metrics, calculate`,
           400
         );
     }
@@ -657,6 +668,47 @@ async function handleProfessionalMetrics(body: any) {
       investorClassification: body.investorClassification,
       timeHorizon: body.timeHorizon || 10
     },
+    calculationTimestamp: new Date().toISOString()
+  };
+}
+
+/**
+ * Handle investment calculator calculation
+ */
+async function handleCalculate(body: any) {
+  // Validate required fields
+  const missing = validateRequiredFields(body, [
+    'investmentAmount', 'timeHorizon', 'tokenType', 'riskTolerance'
+  ]);
+  if (missing.length > 0) {
+    throw new Error(`Missing required fields: ${missing.join(', ')}`);
+  }
+
+  // Build calculator inputs with defaults for optional fields
+  const calcInputs: CalculatorInputs = {
+    investmentAmount: body.investmentAmount,
+    timeHorizon: body.timeHorizon,
+    tokenType: body.tokenType,
+    riskTolerance: body.riskTolerance,
+    discountRate: body.discountRate ?? 0.08,
+    taxRate: body.taxRate ?? 0.25,
+    inflationRate: body.inflationRate ?? 0.03,
+    exitMultiple: body.exitMultiple ?? 1.5,
+  };
+
+  // Validate using calculator library
+  const validationErrors = validateCalculatorInputs(calcInputs);
+  if (validationErrors.length > 0) {
+    throw new Error(
+      `Validation failed: ${validationErrors.map(e => e.message).join('; ')}`
+    );
+  }
+
+  const results = calculateInvestment(calcInputs);
+
+  return {
+    results,
+    inputParameters: calcInputs,
     calculationTimestamp: new Date().toISOString()
   };
 }

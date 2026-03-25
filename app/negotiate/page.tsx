@@ -9,6 +9,7 @@ import ProfessionalInterface from '@/components/ProfessionalInterface';
 import { calculateProfessionalMetrics, generateScenarioAnalysis } from '@/lib/professional-analytics';
 import { exportReport } from '@/lib/export-utilities';
 import type { ReportData, ExportOptions } from '@/lib/export-utilities';
+import ExportModal from '@/components/export/ExportModal';
 import { NegotiationStrategyExplanation } from '@/lib/negotiation-strategy';
 import NegotiationStrategyPanel from '@/components/NegotiationStrategyPanel';
 import {
@@ -779,50 +780,15 @@ export default function NegotiatePage() {
             </div>
           </div>
 
-          {/* Export Options Modal */}
-          {showExportOptions && interfaceMode === 'professional' && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
-                <h3 className="text-lg font-bold text-gray-800 mb-4">Export Professional Report</h3>
-                <div className="grid grid-cols-2 gap-3 mb-4">
-                  <button
-                    onClick={() => handleExportReport('pdf')}
-                    className="p-3 border border-gray-200 rounded-lg hover:bg-gray-50 text-center"
-                  >
-                    <div className="text-2xl mb-1">📄</div>
-                    <div className="text-sm font-medium">PDF Report</div>
-                  </button>
-                  <button
-                    onClick={() => handleExportReport('excel')}
-                    className="p-3 border border-gray-200 rounded-lg hover:bg-gray-50 text-center"
-                  >
-                    <div className="text-2xl mb-1">📊</div>
-                    <div className="text-sm font-medium">Excel Analytics</div>
-                  </button>
-                  <button
-                    onClick={() => handleExportReport('csv')}
-                    className="p-3 border border-gray-200 rounded-lg hover:bg-gray-50 text-center"
-                  >
-                    <div className="text-2xl mb-1">📈</div>
-                    <div className="text-sm font-medium">CSV Data</div>
-                  </button>
-                  <button
-                    onClick={() => handleExportReport('json')}
-                    className="p-3 border border-gray-200 rounded-lg hover:bg-gray-50 text-center"
-                  >
-                    <div className="text-2xl mb-1">🔧</div>
-                    <div className="text-sm font-medium">JSON API</div>
-                  </button>
-                </div>
-                <button
-                  onClick={() => setShowExportOptions(false)}
-                  className="w-full px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          )}
+          {/* B5: Enhanced Export Modal */}
+          <ExportModal
+            isOpen={showExportOptions && interfaceMode === 'professional'}
+            onClose={() => setShowExportOptions(false)}
+            reportData={generateReportData()}
+            recipientName="Professional Investor"
+            recipientOrganization={selectedPersonaData?.name || 'Investment Organisation'}
+            recipientClassification={investorClassification}
+          />
         </div>
       </div>
 

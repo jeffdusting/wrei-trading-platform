@@ -31,6 +31,8 @@ import { generateRiskReport, calculateRiskMetrics } from '@/lib/risk-profiles';
 import { marketIntelligenceSystem } from '@/lib/market-intelligence';
 import { WREILineChart } from '@/components/charts';
 import { ESGImpactDashboard } from '@/components/market/ESGImpactDashboard';
+import ExportModal from '@/components/export/ExportModal';
+import type { ReportData } from '@/lib/export-utilities';
 import type {
   WREITokenType,
   FinancialMetrics,
@@ -722,6 +724,7 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
   const [selectedTokenType, setSelectedTokenType] = useState<WREITokenType>('dual_portfolio');
   const [yieldMechanism, setYieldMechanism] = useState<'revenue_share' | 'nav_accruing'>('revenue_share');
   const [activeSection, setActiveSection] = useState('overview');
+  const [showExportModal, setShowExportModal] = useState(false);
 
   // Investment decision tracking
   const [decisionTracking, setDecisionTracking] = useState({
@@ -731,13 +734,112 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
     timelineToDecision: '' as string
   });
 
+  // B5: Generate report data for export
+  const exportReportData: ReportData = useMemo(() => {
+    const expectedReturn = selectedTokenType === 'carbon_credits' ? 0.08 :
+      selectedTokenType === 'asset_co' ? 0.283 : 0.185;
+
+    // Build minimal professional metrics for export
+    const baseMetrics = {
+      irr: expectedReturn,
+      npv: investmentSize * expectedReturn * timeHorizon * 0.8,
+      mirr: expectedReturn * 0.9,
+      cashOnCash: expectedReturn,
+      cagr: expectedReturn,
+      totalReturn: Math.pow(1 + expectedReturn, timeHorizon) - 1,
+      sharpeRatio: (expectedReturn - 0.04) / 0.15,
+      sortinoRatio: (expectedReturn - 0.04) / 0.10,
+      calmarRatio: expectedReturn / 0.15,
+      treynorRatio: (expectedReturn - 0.04) / 0.8,
+      informationRatio: 0.5,
+      optimizedAllocation: { carbon_credits: 0.4, asset_co: 0.4, dual_portfolio: 0.2 } as Record<WREITokenType, number>,
+      riskContribution: { carbon_credits: 0.35, asset_co: 0.35, dual_portfolio: 0.30 } as Record<WREITokenType, number>,
+      diversificationRatio: 1.2,
+      concentrationRisk: 0.4,
+      frankingCreditValue: 0.0128,
+      cgtDiscount: 0.5,
+      negativeGearing: 0.02,
+      effectiveTaxRate: 0.23,
+      maxDrawdown: 0.15,
+      volatility: 0.15,
+      correlationScore: 0.3,
+      benchmarkOutperformance: { 'ASX 200': 0.10, 'USYC': 0.14, 'BUIDL': 0.15 } as Record<string, number>,
+      trackingError: 0.05,
+      activeReturn: 0.10,
+      betaToMarket: 0.8,
+    };
+
+    const buildScenarioCase = (multiplier: number) => ({
+      ...baseMetrics,
+      irr: baseMetrics.irr * multiplier,
+      npv: baseMetrics.npv * multiplier,
+      totalReturn: Math.pow(1 + baseMetrics.irr * multiplier, timeHorizon) - 1,
+    });
+
+    return {
+      investmentSummary: {
+        tokenType: selectedTokenType,
+        investmentAmount: investmentSize,
+        timeHorizon,
+        expectedReturn,
+        riskLevel: classification,
+      },
+      professionalMetrics: baseMetrics,
+      scenarioAnalysis: {
+        baseCase: buildScenarioCase(1.0),
+        bullCase: buildScenarioCase(1.5),
+        bearCase: buildScenarioCase(0.5),
+        stressCase: buildScenarioCase(0.2),
+        probabilityWeighted: buildScenarioCase(0.95),
+      },
+      chartData: {
+        performanceChart: [],
+        riskReturnScatter: [],
+        allocationPie: [],
+        drawdownChart: [],
+        rollingReturns: [],
+        correlationHeatmap: [],
+      },
+      complianceData: {
+        regulatoryStatus: 'Australian AFSL 534187',
+        disclosures: [
+          'Investment values may fall as well as rise',
+          'Past performance is not indicative of future results',
+        ],
+        riskWarnings: [
+          'Technology and counterparty risks apply',
+          'Liquidity may be limited in secondary markets',
+        ],
+        taxImplications: [
+          'Income treatment for revenue share mechanism',
+          'CGT treatment for NAV-accruing mechanism',
+        ],
+      },
+      marketData: {
+        benchmarkComparisons: baseMetrics.benchmarkOutperformance,
+        competitivePositioning: [
+          'Native digital carbon credits with T+0 settlement',
+          'Asset-backed yield from real infrastructure',
+        ],
+        marketTrends: [
+          'A$155B carbon market projected by 2030',
+          'A$19B tokenised RWA market growth',
+        ],
+      },
+      generatedAt: new Date().toISOString(),
+      validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      reportVersion: '6.2.0',
+    };
+  }, [selectedTokenType, investmentSize, timeHorizon, classification]);
+
   const sections = [
     { id: 'overview', label: 'Investment Overview', icon: '📊' },
     { id: 'pathway', label: 'Investor Pathway', icon: '🏛️' },
     { id: 'markets', label: 'Market Access', icon: '📈' },
     { id: 'analytics', label: 'Advanced Analytics', icon: '📊' },
     { id: 'esg', label: 'ESG Impact', icon: '🌱' },
-    { id: 'risk', label: 'Risk Assessment', icon: '⚖️' }
+    { id: 'risk', label: 'Risk Assessment', icon: '⚖️' },
+    { id: 'export', label: 'Export Report', icon: '📄' }
   ];
 
   return (
@@ -970,7 +1072,53 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
               investmentAmount={investmentSize}
             />
           )}
+
+          {activeSection === 'export' && (
+            <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+              <h3 className="text-xl font-bold text-gray-800 mb-4">Professional Report Export</h3>
+              <p className="text-gray-600 mb-6">
+                Generate institutional-grade reports in multiple formats. All exports include
+                Australian number formatting, compliance disclosures, and professional presentation.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div className="bg-blue-50 rounded-lg p-4 text-center">
+                  <div className="text-3xl mb-2">CSV</div>
+                  <div className="text-sm font-medium text-blue-800">Spreadsheet Data</div>
+                  <div className="text-xs text-blue-600 mt-1">Excel-compatible format</div>
+                </div>
+                <div className="bg-green-50 rounded-lg p-4 text-center">
+                  <div className="text-3xl mb-2">JSON</div>
+                  <div className="text-sm font-medium text-green-800">API Integration</div>
+                  <div className="text-xs text-green-600 mt-1">Structured data export</div>
+                </div>
+                <div className="bg-purple-50 rounded-lg p-4 text-center">
+                  <div className="text-3xl mb-2">TXT</div>
+                  <div className="text-sm font-medium text-purple-800">Text Report</div>
+                  <div className="text-xs text-purple-600 mt-1">Print-to-PDF ready</div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowExportModal(true)}
+                className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                data-testid="professional-export-btn"
+              >
+                Open Export Options
+              </button>
+            </div>
+          )}
         </div>
+
+        {/* B5: Export Modal */}
+        <ExportModal
+          isOpen={showExportModal}
+          onClose={() => setShowExportModal(false)}
+          reportData={exportReportData}
+          recipientName={investorProfile.type.replace('_', ' ')}
+          recipientOrganization="Investment Organisation"
+          recipientClassification={classification}
+        />
 
         {/* Investment Decision Panel */}
         <div className="mt-8 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border border-green-200 p-6">

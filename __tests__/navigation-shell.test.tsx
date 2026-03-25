@@ -34,6 +34,7 @@ describe('NavigationShell Component', () => {
     expect(screen.getByRole('link', { name: /home/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /negotiate/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /institutional/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /compliance/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /scenarios/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /performance/i })).toBeInTheDocument();
   });
@@ -138,6 +139,7 @@ describe('NavigationShell Component', () => {
     expect(screen.getByRole('link', { name: /home/i })).toHaveAttribute('href', '/');
     expect(screen.getByRole('link', { name: /negotiate/i })).toHaveAttribute('href', '/negotiate');
     expect(screen.getByRole('link', { name: /institutional/i })).toHaveAttribute('href', '/institutional/portal');
+    expect(screen.getByRole('link', { name: /compliance/i })).toHaveAttribute('href', '/compliance');
     expect(screen.getByRole('link', { name: /scenarios/i })).toHaveAttribute('href', '/scenario');
     expect(screen.getByRole('link', { name: /performance/i })).toHaveAttribute('href', '/performance');
   });
@@ -145,7 +147,7 @@ describe('NavigationShell Component', () => {
   test('all routes are accessible via navigation', () => {
     render(<NavigationShell>{mockChildren}</NavigationShell>);
 
-    const expectedRoutes = ['/', '/negotiate', '/institutional/portal', '/scenario', '/performance'];
+    const expectedRoutes = ['/', '/negotiate', '/institutional/portal', '/compliance', '/scenario', '/performance'];
     const links = screen.getAllByRole('link');
 
     expectedRoutes.forEach(route => {

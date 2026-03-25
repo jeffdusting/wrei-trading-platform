@@ -32,6 +32,8 @@ import { ESGImpactDashboard } from '@/components/market/ESGImpactDashboard';
 import ProvenanceChain from '@/components/blockchain/ProvenanceChain';
 import MerkleTreeView from '@/components/blockchain/MerkleTreeView';
 import VesselProvenanceCard from '@/components/blockchain/VesselProvenanceCard';
+import ExportModal from '@/components/export/ExportModal';
+import type { ReportData } from '@/lib/export-utilities';
 import type {
   WREITokenType,
   FinancialMetrics,
@@ -840,6 +842,82 @@ const InstitutionalDashboard: React.FC<DashboardProps> = ({
     }
   }), []);
 
+  // B5: Export modal state
+  const [showExportModal, setShowExportModal] = useState(false);
+
+  // B5: Report data for export
+  const exportReportData: ReportData = useMemo(() => {
+    const yieldRate = (portfolio.totalYieldGenerated / portfolio.totalPortfolioValue);
+    const baseMetrics = {
+      irr: yieldRate,
+      npv: portfolio.totalYieldGenerated * timeHorizon * 0.8,
+      mirr: yieldRate * 0.9,
+      cashOnCash: yieldRate,
+      cagr: yieldRate,
+      totalReturn: Math.pow(1 + yieldRate, timeHorizon) - 1,
+      sharpeRatio: riskProfile.sharpeRatio,
+      sortinoRatio: riskProfile.sharpeRatio * 1.2,
+      calmarRatio: yieldRate / 0.15,
+      treynorRatio: (yieldRate - 0.04) / 0.8,
+      informationRatio: 0.5,
+      optimizedAllocation: { carbon_credits: portfolioAllocation.carbon, asset_co: portfolioAllocation.assetCo, dual_portfolio: portfolioAllocation.dual } as Record<WREITokenType, number>,
+      riskContribution: { carbon_credits: 0.35, asset_co: 0.35, dual_portfolio: 0.30 } as Record<WREITokenType, number>,
+      diversificationRatio: 1.2,
+      concentrationRisk: 0.4,
+      frankingCreditValue: 0.0128,
+      cgtDiscount: 0.5,
+      negativeGearing: 0.02,
+      effectiveTaxRate: 0.23,
+      maxDrawdown: 0.15,
+      volatility: riskProfile.volatility / 100,
+      correlationScore: 0.3,
+      benchmarkOutperformance: { 'ASX 200': 0.10, 'USYC': 0.14, 'BUIDL': 0.15 } as Record<string, number>,
+      trackingError: 0.05,
+      activeReturn: 0.10,
+      betaToMarket: 0.8,
+    };
+
+    const buildCase = (mult: number) => ({
+      ...baseMetrics,
+      irr: baseMetrics.irr * mult,
+      npv: baseMetrics.npv * mult,
+      totalReturn: Math.pow(1 + baseMetrics.irr * mult, timeHorizon) - 1,
+    });
+
+    return {
+      investmentSummary: {
+        tokenType: 'dual_portfolio' as WREITokenType,
+        investmentAmount: portfolioSize,
+        timeHorizon,
+        expectedReturn: yieldRate,
+        riskLevel: 'professional',
+      },
+      professionalMetrics: baseMetrics,
+      scenarioAnalysis: {
+        baseCase: buildCase(1.0),
+        bullCase: buildCase(1.5),
+        bearCase: buildCase(0.5),
+        stressCase: buildCase(0.2),
+        probabilityWeighted: buildCase(0.95),
+      },
+      chartData: { performanceChart: [], riskReturnScatter: [], allocationPie: [], drawdownChart: [], rollingReturns: [], correlationHeatmap: [] },
+      complianceData: {
+        regulatoryStatus: 'Australian AFSL 534187',
+        disclosures: ['Investment values may fall as well as rise', 'Past performance is not indicative of future results'],
+        riskWarnings: ['Technology and counterparty risks apply', 'Liquidity may be limited'],
+        taxImplications: ['Income treatment for revenue share', 'CGT treatment for NAV-accruing'],
+      },
+      marketData: {
+        benchmarkComparisons: baseMetrics.benchmarkOutperformance,
+        competitivePositioning: ['Native digital carbon credits with T+0 settlement', 'Asset-backed yield from real infrastructure'],
+        marketTrends: ['A$155B carbon market projected by 2030', 'A$19B tokenised RWA market growth'],
+      },
+      generatedAt: new Date().toISOString(),
+      validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      reportVersion: '6.2.0',
+    };
+  }, [portfolio, portfolioSize, timeHorizon, riskProfile, portfolioAllocation]);
+
   // Tab configuration
   const tabs: DashboardTab[] = [
     {
@@ -1009,6 +1087,16 @@ const InstitutionalDashboard: React.FC<DashboardProps> = ({
                 <div className="text-sm text-gray-600">Benchmark</div>
                 <div className="text-xl font-bold text-blue-600">+23%</div>
               </div>
+              <button
+                onClick={() => setShowExportModal(true)}
+                className="bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700 transition-colors flex items-center space-x-2"
+                data-testid="dashboard-export-btn"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                <span className="text-sm font-medium">Export</span>
+              </button>
             </div>
           </div>
         </div>
@@ -1054,6 +1142,16 @@ const InstitutionalDashboard: React.FC<DashboardProps> = ({
             Powered by WREI Tokenization Platform • Australian AFSL Compliant • Professional Investor Use Only
           </p>
         </div>
+
+        {/* B5: Export Modal */}
+        <ExportModal
+          isOpen={showExportModal}
+          onClose={() => setShowExportModal(false)}
+          reportData={exportReportData}
+          recipientName={investorProfile.type.replace('_', ' ')}
+          recipientOrganization="Institutional Portfolio"
+          recipientClassification="professional"
+        />
       </div>
     </div>
   );

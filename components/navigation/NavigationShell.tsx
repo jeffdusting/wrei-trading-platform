@@ -14,9 +14,12 @@ interface NavigationItem {
 const navigationItems: NavigationItem[] = [
   { label: 'Home', href: '/', description: 'Water Roads WREI Platform' },
   { label: 'Negotiate', href: '/negotiate', description: 'AI Carbon Credit Trading' },
+  { label: 'Calculator', href: '/calculator', description: 'Investment Calculator' },
   { label: 'Institutional', href: '/institutional/portal', description: 'Institutional Onboarding' },
+  { label: 'Compliance', href: '/compliance', description: 'Regulatory Compliance Map' },
   { label: 'Scenarios', href: '/scenario', description: 'Market Scenarios' },
-  { label: 'Performance', href: '/performance', description: 'System Performance' }
+  { label: 'Performance', href: '/performance', description: 'System Performance' },
+  { label: 'Developers', href: '/developer', description: 'API Explorer & Documentation' }
 ]
 
 export default function NavigationShell({ children }: { children: React.ReactNode }) {
