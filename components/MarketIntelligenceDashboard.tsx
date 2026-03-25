@@ -28,6 +28,8 @@ import {
   type PortfolioOptimization
 } from '@/lib/professional-analytics';
 import { PersonaType } from '@/lib/types';
+import { WREIAreaChart } from '@/components/charts';
+import CompetitivePositioning from '@/components/market/CompetitivePositioning';
 
 interface MarketIntelligenceDashboardProps {
   persona?: PersonaType;
@@ -60,7 +62,7 @@ export const MarketIntelligenceDashboard: React.FC<MarketIntelligenceDashboardPr
   timeHorizon = 10,
   riskTolerance = 'moderate'
 }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'opportunities' | 'alerts'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'competitive' | 'opportunities' | 'alerts'>('overview');
   const [refreshing, setRefreshing] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
 
@@ -355,6 +357,36 @@ export const MarketIntelligenceDashboard: React.FC<MarketIntelligenceDashboardPr
         </div>
       </div>
 
+      {/* Market Trends Analysis */}
+      <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-slate-800 mb-4">Market Trends</h3>
+        <div className="h-80">
+          <WREIAreaChart
+            data={carbonProjections ? [
+              { period: '2024', carbon: 8.45, dmrv: 15.2, wrei: 28.12 },
+              { period: '2025', carbon: 9.1, dmrv: 16.8, wrei: 31.5 },
+              { period: '2026', carbon: 10.2, dmrv: 19.2, wrei: 36.8 },
+              { period: '2027', carbon: 11.8, dmrv: 22.5, wrei: 43.2 },
+              { period: '2028', carbon: 13.9, dmrv: 27.1, wrei: 52.4 },
+              { period: '2029', carbon: 16.7, dmrv: 33.2, wrei: 64.8 },
+              { period: '2030', carbon: 20.4, dmrv: 41.1, wrei: 80.2 }
+            ] : []}
+            xDataKey="period"
+            yDataKey="wrei"
+            title="WREI Premium Pricing Trends"
+            height={300}
+            color="#0EA5E9"
+            gradient={true}
+            formatYLabel={(value) => `$${value.toFixed(1)}`}
+            formatTooltip={(value, name) => [`$${value.toFixed(2)}/tonne`, 'WREI Premium Price']}
+          />
+        </div>
+        <div className="mt-4 text-sm text-slate-600">
+          <p>Projected WREI carbon credit pricing based on market trends and dMRV premium expansion.
+          Shows significant growth potential as institutional adoption of digital verification increases.</p>
+        </div>
+      </div>
+
       {/* Risk Analysis */}
       <div className="bg-white border border-slate-200 rounded-lg p-6">
         <h3 className="text-lg font-semibold text-slate-800 mb-4">Risk Analysis</h3>
@@ -387,6 +419,27 @@ export const MarketIntelligenceDashboard: React.FC<MarketIntelligenceDashboardPr
             </ul>
           </div>
         </div>
+      </div>
+    </div>
+  );
+
+  const renderCompetitiveTab = () => (
+    <div className="space-y-6">
+      {/* Competitive Positioning Analysis */}
+      <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-slate-800 mb-2">Competitive Positioning Analysis</h3>
+          <p className="text-slate-600 text-sm">
+            Interactive analysis of WREI&apos;s market position against key competitors in the carbon credit
+            and tokenized asset marketplace.
+          </p>
+        </div>
+        <CompetitivePositioning
+          targetSegment={persona === 'infrastructure_fund' ? 'professional' :
+                         persona === 'family_office' ? 'sophisticated' :
+                         persona === 'sovereign_wealth' ? 'professional' : 'wholesale'}
+          showDetailedView={true}
+        />
       </div>
     </div>
   );
@@ -660,6 +713,7 @@ export const MarketIntelligenceDashboard: React.FC<MarketIntelligenceDashboardPr
   const tabs = [
     { id: 'overview', label: 'Market Overview', icon: '📊' },
     { id: 'analytics', label: 'Portfolio Analytics', icon: '📈' },
+    { id: 'competitive', label: 'Competitive Analysis', icon: '⚔️' },
     { id: 'opportunities', label: 'Opportunities', icon: '🎯' },
     { id: 'alerts', label: 'Alerts & Monitoring', icon: '🔔' }
   ];
@@ -711,6 +765,7 @@ export const MarketIntelligenceDashboard: React.FC<MarketIntelligenceDashboardPr
         <div className="mb-8">
           {activeTab === 'overview' && renderOverviewTab()}
           {activeTab === 'analytics' && renderAnalyticsTab()}
+          {activeTab === 'competitive' && renderCompetitiveTab()}
           {activeTab === 'opportunities' && renderOpportunitiesTab()}
           {activeTab === 'alerts' && renderAlertsTab()}
         </div>

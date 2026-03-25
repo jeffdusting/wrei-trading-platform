@@ -241,7 +241,8 @@ describe('InstitutionalDashboard - Simple Integration Tests', () => {
       };
 
       render(React.createElement(InstitutionalDashboard, esgProps));
-      expect(screen.getByText(/esg impact/i)).toBeInTheDocument();
+      const esgElements = screen.getAllByText(/esg impact/i);
+      expect(esgElements.length).toBeGreaterThan(0);
     });
 
     test('renders correctly for DeFi yield farmer', () => {
@@ -362,7 +363,8 @@ describe('InstitutionalDashboard - Simple Integration Tests', () => {
       const volatilityElements = screen.getAllByText(/15\.0%/);
       expect(volatilityElements.length).toBeGreaterThan(0);
 
-      expect(screen.getByText(/1\.2/)).toBeInTheDocument();
+      const sharpeElements = screen.getAllByText(/1\.2/);
+      expect(sharpeElements.length).toBeGreaterThan(0);
       expect(screen.getByText(/BBB\+/)).toBeInTheDocument();
     });
 

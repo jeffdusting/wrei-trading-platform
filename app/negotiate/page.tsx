@@ -11,6 +11,28 @@ import { exportReport } from '@/lib/export-utilities';
 import type { ReportData, ExportOptions } from '@/lib/export-utilities';
 import { NegotiationStrategyExplanation } from '@/lib/negotiation-strategy';
 import NegotiationStrategyPanel from '@/components/NegotiationStrategyPanel';
+import {
+  addNegotiationSession,
+  getAllNegotiationSessions,
+  getNegotiationSession,
+  compareNegotiationSessions,
+  type NegotiationSession,
+  type SessionComparison
+} from '@/lib/negotiation-history';
+import ReplayViewer from '@/components/negotiation/ReplayViewer';
+import ComparisonDashboard from '@/components/negotiation/ComparisonDashboard';
+import Scorecard from '@/components/negotiation/Scorecard';
+import { calculateNegotiationScore, type NegotiationScorecard } from '@/lib/negotiation-scoring';
+import CoachingPanel from '@/components/negotiation/CoachingPanel';
+import ProvenanceChain from '@/components/blockchain/ProvenanceChain';
+import MerkleTreeView from '@/components/blockchain/MerkleTreeView';
+import VesselProvenanceCard from '@/components/blockchain/VesselProvenanceCard';
+import {
+  parseNegotiationUrlParams,
+  calculateInstitutionalConstraints,
+  generatePersonalisedWelcome,
+  type NegotiationPreConfig
+} from '@/lib/onboarding-pipeline';
 
 interface APIResponse {
   agentMessage: string;
@@ -65,7 +87,15 @@ export default function NegotiatePage() {
   const [threatLevel, setThreatLevel] = useState<'none' | 'low' | 'medium' | 'high'>('none');
   const [isInitializing, setIsInitializing] = useState(false);
   const [lastFailedMessage, setLastFailedMessage] = useState<string | null>(null);
-  const [activeAnalyticsTab, setActiveAnalyticsTab] = useState<'standard' | 'institutional'>('standard');
+  const [activeAnalyticsTab, setActiveAnalyticsTab] = useState<'standard' | 'institutional' | 'history'>('standard');
+
+  // A1: Negotiation Replay & Comparison State
+  const [negotiationSessions, setNegotiationSessions] = useState<NegotiationSession[]>([]);
+  const [selectedSession, setSelectedSession] = useState<NegotiationSession | null>(null);
+  const [showReplayViewer, setShowReplayViewer] = useState(false);
+  const [showComparisonDashboard, setShowComparisonDashboard] = useState(false);
+  const [sessionComparison, setSessionComparison] = useState<SessionComparison | null>(null);
+  const [negotiationStartTime, setNegotiationStartTime] = useState<string | null>(null);
 
   // Phase 6.2: Professional Interface Mode
   const [interfaceMode, setInterfaceMode] = useState<'standard' | 'professional'>('standard');
@@ -77,6 +107,20 @@ export default function NegotiatePage() {
   // Phase 1 Milestone 1.1: AI Strategy Enhancement
   const [currentStrategyExplanation, setCurrentStrategyExplanation] = useState<NegotiationStrategyExplanation | null>(null);
   const [showStrategyPanel, setShowStrategyPanel] = useState(false);
+
+  // A4: Outcome Scoring & Benchmarking
+  const [negotiationScorecard, setNegotiationScorecard] = useState<NegotiationScorecard | null>(null);
+  const [showScorecard, setShowScorecard] = useState(false);
+
+  // A2: Real-Time Coaching Panel
+  const [showCoachingPanel, setShowCoachingPanel] = useState(false);
+  const [showBlockchainProvenance, setShowBlockchainProvenance] = useState(false);
+
+  // B4: Onboarding-to-Negotiation Pipeline - Pre-configuration State
+  const [isPreConfigured, setIsPreConfigured] = useState(false);
+  const [preConfigData, setPreConfigData] = useState<NegotiationPreConfig | null>(null);
+  const [preConfigMessage, setPreConfigMessage] = useState<string>('');
+  const [preConfigApplied, setPreConfigApplied] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -101,6 +145,86 @@ export default function NegotiatePage() {
   useEffect(() => {
     scrollToBottom();
   }, [negotiationState?.messages]);
+
+  // A1: Load existing negotiation sessions on mount
+  useEffect(() => {
+    refreshSessionsList();
+  }, []);
+
+  // B4: Pre-configuration from institutional onboarding
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const preConfigParams = parseNegotiationUrlParams(searchParams);
+
+    if (preConfigParams.isPreConfigured && !preConfigApplied) {
+      setIsPreConfigured(true);
+
+      // Map URL parameters to persona
+      const mappedPersona = preConfigParams.persona
+        ? mapUrlPersonaToBuyerPersona(preConfigParams.persona)
+        : 'freeplay';
+
+      // Set persona and other configurations
+      setSelectedPersona(mappedPersona);
+
+      if (preConfigParams.classification) {
+        setInvestorClassification(preConfigParams.classification);
+      }
+
+      // Set interface to professional mode for institutional users
+      setInterfaceMode('professional');
+
+      // Generate personalised welcome message
+      if (preConfigParams.entityName && preConfigParams.persona) {
+        const welcomeMsg = `Welcome ${preConfigParams.entityName}! Your institutional profile has been pre-configured for ${preConfigParams.persona.replace(/_/g, ' ')} negotiations.`;
+        setPreConfigMessage(welcomeMsg);
+      }
+
+      // Initialize negotiation state with pre-configuration
+      const initialState = getInitialWREIState(mappedPersona, selectedWREITokenType, selectedCreditType);
+
+      // Apply institutional constraint adjustments if we have classification
+      if (preConfigParams.classification && initialState) {
+        const baseConstraints = {
+          priceFloor: NEGOTIATION_CONFIG.PRICE_FLOOR,
+          maxConcessionPerRound: NEGOTIATION_CONFIG.MAX_CONCESSION_PER_ROUND,
+          maxTotalConcession: NEGOTIATION_CONFIG.MAX_TOTAL_CONCESSION,
+          minRoundsBeforeConcession: NEGOTIATION_CONFIG.MIN_ROUNDS_BEFORE_PRICE_CONCESSION
+        };
+
+        const adjustedConstraints = calculateInstitutionalConstraints(
+          preConfigParams.classification,
+          baseConstraints
+        );
+
+        // Store adjusted constraints for use during negotiation
+        // Note: The actual constraint application happens in the API route
+        // This is just for UI display and reference
+        console.log('Applied institutional constraints:', adjustedConstraints);
+      }
+
+      setNegotiationState(initialState);
+      setPreConfigApplied(true);
+
+      // Clean up URL parameters after applying pre-configuration
+      window.history.replaceState({}, '', '/negotiate');
+    }
+  }, [preConfigApplied, selectedWREITokenType, selectedCreditType]);
+
+  // Helper function to map URL persona parameters to buyer personas
+  const mapUrlPersonaToBuyerPersona = (urlPersona: string): PersonaType | 'freeplay' => {
+    const personaMapping: Record<string, PersonaType> = {
+      'corporate_compliance_officer': 'compliance_officer',
+      'esg_fund_portfolio_manager': 'esg_impact_investor',
+      'carbon_trading_desk_analyst': 'trading_desk',
+      'sustainability_director_midcap': 'family_office',
+      'government_procurement_officer': 'government_procurement'
+    };
+
+    return personaMapping[urlPersona] || 'freeplay';
+  };
 
   const handlePersonaChange = (persona: PersonaType | 'freeplay') => {
     if (!negotiationStarted) {
@@ -162,6 +286,7 @@ export default function NegotiatePage() {
       } else {
         setNegotiationState(data.state);
         setNegotiationStarted(true);
+        setNegotiationStartTime(new Date().toISOString());
         setCurrentClassification(data.classification);
         setCurrentEmotion(data.emotionalState);
         setThreatLevel(data.threatLevel);
@@ -227,6 +352,20 @@ export default function NegotiatePage() {
         setCurrentEmotion(data.emotionalState);
         setThreatLevel(data.threatLevel);
 
+        // Save to history if negotiation just completed
+        if (data.state.negotiationComplete && negotiationStartTime) {
+          saveCompletedNegotiation(data.state);
+
+          // Calculate and display negotiation scorecard
+          if (selectedPersona !== 'freeplay') {
+            // Estimate duration (roughly 2 minutes per round)
+            const durationMinutes = data.state.round * 2;
+            const scorecard = calculateNegotiationScore(data.state, selectedPersona as PersonaType, durationMinutes);
+            setNegotiationScorecard(scorecard);
+            setShowScorecard(true);
+          }
+        }
+
         // Update strategy explanation for institutional investors
         if (data.strategyExplanation) {
           setCurrentStrategyExplanation(data.strategyExplanation);
@@ -272,11 +411,13 @@ export default function NegotiatePage() {
 
       const data: APIResponse = await response.json();
       if (data.state) {
-        setNegotiationState({
+        const finalState = {
           ...data.state,
           negotiationComplete: true,
-          outcome: 'deferred'
-        });
+          outcome: 'deferred' as const
+        };
+        setNegotiationState(finalState);
+        saveCompletedNegotiation(finalState);
       }
     } catch (err) {
       setError('Failed to end negotiation properly.');
@@ -302,11 +443,13 @@ export default function NegotiatePage() {
 
       const data: APIResponse = await response.json();
       if (data.state) {
-        setNegotiationState({
+        const finalState = {
           ...data.state,
           negotiationComplete: true,
-          outcome: 'escalated'
-        });
+          outcome: 'escalated' as const
+        };
+        setNegotiationState(finalState);
+        saveCompletedNegotiation(finalState);
       }
     } catch (err) {
       setError('Failed to request human representative.');
@@ -326,7 +469,59 @@ export default function NegotiatePage() {
     setThreatLevel('none');
     setIsInitializing(false);
     setLastFailedMessage(null);
+
+    // Reset scorecard state
+    setNegotiationScorecard(null);
+    setShowScorecard(false);
+    setNegotiationStartTime(null);
     // Note: selectedPersona and selectedCreditType can be changed again after reset
+  };
+
+  // A1: Negotiation History Management
+  const saveCompletedNegotiation = (finalState: NegotiationState) => {
+    if (!negotiationStartTime) return;
+
+    const sessionId = addNegotiationSession({
+      persona: selectedPersona,
+      startTime: negotiationStartTime,
+      endTime: new Date().toISOString(),
+      messages: finalState.messages,
+      finalState,
+      outcome: finalState.outcome
+    });
+
+    // Update the local sessions list
+    const updatedSessions = getAllNegotiationSessions();
+    setNegotiationSessions(updatedSessions);
+
+    return sessionId;
+  };
+
+  const refreshSessionsList = () => {
+    const sessions = getAllNegotiationSessions();
+    setNegotiationSessions(sessions);
+  };
+
+  const handleSessionComparison = (sessionIds: string[]) => {
+    if (sessionIds.length === 2) {
+      const comparison = compareNegotiationSessions(sessionIds[0], sessionIds[1]);
+      setSessionComparison(comparison);
+    }
+  };
+
+  const handleViewReplay = (session: NegotiationSession) => {
+    setSelectedSession(session);
+    setShowReplayViewer(true);
+  };
+
+  const closeReplayViewer = () => {
+    setShowReplayViewer(false);
+    setSelectedSession(null);
+  };
+
+  const closeComparisonDashboard = () => {
+    setShowComparisonDashboard(false);
+    setSessionComparison(null);
   };
 
   // Phase 6.2: Professional Interface Handlers
@@ -519,17 +714,25 @@ export default function NegotiatePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
-      {/* Header */}
-      <header className="bg-[#1B2A4A] shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="text-white text-lg font-bold">Water Roads</div>
-            <div className="text-[#0EA5E9] text-lg font-bold">WREI</div>
-            <div className="text-white/70 text-sm ml-4">Carbon Credit Trading Platform</div>
+    <div className="bg-[#F8FAFC]">
+      {/* B4: Pre-configuration Banner */}
+      {isPreConfigured && preConfigMessage && !negotiationStarted && (
+        <div className="max-w-7xl mx-auto p-4">
+          <div className="bg-gradient-to-r from-green-600 to-emerald-700 rounded-xl p-4 mb-4 text-white">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <svg className="h-6 w-6 text-green-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-lg font-semibold">Institutional Profile Configured</h3>
+                <p className="text-green-100 text-sm">{preConfigMessage}</p>
+              </div>
+            </div>
           </div>
         </div>
-      </header>
+      )}
 
       {/* Phase 6.2: Professional Pathway Selector */}
       <div className="max-w-7xl mx-auto p-4">
@@ -1061,6 +1264,15 @@ export default function NegotiatePage() {
                         <span className="text-[#10B981] font-medium">✓ Verified</span>
                       </div>
                     </div>
+                    <div className="mt-3 pt-3 border-t border-slate-200">
+                      <button
+                        onClick={() => setShowBlockchainProvenance(!showBlockchainProvenance)}
+                        className="w-full bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
+                      >
+                        <span>🔍</span>
+                        <span>{showBlockchainProvenance ? 'Hide' : 'View'} Blockchain Verification</span>
+                      </button>
+                    </div>
                   </div>
                 )}
 
@@ -1092,6 +1304,52 @@ export default function NegotiatePage() {
                         <span className="text-[#64748B]">
                           {new Date(negotiationState.tokenMetadata.operationalData.lastTelemetryUpdate).toLocaleTimeString()}
                         </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Blockchain Provenance Visualiser */}
+                {showBlockchainProvenance && (
+                  <div className="mb-6 space-y-4">
+                    <div className="p-4 bg-white rounded-lg border border-slate-200 shadow-sm">
+                      <h4 className="text-sm font-semibold text-slate-800 mb-3 flex items-center space-x-2">
+                        <span>🔗</span>
+                        <span>Blockchain Provenance Chain</span>
+                      </h4>
+                      <ProvenanceChain
+                        creditId={`WREI-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}`}
+                        className="mb-4"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      <div className="p-4 bg-white rounded-lg border border-slate-200 shadow-sm">
+                        <h4 className="text-sm font-semibold text-slate-800 mb-3 flex items-center space-x-2">
+                          <span>🔍</span>
+                          <span>Merkle Tree Verification</span>
+                        </h4>
+                        <MerkleTreeView
+                          creditId={`WREI-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}`}
+                        />
+                      </div>
+
+                      <div className="p-4 bg-white rounded-lg border border-slate-200 shadow-sm">
+                        <h4 className="text-sm font-semibold text-slate-800 mb-3 flex items-center space-x-2">
+                          <span>🚤</span>
+                          <span>Vessel Provenance Data</span>
+                        </h4>
+                        <VesselProvenanceCard
+                          creditId={`WREI-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}`}
+                          compact={true}
+                          onViewProvenanceChain={() => {
+                            // Scroll to provenance chain section
+                            document.querySelector('.provenance-chain')?.scrollIntoView({
+                              behavior: 'smooth',
+                              block: 'start'
+                            });
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
@@ -1410,6 +1668,17 @@ export default function NegotiatePage() {
                 </div>
               )}
 
+              {/* A4: Negotiation Scorecard */}
+              {showScorecard && negotiationScorecard && selectedPersona !== 'freeplay' && (
+                <div className="mx-6 mb-4">
+                  <Scorecard
+                    scorecard={negotiationScorecard}
+                    persona={selectedPersona as PersonaType}
+                    onClose={() => setShowScorecard(false)}
+                  />
+                </div>
+              )}
+
               {/* Analytics Panel */}
               {negotiationState?.negotiationComplete && (
                 <div className="mx-6 mb-4 bg-slate-50 rounded-lg border border-slate-200 p-6">
@@ -1662,6 +1931,21 @@ export default function NegotiatePage() {
                       >
                         🏛️ Institutional View
                       </button>
+                      <button
+                        onClick={() => setActiveAnalyticsTab('history')}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                          activeAnalyticsTab === 'history'
+                            ? 'bg-blue-500 text-white shadow-md'
+                            : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300'
+                        }`}
+                      >
+                        📚 History & Replay
+                        {negotiationSessions.length > 0 && (
+                          <span className="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                            {negotiationSessions.length}
+                          </span>
+                        )}
+                      </button>
                     </div>
                   </div>
 
@@ -1721,6 +2005,133 @@ export default function NegotiatePage() {
                           console.log('Dashboard configuration changed:', config);
                         }}
                       />
+                    </div>
+                  ) : activeAnalyticsTab === 'history' ? (
+                    <div className="bg-white rounded-xl p-4 min-h-[600px]">
+                      {negotiationSessions.length === 0 ? (
+                        <div className="text-center py-12 text-gray-600">
+                          <div className="text-6xl mb-4">📚</div>
+                          <p className="text-lg font-medium mb-2">No Negotiation History Yet</p>
+                          <p className="text-sm text-gray-500">
+                            Complete your first negotiation to see replay and comparison features
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="space-y-6">
+                          <div className="flex items-center justify-between">
+                            <h3 className="text-lg font-semibold text-gray-800">
+                              Recent Negotiation Sessions ({negotiationSessions.length})
+                            </h3>
+                            {negotiationSessions.length >= 2 && (
+                              <button
+                                onClick={() => setShowComparisonDashboard(true)}
+                                className="px-4 py-2 bg-[#0EA5E9] text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium"
+                              >
+                                🔄 Compare Sessions
+                              </button>
+                            )}
+                          </div>
+
+                          <div className="grid gap-4">
+                            {negotiationSessions.slice(0, 10).map((session) => (
+                              <div
+                                key={session.id}
+                                className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow bg-white"
+                              >
+                                <div className="flex items-center justify-between mb-3">
+                                  <div className="flex items-center space-x-3">
+                                    <div className="flex items-center space-x-2">
+                                      <span className="text-2xl">
+                                        {session.persona === 'compliance_officer' ? '👨‍💼' :
+                                         session.persona === 'esg_fund_manager' ? '🌱' :
+                                         session.persona === 'trading_desk' ? '📈' :
+                                         session.persona === 'sustainability_director' ? '♻️' :
+                                         session.persona === 'government_procurement' ? '🏛️' :
+                                         session.persona === 'infrastructure_fund' ? '🏗️' :
+                                         session.persona === 'esg_impact_investor' ? '💚' :
+                                         session.persona === 'defi_yield_farmer' ? '🚜' :
+                                         session.persona === 'family_office' ? '👨‍👩‍👧‍👦' :
+                                         session.persona === 'sovereign_wealth' ? '🏦' :
+                                         session.persona === 'pension_fund' ? '📊' : '🎭'}
+                                      </span>
+                                      <div>
+                                        <div className="font-medium text-gray-800 capitalize">
+                                          {session.persona.replace('_', ' ')}
+                                        </div>
+                                        <div className="text-xs text-gray-500">
+                                          {new Date(session.startTime).toLocaleDateString('en-AU', {
+                                            year: 'numeric',
+                                            month: 'short',
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                          })}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div className="flex items-center space-x-4 text-sm">
+                                    <div className="text-center">
+                                      <div className="text-gray-600">Final Price</div>
+                                      <div className="font-bold text-[#10B981]">
+                                        A${session.metrics.finalPrice.toLocaleString()}
+                                      </div>
+                                    </div>
+                                    <div className="text-center">
+                                      <div className="text-gray-600">Rounds</div>
+                                      <div className="font-bold text-gray-800">
+                                        {session.metrics.totalRounds}
+                                      </div>
+                                    </div>
+                                    <div className="text-center">
+                                      <div className="text-gray-600">Duration</div>
+                                      <div className="font-bold text-gray-800">
+                                        {session.metrics.duration.toFixed(1)}m
+                                      </div>
+                                    </div>
+                                    <div className="text-center">
+                                      <div className="text-gray-600">Outcome</div>
+                                      <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                        session.metrics.outcomeSuccess
+                                          ? 'bg-green-100 text-green-800'
+                                          : session.outcome === 'deferred'
+                                            ? 'bg-yellow-100 text-yellow-800'
+                                            : 'bg-red-100 text-red-800'
+                                      }`}>
+                                        {session.outcome?.toUpperCase()}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center space-x-4 text-xs text-gray-600">
+                                    <span>Concessions: {session.metrics.totalConcessionPercentage.toFixed(1)}%</span>
+                                    <span>Arguments: {Object.values(session.metrics.argumentTypes).reduce((a, b) => a + b, 0)}</span>
+                                    <span>Messages: {session.messages.length}</span>
+                                  </div>
+
+                                  <button
+                                    onClick={() => handleViewReplay(session)}
+                                    className="px-3 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors text-sm font-medium"
+                                  >
+                                    🎬 View Replay
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+
+                          {negotiationSessions.length > 10 && (
+                            <div className="text-center">
+                              <p className="text-sm text-gray-500">
+                                Showing latest 10 sessions. Total: {negotiationSessions.length} sessions.
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className="bg-white rounded-xl p-4">
@@ -1833,6 +2244,42 @@ export default function NegotiatePage() {
               isVisible={showStrategyPanel}
               onToggle={() => setShowStrategyPanel(!showStrategyPanel)}
             />
+          </div>
+        )}
+
+        {/* A2: Real-Time Coaching Panel */}
+        {negotiationStarted && negotiationState && (
+          <CoachingPanel
+            negotiationState={negotiationState}
+            isVisible={showCoachingPanel}
+            onToggleVisibility={() => setShowCoachingPanel(!showCoachingPanel)}
+            className={showStrategyPanel && isInstitutionalPersona(selectedPersona) ? 'right-[420px]' : ''}
+          />
+        )}
+
+        {/* A1: Replay Viewer Modal */}
+        {showReplayViewer && selectedSession && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="w-11/12 h-5/6 max-w-7xl bg-white rounded-lg shadow-xl overflow-hidden">
+              <ReplayViewer
+                session={selectedSession}
+                onClose={closeReplayViewer}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* A1: Comparison Dashboard Modal */}
+        {showComparisonDashboard && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="w-11/12 h-5/6 max-w-7xl bg-white rounded-lg shadow-xl overflow-hidden">
+              <ComparisonDashboard
+                sessions={negotiationSessions}
+                comparison={sessionComparison}
+                onSelectSessions={handleSessionComparison}
+                onClose={closeComparisonDashboard}
+              />
+            </div>
           </div>
         )}
           </div>

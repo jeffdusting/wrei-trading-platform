@@ -326,7 +326,8 @@ describe('InstitutionalDashboard', () => {
 
       render(React.createElement(InstitutionalDashboard, esgProfile));
 
-      expect(screen.getByText(/esg impact/i)).toBeInTheDocument();
+      const esgElements = screen.getAllByText(/esg impact/i);
+      expect(esgElements.length).toBeGreaterThan(0);
       expect(screen.getByText(/AUM: A\$25\.0B/)).toBeInTheDocument();
     });
 

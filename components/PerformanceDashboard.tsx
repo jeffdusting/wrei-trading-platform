@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { performanceMonitor, PerformanceSnapshot } from '@/lib/performance-monitor';
+import { WREIBarChart } from '@/components/charts';
 
 interface MetricCardProps {
   title: string;
@@ -277,6 +278,59 @@ export default function PerformanceDashboard() {
                 title="Active Calculations"
                 color="#F59E0B"
               />
+            </div>
+          </div>
+
+          {/* System Metrics Bar Chart */}
+          <div>
+            <h3 className="text-lg font-semibold text-slate-800 mb-3">System Metrics Overview</h3>
+            <div className="bg-white border border-slate-200 rounded-lg p-4">
+              <div className="h-80">
+                <WREIBarChart
+                  data={[
+                    {
+                      metric: 'Response Time',
+                      current: snapshot.performanceThresholds.apiResponseTime.current,
+                      target: snapshot.performanceThresholds.apiResponseTime.target
+                    },
+                    {
+                      metric: 'Throughput',
+                      current: snapshot.performanceThresholds.throughput.current,
+                      target: snapshot.performanceThresholds.throughput.target
+                    },
+                    {
+                      metric: 'Calculation Time',
+                      current: snapshot.performanceThresholds.calculationTime.current,
+                      target: snapshot.performanceThresholds.calculationTime.target
+                    },
+                    {
+                      metric: 'Memory Usage',
+                      current: snapshot.systemLoad.memoryUsage,
+                      target: 150 // 150MB target
+                    },
+                    {
+                      metric: 'API Calls',
+                      current: snapshot.systemLoad.apiCalls,
+                      target: 50 // 50 calls target
+                    }
+                  ]}
+                  xDataKey="metric"
+                  yDataKey="current"
+                  title="Current vs Target Metrics"
+                  height={300}
+                  color="#0EA5E9"
+                  formatYLabel={(value) => `${value.toFixed(0)}`}
+                  formatTooltip={(value, name) => [
+                    `${value.toFixed(1)}${
+                      name === 'Response Time' || name === 'Calculation Time' ? 'ms' :
+                      name === 'Memory Usage' ? 'MB' :
+                      name === 'API Calls' ? ' calls' :
+                      name === 'Throughput' ? ' req/min' : ''
+                    }`,
+                    name
+                  ]}
+                />
+              </div>
             </div>
           </div>
 

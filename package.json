@@ -17,7 +17,6 @@
     "validate:pre-phase": "node scripts/validate-pre-phase.js",
     "validate:post-phase": "node scripts/validate-post-phase.js",
     "validate:plan-consistency": "echo 'Plan consistency check - manual review required'",
-
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
@@ -25,17 +24,14 @@
     "test:scenario": "playwright test --grep='scenario'",
     "test:core-scenarios": "playwright test core-scenarios-e2e.test.ts",
     "test:scenarios:full": "playwright test --grep='Core Scenarios E2E Tests'",
-
     "dev:managed": "npm run dev:setup && npm run dev",
     "dev:setup": "node .development/automation/scripts/init-dev-management.js || echo 'Development management setup'",
     "dev:context": "echo 'Generating development context...' && echo 'Context management active'",
     "dev:progress": "echo 'Generating progress report...'",
     "dev:update-context": "echo 'Context updated'",
-
     "validate:docs": "echo 'Validating documentation consistency...' && npm run test",
     "validate:quality": "npm run lint && npm test && echo 'Quality gates passed'",
     "validate:accessibility": "echo 'Accessibility validation placeholder'",
-
     "setup:playwright": "npx playwright install",
     "setup:design-system": "echo 'Setting up design system components...'",
     "init:quick": "echo 'Quick development setup complete'"
@@ -44,10 +40,12 @@
     "@anthropic-ai/sdk": "^0.80.0",
     "next": "14.1.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "recharts": "^3.8.0"
   },
   "devDependencies": {
     "@jest/globals": "^30.3.0",
+    "@playwright/test": "^1.42.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
@@ -63,7 +61,6 @@
     "postcss": "^8.4.33",
     "tailwindcss": "^3.4.1",
     "ts-jest": "^29.4.6",
-    "typescript": "^5.3.3",
-    "@playwright/test": "^1.42.1"
+    "typescript": "^5.3.3"
   }
 }

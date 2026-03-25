@@ -27,6 +27,11 @@ import { WREI_YIELD_MODELS, calculateAnnualYield } from '@/lib/yield-models';
 import { WREI_TOKEN_CONFIG } from '@/lib/negotiation-config';
 import { generateRiskReport, calculateRiskMetrics } from '@/lib/risk-profiles';
 import { marketIntelligenceSystem } from '@/lib/market-intelligence';
+import { WREIPieChart } from '@/components/charts';
+import { ESGImpactDashboard } from '@/components/market/ESGImpactDashboard';
+import ProvenanceChain from '@/components/blockchain/ProvenanceChain';
+import MerkleTreeView from '@/components/blockchain/MerkleTreeView';
+import VesselProvenanceCard from '@/components/blockchain/VesselProvenanceCard';
 import type {
   WREITokenType,
   FinancialMetrics,
@@ -204,6 +209,46 @@ const DashboardOverview: React.FC<{
                 {riskProfile.volatility.toFixed(1)}%
               </div>
               <div className="text-sm text-amber-700">Portfolio Risk</div>
+            </div>
+          </div>
+
+          {/* Portfolio Allocation Chart */}
+          <div className="mb-6">
+            <h4 className="text-lg font-semibold text-gray-800 mb-4">Portfolio Allocation</h4>
+            <div className="h-80">
+              <WREIPieChart
+                data={[
+                  {
+                    name: 'Carbon Credits',
+                    value: portfolio.carbonCredits.currentValue,
+                    percentage: ((portfolio.carbonCredits.currentValue / portfolio.totalPortfolioValue) * 100).toFixed(1)
+                  },
+                  {
+                    name: 'Asset Co Tokens',
+                    value: portfolio.assetCoTokens.currentValue,
+                    percentage: ((portfolio.assetCoTokens.currentValue / portfolio.totalPortfolioValue) * 100).toFixed(1)
+                  },
+                  {
+                    name: 'Dual Portfolio',
+                    value: portfolio.dualPortfolio.currentValue,
+                    percentage: ((portfolio.dualPortfolio.currentValue / portfolio.totalPortfolioValue) * 100).toFixed(1)
+                  }
+                ]}
+                dataKey="value"
+                nameKey="name"
+                title="Portfolio Distribution"
+                height={300}
+                showLegend={true}
+                innerRadius={60}
+                outerRadius={120}
+                colors={['#0EA5E9', '#10B981', '#F59E0B']}
+                formatTooltip={(value, name) => [
+                  `A$${(value / 1_000_000).toFixed(2)}M (${
+                    ((value / portfolio.totalPortfolioValue) * 100).toFixed(1)
+                  }%)`,
+                  name
+                ]}
+              />
             </div>
           </div>
 
@@ -823,6 +868,28 @@ const InstitutionalDashboard: React.FC<DashboardProps> = ({
       )
     },
     {
+      id: 'esg',
+      label: 'ESG Impact',
+      icon: '🌱',
+      content: () => (
+        <div className="space-y-6">
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <div className="mb-6">
+              <h3 className="text-2xl font-bold text-gray-800 mb-2">ESG Impact & Compliance Dashboard</h3>
+              <p className="text-gray-600">
+                Comprehensive ESG impact measurement for your institutional WREI portfolio.
+                Track sustainability outcomes, compliance status, and impact ROI.
+              </p>
+            </div>
+            <ESGImpactDashboard
+              investorClassification="professional"
+              investmentAmount={portfolioSize}
+            />
+          </div>
+        </div>
+      )
+    },
+    {
       id: 'collateral',
       label: 'Cross-Collateral',
       icon: '🔗',
@@ -831,6 +898,84 @@ const InstitutionalDashboard: React.FC<DashboardProps> = ({
           collateralPosition={collateralPosition}
           portfolio={portfolio}
         />
+      )
+    },
+    {
+      id: 'provenance',
+      label: 'Blockchain Provenance',
+      icon: '⛓️',
+      content: () => (
+        <div className="space-y-6">
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <div className="mb-6">
+              <h3 className="text-2xl font-bold text-gray-800 mb-2">Blockchain Provenance Verification</h3>
+              <p className="text-gray-600">
+                Complete blockchain audit trail for your carbon credit assets with cryptographic verification
+                and vessel telemetry data for institutional compliance requirements.
+              </p>
+            </div>
+
+            {/* Sample Credit Provenance Chain */}
+            <div className="mb-8">
+              <ProvenanceChain
+                creditId={`WREI-${new Date().getFullYear()}-INST-${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}`}
+                showExpandedDetails={true}
+              />
+            </div>
+
+            {/* Grid layout for Merkle Tree and Vessel Data */}
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              <div className="bg-slate-50 rounded-lg p-4">
+                <h4 className="text-lg font-semibold text-slate-800 mb-4 flex items-center space-x-2">
+                  <span>🔍</span>
+                  <span>Cryptographic Verification</span>
+                </h4>
+                <MerkleTreeView
+                  creditId={`WREI-${new Date().getFullYear()}-INST-${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}`}
+                  showTooltips={true}
+                />
+              </div>
+
+              <div className="bg-slate-50 rounded-lg p-4">
+                <h4 className="text-lg font-semibold text-slate-800 mb-4 flex items-center space-x-2">
+                  <span>🚤</span>
+                  <span>Asset Origin & Telemetry</span>
+                </h4>
+                <VesselProvenanceCard
+                  creditId={`WREI-${new Date().getFullYear()}-INST-${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}`}
+                  onViewProvenanceChain={() => {
+                    document.querySelector('.provenance-chain')?.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start'
+                    });
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Institutional Compliance Summary */}
+            <div className="mt-8 bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-4">
+              <h4 className="text-sm font-semibold text-slate-800 mb-2 flex items-center space-x-2">
+                <span>📋</span>
+                <span>Compliance Summary</span>
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-green-600">100%</div>
+                  <div className="text-slate-600">Chain Integrity</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-bold text-blue-600">dMRV</div>
+                  <div className="text-slate-600">Digital Verification</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-bold text-purple-600">VCS + CORSIA</div>
+                  <div className="text-slate-600">Standard Compliance</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       )
     }
   ];

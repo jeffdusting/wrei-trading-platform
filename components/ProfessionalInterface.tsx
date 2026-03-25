@@ -29,6 +29,8 @@ import { WREI_YIELD_MODELS, calculateAnnualYield } from '@/lib/yield-models';
 import { WREI_TOKEN_CONFIG } from '@/lib/negotiation-config';
 import { generateRiskReport, calculateRiskMetrics } from '@/lib/risk-profiles';
 import { marketIntelligenceSystem } from '@/lib/market-intelligence';
+import { WREILineChart } from '@/components/charts';
+import { ESGImpactDashboard } from '@/components/market/ESGImpactDashboard';
 import type {
   WREITokenType,
   FinancialMetrics,
@@ -512,6 +514,32 @@ const AdvancedAnalyticsPanel: React.FC<{
         </div>
       </div>
 
+      {/* Performance Projection Chart */}
+      <div className="mb-6">
+        <h4 className="font-medium text-gray-800 mb-3">Performance Projection</h4>
+        <div className="h-80">
+          <WREILineChart
+            data={Array.from({ length: timeHorizon + 1 }, (_, year) => {
+              const cumulativeReturn = Math.pow(1 + analytics.cagr, year);
+              const portfolioValue = investmentAmount * cumulativeReturn;
+
+              return {
+                year: `Year ${year}`,
+                portfolioValue: portfolioValue / 1_000_000 // Convert to millions for display
+              };
+            })}
+            xDataKey="year"
+            yDataKey="portfolioValue"
+            title="Portfolio Performance Projection"
+            height={300}
+            color="#0EA5E9"
+            showLegend={true}
+            formatYLabel={(value) => `A$${value.toFixed(1)}M`}
+            formatTooltip={(value, name) => [`A$${value.toFixed(2)}M`, 'Portfolio Value']}
+          />
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <h4 className="font-medium text-gray-800 mb-3">Return Metrics</h4>
@@ -708,6 +736,7 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
     { id: 'pathway', label: 'Investor Pathway', icon: '🏛️' },
     { id: 'markets', label: 'Market Access', icon: '📈' },
     { id: 'analytics', label: 'Advanced Analytics', icon: '📊' },
+    { id: 'esg', label: 'ESG Impact', icon: '🌱' },
     { id: 'risk', label: 'Risk Assessment', icon: '⚖️' }
   ];
 
@@ -917,6 +946,22 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
               timeHorizon={timeHorizon}
               yieldMechanism={yieldMechanism}
             />
+          )}
+
+          {activeSection === 'esg' && (
+            <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+              <div className="mb-6">
+                <h3 className="text-xl font-bold text-gray-800 mb-2">🌱 ESG Impact Analysis</h3>
+                <p className="text-gray-600">
+                  Comprehensive environmental, social, and governance impact measurement for your WREI investment.
+                  Track sustainability outcomes and compliance requirements.
+                </p>
+              </div>
+              <ESGImpactDashboard
+                investorClassification={classification}
+                investmentAmount={investmentSize}
+              />
+            </div>
           )}
 
           {activeSection === 'risk' && (
