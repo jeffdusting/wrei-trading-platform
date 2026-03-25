@@ -12,6 +12,14 @@ import NavigationShell from '@/components/navigation/NavigationShell';
 // Mock Next.js navigation
 jest.mock('next/navigation', () => ({
   usePathname: jest.fn(),
+  useRouter: jest.fn(() => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    prefetch: jest.fn(),
+    back: jest.fn(),
+    forward: jest.fn(),
+    refresh: jest.fn(),
+  })),
 }));
 
 const mockUsePathname = usePathname as jest.MockedFunction<typeof usePathname>;

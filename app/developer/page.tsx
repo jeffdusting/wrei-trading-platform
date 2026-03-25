@@ -218,9 +218,9 @@ function InfrastructureOverview() {
 
 export default function DeveloperPortal() {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50" data-demo="developer-resources">
       {/* Hero Header */}
-      <div className="bg-gradient-to-r from-[#1B2A4A] via-slate-800 to-[#1B2A4A] text-white py-12">
+      <div className="bg-gradient-to-r from-[#1B2A4A] via-slate-800 to-[#1B2A4A] text-white py-12" data-demo="api-explorer">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center space-x-3 mb-2">
             <svg className="w-8 h-8 text-[#0EA5E9]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">

@@ -63,9 +63,9 @@ export default function PerformancePage() {
   };
 
   return (
-    <div className="bg-slate-50">
+    <div className="bg-slate-50" data-demo="performance-dashboard">
       {/* Page Header */}
-      <div className="bg-white border-b border-slate-200 px-6 py-6">
+      <div className="bg-white border-b border-slate-200 px-6 py-6" data-demo="analytics-suite">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between">
             <div>
@@ -85,7 +85,7 @@ export default function PerformancePage() {
       {/* Quick Stats Header */}
       <div className="px-6 py-6">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 mb-6">
+          <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 mb-6" data-demo="portfolio-dashboard">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-blue-600">
@@ -115,7 +115,7 @@ export default function PerformancePage() {
           </div>
 
           {/* Feature Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8" data-demo="scalability-overview">
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
               <div className="flex items-center mb-4">
                 <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -169,7 +169,7 @@ export default function PerformancePage() {
           </div>
 
           {/* Performance Visualizations */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8" data-demo="data-feeds">
             {/* Response Time Histogram */}
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
               <h3 className="text-lg font-semibold text-slate-900 mb-4">Response Time Distribution</h3>

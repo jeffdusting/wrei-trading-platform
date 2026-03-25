@@ -31,18 +31,22 @@ export default function InstitutionalPortalPage() {
 
   if (onboardingComplete && completedOnboardingState) {
     return (
-      <PipelineTransition
-        onboardingState={completedOnboardingState}
-        onContinueToNegotiation={handleContinueToNegotiation}
-        onExit={handleExit}
-      />
+      <div data-demo="portfolio-config">
+        <PipelineTransition
+          onboardingState={completedOnboardingState}
+          onContinueToNegotiation={handleContinueToNegotiation}
+          onExit={handleExit}
+        />
+      </div>
     );
   }
 
   return (
-    <InstitutionalOnboardingWizard
-      onComplete={handleOnboardingComplete}
-      onExit={handleExit}
-    />
+    <div data-demo="onboarding-start">
+      <InstitutionalOnboardingWizard
+        onComplete={handleOnboardingComplete}
+        onExit={handleExit}
+      />
+    </div>
   );
 }

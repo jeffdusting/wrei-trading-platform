@@ -39,7 +39,7 @@ export default function Home() {
   return (
     <div className="bg-gradient-to-br from-white via-slate-50 to-blue-50">
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden" data-demo="value-proposition">
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,#fff,rgba(255,255,255,0.6))] -z-10"></div>
 
@@ -100,7 +100,7 @@ export default function Home() {
       </section>
 
       {/* Feature Showcase */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white" data-demo="negotiation-preview">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[#1E293B] mb-4">
@@ -220,7 +220,7 @@ export default function Home() {
       </section>
 
       {/* Market Stats Section */}
-      <section className="py-20 bg-[#1B2A4A] text-white">
+      <section className="py-20 bg-[#1B2A4A] text-white" data-demo="market-data">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -268,7 +268,7 @@ export default function Home() {
       </section>
 
       {/* Platform Navigation */}
-      <section className="py-20 bg-slate-50">
+      <section className="py-20 bg-slate-50" data-demo="investment-case">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[#1E293B] mb-4">
@@ -395,7 +395,7 @@ export default function Home() {
       </section>
 
       {/* Demo Notice */}
-      <section className="py-12 bg-amber-50 border-t-4 border-amber-200">
+      <section className="py-12 bg-amber-50 border-t-4 border-amber-200" data-demo="market-context">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <div className="inline-flex items-center bg-amber-100 text-amber-800 px-6 py-3 rounded-full mb-4">
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

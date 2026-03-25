@@ -15,9 +15,9 @@ import Link from 'next/link'
 
 export default function CompliancePage() {
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-[#F8FAFC]" data-demo="compliance-overview">
       {/* Page Header */}
-      <div className="bg-[#1B2A4A] text-white py-8">
+      <div className="bg-[#1B2A4A] text-white py-8" data-demo="regulatory-map">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold">Regulatory Compliance</h1>
           <p className="mt-2 text-slate-300 text-lg">
@@ -30,19 +30,19 @@ export default function CompliancePage() {
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8" data-demo="risk-dashboard">
         {/* Regulatory Compliance Map */}
-        <section aria-label="Regulatory compliance map">
+        <section aria-label="Regulatory compliance map" data-demo="afsl-compliance">
           <RegulatoryMap />
         </section>
 
         {/* Compliance Status Dashboard */}
-        <section aria-label="Compliance status dashboard">
+        <section aria-label="Compliance status dashboard" data-demo="esg-reports">
           <ComplianceStatusDashboard />
         </section>
 
         {/* Navigation Links */}
-        <div className="flex flex-wrap gap-4 pt-4">
+        <div className="flex flex-wrap gap-4 pt-4" data-demo="audit-trails">
           <Link
             href="/institutional/portal"
             className="inline-flex items-center px-4 py-2 bg-[#0EA5E9] text-white rounded-lg hover:bg-[#0284c7] transition-colors text-sm font-medium"

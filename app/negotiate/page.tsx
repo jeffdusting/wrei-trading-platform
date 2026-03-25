@@ -931,7 +931,7 @@ export default function NegotiatePage() {
             </div>
 
             {/* Persona Selector */}
-            <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+            <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6" data-demo="persona-selector">
               <h3 className="text-lg font-semibold text-[#1E293B] mb-4">Select Buyer Persona</h3>
 
               <div className="space-y-3">
@@ -1009,7 +1009,7 @@ export default function NegotiatePage() {
 
             {/* Dashboard */}
             {negotiationState && (
-              <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+              <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6" data-demo="pricing-analysis">
                 <h3 className="text-lg font-semibold text-[#1E293B] mb-4">Negotiation Dashboard</h3>
 
                 {/* Round & Phase */}
@@ -1469,8 +1469,8 @@ export default function NegotiatePage() {
           </div>
 
           {/* Right Panel - Chat Interface */}
-          <div className="lg:w-2/3 flex flex-col order-1 lg:order-2">
-            <div className="bg-white rounded-lg shadow-sm border border-slate-200 flex-1 flex flex-col min-h-[60vh] lg:min-h-0" role="main" aria-label="Carbon credit negotiation chat">
+          <div className="lg:w-2/3 flex flex-col order-1 lg:order-2" data-demo="negotiation-interface">
+            <div className="bg-white rounded-lg shadow-sm border border-slate-200 flex-1 flex flex-col min-h-[60vh] lg:min-h-0" role="main" aria-label="Carbon credit negotiation chat" data-demo="negotiation-chat">
 
               {/* Messages Area */}
               <div className="flex-1 p-6 overflow-y-auto space-y-4" role="log" aria-live="polite" aria-label="Negotiation messages">
