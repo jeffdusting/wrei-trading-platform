@@ -383,3 +383,339 @@ export interface AnalyticsState {
     custom_benchmarks: PerformanceBenchmark[];
   };
 }
+
+// Stage 2 Component 3: Intelligent Analytics Types
+// AI-Enhanced Analytics with Predictive Insights
+
+export type PredictionConfidence = 'very_high' | 'high' | 'medium' | 'low';
+export type PredictionTimeframe = '1h' | '4h' | '1d' | '1w' | '1m' | '3m' | '6m' | '1y';
+export type RiskLevel = 'very_low' | 'low' | 'medium' | 'high' | 'very_high';
+export type TrendSignal = 'strong_bullish' | 'bullish' | 'neutral' | 'bearish' | 'strong_bearish';
+
+// Core Predictive Analytics Interface
+export interface PredictiveAnalytics {
+  analysis_id: string;
+  timestamp: Date;
+  market_forecast: MarketForecast;
+  risk_predictions: RiskPredictions;
+  performance_optimisation: PerformanceOptimisation;
+  competitive_intelligence: CompetitiveIntelligence;
+  ai_insights: AIInsights;
+}
+
+// Market Forecasting with AI Predictions
+export interface MarketForecast {
+  forecast_id: string;
+  generated_at: Date;
+  market_segment: 'nsw_esc' | 'accu' | 'vcs' | 'wrei';
+
+  // Price Predictions
+  price_prediction: Array<{
+    timeframe: PredictionTimeframe;
+    predicted_price: number;
+    confidence: number; // 0-100
+    confidence_level: PredictionConfidence;
+    confidence_interval: {
+      lower_bound: number;
+      upper_bound: number;
+    };
+    key_drivers: string[];
+  }>;
+
+  // Trend Analysis
+  trend_analysis: Array<{
+    indicator: string;
+    signal: TrendSignal;
+    strength: number; // 0-100
+    timeframe: PredictionTimeframe;
+    reasoning: string;
+  }>;
+
+  // Volume Forecasts
+  volume_forecast: Array<{
+    period: PredictionTimeframe;
+    predicted_volume: number; // tonnes
+    volume_change: number; // % change vs current
+    market_drivers: string[];
+  }>;
+
+  // Regulatory Impact Predictions
+  regulatory_outlook: {
+    upcoming_changes: Array<{
+      regulation: string;
+      effective_date: Date;
+      impact_level: RiskLevel;
+      price_impact: number; // % expected price change
+      market_impact_description: string;
+    }>;
+    compliance_cost_forecast: {
+      current_cost: number; // A$ per tonne
+      predicted_cost: number; // A$ per tonne
+      change_percentage: number;
+      timeframe: PredictionTimeframe;
+    };
+  };
+}
+
+// Enhanced Risk Predictions with AI
+export interface RiskPredictions {
+  prediction_id: string;
+  generated_at: Date;
+  overall_risk_score: number; // 0-100
+  risk_level: RiskLevel;
+
+  // Emerging Risk Detection
+  emerging_risks: Array<{
+    risk_type: string;
+    probability: number; // 0-100
+    potential_impact: number; // 0-100
+    timeframe: PredictionTimeframe;
+    risk_description: string;
+    mitigation_suggestions: string[];
+  }>;
+
+  // Dynamic Risk Scoring
+  dynamic_risk_factors: {
+    market_volatility: {
+      current_score: number;
+      predicted_score: number;
+      trend: 'increasing' | 'stable' | 'decreasing';
+      confidence: PredictionConfidence;
+    };
+    counterparty_risk: {
+      current_score: number;
+      predicted_score: number;
+      high_risk_counterparties: number;
+      risk_concentration: number; // % in top 3 counterparties
+    };
+    regulatory_risk: {
+      current_score: number;
+      predicted_score: number;
+      upcoming_deadlines: number;
+      compliance_gaps: number;
+    };
+    operational_risk: {
+      current_score: number;
+      predicted_score: number;
+      system_reliability: number;
+      capacity_utilisation: number;
+    };
+  };
+
+  // Stress Testing Scenarios
+  stress_test_scenarios: Array<{
+    scenario_name: string;
+    probability: number; // % probability in next 12 months
+    potential_loss: number; // A$ potential loss
+    recovery_time: string; // estimated recovery timeframe
+    preparedness_score: number; // 0-100 how prepared we are
+  }>;
+}
+
+// AI-Powered Performance Optimisation
+export interface PerformanceOptimisation {
+  optimisation_id: string;
+  generated_at: Date;
+
+  // Real-time Performance Analysis
+  current_performance: {
+    efficiency_score: number; // 0-100
+    cost_effectiveness: number; // 0-100
+    market_competitiveness: number; // 0-100
+    automation_level: number; // 0-100
+  };
+
+  // Optimisation Recommendations
+  optimisation_opportunities: Array<{
+    category: 'pricing' | 'operations' | 'technology' | 'compliance' | 'market_timing';
+    opportunity_name: string;
+    potential_improvement: number; // % improvement
+    implementation_effort: 'low' | 'medium' | 'high';
+    estimated_value: number; // A$ annual value
+    timeline: string;
+    ai_confidence: PredictionConfidence;
+    detailed_steps: string[];
+  }>;
+
+  // Predictive Maintenance
+  system_health_predictions: Array<{
+    system_component: string;
+    current_health: number; // 0-100
+    predicted_failure_probability: number; // 0-100
+    recommended_maintenance_window: string;
+    estimated_downtime_cost: number; // A$ cost if failure occurs
+  }>;
+
+  // Resource Allocation Optimisation
+  resource_optimisation: {
+    current_allocation: Record<string, number>;
+    optimal_allocation: Record<string, number>;
+    expected_improvement: number; // % improvement in efficiency
+    reallocation_cost: number; // A$ cost to implement
+    payback_period: string;
+  };
+}
+
+// Competitive Intelligence with AI Analysis
+export interface CompetitiveIntelligence {
+  intelligence_id: string;
+  generated_at: Date;
+
+  // Market Position Prediction
+  predicted_market_share: Array<{
+    timeframe: PredictionTimeframe;
+    predicted_share: number; // % market share
+    confidence: PredictionConfidence;
+    key_assumptions: string[];
+  }>;
+
+  // Competitor Analysis
+  competitor_insights: Array<{
+    competitor_name: string;
+    current_market_share: number;
+    predicted_market_share: number;
+    threat_level: RiskLevel;
+    competitive_advantages: string[];
+    vulnerabilities: string[];
+    strategic_recommendations: string[];
+  }>;
+
+  // Market Opportunity Analysis
+  market_opportunities: Array<{
+    opportunity_type: string;
+    market_size: number; // A$ potential revenue
+    entry_difficulty: 'low' | 'medium' | 'high';
+    time_to_capture: string;
+    success_probability: number; // 0-100
+    required_investment: number; // A$ required investment
+    competitive_intensity: RiskLevel;
+  }>;
+
+  // Pricing Strategy Intelligence
+  pricing_intelligence: {
+    optimal_pricing_strategy: string;
+    price_elasticity_analysis: {
+      current_elasticity: number;
+      optimal_price_point: number; // A$ per tonne
+      volume_impact: number; // % change in volume
+      revenue_impact: number; // % change in revenue
+    };
+    competitor_pricing_gaps: Array<{
+      competitor: string;
+      price_gap: number; // % difference vs our pricing
+      opportunity_type: 'premium_justification' | 'competitive_pricing' | 'value_positioning';
+    }>;
+  };
+}
+
+// AI-Generated Insights and Recommendations
+export interface AIInsights {
+  insights_id: string;
+  generated_at: Date;
+  model_version: string; // Claude model version used
+
+  // Executive Summary (AI-generated)
+  executive_summary: {
+    key_findings: string[];
+    critical_actions: string[];
+    strategic_implications: string[];
+    risk_alerts: Array<{
+      alert_type: string;
+      severity: RiskLevel;
+      message: string;
+      recommended_action: string;
+    }>;
+  };
+
+  // Audience-Specific Insights
+  audience_insights: {
+    executive: {
+      strategic_recommendations: string[];
+      investment_priorities: string[];
+      risk_concerns: string[];
+      market_opportunities: string[];
+    };
+    technical: {
+      system_optimisations: string[];
+      infrastructure_recommendations: string[];
+      automation_opportunities: string[];
+      performance_improvements: string[];
+    };
+    compliance: {
+      regulatory_updates: string[];
+      compliance_priorities: string[];
+      risk_mitigation_actions: string[];
+      reporting_improvements: string[];
+    };
+  };
+
+  // Predictive Patterns Recognition
+  pattern_recognition: Array<{
+    pattern_type: string;
+    pattern_description: string;
+    historical_accuracy: number; // % accuracy of this pattern historically
+    current_strength: number; // 0-100 current pattern strength
+    predicted_outcome: string;
+    confidence: PredictionConfidence;
+  }>;
+
+  // Market Intelligence
+  market_intelligence: {
+    sentiment_analysis: {
+      overall_sentiment: 'very_positive' | 'positive' | 'neutral' | 'negative' | 'very_negative';
+      sentiment_score: number; // -100 to +100
+      sentiment_drivers: string[];
+      sentiment_trend: 'improving' | 'stable' | 'deteriorating';
+    };
+    macro_economic_factors: Array<{
+      factor: string;
+      impact_level: RiskLevel;
+      impact_description: string;
+      monitoring_priority: 'high' | 'medium' | 'low';
+    }>;
+  };
+}
+
+// Intelligent Analytics Engine State
+export interface IntelligentAnalyticsState {
+  engine_status: 'initialising' | 'active' | 'processing' | 'error' | 'offline';
+  last_prediction: Date | null;
+  prediction_queue: string[];
+
+  // Current Predictions
+  active_predictions: {
+    market_forecast: MarketForecast | null;
+    risk_predictions: RiskPredictions | null;
+    performance_optimisation: PerformanceOptimisation | null;
+    competitive_intelligence: CompetitiveIntelligence | null;
+  };
+
+  // Performance Metrics
+  performance_metrics: {
+    average_prediction_time: number; // milliseconds
+    prediction_accuracy: number; // % historical accuracy
+    api_response_time: number; // milliseconds
+    cache_hit_rate: number; // % cache hit rate
+    error_rate: number; // % error rate
+  };
+
+  // Integration Status
+  integration_status: {
+    orchestration_engine: 'connected' | 'disconnected' | 'error';
+    scenario_engine: 'connected' | 'disconnected' | 'error';
+    analytics_engine: 'connected' | 'disconnected' | 'error';
+    claude_api: 'connected' | 'disconnected' | 'error';
+  };
+
+  // Configuration
+  configuration: {
+    prediction_refresh_interval: number; // minutes
+    ai_model_version: string;
+    confidence_threshold: number; // minimum confidence for predictions
+    audience_preferences: Record<AudienceType, {
+      preferred_metrics: string[];
+      detail_level: 'high' | 'medium' | 'low';
+      update_frequency: number; // minutes
+    }>;
+  };
+}
