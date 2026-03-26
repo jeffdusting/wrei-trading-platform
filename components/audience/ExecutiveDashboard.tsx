@@ -21,9 +21,9 @@ import {
   ShieldCheckIcon,
   ChartBarIcon,
   BanknotesIcon,
-  PresentationChartBarIcon,
   EyeIcon
 } from '@heroicons/react/24/outline';
+import { PresentationChartBarIcon } from '@heroicons/react/24/outline';
 
 // Step 1.4: Enhanced Analytics Integration
 import {

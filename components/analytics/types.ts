@@ -719,3 +719,246 @@ export interface IntelligentAnalyticsState {
     }>;
   };
 }
+
+// Stage 2 Component 4: Adaptive Presentation Layer Types
+// AI-Powered Presentation Adaptation and Audience Engagement
+
+export type EngagementTrend = 'increasing' | 'stable' | 'decreasing';
+export type PacePreference = 'slow' | 'medium' | 'fast';
+export type ContentDepth = 'overview' | 'detailed' | 'deep-dive';
+export type VisualPreference = 'charts' | 'tables' | 'narratives' | 'mixed';
+export type InteractionStyle = 'guided' | 'interactive' | 'autonomous';
+export type PresentationHealth = 'excellent' | 'good' | 'needs_attention' | 'critical';
+export type SystemHealth = 'excellent' | 'good' | 'degraded' | 'critical';
+export type AudienceResponse = 'positive' | 'neutral' | 'negative';
+
+// Audience engagement metrics tracking
+export interface EngagementMetrics {
+  attentionLevel: number; // 0-100 scale
+  interactionRate: number; // Interactions per minute
+  comprehensionScore: number; // Understanding assessment 0-100
+  questionFrequency: number; // Questions per 5-minute window
+  pacePreference: PacePreference; // Derived from engagement patterns
+  topicInterest: Record<string, number>; // Interest scores by topic
+  engagementTrend: EngagementTrend;
+  lastUpdated: Date;
+}
+
+// AI-generated content adaptation recommendations
+export interface ContentAdaptation {
+  recommendedPace: PacePreference;
+  contentDepth: ContentDepth;
+  visualPreference: VisualPreference;
+  interactionStyle: InteractionStyle;
+  topicEmphasis: string[]; // Topics to emphasise
+  topicDeemphasis: string[]; // Topics to minimise
+  suggestedBreaks: number[]; // Minutes into presentation for breaks
+  adaptationConfidence: number; // 0-100 confidence in recommendations
+}
+
+// Presentation flow state and optimisation
+export interface PresentationFlow {
+  currentSection: string;
+  completedSections: string[];
+  upcomingSections: string[];
+  estimatedTimeRemaining: number; // Minutes
+  paceAdjustment: number; // -1.0 to 1.0 (slower to faster)
+  engagementZones: Array<{
+    section: string;
+    engagementScore: number;
+    duration: number;
+    effectiveness: number;
+  }>;
+  optimisationSuggestions: string[];
+  flowHealth: PresentationHealth;
+}
+
+// Real-time feedback integration and processing
+export interface RealTimeFeedback {
+  audienceQuestions: Array<{
+    question: string;
+    timestamp: Date;
+    audienceType: AudienceType;
+    complexity: 'basic' | 'intermediate' | 'advanced';
+    topic: string;
+    urgency: 'low' | 'medium' | 'high';
+  }>;
+  engagementSignals: Array<{
+    signal: 'attention_drop' | 'interest_spike' | 'confusion' | 'approval';
+    timestamp: Date;
+    section: string;
+    confidence: number;
+  }>;
+  adaptationHistory: Array<{
+    adaptation: ContentAdaptation;
+    timestamp: Date;
+    effectiveness: number;
+    audienceResponse: AudienceResponse;
+  }>;
+  currentFeedbackSummary: string;
+}
+
+// Audience-specific personalisation profiles
+export interface PersonalisationProfile {
+  audienceType: AudienceType;
+  preferredPace: PacePreference;
+  technicalDepth: 'high-level' | 'moderate' | 'detailed';
+  visualPreferences: string[];
+  attentionSpan: number; // Minutes
+  interactionStyle: 'formal' | 'casual' | 'mixed';
+  keyInterests: string[];
+  avoidTopics: string[];
+  successMetrics: string[];
+}
+
+// Comprehensive adaptive presentation state
+export interface AdaptivePresentationState {
+  isActive: boolean;
+  currentAudience: AudienceType;
+  startTime: Date;
+  elapsedTime: number; // Minutes
+
+  // Core metrics
+  engagementMetrics: EngagementMetrics;
+  contentAdaptation: ContentAdaptation;
+  presentationFlow: PresentationFlow;
+  realTimeFeedback: RealTimeFeedback;
+
+  // Personalisation
+  activeProfile: PersonalisationProfile;
+  adaptationHistory: ContentAdaptation[];
+
+  // Performance tracking
+  adaptationEffectiveness: number; // 0-100
+  audienceSatisfaction: number; // 0-100
+  presentationQuality: number; // 0-100
+
+  // System health
+  systemHealth: SystemHealth;
+  lastUpdate: Date;
+  apiResponseTime: number;
+}
+
+// AI-enhanced presentation adaptation response
+export interface PresentationAdaptationResponse {
+  adaptationSuggestions: string[];
+  contentModifications: string[];
+  paceAdjustments: string[];
+  interactionRecommendations: string[];
+  claudeEnhanced?: {
+    adaptationSuggestions: string[];
+    contentModifications: string[];
+    paceAdjustments: string[];
+    interactionRecommendations: string[];
+  };
+  confidence: number;
+  marketContext: string;
+}
+
+// Engagement analysis with AI insights
+export interface EngagementAnalysis {
+  insights: string[];
+  recommendations: string[];
+  nextActions: string[];
+  confidence: number;
+  detailedAnalysis?: {
+    assessment: string;
+    riskFactors: string[];
+    positiveIndicators: string[];
+    immediateActions: string[];
+  };
+  marketContext: string;
+}
+
+// Presentation flow optimisation response
+export interface FlowOptimisation {
+  currentFlow: PresentationFlow;
+  optimisation: {
+    flowOptimisation: string[];
+    sectionPriority: string[];
+    timeManagement: string[];
+    transitions: string[];
+  };
+  marketContext: string;
+}
+
+// Session summary after presentation completion
+export interface PresentationSessionSummary {
+  sessionSummary: {
+    duration: number;
+    averageEngagement: number;
+    totalInteractions: number;
+    adaptations: number;
+    overallEffectiveness: number;
+  };
+  insights: string[];
+  recommendations: string[];
+  marketContext: string;
+}
+
+// Performance metrics for adaptive presentation engine
+export interface AdaptivePresentationPerformanceMetrics {
+  systemHealth: SystemHealth;
+  apiResponseTime: number;
+  adaptationAccuracy: number;
+  engagementPredictionAccuracy: number;
+  systemUptime: number;
+  cacheHitRate: number;
+}
+
+// Engagement monitoring history entry
+export interface EngagementHistoryEntry {
+  timestamp: Date;
+  attentionLevel: number;
+  interactionRate: number;
+  comprehensionScore: number;
+}
+
+// API operation types for adaptive presentation
+export type AdaptivePresentationOperation =
+  | 'start_session'
+  | 'generate_adaptation'
+  | 'analyze_engagement'
+  | 'optimize_flow'
+  | 'generate_insights'
+  | 'end_session'
+  | 'engine_health'
+  | 'performance_metrics';
+
+// Request context for API operations
+export interface AdaptivePresentationContext {
+  currentSection?: string;
+  timeRemaining?: number;
+  sectionProgress?: number;
+  totalSections?: number;
+  customProfile?: Partial<PersonalisationProfile>;
+}
+
+// Engagement data for API operations
+export interface AdaptivePresentationEngagementData {
+  attentionLevel?: number;
+  interactionRate?: number;
+  comprehensionScore?: number;
+  questionFrequency?: number;
+  pacePreference?: PacePreference;
+}
+
+// Complete API request interface
+export interface AdaptivePresentationAPIRequest {
+  operation: AdaptivePresentationOperation;
+  audienceType?: AudienceType;
+  context?: AdaptivePresentationContext;
+  engagementData?: AdaptivePresentationEngagementData;
+  marketContext?: string;
+}
+
+// Complete API response interface
+export interface AdaptivePresentationAPIResponse {
+  success: boolean;
+  operation: AdaptivePresentationOperation;
+  data: any;
+  error?: string;
+  responseTime: number;
+  marketContext: string;
+  timestamp?: string;
+}
