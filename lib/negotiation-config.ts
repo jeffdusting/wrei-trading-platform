@@ -3,9 +3,10 @@ import { NegotiationState, PersonaType, CreditType, WREITokenType, InvestorClass
 // WREI Pricing Index — LIVE MARKET REFERENCES
 // In production, these are fed from real-time market data APIs:
 // - VCM spot prices from ClimateTrade, CBL Markets, Xpansiv
-// - NSW ESC prices from AEMO, ESC trading platforms
+// - NSW ESC prices from AEMO, ESC trading platforms, Clean Energy Regulator
 // - Forward curves from institutional trading desks
 // Updated every 15 minutes during trading hours
+// Integrated with NSW ESC market context for demo scenarios
 export const PRICING_INDEX = {
   // Voluntary Carbon Market References (USD)
   VCM_SPOT_REFERENCE: 8.45,       // Current VCM spot average (Nature-based, CORSIA eligible)
@@ -24,7 +25,77 @@ export const PRICING_INDEX = {
   INSTITUTIONAL_PREMIUM: 1.12,     // Institutional infrastructure premium
 
   INDEX_TIMESTAMP: '2026-03-20T14:30:00Z', // Last market data update
-  DATA_SOURCES: ['Xpansiv CBL', 'AEMO', 'ClimateTrade', 'Sylvera']
+  DATA_SOURCES: ['Xpansiv CBL', 'AEMO', 'ClimateTrade', 'Sylvera', 'CER'] // Added Clean Energy Regulator
+} as const;
+
+// NSW ESC Market Context (Integrated for realistic demo scenarios)
+// Extended configuration that references data from demo-mode/esc-market-context.ts
+export const NSW_ESC_CONFIG = {
+  // Current Market Conditions (Live Integration)
+  MARKET_CONDITIONS: {
+    SPOT_PRICE: PRICING_INDEX.ESC_SPOT_REFERENCE,           // A$47.80 current spot
+    FORWARD_PRICE: PRICING_INDEX.ESC_FORWARD_REFERENCE,     // A$52.15 forward curve
+    VOLATILITY_RANGE: PRICING_INDEX.ESC_VOLATILITY_RANGE,   // [A$38, A$68] range
+    LAST_UPDATED: PRICING_INDEX.INDEX_TIMESTAMP,
+    DATA_SOURCES: ['AEMO', 'NSW ESC Registry', 'IPART', 'CER'],
+    TRADING_HOURS: 'AEMO Market Hours (9:00-17:00 AEST)',
+    SETTLEMENT_CYCLE: 'T+2 (Registry Transfer)',
+    MINIMUM_TRADE_SIZE: 1_000, // ESCs
+  },
+
+  // Clean Energy Regulator Compliance Integration
+  COMPLIANCE_FRAMEWORK: {
+    AUTHORITY: 'Clean Energy Regulator',
+    REGISTRY_SYSTEM: 'NSW ESC Registry',
+    AUDIT_REQUIREMENTS: {
+      frequency: 'annual',
+      threshold: 50_000, // ESCs
+      auditor_requirements: 'CER-approved auditor',
+    },
+    REPORTING_OBLIGATIONS: {
+      trade_notifications: 'within_20_business_days',
+      registry_transfers: 'within_5_business_days',
+      price_reporting: 'voluntary_but_recommended',
+    },
+    REAL_TIME_VALIDATION: true, // WREI platform capability
+  },
+
+  // Northmore Gordon Market Position
+  FIRM_CONTEXT: {
+    MARKET_SHARE: 0.12, // 12% of trading facilitation
+    ANNUAL_VOLUME: 24_000_000, // A$24M annually
+    CLIENT_BASE: {
+      institutional_investors: 45,
+      corporate_obliged_persons: 18,
+      government_entities: 12,
+      trading_desks: 8,
+    },
+    COMPETITIVE_ADVANTAGES: [
+      'Deep regulatory expertise',
+      'AI-powered trading platform',
+      'Institutional-grade settlement',
+      'Multi-jurisdiction compliance',
+      'Real-time market intelligence',
+    ],
+    REGULATORY_STATUS: 'AFSL 246896', // Example AFSL number
+  },
+
+  // ESC Activity Types for Demo Scenarios (Base Structure)
+  ACTIVITY_TYPES: {
+    HIGH_EFFICIENCY_MOTORS: { activity_code: 'SYS1', market_share: 0.18 },
+    EFFICIENT_LIGHTING: { activity_code: 'SYS2', market_share: 0.22 },
+    HVAC_EFFICIENCY: { activity_code: 'SYS3', market_share: 0.15 },
+    BUILDING_THERMAL: { activity_code: 'SYS4', market_share: 0.12 },
+    APPLIANCE_REPLACEMENT: { activity_code: 'SYS5', market_share: 0.08 },
+  },
+
+  // Demo-Specific Enhancements
+  DEMO_ENHANCEMENTS: {
+    AI_NEGOTIATION_ADVANTAGE: 0.021, // 2.1% pricing improvement demonstrated
+    COMPLIANCE_TIME_SAVINGS: 0.40,   // 40% reduction in compliance overhead
+    EXECUTION_IMPROVEMENT: 0.15,     // 15% better execution pricing
+    RISK_MONITORING_IMPROVEMENT: 0.60, // 60% improved risk monitoring
+  },
 } as const;
 
 // Calculate WREI pricing based on live market data

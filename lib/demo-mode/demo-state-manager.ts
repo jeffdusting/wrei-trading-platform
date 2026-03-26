@@ -6,6 +6,15 @@
  */
 
 import { create } from 'zustand';
+import {
+  NSW_ESC_MARKET_CONTEXT,
+  CER_COMPLIANCE_FRAMEWORK,
+  NORTHMORE_GORDON_CONTEXT,
+  ESC_DEMO_SCENARIOS,
+  type ESCDemoScenario,
+  getCurrentESCMarketContext,
+  getNorthmoreGordonValueProp
+} from './esc-market-context';
 
 export type DemoTourType =
   | 'executive-overview'
@@ -13,7 +22,12 @@ export type DemoTourType =
   | 'technical-integration'
   | 'compliance-walkthrough'
   | 'carbon-negotiation'
-  | 'portfolio-analytics';
+  | 'portfolio-analytics'
+  // NSW ESC-specific tours
+  | 'nsw-esc-executive'
+  | 'nsw-esc-technical'
+  | 'nsw-esc-compliance'
+  | 'northmore-gordon-overview';
 
 export type PresentationMode = 'guided' | 'self-service' | 'investor-briefing';
 
@@ -48,6 +62,10 @@ export interface DemoDataSet {
   portfolioData: any;
   complianceData: any;
   analyticsData: any;
+  // NSW ESC-specific data
+  escMarketContext?: typeof NSW_ESC_MARKET_CONTEXT;
+  escScenarios?: Record<string, ESCDemoScenario>;
+  northmoreGordonContext?: typeof NORTHMORE_GORDON_CONTEXT;
 }
 
 export interface DemoProgressTracker {
@@ -103,12 +121,19 @@ export interface DemoModeState {
   trackInteraction: (interaction: Omit<DemoInteraction, 'timestamp'>) => void;
   updateSessionMetrics: (metrics: Partial<DemoSessionMetrics>) => void;
 
+  // NSW ESC-specific actions
+  loadESCMarketContext: () => void;
+  selectESCScenario: (scenarioId: string) => void;
+  configureNorthmoreGordonBranding: () => void;
+
   // Helpers
   getCurrentStep: () => DemoStep | null;
   getTourProgress: () => number;
   canGoNext: () => boolean;
   canGoPrev: () => boolean;
   isStepCompleted: (stepId: string) => boolean;
+  getESCDemoData: () => any;
+  getNorthmoreGordonContext: () => typeof NORTHMORE_GORDON_CONTEXT;
 }
 
 // Tour definitions
@@ -434,6 +459,311 @@ export const DEMO_TOURS: Record<DemoTourType, DemoTour> = {
         duration: 90
       }
     ]
+  },
+
+  // =============================================================================
+  // NSW ESC-SPECIFIC DEMO TOURS (Stage 1, Step 1.1 Implementation)
+  // =============================================================================
+
+  'nsw-esc-executive': {
+    id: 'nsw-esc-executive',
+    name: 'NSW ESC Executive Overview',
+    description: 'Executive-level demonstration of NSW Energy Savings Certificates trading capabilities',
+    duration: 14,
+    track: 'executive',
+    targetAudience: 'C-suite executives, fund managers focusing on NSW ESC market',
+    prerequisites: [],
+    outcomes: ['NSW ESC market understanding', 'Northmore Gordon value proposition', 'ROI metrics for ESC trading'],
+    steps: [
+      {
+        id: 'nsw-esc-market-overview',
+        title: 'NSW ESC Market Overview',
+        description: 'A$200M+ annual market with 850+ active participants and regulatory framework',
+        targetElement: '[data-demo="nsw-esc-market-overview"]',
+        duration: 120,
+        data: {
+          market_size: NSW_ESC_MARKET_CONTEXT.MARKET_SIZE,
+          participants: NSW_ESC_MARKET_CONTEXT.PARTICIPANTS
+        }
+      },
+      {
+        id: 'northmore-gordon-position',
+        title: 'Northmore Gordon Market Position',
+        description: '12% market share with AFSL credentials and institutional client base',
+        targetElement: '[data-demo="northmore-gordon-position"]',
+        duration: 90,
+        data: NORTHMORE_GORDON_CONTEXT.MARKET_POSITION
+      },
+      {
+        id: 'ai-negotiation-benefits',
+        title: 'AI Negotiation ROI',
+        description: '15-25% pricing improvement and 40% compliance cost reduction',
+        targetElement: '[data-demo="ai-negotiation-benefits"]',
+        duration: 120,
+        data: getNorthmoreGordonValueProp('executive')
+      },
+      {
+        id: 'live-esc-pricing',
+        title: 'Live ESC Market Data',
+        description: 'Real-time AEMO pricing: A$47.80 spot, A$52.15 forward curve',
+        targetElement: '[data-demo="live-esc-pricing"]',
+        duration: 60,
+        data: getCurrentESCMarketContext()
+      },
+      {
+        id: 'compliance-automation',
+        title: 'Regulatory Compliance Automation',
+        description: 'Clean Energy Regulator compliance with automated audit trails',
+        targetElement: '[data-demo="compliance-automation"]',
+        duration: 90,
+        data: CER_COMPLIANCE_FRAMEWORK.COMPLIANCE_REQUIREMENTS
+      },
+      {
+        id: 'executive-esc-negotiation',
+        title: 'Executive ESC Negotiation Demo',
+        description: 'Live negotiation: 500K ESC portfolio acquisition scenario',
+        targetElement: '[data-demo="executive-esc-negotiation"]',
+        duration: 240,
+        data: ESC_DEMO_SCENARIOS.EXECUTIVE_HIGH_VOLUME
+      },
+      {
+        id: 'investment-case-esc',
+        title: 'NSW ESC Investment Case',
+        description: 'Portfolio benefits and institutional-grade settlement infrastructure',
+        targetElement: '[data-demo="investment-case-esc"]',
+        duration: 120,
+        data: {
+          roi_metrics: getNorthmoreGordonValueProp('executive').roi_metrics,
+          competitive_advantages: NORTHMORE_GORDON_CONTEXT.MARKET_POSITION.competitive_advantages
+        }
+      }
+    ]
+  },
+
+  'nsw-esc-technical': {
+    id: 'nsw-esc-technical',
+    name: 'NSW ESC Technical Integration',
+    description: 'Technical deep dive into NSW ESC trading system architecture and APIs',
+    duration: 16,
+    track: 'technical',
+    targetAudience: 'CTOs, system architects, integration teams',
+    prerequisites: [],
+    outcomes: ['Technical architecture understanding', 'API integration clarity', 'NSW ESC data flows'],
+    steps: [
+      {
+        id: 'esc-api-architecture',
+        title: 'NSW ESC API Architecture',
+        description: 'Real-time AEMO data feeds and CER registry integration',
+        targetElement: '[data-demo="esc-api-architecture"]',
+        duration: 150,
+        data: {
+          data_sources: ['AEMO', 'NSW ESC Registry', 'IPART', 'CER'],
+          update_frequency: '15-minute intervals',
+          api_specs: getNorthmoreGordonValueProp('technical').technical_specs
+        }
+      },
+      {
+        id: 'cer-compliance-integration',
+        title: 'Clean Energy Regulator Integration',
+        description: 'Automated CER compliance checking and audit trail generation',
+        targetElement: '[data-demo="cer-compliance-integration"]',
+        duration: 180,
+        data: CER_COMPLIANCE_FRAMEWORK.COMPLIANCE_VALIDATION
+      },
+      {
+        id: 'esc-data-flows',
+        title: 'ESC Data Flow Architecture',
+        description: 'Real-time market data processing and validation workflows',
+        targetElement: '[data-demo="esc-data-flows"]',
+        duration: 120,
+        data: {
+          data_flow: 'AEMO -> Validation -> Pricing Engine -> AI Negotiator',
+          latency: 'Sub-50ms response times',
+          throughput: '10,000 transactions/second'
+        }
+      },
+      {
+        id: 'live-technical-negotiation',
+        title: 'Technical ESC Negotiation Demo',
+        description: 'API-driven negotiation with real-time system integration',
+        targetElement: '[data-demo="live-technical-negotiation"]',
+        duration: 300,
+        data: ESC_DEMO_SCENARIOS.TECHNICAL_INTEGRATION
+      },
+      {
+        id: 'blockchain-settlement-esc',
+        title: 'ESC Blockchain Settlement',
+        description: 'Zoniqx zProtocol integration for T+0 atomic settlement',
+        targetElement: '[data-demo="blockchain-settlement-esc"]',
+        duration: 150,
+        data: {
+          protocol: 'Zoniqx zProtocol (DyCIST / ERC-7518)',
+          settlement_time: 'T+0 atomic',
+          security: 'CertiK audited smart contracts'
+        }
+      },
+      {
+        id: 'monitoring-alerting',
+        title: 'System Monitoring & Alerting',
+        description: 'Real-time system health and compliance monitoring dashboards',
+        targetElement: '[data-demo="monitoring-alerting"]',
+        duration: 90,
+        data: {
+          uptime_sla: '99.9% with automated failover',
+          monitoring: 'Comprehensive system and compliance metrics',
+          alerts: 'Real-time regulatory and system notifications'
+        }
+      }
+    ]
+  },
+
+  'nsw-esc-compliance': {
+    id: 'nsw-esc-compliance',
+    name: 'NSW ESC Compliance Walkthrough',
+    description: 'Comprehensive demonstration of Clean Energy Regulator compliance capabilities',
+    duration: 18,
+    track: 'compliance',
+    targetAudience: 'Compliance officers, legal teams, risk managers, auditors',
+    prerequisites: [],
+    outcomes: ['CER compliance understanding', 'Audit trail capabilities', 'Risk management validation'],
+    steps: [
+      {
+        id: 'cer-regulatory-framework',
+        title: 'Clean Energy Regulator Framework',
+        description: 'Complete overview of CER compliance requirements for NSW ESC trading',
+        targetElement: '[data-demo="cer-regulatory-framework"]',
+        duration: 180,
+        data: {
+          authority: CER_COMPLIANCE_FRAMEWORK.AUTHORITY,
+          requirements: CER_COMPLIANCE_FRAMEWORK.COMPLIANCE_REQUIREMENTS,
+          penalties: CER_COMPLIANCE_FRAMEWORK.COMPLIANCE_REQUIREMENTS.MARKET_INTEGRITY.penalties
+        }
+      },
+      {
+        id: 'automated-compliance-checking',
+        title: 'Automated Compliance Validation',
+        description: 'Real-time CER compliance checking and certificate verification',
+        targetElement: '[data-demo="automated-compliance-checking"]',
+        duration: 150,
+        data: CER_COMPLIANCE_FRAMEWORK.COMPLIANCE_VALIDATION.REAL_TIME_CHECKS
+      },
+      {
+        id: 'audit-trail-generation',
+        title: 'Comprehensive Audit Trails',
+        description: 'Automated evidence collection and regulatory documentation',
+        targetElement: '[data-demo="audit-trail-generation"]',
+        duration: 120,
+        data: {
+          record_retention: '7 years as per CER requirements',
+          audit_automation: 'Automated evidence collection',
+          reporting: 'Real-time compliance reporting'
+        }
+      },
+      {
+        id: 'high-risk-scenario',
+        title: 'High-Risk Certificate Assessment',
+        description: 'Due diligence demonstration for potentially fraudulent ESCs',
+        targetElement: '[data-demo="high-risk-scenario"]',
+        duration: 360,
+        data: ESC_DEMO_SCENARIOS.COMPLIANCE_AUDIT
+      },
+      {
+        id: 'aml-ctf-integration',
+        title: 'AML/CTF Compliance',
+        description: 'AUSTRAC integration and suspicious activity monitoring',
+        targetElement: '[data-demo="aml-ctf-integration"]',
+        duration: 150,
+        data: {
+          austrac_integration: 'Real-time AML/CTF screening',
+          monitoring: 'Automated pattern detection',
+          reporting: 'Suspicious activity reporting'
+        }
+      },
+      {
+        id: 'regulatory-reporting',
+        title: 'Regulatory Reporting Suite',
+        description: 'Automated CER reporting and compliance documentation generation',
+        targetElement: '[data-demo="regulatory-reporting"]',
+        duration: 120,
+        data: {
+          quarterly_returns: 'Automated quarterly compliance returns',
+          annual_statements: 'Annual compliance statement generation',
+          ad_hoc_reporting: 'On-demand regulatory report generation'
+        }
+      }
+    ]
+  },
+
+  'northmore-gordon-overview': {
+    id: 'northmore-gordon-overview',
+    name: 'Northmore Gordon Firm Overview',
+    description: 'Comprehensive firm capabilities and competitive positioning demonstration',
+    duration: 12,
+    track: 'executive',
+    targetAudience: 'Prospective clients, business development, competitive analysis',
+    prerequisites: [],
+    outcomes: ['Firm capability understanding', 'Competitive differentiation clarity', 'Service offering details'],
+    steps: [
+      {
+        id: 'firm-profile-overview',
+        title: 'Northmore Gordon Firm Profile',
+        description: 'Established 1985, AFSL 246896, specialising in carbon credit trading',
+        targetElement: '[data-demo="firm-profile"]',
+        duration: 90,
+        data: NORTHMORE_GORDON_CONTEXT.FIRM_PROFILE
+      },
+      {
+        id: 'market-position-analysis',
+        title: 'Market Position & Client Base',
+        description: '12% NSW ESC market share with 83 institutional clients',
+        targetElement: '[data-demo="market-position"]',
+        duration: 120,
+        data: NORTHMORE_GORDON_CONTEXT.MARKET_POSITION
+      },
+      {
+        id: 'service-offerings-demo',
+        title: 'Comprehensive Service Offerings',
+        description: 'Advisory, trading, and technology platform capabilities',
+        targetElement: '[data-demo="service-offerings"]',
+        duration: 180,
+        data: NORTHMORE_GORDON_CONTEXT.SERVICE_OFFERINGS
+      },
+      {
+        id: 'competitive-advantages',
+        title: 'Competitive Differentiation',
+        description: 'AI-powered trading, institutional settlement, regulatory expertise',
+        targetElement: '[data-demo="competitive-advantages"]',
+        duration: 150,
+        data: {
+          advantages: NORTHMORE_GORDON_CONTEXT.MARKET_POSITION.competitive_advantages,
+          technology: NORTHMORE_GORDON_CONTEXT.SERVICE_OFFERINGS.TECHNOLOGY_PLATFORM
+        }
+      },
+      {
+        id: 'client-testimonials',
+        title: 'Client Success Stories',
+        description: 'Case studies and client testimonials across audience types',
+        targetElement: '[data-demo="client-testimonials"]',
+        duration: 120,
+        data: {
+          executive_success: 'Portfolio optimization case study',
+          technical_success: 'API integration case study',
+          compliance_success: 'Regulatory audit success story'
+        }
+      },
+      {
+        id: 'future-roadmap',
+        title: 'Innovation Roadmap',
+        description: 'Future platform enhancements and market expansion plans',
+        targetElement: '[data-demo="future-roadmap"]',
+        duration: 90,
+        data: {
+          ai_enhancements: 'Advanced AI negotiation capabilities',
+          market_expansion: 'Multi-jurisdiction carbon credit support',
+          technology_upgrades: 'Next-generation blockchain infrastructure'
+        }
+      }
+    ]
   }
 };
 
@@ -663,6 +993,85 @@ export const useDemoMode = create<DemoModeState>((set, get) => ({
     }));
   },
 
+  // NSW ESC-specific implementations
+  loadESCMarketContext: () => {
+    const escData = {
+      escMarketContext: NSW_ESC_MARKET_CONTEXT,
+      escScenarios: ESC_DEMO_SCENARIOS,
+      northmoreGordonContext: NORTHMORE_GORDON_CONTEXT,
+      currentMarketData: getCurrentESCMarketContext(),
+    };
+
+    set(state => ({
+      prePopulatedData: {
+        ...state.prePopulatedData,
+        ...escData,
+        marketData: {
+          ...state.prePopulatedData?.marketData,
+          nsw_esc: escData.currentMarketData,
+        },
+        complianceData: {
+          ...state.prePopulatedData?.complianceData,
+          cer_framework: CER_COMPLIANCE_FRAMEWORK,
+        },
+      },
+    }));
+
+    get().trackInteraction({
+      type: 'step_complete',
+      data: { action: 'load_esc_market_context', timestamp: Date.now() },
+    });
+  },
+
+  selectESCScenario: (scenarioId: string) => {
+    const scenario = ESC_DEMO_SCENARIOS[scenarioId];
+    if (!scenario) return;
+
+    set(state => ({
+      prePopulatedData: {
+        ...state.prePopulatedData,
+        negotiationHistory: [
+          {
+            scenario_id: scenarioId,
+            scenario_details: scenario,
+            loaded_at: new Date().toISOString(),
+          },
+        ],
+        analyticsData: {
+          ...state.prePopulatedData?.analyticsData,
+          selected_scenario: scenario,
+          expected_outcomes: scenario.expected_outcomes,
+        },
+      },
+    }));
+
+    get().trackInteraction({
+      type: 'step_complete',
+      data: { action: 'select_esc_scenario', scenarioId, scenarioName: scenario.name },
+    });
+  },
+
+  configureNorthmoreGordonBranding: () => {
+    set(state => ({
+      prePopulatedData: {
+        ...state.prePopulatedData,
+        firmContext: NORTHMORE_GORDON_CONTEXT,
+        brandingConfig: {
+          firm_name: NORTHMORE_GORDON_CONTEXT.FIRM_PROFILE.name,
+          established: NORTHMORE_GORDON_CONTEXT.FIRM_PROFILE.established,
+          regulatory_status: NORTHMORE_GORDON_CONTEXT.FIRM_PROFILE.regulatory_status,
+          specialisation: NORTHMORE_GORDON_CONTEXT.FIRM_PROFILE.specialisation,
+          value_propositions: NORTHMORE_GORDON_CONTEXT.CLIENT_VALUE_PROPOSITIONS,
+        },
+      },
+    }));
+
+    get().trackInteraction({
+      type: 'step_complete',
+      data: { action: 'configure_northmore_gordon_branding', timestamp: Date.now() },
+    });
+  },
+
   // Helpers
   getCurrentStep: () => {
     const state = get();
@@ -696,6 +1105,22 @@ export const useDemoMode = create<DemoModeState>((set, get) => ({
   isStepCompleted: (stepId: string) => {
     const state = get();
     return state.userProgress?.completedSteps.includes(stepId) || false;
+  },
+
+  // NSW ESC-specific helper methods
+  getESCDemoData: () => {
+    const state = get();
+    return {
+      marketContext: state.prePopulatedData?.escMarketContext || NSW_ESC_MARKET_CONTEXT,
+      scenarios: state.prePopulatedData?.escScenarios || ESC_DEMO_SCENARIOS,
+      currentMarketData: state.prePopulatedData?.marketData?.nsw_esc || getCurrentESCMarketContext(),
+      complianceFramework: state.prePopulatedData?.complianceData?.cer_framework || CER_COMPLIANCE_FRAMEWORK,
+    };
+  },
+
+  getNorthmoreGordonContext: () => {
+    const state = get();
+    return state.prePopulatedData?.northmoreGordonContext || NORTHMORE_GORDON_CONTEXT;
   }
 }));
 

@@ -1,0 +1,67 @@
+{
+  "summary": {
+    "totalTests": 6,
+    "passed": 4,
+    "failed": 2,
+    "successRate": 66.7,
+    "testTimestamp": "2026-03-25T17:04:20.050Z"
+  },
+  "tests": [
+    {
+      "name": "World Bank API",
+      "status": "PASS",
+      "message": "Successfully connected and retrieved commodity data",
+      "data": null,
+      "timestamp": "2026-03-25T17:04:17.541Z"
+    },
+    {
+      "name": "FRED API",
+      "status": "PASS",
+      "message": "API endpoint is accessible (API key required for full access)",
+      "data": null,
+      "timestamp": "2026-03-25T17:04:17.759Z"
+    },
+    {
+      "name": "CoinMarketCap API",
+      "status": "PASS",
+      "message": "API endpoint is accessible (API key required for full access)",
+      "data": null,
+      "timestamp": "2026-03-25T17:04:17.864Z"
+    },
+    {
+      "name": "Live Data Endpoint",
+      "status": "FAIL",
+      "message": "HTTP error 400",
+      "data": {
+        "success": false,
+        "error": "Invalid action: live_data. Valid actions: carbon_pricing, carbon_analytics, rwa_market, rwa_analytics, market_sentiment, competitive_analysis, carbon_projections, historical, feed_status",
+        "metadata": {
+          "timestamp": "2026-03-25T17:04:18.654Z",
+          "source": "WREI_TRADING_PLATFORM",
+          "apiVersion": "2.2.0",
+          "requestId": "wrei_1774458258654_0061430kx"
+        }
+      },
+      "timestamp": "2026-03-25T17:04:18.670Z"
+    },
+    {
+      "name": "Fallback System",
+      "status": "PASS",
+      "message": "Platform provides stable data even when external APIs are unavailable",
+      "data": null,
+      "timestamp": "2026-03-25T17:04:18.764Z"
+    },
+    {
+      "name": "Data Caching",
+      "status": "FAIL",
+      "message": "Failed to test caching behavior",
+      "data": null,
+      "timestamp": "2026-03-25T17:04:20.048Z"
+    }
+  ],
+  "recommendations": {
+    "needsAPIKeys": false,
+    "liveDataWorking": false,
+    "fallbackOperational": true
+  }
+}

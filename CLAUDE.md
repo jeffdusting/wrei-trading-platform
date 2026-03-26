@@ -9,7 +9,7 @@ A Next.js 14 (App Router) application that demonstrates Water Roads' WREI carbon
 - **Framework:** Next.js 14 with App Router, TypeScript, Tailwind CSS
 - **AI Engine:** Anthropic Claude API (@anthropic-ai/sdk) — Sonnet 4 for dev, Opus 4.6 for production
 - **Deployment:** Vercel (free hobby plan)
-- **State:** React useState/useReducer (no database, no localStorage)
+- **State:** React useState/useReducer + Zustand for demo mode (no database, no localStorage)
 
 ## Architecture
 
@@ -34,7 +34,7 @@ A Next.js 14 (App Router) application that demonstrates Water Roads' WREI carbon
    - Max 20% total concession from anchor enforced in application code
    - Output filtering strips internal reasoning before delivery to client
    - Input sanitisation removes injection attempts before sending to Claude API
-3. **No localStorage, no sessionStorage** — all state in React useState/useReducer
+3. **No localStorage, no sessionStorage** — all state in React useState/useReducer + Zustand for demo mode
 4. **Single-file approach** — CSS in Tailwind classes, no separate CSS files
 5. **Australian spelling** throughout all user-facing text (e.g., "organised", "recognised", "colour")
 
