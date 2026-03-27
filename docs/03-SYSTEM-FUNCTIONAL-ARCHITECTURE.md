@@ -1,7 +1,7 @@
 # WREI Trading Platform -- System Functional Architecture
 
-**Document Version:** 1.0
-**Date:** 2026-03-25
+**Document Version:** 2.0
+**Date:** 2026-03-27
 
 ---
 
@@ -28,6 +28,9 @@
 |----------|------|---------|---------|
 | `/api/negotiate` | `app/api/negotiate/route.ts` | POST | Claude API negotiation engine |
 | `/api/analytics` | `app/api/analytics/route.ts` | POST | Financial calculation engine |
+| `/api/analytics/predict` | `app/api/analytics/predict/route.ts` | POST | **Stage 2:** Intelligent predictive analytics |
+| `/api/scenarios/generate` | `app/api/scenarios/generate/route.ts` | POST | **Stage 2:** Dynamic scenario generation |
+| `/api/presentation/adapt` | `app/api/presentation/adapt/route.ts` | POST | **Stage 2:** Adaptive presentation layer |
 | `/api/compliance` | `app/api/compliance/route.ts` | GET, POST | Compliance reporting and assessment |
 | `/api/market-data` | `app/api/market-data/route.ts` | GET | Market data feeds and intelligence |
 | `/api/metadata` | `app/api/metadata/route.ts` | GET | Token metadata queries |
@@ -235,6 +238,36 @@ All charts use Recharts with Australian currency formatting and the WREI colour 
 | Component | Purpose |
 |-----------|---------|
 | `AdvancedAnalyticsSuite` | Advanced analytics aggregation |
+| `IntelligentAnalyticsDashboard` | **Stage 2:** AI-enhanced analytics with predictive insights |
+| `AnalyticsDashboard` | Core analytics dashboard (legacy export) |
+| `RealTimeMetricsWidget` | Real-time performance metrics display |
+| `PerformanceChart` | Chart component for performance data |
+
+### **Stage 2 AI-Enhanced Components**
+
+#### Orchestration System (`components/orchestration/`)
+| Component | Purpose |
+|-----------|---------|
+| `DemoOrchestrator` | **Stage 2 Component 1:** AI-powered demo orchestration engine with intelligent tour management |
+
+#### Scenario Generation (`components/generation/`)
+| Component | Purpose |
+|-----------|---------|
+| `ScenarioGenerator` | **Stage 2 Component 2:** Dynamic scenario generation with AI-powered content creation |
+
+#### Presentation Layer (`components/presentation/`)
+| Component | Purpose |
+|-----------|---------|
+| `AdaptivePresentationDashboard` | **Stage 2 Component 4:** Adaptive presentation layer with audience-specific content |
+
+#### Multi-Audience System (`components/audience/`)
+| Component | Purpose |
+|-----------|---------|
+| `AudienceSelector` | **Stage 2 Component 5:** Multi-audience interface system with guided tours |
+| `ExecutiveDashboard` | Executive-focused interface with high-level metrics and strategic insights |
+| `TechnicalInterface` | Technical leadership interface with system architecture and performance data |
+| `CompliancePanel` | Compliance-focused interface with regulatory frameworks and audit trails |
+| `MultiAudienceRouter` | Route manager for audience-specific navigation and content delivery |
 
 ---
 

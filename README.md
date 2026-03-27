@@ -6,20 +6,41 @@ A Next.js 14 application demonstrating Water Roads' WREI carbon credit trading p
 
 ## Features
 
+### Core Platform Capabilities
 - **AI-Powered Negotiation**: Claude API-driven negotiation agent with sophisticated strategies
-- **5 Buyer Personas**: Pre-configured buyer types with distinct negotiation styles
+- **11 Buyer Personas**: Pre-configured buyer types including 5 original personas plus 6 advanced scenarios
 - **Real-Time Analytics**: Live negotiation metrics and progress tracking
 - **Dynamic Pricing**: WREI Pricing Index integration with market context
 - **Security Defence Layers**: Price floor enforcement, concession limits, input sanitisation
 - **Australian English**: Localised language throughout the platform
 
+### **Stage 2: AI-Enhanced Platform (March 2026)**
+- **🎯 AI Demo Orchestration**: Intelligent tour management with contextual guidance
+- **🧠 Dynamic Scenario Generation**: AI-powered market simulation and stress testing
+- **📊 Intelligent Analytics Dashboard**: Predictive insights with machine learning
+- **🎨 Adaptive Presentation Layer**: Audience-specific content optimization
+- **👥 Multi-Audience System**: Executive, Technical, and Compliance interfaces
+
+### Advanced Capabilities
+- **Investment Calculator**: Sophisticated financial modelling with scenario comparison
+- **Compliance Dashboard**: Real-time regulatory compliance monitoring
+- **Demo Mode**: Guided tours with pre-populated data and contextual overlays
+- **Developer Portal**: API Explorer with comprehensive documentation
+- **Scenario Simulation**: Market stress testing and portfolio optimization
+- **Performance Monitoring**: Real-time system health and analytics
+- **Committee Mode**: Multi-stakeholder negotiation interface
+- **Institutional Onboarding**: 6-step KYC/AML compliance workflow
+
 ## Technology Stack
 
 - **Framework**: Next.js 14 (App Router) with TypeScript
-- **Styling**: Tailwind CSS
-- **AI Engine**: Anthropic Claude API (@anthropic-ai/sdk)
+- **Styling**: Tailwind CSS with custom WREI design system
+- **AI Engine**: Anthropic Claude API (@anthropic-ai/sdk) - Sonnet 4 for dev, Opus 4.6 for production
+- **Charts & Visualization**: Recharts with custom WREI components
+- **Icons**: Heroicons React library
+- **State Management**: React useState/useReducer + Zustand for demo mode
+- **Testing**: Jest + React Testing Library + Playwright E2E
 - **Deployment**: Vercel (optimised for free tier)
-- **State Management**: React useState/useReducer (no database required)
 
 ## Quick Start
 
@@ -71,15 +92,52 @@ npm start
 
 ```
 /app
-  /page.tsx                    # Landing page (Water Roads branding)
-  /negotiate/page.tsx          # Main negotiation interface
-  /api/negotiate/route.ts      # Server-side API route (Claude integration)
+  /page.tsx                           # Landing page (Water Roads branding)
+  /negotiate/page.tsx                 # Main negotiation interface
+  /calculator/page.tsx                # Investment calculator
+  /compliance/page.tsx                # Compliance dashboard
+  /demo/page.tsx                     # Demo mode landing
+  /developer/page.tsx                # API Explorer and documentation
+  /institutional/portal/page.tsx     # Institutional onboarding
+  /performance/page.tsx              # Performance monitoring
+  /scenario/page.tsx                 # Scenario simulation
+  /api
+    /negotiate/route.ts              # Core negotiation engine (Claude API)
+    /analytics/route.ts              # Financial calculations
+    /analytics/predict/route.ts      # **Stage 2:** Predictive analytics
+    /scenarios/generate/route.ts     # **Stage 2:** Scenario generation
+    /presentation/adapt/route.ts     # **Stage 2:** Adaptive presentation
+    /compliance/route.ts             # Compliance reporting
+    /market-data/route.ts           # Market data feeds
+    /metadata/route.ts              # Token metadata
+    /performance/route.ts           # Performance monitoring
+/components
+  /analytics/                       # Analytics dashboards and charts
+  /audience/                       # **Stage 2:** Multi-audience system
+  /orchestration/                  # **Stage 2:** Demo orchestration
+  /generation/                     # **Stage 2:** Scenario generation
+  /presentation/                   # **Stage 2:** Adaptive presentation
+  /institutional/                  # Institutional onboarding components
+  /negotiation/                    # Negotiation-specific UI components
+  /charts/                         # Recharts-based visualization components
+  /demo/                          # Demo mode and tour overlays
+  /professional/                  # Professional-grade UI components
 /lib
-  /types.ts                    # TypeScript type definitions
-  /personas.ts                 # 5 buyer persona configurations
-  /negotiation-config.ts       # Pricing and constraint parameters
-  /defence.ts                  # Security layers and validation
-/public                        # Static assets and branding
+  /types.ts                       # TypeScript type definitions
+  /personas.ts                    # 11 buyer persona configurations
+  /negotiation-config.ts          # Pricing and constraint parameters
+  /defence.ts                     # Security layers and validation
+  /analytics-utils.ts             # Analytics utility functions
+  /ai-scenario-generation/        # **Stage 2:** AI scenario engine
+  /demo-mode/                     # Demo state management (Zustand)
+  /config/                        # **Stage 2:** Configuration modules
+  /services/                      # **Stage 2:** Service layer
+/hooks
+  /useLivePricing.ts             # **Stage 2:** Live pricing data hook
+/__tests__                        # Jest + React Testing Library (80+ test files)
+/e2e                             # Playwright end-to-end tests
+/docs                            # Comprehensive documentation suite (v2.0)
+/public                          # Static assets and branding
 ```
 
 ## Configuration
@@ -97,13 +155,20 @@ Key pricing and constraint settings in `/lib/negotiation-config.ts`:
 
 ### Buyer Personas
 
-Five pre-configured buyer types with distinct negotiation styles:
-
+**Core Personas (5):**
 1. **Corporate Compliance Officer** - Time-pressured, audit-focused, risk-averse
 2. **ESG Fund Portfolio Manager** - Quality-driven, sophisticated, premium-tolerant
 3. **Carbon Trading Desk Analyst** - Transactional, volume-focused, price-aggressive
 4. **Sustainability Director** - Values-driven, smaller budget, greenwashing-concerned
 5. **Government Procurement Officer** - Process-driven, multi-approval required
+
+**Advanced Scenario Personas (6):**
+6. **DeFi Yield Farming Scenario** - Decentralized finance integration and yield optimization
+7. **ESG Impact Scenario** - Environmental impact measurement and reporting
+8. **Family Office Scenario** - High-net-worth family wealth preservation
+9. **Infrastructure Fund Scenario** - Large-scale infrastructure project financing
+10. **Sovereign Wealth Fund Scenario** - Nation-state level investment strategies
+11. **Free Play Mode** - Unrestricted negotiation for custom scenarios
 
 ## Security & Defence Layers
 

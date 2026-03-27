@@ -1,7 +1,7 @@
 # WREI Trading Platform -- API Reference and Integration Guide
 
-**Document Version:** 1.0
-**Date:** 2026-03-25
+**Document Version:** 2.0
+**Date:** 2026-03-27
 
 ---
 
@@ -350,7 +350,170 @@ X-WREI-API-Key: your_key
 
 ---
 
-## 4. Error Codes
+## 4. Stage 2 AI-Enhanced API Endpoints
+
+### 4.1 Intelligent Analytics API
+
+**Endpoint:** `POST /api/analytics/predict`
+
+AI-powered predictive analytics engine with machine learning insights.
+
+**Request Body:**
+```json
+{
+  "action": "market_forecast",
+  "parameters": {
+    "timeframe": "30d",
+    "dataPoints": ["price", "volume", "sentiment"],
+    "confidenceThreshold": 0.85
+  },
+  "marketContext": {
+    "currentPrice": 47.80,
+    "volatility": 0.23,
+    "marketConditions": "bullish"
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "forecast": {
+      "predictedPrice": 52.15,
+      "confidence": 0.87,
+      "timeframe": "30d",
+      "riskFactors": ["regulatory_changes", "market_volatility"],
+      "supportingMetrics": {
+        "momentum": 0.74,
+        "sentiment": "positive",
+        "technicalIndicators": ["bullish_crossover", "volume_spike"]
+      }
+    },
+    "aiInsights": "Market conditions suggest continued upward momentum with strong institutional demand..."
+  }
+}
+```
+
+---
+
+### 4.2 Dynamic Scenario Generation API
+
+**Endpoint:** `POST /api/scenarios/generate`
+
+AI-powered scenario generation for market simulations and stress testing.
+
+**Request Body:**
+```json
+{
+  "scenarioType": "market_stress_test",
+  "parameters": {
+    "stressLevel": "severe",
+    "duration": "90d",
+    "affectedMarkets": ["carbon", "energy", "commodities"]
+  },
+  "constraints": {
+    "minPrice": 25.00,
+    "maxVolatility": 0.50,
+    "regulatoryFramework": "australian"
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "scenario": {
+      "id": "scenario_1711353000000_a1b2c3",
+      "name": "Severe Market Stress Test - Q2 2026",
+      "description": "Simulating extreme market conditions with regulatory uncertainty...",
+      "parameters": {
+        "priceShock": -35,
+        "volatilitySpike": 0.45,
+        "durationDays": 90,
+        "recoveryTimeline": "12-18 months"
+      },
+      "expectedOutcomes": {
+        "priceImpact": "Significant downward pressure on carbon credit pricing",
+        "liquidityImpact": "Reduced market liquidity with wider bid-ask spreads",
+        "complianceImpact": "Heightened regulatory scrutiny and reporting requirements"
+      }
+    },
+    "aiRecommendations": [
+      "Increase cash reserves by 20-25%",
+      "Diversify into more stable asset classes",
+      "Review risk management protocols"
+    ]
+  }
+}
+```
+
+---
+
+### 4.3 Adaptive Presentation API
+
+**Endpoint:** `POST /api/presentation/adapt`
+
+AI-driven content adaptation for audience-specific presentations.
+
+**Request Body:**
+```json
+{
+  "audience": "executive",
+  "content": {
+    "type": "market_analysis",
+    "data": {
+      "metrics": ["roi", "risk_assessment", "market_position"],
+      "timeframe": "quarterly",
+      "detailLevel": "high_level"
+    }
+  },
+  "presentationContext": {
+    "format": "board_presentation",
+    "duration": 15,
+    "interactivityLevel": "medium"
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "adaptedContent": {
+      "title": "Q2 2026 Carbon Trading Performance - Executive Summary",
+      "sections": [
+        {
+          "title": "Key Performance Indicators",
+          "content": "Portfolio generated 18.3% ROI with controlled risk exposure...",
+          "visualizations": ["executive_dashboard", "roi_trend_chart"],
+          "talkingPoints": [
+            "Strong outperformance vs benchmark",
+            "Risk metrics within acceptable parameters"
+          ]
+        }
+      ],
+      "recommendations": [
+        "Continue current strategy with minor portfolio rebalancing",
+        "Consider increasing allocation to verified credits by 10%"
+      ]
+    },
+    "aiOptimizations": {
+      "contentAdjustments": "Simplified technical jargon for executive audience",
+      "visualDesign": "Emphasised high-level metrics with clear ROI focus",
+      "narrativeFlow": "Structured for 15-minute executive attention span"
+    }
+  }
+}
+```
+
+---
+
+## 5. Error Codes
 
 | Code | Name | Description |
 |------|------|-------------|
