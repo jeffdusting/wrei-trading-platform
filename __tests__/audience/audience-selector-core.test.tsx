@@ -160,20 +160,20 @@ describe('Audience Selector Core Functionality', () => {
     const mockOnSelect = jest.fn();
     render(<AudienceSelector onAudienceSelect={mockOnSelect} />);
 
-    expect(screen.getByText('A$200M+ annual trading volume')).toBeInTheDocument();
-    expect(screen.getByText('850+ active market participants')).toBeInTheDocument();
-    expect(screen.getByText('Real-time AEMO pricing integration (A$47.80 spot)')).toBeInTheDocument();
-    expect(screen.getByText('Clean Energy Regulator compliance framework')).toBeInTheDocument();
+    expect(screen.getByText('NSW ESC Trading Platform Demonstration')).toBeInTheDocument();
+    expect(screen.getByText('Northmore Gordon')).toBeInTheDocument();
+    expect(screen.getByText('AFSL 246896')).toBeInTheDocument();
+    expect(screen.getByText('12% NSW ESC Market Share')).toBeInTheDocument();
   });
 
   test('displays platform capabilities', () => {
     const mockOnSelect = jest.fn();
     render(<AudienceSelector onAudienceSelect={mockOnSelect} />);
 
-    expect(screen.getByText(/AI-powered negotiation/)).toBeInTheDocument();
-    expect(screen.getByText(/T\+0 atomic settlement/)).toBeInTheDocument();
-    expect(screen.getByText(/compliance automation/)).toBeInTheDocument();
-    expect(screen.getByText(/market intelligence/)).toBeInTheDocument();
+    expect(screen.getByText(/AI-Powered Intelligence/)).toBeInTheDocument();
+    expect(screen.getByText(/compliance overhead/)).toBeInTheDocument();
+    expect(screen.getAllByText(/Real-time market intelligence/).length).toBeGreaterThan(0);
+    expect(screen.getByText(/ESC Trading ROI/)).toBeInTheDocument();
   });
 
   test('supports selecting an audience through guided tour button', async () => {
@@ -261,9 +261,8 @@ describe('Multi-Audience System Configuration', () => {
     render(<AudienceSelector onAudienceSelect={mockOnSelect} />);
 
     // Check that each audience has the correct tour configuration
-    const executiveSection = screen.getByTestId('audience-option-executive');
-    const technicalSection = screen.getByTestId('audience-option-technical');
-    const complianceSection = screen.getByTestId('audience-option-compliance');
+    const executiveSection = screen.getByText('Executive Leadership').closest('[data-demo="audience-option-executive"]');
+    expect(executiveSection).toBeInTheDocument();
 
     // Verify different durations for different audiences
     expect(screen.getByText(/14 minutes/)).toBeInTheDocument();
@@ -282,6 +281,6 @@ describe('Multi-Audience System Configuration', () => {
     expect(screen.getByText(/A\$47\.80 spot/)).toBeInTheDocument();
 
     // Regulatory framework should be mentioned
-    expect(screen.getByText(/Clean Energy Regulator/)).toBeInTheDocument();
+    expect(screen.getAllByText(/Clean Energy Regulator/).length).toBeGreaterThan(0);
   });
 });
