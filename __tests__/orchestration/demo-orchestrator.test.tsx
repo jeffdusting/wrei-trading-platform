@@ -168,10 +168,12 @@ describe('DemoOrchestrator Component', () => {
       updateSessionState: jest.fn().mockResolvedValue(undefined),
       generateAudienceAnalysisPrompt: jest.fn().mockResolvedValue('Test prompt'),
       generateContextAssessmentPrompt: jest.fn().mockResolvedValue('Test prompt'),
-      generateOrchestrationDecisionPrompt: jest.fn().mockResolvedValue('Test prompt')
+      generateOrchestrationDecisionPrompt: jest.fn().mockResolvedValue('Test prompt'),
+      generateOrchestrationDecisionForActiveSession: jest.fn().mockResolvedValue(mockDecision)
     } as jest.Mocked<DemoOrchestrationEngine>;
 
     MockedOrchestrationEngine.mockImplementation(() => mockEngine);
+    MockedOrchestrationEngine.getInstance = jest.fn().mockReturnValue(mockEngine);
   });
 
   afterEach(() => {
