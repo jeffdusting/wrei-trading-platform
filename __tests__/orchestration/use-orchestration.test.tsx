@@ -165,10 +165,32 @@ describe('useOrchestration Hook', () => {
           decisions: [],
           finalState: {} as any
         }
+      }),
+      generateOrchestrationDecisionForActiveSession: jest.fn().mockResolvedValue({
+        id: 'decision-1',
+        timestamp: new Date(),
+        context: {
+          phase: 'execution',
+          audienceState: {} as any,
+          contextState: {} as any,
+          performanceMetrics: {}
+        },
+        decision: {
+          action: { type: 'continue' },
+          confidence: 0.8,
+          reasoning: ['User engagement is stable'],
+          alternatives: []
+        },
+        expectedOutcome: {
+          engagementImprovement: 5,
+          completionProbability: 85,
+          riskMitigation: ['maintain_pace']
+        }
       })
     } as jest.Mocked<DemoOrchestrationEngine>;
 
     MockedOrchestrationEngine.mockImplementation(() => mockEngine);
+    MockedOrchestrationEngine.getInstance = jest.fn().mockReturnValue(mockEngine);
   });
 
   afterEach(() => {
@@ -336,7 +358,7 @@ describe('useOrchestration Hook', () => {
         });
       });
 
-      expect(mockEngine.analyzeAudience).toHaveBeenCalledWith({
+      expect(mockEngine.analyzeAudience).toHaveBeenCalledWith(expect.any(String), {
         type: 'technical',
         timestamp: expect.any(Date),
         engagementLevel: 'high',
@@ -357,7 +379,7 @@ describe('useOrchestration Hook', () => {
         });
       });
 
-      expect(mockEngine.assessContext).toHaveBeenCalledWith({
+      expect(mockEngine.assessContext).toHaveBeenCalledWith(expect.any(String), {
         timeAvailable: 20,
         environment: 'mobile',
         objectives: ['education']
@@ -382,7 +404,7 @@ describe('useOrchestration Hook', () => {
         decision = await result.current.makeDecision();
       });
 
-      expect(mockEngine.generateOrchestrationDecision).toHaveBeenCalled();
+      expect(mockEngine.generateOrchestrationDecisionForActiveSession).toHaveBeenCalled();
       expect(decision).toBeDefined();
     });
 
@@ -586,7 +608,7 @@ describe('useOrchestration Hook', () => {
         await result.current.makeDecision();
       });
 
-      expect(mockEngine.generateOrchestrationDecision).toHaveBeenCalled();
+      expect(mockEngine.generateOrchestrationDecisionForActiveSession).toHaveBeenCalled();
       // Note: onDecisionMade is called in auto-analysis interval, not manual makeDecision
     });
 
@@ -669,7 +691,7 @@ describe('useOrchestration Hook', () => {
         await result.current.startOrchestration();
       });
 
-      mockEngine.generateOrchestrationDecision.mockRejectedValue(new Error('Decision failed'));
+      mockEngine.generateOrchestrationDecisionForActiveSession.mockRejectedValue(new Error('Decision failed'));
 
       // Mock console.error to avoid test output noise
       const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
