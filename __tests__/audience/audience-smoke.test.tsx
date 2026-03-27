@@ -20,6 +20,9 @@ jest.mock('@heroicons/react/24/outline', () => ({
   ArrowLeftIcon: () => <svg data-testid="arrow-left-icon" />,
   HomeIcon: () => <svg data-testid="home-icon" />,
   TrendingUpIcon: () => <svg data-testid="trending-up-icon" />,
+  ArrowTrendingUpIcon: () => <svg data-testid="arrow-trending-up-icon" />,
+  ArrowTrendingDownIcon: () => <svg data-testid="arrow-trending-down-icon" />,
+  PresentationChartBarIcon: () => <svg data-testid="presentation-chart-bar-icon" />,
   CurrencyDollarIcon: () => <svg data-testid="currency-dollar-icon" />,
   ClockIcon: () => <svg data-testid="clock-icon" />,
   CheckCircleIcon: () => <svg data-testid="check-circle-icon" />,
@@ -139,16 +142,16 @@ describe('Multi-Audience System Smoke Tests', () => {
 
   test('All components use NSW ESC context', () => {
     const { rerender } = render(<AudienceSelector onAudienceSelect={jest.fn()} />);
-    expect(screen.getByText(/NSW ESC/)).toBeInTheDocument();
+    expect(screen.getByText('NSW ESC Trading Platform Demonstration')).toBeInTheDocument();
 
     rerender(<ExecutiveDashboard />);
-    expect(screen.getByText(/ESC/)).toBeInTheDocument();
+    expect(screen.getAllByText(/ESC/).length).toBeGreaterThan(0);
 
     rerender(<TechnicalInterface />);
-    expect(screen.getByText(/ESC/)).toBeInTheDocument();
+    expect(screen.getAllByText(/ESC/).length).toBeGreaterThan(0);
 
     rerender(<CompliancePanel />);
-    expect(screen.getByText(/AFSL/)).toBeInTheDocument();
+    expect(screen.getAllByText(/AFSL/).length).toBeGreaterThan(0);
   });
 
   test('All components integrate Northmore Gordon branding', () => {
@@ -159,6 +162,6 @@ describe('Multi-Audience System Smoke Tests', () => {
     expect(screen.getByText('Northmore Gordon')).toBeInTheDocument();
 
     rerender(<CompliancePanel />);
-    expect(screen.getByText(/AFSL/)).toBeInTheDocument();
+    expect(screen.getAllByText(/AFSL/).length).toBeGreaterThan(0);
   });
 });

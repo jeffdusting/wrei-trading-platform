@@ -8,7 +8,7 @@
  */
 
 // Core Analytics Components (Stage 1)
-export { AnalyticsDashboard } from './AnalyticsDashboard';
+export { IntelligentAnalyticsDashboard as AnalyticsDashboard } from './IntelligentAnalyticsDashboard';
 export { RealTimeMetricsWidget } from './RealTimeMetricsWidget';
 export { PerformanceChart } from './PerformanceChart';
 export { useAnalytics } from './useAnalytics';
@@ -19,6 +19,9 @@ export { useIntelligentAnalytics } from './useIntelligentAnalytics';
 
 // Core Analytics Engine
 export { AnalyticsEngine } from './AnalyticsEngine';
+
+// Analytics Utilities
+export { AnalyticsUtils } from '../../lib/analytics-utils';
 
 // Re-export core analytics types
 export type {

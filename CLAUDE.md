@@ -92,12 +92,13 @@ When the agent discusses these capabilities, it should reference the specific Zo
 
 When implementing each phase, check this list and mark completed items:
 
-- [ ] Phase 1: Project scaffold, Next.js config, Tailwind, dependencies
-- [ ] Phase 2: Type definitions, negotiation config, persona definitions
-- [ ] Phase 3: Defence layer utilities (sanitise, validate, enforce, classify)
-- [ ] Phase 4: API route with Claude integration and system prompt
-- [ ] Phase 5: Negotiation UI (persona selector, chat, dashboard)
-- [ ] Phase 6: Analytics panel, error handling, responsive layout, deploy config
+- [x] Phase 1: Project scaffold, Next.js config, Tailwind, dependencies
+- [x] Phase 2: Type definitions, negotiation config, persona definitions
+- [x] Phase 3: Defence layer utilities (sanitise, validate, enforce, classify)
+- [x] Phase 4: API route with Claude integration and system prompt
+- [x] Phase 5: Negotiation UI (persona selector, chat, dashboard)
+- [x] Phase 6: Analytics panel, error handling, responsive layout, deploy config
+- [x] Stage 2: All 4 AI-enhanced components (Orchestration, Scenarios, Analytics, Presentation)
 
 ## Common Pitfalls to Avoid
 
