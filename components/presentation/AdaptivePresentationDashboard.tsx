@@ -22,41 +22,34 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Separator } from '@/components/ui/separator';
 import {
   useAdaptivePresentation,
   useEngagementMonitoring
 } from './useAdaptivePresentation';
 import {
-  Play,
-  Square,
-  Users,
-  Brain,
-  TrendingUp,
-  TrendingDown,
-  AlertTriangle,
-  CheckCircle2,
-  Clock,
-  MessageSquare,
-  Eye,
-  Settings,
-  BarChart3,
-  Zap,
-  Target,
-  ArrowRight,
-  Download,
-  RefreshCw,
-  Lightbulb,
-  Activity,
-  Gauge,
-  Timer,
-  Volume2
-} from 'lucide-react';
+  PlayIcon,
+  StopIcon,
+  UsersIcon,
+  CpuChipIcon,
+  ArrowTrendingUpIcon,
+  ArrowTrendingDownIcon,
+  ExclamationTriangleIcon,
+  CheckCircleIcon,
+  ClockIcon,
+  ChatBubbleLeftRightIcon,
+  EyeIcon,
+  CogIcon,
+  PresentationChartBarIcon,
+  BoltIcon,
+  StarIcon,
+  ArrowRightIcon,
+  CloudArrowDownIcon,
+  ArrowPathIcon,
+  LightBulbIcon,
+  HeartIcon,
+  ClockIcon as TimerIcon,
+  SpeakerWaveIcon
+} from '@heroicons/react/24/outline';
 
 /**
  * Props interface for the dashboard
@@ -84,9 +77,9 @@ const EngagementIndicator: React.FC<{
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'increasing': return <TrendingUp className="w-4 h-4 text-green-500" />;
-      case 'decreasing': return <TrendingDown className="w-4 h-4 text-red-500" />;
-      default: return <Activity className="w-4 h-4 text-blue-500" />;
+      case 'increasing': return <ArrowTrendingUpIcon className="w-4 h-4 text-green-500" />;
+      case 'decreasing': return <ArrowTrendingDownIcon className="w-4 h-4 text-red-500" />;
+      default: return <HeartIcon className="w-4 h-4 text-blue-500" />;
     }
   };
 
@@ -117,28 +110,36 @@ const AdaptationCard: React.FC<{
     }
   };
 
+  const getBadgeColour = (priority: string) => {
+    switch (priority) {
+      case 'high': return 'bg-red-600 text-white';
+      case 'medium': return 'bg-yellow-600 text-white';
+      default: return 'bg-gray-600 text-white';
+    }
+  };
+
   return (
-    <Card className={`${getPriorityColour(priority)}`}>
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
+    <div className={`bg-white rounded-lg border p-6 ${getPriorityColour(priority)}`}>
+      <div className="pb-3 border-b border-gray-200">
+        <div className="flex items-center gap-2 text-base font-semibold">
           {icon}
           {title}
-          <Badge variant={priority === 'high' ? 'destructive' : priority === 'medium' ? 'default' : 'secondary'}>
+          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getBadgeColour(priority)}`}>
             {priority.toUpperCase()}
-          </Badge>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+          </span>
+        </div>
+      </div>
+      <div className="mt-4">
         <ul className="space-y-2">
           {suggestions.map((suggestion, index) => (
             <li key={index} className="flex items-start gap-2 text-sm">
-              <ArrowRight className="w-3 h-3 mt-1 text-slate-500 flex-shrink-0" />
+              <ArrowRightIcon className="w-3 h-3 mt-1 text-slate-500 flex-shrink-0" />
               <span>{suggestion}</span>
             </li>
           ))}
         </ul>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
@@ -151,66 +152,68 @@ const MetricsPanel: React.FC<{
 }> = ({ metrics, className = '' }) => {
   return (
     <div className={`grid grid-cols-2 lg:grid-cols-4 gap-4 ${className}`}>
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-600">Attention</p>
-              <p className="text-2xl font-bold">{metrics?.attentionLevel?.toFixed(1) || '0.0'}%</p>
-            </div>
-            <Eye className="w-8 h-8 text-blue-500" />
+      <div className="bg-white rounded-lg border p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-slate-600">Attention</p>
+            <p className="text-2xl font-bold">{metrics?.attentionLevel?.toFixed(1) || '0.0'}%</p>
           </div>
-          <Progress value={metrics?.attentionLevel || 0} className="mt-2" />
-        </CardContent>
-      </Card>
+          <EyeIcon className="w-8 h-8 text-blue-500" />
+        </div>
+        <div className="mt-2 bg-gray-200 rounded-full h-2">
+          <div
+            className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+            style={{ width: `${metrics?.attentionLevel || 0}%` }}
+          />
+        </div>
+      </div>
 
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-600">Interaction</p>
-              <p className="text-2xl font-bold">{metrics?.interactionRate?.toFixed(1) || '0.0'}/min</p>
-            </div>
-            <MessageSquare className="w-8 h-8 text-green-500" />
+      <div className="bg-white rounded-lg border p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-slate-600">Interaction</p>
+            <p className="text-2xl font-bold">{metrics?.interactionRate?.toFixed(1) || '0.0'}/min</p>
           </div>
-          <div className="mt-2 flex items-center gap-1">
-            <div className={`w-2 h-2 rounded-full ${
-              (metrics?.interactionRate || 0) > 1 ? 'bg-green-500' : 'bg-slate-300'
-            }`} />
-            <span className="text-xs text-slate-600">
-              {(metrics?.interactionRate || 0) > 1 ? 'Active' : 'Low'}
-            </span>
-          </div>
-        </CardContent>
-      </Card>
+          <ChatBubbleLeftRightIcon className="w-8 h-8 text-green-500" />
+        </div>
+        <div className="mt-2 flex items-center gap-1">
+          <div className={`w-2 h-2 rounded-full ${
+            (metrics?.interactionRate || 0) > 1 ? 'bg-green-500' : 'bg-slate-300'
+          }`} />
+          <span className="text-xs text-slate-600">
+            {(metrics?.interactionRate || 0) > 1 ? 'Active' : 'Low'}
+          </span>
+        </div>
+      </div>
 
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-600">Comprehension</p>
-              <p className="text-2xl font-bold">{metrics?.comprehensionScore?.toFixed(1) || '0.0'}%</p>
-            </div>
-            <Brain className="w-8 h-8 text-purple-500" />
+      <div className="bg-white rounded-lg border p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-slate-600">Comprehension</p>
+            <p className="text-2xl font-bold">{metrics?.comprehensionScore?.toFixed(1) || '0.0'}%</p>
           </div>
-          <Progress value={metrics?.comprehensionScore || 0} className="mt-2" />
-        </CardContent>
-      </Card>
+          <CpuChipIcon className="w-8 h-8 text-purple-500" />
+        </div>
+        <div className="mt-2 bg-gray-200 rounded-full h-2">
+          <div
+            className="bg-purple-500 h-2 rounded-full transition-all duration-300"
+            style={{ width: `${metrics?.comprehensionScore || 0}%` }}
+          />
+        </div>
+      </div>
 
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-slate-600">Questions</p>
-              <p className="text-2xl font-bold">{metrics?.questionFrequency?.toFixed(1) || '0.0'}</p>
-            </div>
-            <Volume2 className="w-8 h-8 text-orange-500" />
+      <div className="bg-white rounded-lg border p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-slate-600">Questions</p>
+            <p className="text-2xl font-bold">{metrics?.questionFrequency?.toFixed(1) || '0.0'}</p>
           </div>
-          <div className="mt-2 text-xs text-slate-600">
-            per 5-minute window
-          </div>
-        </CardContent>
-      </Card>
+          <SpeakerWaveIcon className="w-8 h-8 text-orange-500" />
+        </div>
+        <div className="mt-2 text-xs text-slate-600">
+          per 5-minute window
+        </div>
+      </div>
     </div>
   );
 };
@@ -224,27 +227,27 @@ const AudienceSelector: React.FC<{
   disabled?: boolean;
 }> = ({ currentAudience, onAudienceChange, disabled = false }) => {
   const audiences = [
-    { id: 'executive', label: 'Executive', icon: <Target className="w-4 h-4" />, colour: 'bg-blue-100 text-blue-700' },
-    { id: 'technical', label: 'Technical', icon: <Settings className="w-4 h-4" />, colour: 'bg-green-100 text-green-700' },
-    { id: 'compliance', label: 'Compliance', icon: <CheckCircle2 className="w-4 h-4" />, colour: 'bg-purple-100 text-purple-700' }
+    { id: 'executive', label: 'Executive', icon: <StarIcon className="w-4 h-4" />, colour: 'bg-blue-100 text-blue-700' },
+    { id: 'technical', label: 'Technical', icon: <CogIcon className="w-4 h-4" />, colour: 'bg-green-100 text-green-700' },
+    { id: 'compliance', label: 'Compliance', icon: <CheckCircleIcon className="w-4 h-4" />, colour: 'bg-purple-100 text-purple-700' }
   ];
 
   return (
     <div className="flex gap-2">
       {audiences.map((audience) => (
-        <Button
+        <button
           key={audience.id}
-          variant={currentAudience === audience.id ? 'default' : 'outline'}
-          size="sm"
           onClick={() => onAudienceChange(audience.id as any)}
           disabled={disabled}
-          className={`flex items-center gap-2 ${
-            currentAudience === audience.id ? '' : audience.colour
-          }`}
+          className={`flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-md border transition-colors ${
+            currentAudience === audience.id
+              ? 'bg-blue-600 text-white border-blue-600'
+              : `${audience.colour} border-gray-300 hover:bg-gray-50`
+          } ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'}`}
         >
           {audience.icon}
           {audience.label}
-        </Button>
+        </button>
       ))}
     </div>
   );
@@ -365,31 +368,30 @@ export const AdaptivePresentationDashboard: React.FC<AdaptivePresentationDashboa
           />
 
           {adaptivePresentation.isSessionActive ? (
-            <Button
+            <button
               onClick={adaptivePresentation.endSession}
-              variant="destructive"
-              className="flex items-center gap-2"
               disabled={adaptivePresentation.isLoading}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 border border-red-600 rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              <Square className="w-4 h-4" />
+              <StopIcon className="w-4 h-4" />
               End Session
-            </Button>
+            </button>
           ) : (
-            <Button
+            <button
               onClick={() => adaptivePresentation.startSession()}
-              className="flex items-center gap-2"
               disabled={adaptivePresentation.isLoading}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              <Play className="w-4 h-4" />
+              <PlayIcon className="w-4 h-4" />
               Start Session
-            </Button>
+            </button>
           )}
         </div>
       </div>
 
       {/* Status Bar */}
-      <Card>
-        <CardContent className="p-4">
+      <div className="bg-white rounded-lg border">
+        <div className="p-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
@@ -403,9 +405,9 @@ export const AdaptivePresentationDashboard: React.FC<AdaptivePresentationDashboa
 
               {adaptivePresentation.isSessionActive && (
                 <>
-                  <Separator orientation="vertical" className="h-4" />
+                  <div className="w-px h-4 bg-gray-300" />
                   <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-slate-500" />
+                    <ClockIcon className="w-4 h-4 text-slate-500" />
                     <span className="text-sm">
                       {Math.floor(adaptivePresentation.presentationState?.elapsedTime || 0)}m
                     </span>
@@ -415,9 +417,9 @@ export const AdaptivePresentationDashboard: React.FC<AdaptivePresentationDashboa
 
               {adaptivePresentation.apiResponseTime > 0 && (
                 <>
-                  <Separator orientation="vertical" className="h-4" />
+                  <div className="w-px h-4 bg-gray-300" />
                   <div className="flex items-center gap-2">
-                    <Zap className="w-4 h-4 text-slate-500" />
+                    <BoltIcon className="w-4 h-4 text-slate-500" />
                     <span className="text-sm">
                       {adaptivePresentation.apiResponseTime.toFixed(0)}ms
                     </span>
@@ -427,514 +429,565 @@ export const AdaptivePresentationDashboard: React.FC<AdaptivePresentationDashboa
             </div>
 
             <div className="flex items-center gap-2">
-              <Button
+              <button
                 onClick={handleRefresh}
-                variant="outline"
-                size="sm"
                 disabled={isRefreshing || !adaptivePresentation.isSessionActive}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                <ArrowPathIcon className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                 Refresh
-              </Button>
+              </button>
 
-              <Button
+              <button
                 onClick={handleExport}
-                variant="outline"
-                size="sm"
                 disabled={!adaptivePresentation.presentationState}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                <Download className="w-4 h-4" />
+                <CloudArrowDownIcon className="w-4 h-4" />
                 Export
-              </Button>
+              </button>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Error Display */}
       {adaptivePresentation.error && (
-        <Card className="border-red-200 bg-red-50">
-          <CardContent className="p-4">
+        <div className="bg-red-50 border border-red-200 rounded-lg">
+          <div className="p-4">
             <div className="flex items-center gap-2 text-red-700">
-              <AlertTriangle className="w-5 h-5" />
+              <ExclamationTriangleIcon className="w-5 h-5" />
               <span className="font-medium">Error:</span>
               <span>{adaptivePresentation.error}</span>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
       {/* Loading State */}
       {adaptivePresentation.isLoading && (
-        <Card>
-          <CardContent className="p-8 text-center">
+        <div className="bg-white border rounded-lg">
+          <div className="p-8 text-center">
             <div className="flex items-center justify-center gap-3">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
               <span className="text-slate-600">Processing adaptive presentation data...</span>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
       {/* Main Dashboard Content */}
       {adaptivePresentation.presentationState && (
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-2 lg:grid-cols-6">
-            <TabsTrigger value="overview" className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4" />
+        <div>
+          <div className="grid grid-cols-2 lg:grid-cols-6 bg-gray-100 p-1 rounded-lg mb-6">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                activeTab === 'overview'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <PresentationChartBarIcon className="w-4 h-4" />
               Overview
-            </TabsTrigger>
-            <TabsTrigger value="engagement" className="flex items-center gap-2">
-              <Activity className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setActiveTab('engagement')}
+              className={`flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                activeTab === 'engagement'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <HeartIcon className="w-4 h-4" />
               Engagement
-            </TabsTrigger>
-            <TabsTrigger value="adaptation" className="flex items-center gap-2">
-              <Brain className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setActiveTab('adaptation')}
+              className={`flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                activeTab === 'adaptation'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <CpuChipIcon className="w-4 h-4" />
               Adaptation
-            </TabsTrigger>
-            <TabsTrigger value="flow" className="flex items-center gap-2">
-              <Timer className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setActiveTab('flow')}
+              className={`flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                activeTab === 'flow'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <TimerIcon className="w-4 h-4" />
               Flow
-            </TabsTrigger>
-            <TabsTrigger value="insights" className="flex items-center gap-2">
-              <Lightbulb className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setActiveTab('insights')}
+              className={`flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                activeTab === 'insights'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <LightBulbIcon className="w-4 h-4" />
               Insights
-            </TabsTrigger>
-            <TabsTrigger value="controls" className="flex items-center gap-2">
-              <Settings className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setActiveTab('controls')}
+              className={`flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                activeTab === 'controls'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <CogIcon className="w-4 h-4" />
               Controls
-            </TabsTrigger>
-          </TabsList>
+            </button>
+          </div>
 
           {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
-            <MetricsPanel metrics={adaptivePresentation.presentationState.engagementMetrics} />
+          {activeTab === 'overview' && (
+            <div className="space-y-6">
+              <MetricsPanel metrics={adaptivePresentation.presentationState.engagementMetrics} />
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Current Status */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Gauge className="w-5 h-5" />
-                    Current Status
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-600">Audience Type</span>
-                    <Badge variant="secondary">
-                      {adaptivePresentation.currentAudience.toUpperCase()}
-                    </Badge>
-                  </div>
-
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-600">System Health</span>
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${
-                        adaptivePresentation.systemHealth === 'excellent' ? 'bg-green-500' :
-                        adaptivePresentation.systemHealth === 'good' ? 'bg-yellow-500' : 'bg-red-500'
-                      }`} />
-                      <span className="text-sm capitalize">{adaptivePresentation.systemHealth}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-600">Engagement Level</span>
-                    <EngagementIndicator
-                      level={adaptivePresentation.engagementLevel}
-                      trend={adaptivePresentation.presentationState.engagementMetrics.engagementTrend}
-                    />
-                  </div>
-
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-600">Adaptation Effectiveness</span>
-                    <span className="text-sm font-medium">
-                      {adaptivePresentation.presentationState.adaptationEffectiveness.toFixed(1)}%
-                    </span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Quick Actions */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Zap className="w-5 h-5" />
-                    Quick Actions
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <Button
-                    onClick={() => handleEngagementSignal('attention_drop')}
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start"
-                  >
-                    <TrendingDown className="w-4 h-4 mr-2" />
-                    Record Attention Drop
-                  </Button>
-
-                  <Button
-                    onClick={() => handleEngagementSignal('interest_spike')}
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start"
-                  >
-                    <TrendingUp className="w-4 h-4 mr-2" />
-                    Record Interest Spike
-                  </Button>
-
-                  <Button
-                    onClick={() => handleEngagementSignal('confusion')}
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start"
-                  >
-                    <AlertTriangle className="w-4 h-4 mr-2" />
-                    Record Confusion
-                  </Button>
-
-                  <Button
-                    onClick={() => handleEngagementSignal('approval')}
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start"
-                  >
-                    <CheckCircle2 className="w-4 h-4 mr-2" />
-                    Record Approval
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          {/* Engagement Tab */}
-          <TabsContent value="engagement" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <Card className="lg:col-span-2">
-                <CardHeader>
-                  <CardTitle>Engagement Trends</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {engagementMonitoring.engagementHistory.slice(-5).map((entry, index) => (
-                      <div key={index} className="flex items-center gap-4">
-                        <div className="text-xs text-slate-500 w-16">
-                          {entry.timestamp.toLocaleTimeString()}
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-sm">Attention</span>
-                            <Progress value={entry.attentionLevel} className="flex-1 h-2" />
-                            <span className="text-xs text-slate-600 w-10">
-                              {entry.attentionLevel.toFixed(0)}%
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm">Comprehension</span>
-                            <Progress value={entry.comprehensionScore} className="flex-1 h-2" />
-                            <span className="text-xs text-slate-600 w-10">
-                              {entry.comprehensionScore.toFixed(0)}%
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Engagement Summary</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <div className="text-sm text-slate-600">Average Attention</div>
-                    <div className="text-2xl font-bold">
-                      {engagementMonitoring.averageAttention.toFixed(1)}%
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="text-sm text-slate-600">Trend</div>
-                    <Badge variant={
-                      engagementMonitoring.getEngagementTrend() === 'improving' ? 'default' :
-                      engagementMonitoring.getEngagementTrend() === 'declining' ? 'destructive' : 'secondary'
-                    }>
-                      {engagementMonitoring.getEngagementTrend()}
-                    </Badge>
-                  </div>
-
-                  <div>
-                    <div className="text-sm text-slate-600">Data Points</div>
-                    <div className="text-lg font-semibold">
-                      {engagementMonitoring.engagementHistory.length}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          {/* Adaptation Tab */}
-          <TabsContent value="adaptation" className="space-y-6">
-            {adaptivePresentation.currentAdaptation && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <AdaptationCard
-                  title="Content Adaptations"
-                  suggestions={adaptivePresentation.currentAdaptation.adaptationSuggestions}
-                  icon={<Brain className="w-5 h-5" />}
-                  priority="high"
-                />
-
-                <AdaptationCard
-                  title="Content Modifications"
-                  suggestions={adaptivePresentation.currentAdaptation.contentModifications}
-                  icon={<Settings className="w-5 h-5" />}
-                  priority="medium"
-                />
-
-                <AdaptationCard
-                  title="Pace Adjustments"
-                  suggestions={adaptivePresentation.currentAdaptation.paceAdjustments}
-                  icon={<Timer className="w-5 h-5" />}
-                  priority="medium"
-                />
-
-                <AdaptationCard
-                  title="Interaction Recommendations"
-                  suggestions={adaptivePresentation.currentAdaptation.interactionRecommendations}
-                  icon={<Users className="w-5 h-5" />}
-                  priority="low"
-                />
-              </div>
-            )}
-
-            {!adaptivePresentation.currentAdaptation && (
-              <Card>
-                <CardContent className="p-8 text-center text-slate-600">
-                  <Brain className="w-12 h-12 mx-auto mb-4 text-slate-400" />
-                  <p>No adaptation recommendations available.</p>
-                  <p className="text-sm">Start generating adaptations to see AI-powered suggestions.</p>
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
-
-          {/* Flow Tab */}
-          <TabsContent value="flow" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Presentation Flow Status</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-600">Current Section</span>
-                    <Badge variant="secondary">
-                      {adaptivePresentation.presentationState.presentationFlow.currentSection}
-                    </Badge>
+                {/* Current Status */}
+                <div className="bg-white rounded-lg border">
+                  <div className="p-6 border-b">
+                    <h3 className="text-lg font-semibold flex items-center gap-2">
+                      <CpuChipIcon className="w-5 h-5" />
+                      Current Status
+                    </h3>
                   </div>
-
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-600">Flow Health</span>
-                    <Badge variant={
-                      adaptivePresentation.presentationState.presentationFlow.flowHealth === 'excellent' ? 'default' :
-                      adaptivePresentation.presentationState.presentationFlow.flowHealth === 'good' ? 'secondary' :
-                      'destructive'
-                    }>
-                      {adaptivePresentation.presentationState.presentationFlow.flowHealth}
-                    </Badge>
-                  </div>
-
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-600">Estimated Time Remaining</span>
-                    <span className="text-sm font-medium">
-                      {adaptivePresentation.presentationState.presentationFlow.estimatedTimeRemaining} minutes
-                    </span>
-                  </div>
-                </div>
-
-                {adaptivePresentation.presentationState.presentationFlow.optimisationSuggestions.length > 0 && (
-                  <div className="mt-6">
-                    <h4 className="text-sm font-medium text-slate-900 mb-3">Optimisation Suggestions</h4>
-                    <ul className="space-y-2">
-                      {adaptivePresentation.presentationState.presentationFlow.optimisationSuggestions.map((suggestion, index) => (
-                        <li key={index} className="flex items-start gap-2 text-sm">
-                          <Lightbulb className="w-3 h-3 mt-1 text-yellow-500 flex-shrink-0" />
-                          <span>{suggestion}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Insights Tab */}
-          <TabsContent value="insights" className="space-y-6">
-            {adaptivePresentation.engagementAnalysis && (
-              <div className="space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>AI-Generated Insights</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      {adaptivePresentation.engagementAnalysis.insights.map((insight, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <Eye className="w-4 h-4 mt-1 text-blue-500 flex-shrink-0" />
-                          <span className="text-sm">{insight}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Recommendations</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      {adaptivePresentation.engagementAnalysis.recommendations.map((recommendation, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <ArrowRight className="w-4 h-4 mt-1 text-green-500 flex-shrink-0" />
-                          <span className="text-sm">{recommendation}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Next Actions</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      {adaptivePresentation.engagementAnalysis.nextActions.map((action, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <Target className="w-4 h-4 mt-1 text-orange-500 flex-shrink-0" />
-                          <span className="text-sm">{action}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-
-            {!adaptivePresentation.engagementAnalysis && (
-              <Card>
-                <CardContent className="p-8 text-center text-slate-600">
-                  <Lightbulb className="w-12 h-12 mx-auto mb-4 text-slate-400" />
-                  <p>No insights available.</p>
-                  <p className="text-sm">Generate engagement analysis to see AI-powered insights.</p>
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
-
-          {/* Controls Tab */}
-          <TabsContent value="controls" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Manual Controls</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Button
-                    onClick={() => adaptivePresentation.generateAdaptation({
-                      currentSection: 'manual_trigger',
-                      timeRemaining: 30,
-                      engagementData: adaptivePresentation.presentationState?.engagementMetrics
-                    })}
-                    className="w-full justify-start"
-                    disabled={adaptivePresentation.isLoading}
-                  >
-                    <Brain className="w-4 h-4 mr-2" />
-                    Generate Adaptation
-                  </Button>
-
-                  <Button
-                    onClick={() => adaptivePresentation.analyzeEngagement(
-                      adaptivePresentation.presentationState?.engagementMetrics || {}
-                    )}
-                    className="w-full justify-start"
-                    disabled={adaptivePresentation.isLoading}
-                  >
-                    <BarChart3 className="w-4 h-4 mr-2" />
-                    Analyze Engagement
-                  </Button>
-
-                  <Button
-                    onClick={() => adaptivePresentation.optimizeFlow({
-                      currentSection: 'manual_optimization',
-                      sectionProgress: 50,
-                      totalSections: 5,
-                      timeRemaining: 30
-                    })}
-                    className="w-full justify-start"
-                    disabled={adaptivePresentation.isLoading}
-                  >
-                    <Timer className="w-4 h-4 mr-2" />
-                    Optimize Flow
-                  </Button>
-
-                  <Button
-                    onClick={() => adaptivePresentation.generateInsights({
-                      currentSection: 'manual_insights',
-                      engagementData: adaptivePresentation.presentationState?.engagementMetrics
-                    })}
-                    className="w-full justify-start"
-                    disabled={adaptivePresentation.isLoading}
-                  >
-                    <Lightbulb className="w-4 h-4 mr-2" />
-                    Generate Insights
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Cache Management</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Cache Status</span>
-                      <span className={adaptivePresentation.cacheAge > 0 ? 'text-green-600' : 'text-slate-600'}>
-                        {adaptivePresentation.cacheAge > 0 ? 'Active' : 'Empty'}
+                  <div className="p-6 space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-600">Audience Type</span>
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        {adaptivePresentation.currentAudience.toUpperCase()}
                       </span>
                     </div>
 
-                    {adaptivePresentation.cacheAge > 0 && (
-                      <div className="flex justify-between text-sm">
-                        <span>Cache Age</span>
-                        <span className="text-slate-600">
-                          {Math.floor(adaptivePresentation.cacheAge / 1000)}s
-                        </span>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-600">System Health</span>
+                      <div className="flex items-center gap-2">
+                        <div className={`w-2 h-2 rounded-full ${
+                          adaptivePresentation.systemHealth === 'excellent' ? 'bg-green-500' :
+                          adaptivePresentation.systemHealth === 'good' ? 'bg-yellow-500' : 'bg-red-500'
+                        }`} />
+                        <span className="text-sm capitalize">{adaptivePresentation.systemHealth}</span>
                       </div>
-                    )}
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-600">Engagement Level</span>
+                      <EngagementIndicator
+                        level={adaptivePresentation.engagementLevel}
+                        trend={adaptivePresentation.presentationState.engagementMetrics.engagementTrend}
+                      />
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-600">Adaptation Effectiveness</span>
+                      <span className="text-sm font-medium">
+                        {adaptivePresentation.presentationState.adaptationEffectiveness.toFixed(1)}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quick Actions */}
+                <div className="bg-white rounded-lg border">
+                  <div className="p-6 border-b">
+                    <h3 className="text-lg font-semibold flex items-center gap-2">
+                      <BoltIcon className="w-5 h-5" />
+                      Quick Actions
+                    </h3>
+                  </div>
+                  <div className="p-6 space-y-3">
+                    <button
+                      onClick={() => handleEngagementSignal('attention_drop')}
+                      className="w-full flex items-center justify-start gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                    >
+                      <ArrowTrendingDownIcon className="w-4 h-4" />
+                      Record Attention Drop
+                    </button>
+
+                    <button
+                      onClick={() => handleEngagementSignal('interest_spike')}
+                      className="w-full flex items-center justify-start gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                    >
+                      <ArrowTrendingUpIcon className="w-4 h-4" />
+                      Record Interest Spike
+                    </button>
+
+                    <button
+                      onClick={() => handleEngagementSignal('confusion')}
+                      className="w-full flex items-center justify-start gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                    >
+                      <ExclamationTriangleIcon className="w-4 h-4" />
+                      Record Confusion
+                    </button>
+
+                    <button
+                      onClick={() => handleEngagementSignal('approval')}
+                      className="w-full flex items-center justify-start gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                    >
+                      <CheckCircleIcon className="w-4 h-4" />
+                      Record Approval
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Engagement Tab */}
+          {activeTab === 'engagement' && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 bg-white rounded-lg border">
+                  <div className="p-6 border-b">
+                    <h3 className="text-lg font-semibold">Engagement Trends</h3>
+                  </div>
+                  <div className="p-6">
+                    <div className="space-y-4">
+                      {engagementMonitoring.engagementHistory.slice(-5).map((entry, index) => (
+                        <div key={index} className="flex items-center gap-4">
+                          <div className="text-xs text-slate-500 w-16">
+                            {entry.timestamp.toLocaleTimeString()}
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-sm">Attention</span>
+                              <div className="flex-1 bg-gray-200 rounded-full h-2">
+                                <div
+                                  className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                                  style={{ width: `${entry.attentionLevel}%` }}
+                                />
+                              </div>
+                              <span className="text-xs text-slate-600 w-10">
+                                {entry.attentionLevel.toFixed(0)}%
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm">Comprehension</span>
+                              <div className="flex-1 bg-gray-200 rounded-full h-2">
+                                <div
+                                  className="bg-purple-500 h-2 rounded-full transition-all duration-300"
+                                  style={{ width: `${entry.comprehensionScore}%` }}
+                                />
+                              </div>
+                              <span className="text-xs text-slate-600 w-10">
+                                {entry.comprehensionScore.toFixed(0)}%
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg border">
+                  <div className="p-6 border-b">
+                    <h3 className="text-lg font-semibold">Engagement Summary</h3>
+                  </div>
+                  <div className="p-6 space-y-4">
+                    <div>
+                      <div className="text-sm text-slate-600">Average Attention</div>
+                      <div className="text-2xl font-bold">
+                        {engagementMonitoring.averageAttention.toFixed(1)}%
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="text-sm text-slate-600">Trend</div>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        engagementMonitoring.getEngagementTrend() === 'improving' ? 'bg-green-100 text-green-800' :
+                        engagementMonitoring.getEngagementTrend() === 'declining' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
+                      }`}>
+                        {engagementMonitoring.getEngagementTrend()}
+                      </span>
+                    </div>
+
+                    <div>
+                      <div className="text-sm text-slate-600">Data Points</div>
+                      <div className="text-lg font-semibold">
+                        {engagementMonitoring.engagementHistory.length}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Adaptation Tab */}
+          {activeTab === 'adaptation' && (
+            <div className="space-y-6">
+              {adaptivePresentation.currentAdaptation && (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <AdaptationCard
+                    title="Content Adaptations"
+                    suggestions={adaptivePresentation.currentAdaptation.adaptationSuggestions}
+                    icon={<CpuChipIcon className="w-5 h-5" />}
+                    priority="high"
+                  />
+
+                  <AdaptationCard
+                    title="Content Modifications"
+                    suggestions={adaptivePresentation.currentAdaptation.contentModifications}
+                    icon={<CogIcon className="w-5 h-5" />}
+                    priority="medium"
+                  />
+
+                  <AdaptationCard
+                    title="Pace Adjustments"
+                    suggestions={adaptivePresentation.currentAdaptation.paceAdjustments}
+                    icon={<TimerIcon className="w-5 h-5" />}
+                    priority="medium"
+                  />
+
+                  <AdaptationCard
+                    title="Interaction Recommendations"
+                    suggestions={adaptivePresentation.currentAdaptation.interactionRecommendations}
+                    icon={<UsersIcon className="w-5 h-5" />}
+                    priority="low"
+                  />
+                </div>
+              )}
+
+              {!adaptivePresentation.currentAdaptation && (
+                <div className="bg-white rounded-lg border">
+                  <div className="p-8 text-center text-slate-600">
+                    <CpuChipIcon className="w-12 h-12 mx-auto mb-4 text-slate-400" />
+                    <p>No adaptation recommendations available.</p>
+                    <p className="text-sm">Start generating adaptations to see AI-powered suggestions.</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Flow Tab */}
+          {activeTab === 'flow' && (
+            <div className="space-y-6">
+              <div className="bg-white rounded-lg border">
+                <div className="p-6 border-b">
+                  <h3 className="text-lg font-semibold">Presentation Flow Status</h3>
+                </div>
+                <div className="p-6">
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-600">Current Section</span>
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        {adaptivePresentation.presentationState?.presentationFlow?.currentSection || 'Unknown'}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-600">Flow Health</span>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        adaptivePresentation.presentationState?.presentationFlow?.flowHealth === 'excellent' ? 'bg-green-100 text-green-800' :
+                        adaptivePresentation.presentationState?.presentationFlow?.flowHealth === 'good' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        {adaptivePresentation.presentationState?.presentationFlow?.flowHealth || 'Unknown'}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-slate-600">Estimated Time Remaining</span>
+                      <span className="text-sm font-medium">
+                        {adaptivePresentation.presentationState?.presentationFlow?.estimatedTimeRemaining || 0} minutes
+                      </span>
+                    </div>
                   </div>
 
-                  <Button
-                    onClick={adaptivePresentation.clearCache}
-                    variant="outline"
-                    className="w-full"
-                  >
-                    Clear Cache
-                  </Button>
-                </CardContent>
-              </Card>
+                  {adaptivePresentation.presentationState?.presentationFlow?.optimisationSuggestions?.length > 0 && (
+                    <div className="mt-6">
+                      <h4 className="text-sm font-medium text-slate-900 mb-3">Optimisation Suggestions</h4>
+                      <ul className="space-y-2">
+                        {adaptivePresentation.presentationState.presentationFlow.optimisationSuggestions.map((suggestion, index) => (
+                          <li key={index} className="flex items-start gap-2 text-sm">
+                            <LightBulbIcon className="w-3 h-3 mt-1 text-yellow-500 flex-shrink-0" />
+                            <span>{suggestion}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          </TabsContent>
-        </Tabs>
+          )}
+
+          {/* Insights Tab */}
+          {activeTab === 'insights' && (
+            <div className="space-y-6">
+              {adaptivePresentation.engagementAnalysis && (
+                <div className="space-y-6">
+                  <div className="bg-white rounded-lg border">
+                    <div className="p-6 border-b">
+                      <h3 className="text-lg font-semibold">AI-Generated Insights</h3>
+                    </div>
+                    <div className="p-6">
+                      <ul className="space-y-2">
+                        {adaptivePresentation.engagementAnalysis.insights?.map((insight, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <EyeIcon className="w-4 h-4 mt-1 text-blue-500 flex-shrink-0" />
+                            <span className="text-sm">{insight}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="bg-white rounded-lg border">
+                    <div className="p-6 border-b">
+                      <h3 className="text-lg font-semibold">Recommendations</h3>
+                    </div>
+                    <div className="p-6">
+                      <ul className="space-y-2">
+                        {adaptivePresentation.engagementAnalysis.recommendations?.map((recommendation, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <ArrowRightIcon className="w-4 h-4 mt-1 text-green-500 flex-shrink-0" />
+                            <span className="text-sm">{recommendation}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="bg-white rounded-lg border">
+                    <div className="p-6 border-b">
+                      <h3 className="text-lg font-semibold">Next Actions</h3>
+                    </div>
+                    <div className="p-6">
+                      <ul className="space-y-2">
+                        {adaptivePresentation.engagementAnalysis.nextActions?.map((action, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <StarIcon className="w-4 h-4 mt-1 text-orange-500 flex-shrink-0" />
+                            <span className="text-sm">{action}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {!adaptivePresentation.engagementAnalysis && (
+                <div className="bg-white rounded-lg border">
+                  <div className="p-8 text-center text-slate-600">
+                    <LightBulbIcon className="w-12 h-12 mx-auto mb-4 text-slate-400" />
+                    <p>No insights available.</p>
+                    <p className="text-sm">Generate engagement analysis to see AI-powered insights.</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Controls Tab */}
+          {activeTab === 'controls' && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="bg-white rounded-lg border">
+                  <div className="p-6 border-b">
+                    <h3 className="text-lg font-semibold">Manual Controls</h3>
+                  </div>
+                  <div className="p-6 space-y-4">
+                    <button
+                      onClick={() => adaptivePresentation.generateAdaptation({
+                        currentSection: 'manual_trigger',
+                        timeRemaining: 30,
+                        engagementData: adaptivePresentation.presentationState?.engagementMetrics
+                      })}
+                      disabled={adaptivePresentation.isLoading}
+                      className="w-full flex items-center justify-start gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <CpuChipIcon className="w-4 h-4" />
+                      Generate Adaptation
+                    </button>
+
+                    <button
+                      onClick={() => adaptivePresentation.analyzeEngagement(
+                        adaptivePresentation.presentationState?.engagementMetrics || {}
+                      )}
+                      disabled={adaptivePresentation.isLoading}
+                      className="w-full flex items-center justify-start gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <PresentationChartBarIcon className="w-4 h-4" />
+                      Analyze Engagement
+                    </button>
+
+                    <button
+                      onClick={() => adaptivePresentation.optimizeFlow({
+                        currentSection: 'manual_optimization',
+                        sectionProgress: 50,
+                        totalSections: 5,
+                        timeRemaining: 30
+                      })}
+                      disabled={adaptivePresentation.isLoading}
+                      className="w-full flex items-center justify-start gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <TimerIcon className="w-4 h-4" />
+                      Optimize Flow
+                    </button>
+
+                    <button
+                      onClick={() => adaptivePresentation.generateInsights({
+                        currentSection: 'manual_insights',
+                        engagementData: adaptivePresentation.presentationState?.engagementMetrics
+                      })}
+                      disabled={adaptivePresentation.isLoading}
+                      className="w-full flex items-center justify-start gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <LightBulbIcon className="w-4 h-4" />
+                      Generate Insights
+                    </button>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg border">
+                  <div className="p-6 border-b">
+                    <h3 className="text-lg font-semibold">Cache Management</h3>
+                  </div>
+                  <div className="p-6 space-y-4">
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Cache Status</span>
+                        <span className={adaptivePresentation.cacheAge > 0 ? 'text-green-600' : 'text-slate-600'}>
+                          {adaptivePresentation.cacheAge > 0 ? 'Active' : 'Empty'}
+                        </span>
+                      </div>
+
+                      {adaptivePresentation.cacheAge > 0 && (
+                        <div className="flex justify-between text-sm">
+                          <span>Cache Age</span>
+                          <span className="text-slate-600">
+                            {Math.floor(adaptivePresentation.cacheAge / 1000)}s
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    <button
+                      onClick={adaptivePresentation.clearCache}
+                      className="w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                    >
+                      Clear Cache
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

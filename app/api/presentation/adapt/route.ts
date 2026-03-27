@@ -330,7 +330,7 @@ function generateFallbackResponse(operation: string): any {
     }
   };
 
-  return fallbacks[operation] || {
+  return (fallbacks as any)[operation] || {
     message: 'Fallback response for operation: ' + operation,
     status: 'limited_functionality'
   };
@@ -681,7 +681,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         error: 'Internal server error during presentation adaptation',
-        message: process.env.NODE_ENV === 'development' ? error.message : 'An error occurred',
+        message: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : String(error)) : 'An error occurred',
         timestamp: new Date().toISOString()
       },
       { status: 500 }

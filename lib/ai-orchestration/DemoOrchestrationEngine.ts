@@ -419,7 +419,10 @@ export class DemoOrchestrationEngine {
       compliance: interactionData.regulatoryQuestions + interactionData.riskConcerns + interactionData.auditInterests
     };
 
-    return Object.entries(indicators).reduce((a, b) => indicators[a] > indicators[b] ? a : b)[0] as AudienceType;
+    const maxKey = Object.keys(indicators).reduce((a, b) =>
+      indicators[a as keyof typeof indicators] > indicators[b as keyof typeof indicators] ? a : b
+    );
+    return maxKey as AudienceType;
   }
 
   private calculateDetectionConfidence(interactionData: any): number {
@@ -430,7 +433,7 @@ export class DemoOrchestrationEngine {
   }
 
   private extractTypeIndicators(interactionData: any): string[] {
-    return interactionData.behaviors?.filter(b => b.confidence > 0.7).map(b => b.indicator) || [];
+    return interactionData.behaviors?.filter((b: any) => b.confidence > 0.7).map((b: any) => b.indicator) || [];
   }
 
   private assessEngagementLevel(interactionData: any): EngagementLevel {
@@ -456,7 +459,7 @@ export class DemoOrchestrationEngine {
 
   private buildEngagementHistory(interactionData: any): any[] {
     // Build engagement history from interaction timeline
-    return interactionData.timeline?.map(point => ({
+    return interactionData.timeline?.map((point: any) => ({
       timestamp: new Date(point.timestamp),
       level: this.assessEngagementLevel({ engagementScore: point.score }),
       score: point.score,
@@ -513,7 +516,10 @@ export class DemoOrchestrationEngine {
       mixed: Math.min(interactionData.textEngagement, interactionData.visualEngagement)
     };
 
-    return Object.entries(preferences).reduce((a, b) => preferences[a] > preferences[b] ? a : b)[0] as any;
+    const maxKey = Object.keys(preferences).reduce((a, b) =>
+      preferences[a as keyof typeof preferences] > preferences[b as keyof typeof preferences] ? a : b
+    );
+    return maxKey as any;
   }
 
   private assessConnectionQuality(environmentData: any): 'poor' | 'fair' | 'good' | 'excellent' {

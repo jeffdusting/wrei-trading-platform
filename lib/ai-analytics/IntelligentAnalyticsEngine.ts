@@ -48,14 +48,14 @@ const NSW_ESC_ANALYTICS_CONTEXT = {
 
 export class IntelligentAnalyticsEngine {
   private static instance: IntelligentAnalyticsEngine;
-  private engineState: IntelligentAnalyticsState;
+  private engineState!: IntelligentAnalyticsState;
   private predictionCache: Map<string, PredictiveAnalytics> = new Map();
   private lastPredictionTimes: Map<string, Date> = new Map();
 
   // Integration with other engines
-  private orchestrationEngine: DemoOrchestrationEngine;
-  private scenarioEngine: DynamicScenarioEngine;
-  private analyticsEngine: AnalyticsEngine;
+  private orchestrationEngine!: DemoOrchestrationEngine;
+  private scenarioEngine!: DynamicScenarioEngine;
+  private analyticsEngine!: AnalyticsEngine;
 
   private constructor() {
     this.initializeEngineState();

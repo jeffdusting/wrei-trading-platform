@@ -15,7 +15,7 @@ import {
   PlusIcon,
   PencilIcon,
   TrashIcon,
-  DuplicateIcon,
+  PlusIcon as DocumentDuplicateIcon,
   FolderIcon,
   TagIcon,
   ClockIcon,
@@ -540,7 +540,7 @@ const TemplateManager: React.FC<TemplateManagerProps> = ({
                     duplicateTemplate(template.id);
                   }}
                 >
-                  <DuplicateIcon className="w-4 h-4" />
+                  <DocumentDuplicateIcon className="w-4 h-4" />
                 </button>
                 <button className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors">
                   <PencilIcon className="w-4 h-4" />

@@ -584,15 +584,15 @@ export const TechnicalInterface: React.FC = () => {
 
               {/* Sample Code */}
               <div className="bg-gray-900 rounded-lg p-6 text-green-400 font-mono text-sm">
-                <div className="text-gray-400 mb-2">// Sample API Integration</div>
+                <div className="text-gray-400 mb-2">{`// Sample API Integration`}</div>
                 <div className="space-y-1">
-                  <div><span className="text-blue-400">const</span> response = <span className="text-blue-400">await</span> fetch(<span className="text-yellow-300">'/api/v1/esc/market-data'</span>, {`{`}</div>
-                  <div className="ml-4">headers: {`{`} <span className="text-yellow-300">'Authorization'</span>: <span className="text-yellow-300">'Bearer ${token}'</span> {`}`},</div>
-                  <div className="ml-4">method: <span className="text-yellow-300">'GET'</span></div>
+                  <div><span className="text-blue-400">const</span> response = <span className="text-blue-400">await</span> fetch(<span className="text-yellow-300">&apos;/api/v1/esc/market-data&apos;</span>, {`{`}</div>
+                  <div className="ml-4">headers: {`{`} <span className="text-yellow-300">&apos;Authorization&apos;</span>: <span className="text-yellow-300">&apos;Bearer $`{`token`}`&apos;</span> {`}`},</div>
+                  <div className="ml-4">method: <span className="text-yellow-300">&apos;GET&apos;</span></div>
                   <div>{`});`}</div>
                   <div></div>
                   <div><span className="text-blue-400">const</span> marketData = <span className="text-blue-400">await</span> response.json();</div>
-                  <div>console.log(marketData.esc_spot_price); <span className="text-gray-500">// 47.80</span></div>
+                  <div>console.log(marketData.esc_spot_price); <span className="text-gray-500">{`// 47.80`}</span></div>
                 </div>
               </div>
             </div>

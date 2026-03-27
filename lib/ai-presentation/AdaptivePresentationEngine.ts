@@ -952,7 +952,7 @@ export class AdaptivePresentationEngine {
   /**
    * Generate audience-specific suggestion
    */
-  private generateAudienceSpecificSuggestion(context: any): string {
+  private generateAudienceSpecificSuggestion(context: { audienceType: 'executive' | 'technical' | 'compliance' }): string {
     const suggestions = {
       executive: 'Focus on strategic outcomes and business impact metrics',
       technical: 'Include detailed system architecture and implementation specifics',
@@ -1014,7 +1014,7 @@ export class AdaptivePresentationEngine {
   /**
    * Generate interaction recommendation
    */
-  private generateInteractionRecommendation(audienceType: string): string {
+  private generateInteractionRecommendation(audienceType: 'executive' | 'technical' | 'compliance'): string {
     const recommendations = {
       executive: 'Use strategic questions about business priorities',
       technical: 'Encourage technical questions and system exploration',

@@ -505,7 +505,7 @@ export function getESCScenariosByAudience(audience: 'executive' | 'technical' | 
  * Calculate ESC volume recommendations based on activity type
  */
 export function getRecommendedESCVolumes(activityType: keyof typeof NSW_ESC_MARKET_CONTEXT.ESC_ACTIVITIES): number[] {
-  return NSW_ESC_MARKET_CONTEXT.ESC_ACTIVITIES[activityType].common_volumes;
+  return [...NSW_ESC_MARKET_CONTEXT.ESC_ACTIVITIES[activityType].common_volumes];
 }
 
 /**

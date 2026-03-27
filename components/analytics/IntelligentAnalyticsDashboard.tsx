@@ -329,6 +329,7 @@ export const IntelligentAnalyticsDashboard: React.FC<IntelligentAnalyticsDashboa
             riskPredictions={riskPredictions}
             selectedAudience={selectedAudience}
             formatCurrency={formatCurrency}
+            formatPercentage={formatPercentage}
             getRiskColour={getRiskColour}
             generateSpecificPrediction={generateSpecificPrediction}
           />
@@ -359,6 +360,8 @@ export const IntelligentAnalyticsDashboard: React.FC<IntelligentAnalyticsDashboa
             aiInsights={aiInsights}
             audienceInsights={audienceInsights}
             selectedAudience={selectedAudience}
+            formatCurrency={formatCurrency}
+            formatPercentage={formatPercentage}
             getRiskColour={getRiskColour}
           />
         )}
@@ -371,7 +374,7 @@ export const IntelligentAnalyticsDashboard: React.FC<IntelligentAnalyticsDashboa
             </div>
             <h4 className="text-lg font-medium text-gray-900 mb-2">No Predictions Available</h4>
             <p className="text-gray-600 mb-4">
-              Click "Refresh" to generate AI-powered predictive analytics for this session.
+              Click &quot;Refresh&quot; to generate AI-powered predictive analytics for this session.
             </p>
             <button
               onClick={() => refreshPredictions()}
@@ -567,7 +570,7 @@ const MarketForecastTab: React.FC<TabProps & {
  */
 const RiskAnalysisTab: React.FC<TabProps & {
   riskPredictions: RiskPredictions | null;
-}> = ({ riskPredictions, formatCurrency, getRiskColour, generateSpecificPrediction }) => {
+}> = ({ riskPredictions, formatCurrency, formatPercentage, getRiskColour, generateSpecificPrediction }) => {
   if (!riskPredictions) {
     return (
       <div className="text-center py-8">
@@ -912,7 +915,7 @@ const CompetitiveIntelligenceTab: React.FC<TabProps & {
 const AIInsightsTab: React.FC<TabProps & {
   aiInsights: AIInsights | null;
   audienceInsights: any;
-}> = ({ aiInsights, audienceInsights, selectedAudience, getRiskColour }) => {
+}> = ({ aiInsights, audienceInsights, selectedAudience, formatCurrency, formatPercentage, getRiskColour }) => {
   if (!aiInsights) {
     return <div className="text-center text-gray-500 py-8">No AI insights data available</div>;
   }

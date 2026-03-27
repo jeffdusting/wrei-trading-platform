@@ -15,7 +15,7 @@ import { useDemoMode } from '@/lib/demo-mode/demo-state-manager';
 import { getNorthmoreGordonValueProp, getCurrentESCMarketContext } from '@/lib/demo-mode/esc-market-context';
 import { NSW_ESC_CONFIG } from '@/lib/negotiation-config';
 import {
-  TrendingUpIcon,
+  ArrowTrendingUpIcon,
   CurrencyDollarIcon,
   ClockIcon,
   ShieldCheckIcon,
@@ -126,7 +126,7 @@ export const ExecutiveDashboard: React.FC = () => {
       value: 'A$24.0M',
       change: '+18% vs target',
       changeType: 'positive' as const,
-      icon: TrendingUpIcon,
+      icon: ArrowTrendingUpIcon,
       description: 'Annual transaction volume (12% market share)'
     },
     {

@@ -17,8 +17,8 @@ import {
   ClockIcon,
   ChartBarIcon,
   CurrencyDollarIcon,
-  TrendingUpIcon,
-  TrendingDownIcon,
+  ArrowTrendingUpIcon,
+  ArrowTrendingDownIcon,
   CheckCircleIcon,
   ExclamationTriangleIcon,
   UsersIcon,
@@ -219,7 +219,7 @@ const ESCMarketScenarios: React.FC<ESCMarketScenariosProps> = ({
           },
           actions: [
             {
-              type: 'system-event',
+              type: 'market-event',
               target: 'blockchain-settlement',
               parameters: { settlement_type: 'atomic' },
               expected_outcome: 'Transaction completed and recorded'
@@ -467,7 +467,7 @@ const ESCMarketScenarios: React.FC<ESCMarketScenariosProps> = ({
         return {
           ...baseMetrics,
           settlement_time: 8.2,
-          transaction_hash: `0x${Math.random().toString(16).substr(2, 8)}`,
+          transaction_hash: Math.floor(Math.random() * 1000000),
           gas_cost: 0.0045
         };
       default:
@@ -523,7 +523,7 @@ const ESCMarketScenarios: React.FC<ESCMarketScenariosProps> = ({
     setCurrentSimulation(prev => prev ? { ...prev, status: 'completed' } : null);
 
     demoMode.trackInteraction({
-      type: 'simulation_complete',
+      type: 'step_complete',
       data: {
         scenario_id: simulation.template.id,
         final_metrics: finalMetrics,
@@ -716,7 +716,7 @@ const ESCMarketScenarios: React.FC<ESCMarketScenariosProps> = ({
                     <div className="flex items-center gap-2">
                       <CheckCircleIcon className="w-4 h-4 text-green-600" />
                       <span className="text-sm text-gray-600">
-                        {result.execution_time || result.endTime ? 'Completed' : 'Running'}
+                        {'Completed'}
                       </span>
                     </div>
                   </div>

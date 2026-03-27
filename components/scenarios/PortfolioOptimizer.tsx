@@ -12,8 +12,8 @@
 import React, { useState, useEffect } from 'react';
 import {
   ChartPieIcon,
-  TrendingUpIcon,
-  TrendingDownIcon,
+  ArrowTrendingUpIcon,
+  ArrowTrendingDownIcon,
   ShieldCheckIcon,
   BanknotesIcon,
   ClockIcon,
@@ -354,7 +354,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
     setIsOptimizing(false);
 
     demoMode.trackInteraction({
-      type: 'optimization_complete',
+      type: 'step_complete',
       data: {
         scenario: selectedScenario,
         improvements: result.improvements,
@@ -680,7 +680,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1 mb-1">
-                  <TrendingUpIcon className="w-5 h-5 text-green-500" />
+                  <ArrowTrendingUpIcon className="w-5 h-5 text-green-500" />
                   <div className="text-2xl font-bold text-green-600">
                     +{optimizationResult.improvements.return_increase.toFixed(1)}%
                   </div>

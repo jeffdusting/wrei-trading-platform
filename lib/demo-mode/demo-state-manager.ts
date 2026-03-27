@@ -533,7 +533,7 @@ export const DEMO_TOURS: Record<DemoTourType, DemoTour> = {
         targetElement: '[data-demo="investment-case-esc"]',
         duration: 120,
         data: {
-          roi_metrics: getNorthmoreGordonValueProp('executive').roi_metrics,
+          roi_metrics: (getNorthmoreGordonValueProp('executive') as any).roi_metrics,
           competitive_advantages: NORTHMORE_GORDON_CONTEXT.MARKET_POSITION.competitive_advantages
         }
       }
@@ -559,7 +559,7 @@ export const DEMO_TOURS: Record<DemoTourType, DemoTour> = {
         data: {
           data_sources: ['AEMO', 'NSW ESC Registry', 'IPART', 'CER'],
           update_frequency: '15-minute intervals',
-          api_specs: getNorthmoreGordonValueProp('technical').technical_specs
+          api_specs: (getNorthmoreGordonValueProp('technical') as any).technical_specs
         }
       },
       {
@@ -1006,6 +1006,10 @@ export const useDemoMode = create<DemoModeState>((set, get) => ({
       prePopulatedData: {
         ...state.prePopulatedData,
         ...escData,
+        investorProfile: state.prePopulatedData?.investorProfile || {},
+        negotiationHistory: state.prePopulatedData?.negotiationHistory || [],
+        portfolioData: state.prePopulatedData?.portfolioData || {},
+        analyticsData: state.prePopulatedData?.analyticsData || {},
         marketData: {
           ...state.prePopulatedData?.marketData,
           nsw_esc: escData.currentMarketData,
@@ -1030,6 +1034,10 @@ export const useDemoMode = create<DemoModeState>((set, get) => ({
     set(state => ({
       prePopulatedData: {
         ...state.prePopulatedData,
+        investorProfile: state.prePopulatedData?.investorProfile || {},
+        marketData: state.prePopulatedData?.marketData || {},
+        portfolioData: state.prePopulatedData?.portfolioData || {},
+        complianceData: state.prePopulatedData?.complianceData || {},
         negotiationHistory: [
           {
             scenario_id: scenarioId,
@@ -1055,6 +1063,12 @@ export const useDemoMode = create<DemoModeState>((set, get) => ({
     set(state => ({
       prePopulatedData: {
         ...state.prePopulatedData,
+        investorProfile: state.prePopulatedData?.investorProfile || {},
+        marketData: state.prePopulatedData?.marketData || {},
+        negotiationHistory: state.prePopulatedData?.negotiationHistory || [],
+        portfolioData: state.prePopulatedData?.portfolioData || {},
+        complianceData: state.prePopulatedData?.complianceData || {},
+        analyticsData: state.prePopulatedData?.analyticsData || {},
         firmContext: NORTHMORE_GORDON_CONTEXT,
         brandingConfig: {
           firm_name: NORTHMORE_GORDON_CONTEXT.FIRM_PROFILE.name,

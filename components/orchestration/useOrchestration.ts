@@ -106,7 +106,7 @@ export const useOrchestration = (config: OrchestrationHookConfig = {}): Orchestr
   // Initialize engine
   useEffect(() => {
     if (!engineRef.current) {
-      engineRef.current = new DemoOrchestrationEngine();
+      engineRef.current = DemoOrchestrationEngine.getInstance();
     }
   }, []);
 
@@ -134,7 +134,8 @@ export const useOrchestration = (config: OrchestrationHookConfig = {}): Orchestr
 
     try {
       // Create initial analyses
-      const audienceAnalysis = await engineRef.current.analyzeAudience({
+      const sessionId = `session-${Date.now()}`;
+      const audienceAnalysis = await engineRef.current.analyzeAudience(sessionId, {
         type: audience,
         timestamp: new Date(),
         engagementLevel: 'medium' as EngagementLevel,
@@ -142,7 +143,7 @@ export const useOrchestration = (config: OrchestrationHookConfig = {}): Orchestr
         objectives: ['education' as DemoObjective]
       });
 
-      const contextAssessment = await engineRef.current.assessContext({
+      const contextAssessment = await engineRef.current.assessContext(sessionId, {
         timeAvailable: maxDuration,
         environment: 'desktop',
         objectives: ['education' as DemoObjective]
@@ -285,7 +286,7 @@ export const useOrchestration = (config: OrchestrationHookConfig = {}): Orchestr
       ...input
     };
 
-    return await engineRef.current.analyzeAudience(baseInput);
+    return await engineRef.current.analyzeAudience(`session-${Date.now()}`, baseInput);
   }, [audience]);
 
   const assessContext = useCallback(async (input?: any): Promise<ContextAssessment> => {
@@ -300,7 +301,7 @@ export const useOrchestration = (config: OrchestrationHookConfig = {}): Orchestr
       ...input
     };
 
-    return await engineRef.current.assessContext(baseInput);
+    return await engineRef.current.assessContext(`session-${Date.now()}`, baseInput);
   }, [maxDuration]);
 
   const makeDecision = useCallback(async (): Promise<OrchestrationDecision | null> => {
@@ -311,7 +312,7 @@ export const useOrchestration = (config: OrchestrationHookConfig = {}): Orchestr
     setIsProcessing(true);
 
     try {
-      const decision = await engineRef.current.generateOrchestrationDecision();
+      const decision = await engineRef.current.generateOrchestrationDecisionForActiveSession();
       if (decision) {
         const decisionEvent: OrchestrationEvent = {
           id: `decision-${Date.now()}`,

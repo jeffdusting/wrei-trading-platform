@@ -29,7 +29,7 @@ import {
 
 import { AudienceType } from '../../components/audience';
 import { ScenarioType } from '../../components/scenarios/types';
-import Anthropic from '@anthropic-ai/sdk';
+// Removed direct Anthropic SDK import - using API routes instead
 
 // NSW ESC Market Constants for Scenario Generation
 const NSW_ESC_GENERATION_CONTEXT = {
@@ -45,26 +45,12 @@ const NSW_ESC_GENERATION_CONTEXT = {
 
 export class DynamicScenarioEngine {
   private static instance: DynamicScenarioEngine;
-  private anthropic: Anthropic;
   private engineState: GenerationEngineState;
   private eventHistory: GenerationEvent[] = [];
   private marketDataCache: Map<string, RealTimeMarketData> = new Map();
 
-  constructor() {
-    // Initialize Anthropic client only if API key is available and not in test environment
-    try {
-      if (process.env.ANTHROPIC_API_KEY && process.env.NODE_ENV !== 'test') {
-        this.anthropic = new Anthropic({
-          apiKey: process.env.ANTHROPIC_API_KEY!,
-        });
-      } else {
-        // Mock client for test environment
-        this.anthropic = {} as Anthropic;
-      }
-    } catch (error) {
-      console.warn('[DynamicScenarioEngine] Failed to initialize Anthropic client:', error);
-      this.anthropic = {} as Anthropic;
-    }
+  private constructor() {
+    // Private constructor for singleton pattern
 
     this.engineState = {
       isActive: false,
@@ -235,19 +221,36 @@ export class DynamicScenarioEngine {
     const baseCondition = config.marketConfig.baseCondition;
     const currentMarketData = await this.getCurrentMarketData();
 
-    // Use AI to generate realistic market trajectory
-    const prompt = this.buildMarketConditionPrompt(config, currentMarketData);
-    const response = await this.anthropic.messages.create({
-      model: 'claude-3-sonnet-20240229',
-      max_tokens: 2000,
-      messages: [{
-        role: 'user',
-        content: prompt
-      }]
-    });
+    // Use AI API to generate realistic market trajectory
+    let aiResponse: any = {};
+    try {
+      const apiResponse = await fetch('/api/scenarios/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          operation: 'generate_market_conditions',
+          audience: 'technical', // Default for scenario generation
+          config: {
+            ...config,
+            marketCondition: baseCondition
+          },
+          marketData: currentMarketData
+        })
+      });
 
-    const aiResponse = response.content[0].type === 'text' ?
-      JSON.parse(response.content[0].text) : {};
+      if (!apiResponse.ok) {
+        throw new Error(`API request failed: ${apiResponse.status}`);
+      }
+
+      const apiData = await apiResponse.json();
+      aiResponse = apiData.data || {};
+    } catch (error) {
+      console.warn('[DynamicScenarioEngine] API call failed, using fallback generation:', error);
+      // Use fallback generation when API fails
+      aiResponse = {};
+    }
 
     const condition: GeneratedMarketCondition = {
       id: `market-${config.id}-${Date.now()}`,
@@ -393,17 +396,35 @@ export class DynamicScenarioEngine {
   ): Promise<GeneratedScenario['narrative']> {
     const prompt = this.buildNarrativePrompt(config, marketConditions, participants);
 
-    const response = await this.anthropic.messages.create({
-      model: 'claude-3-sonnet-20240229',
-      max_tokens: 1500,
-      messages: [{
-        role: 'user',
-        content: prompt
-      }]
-    });
+    let aiResponse: any = {};
+    try {
+      const apiResponse = await fetch('/api/scenarios/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          operation: 'generate_narrative',
+          audience: 'technical',
+          config: {
+            ...config,
+            marketConditions,
+            participants
+          }
+        })
+      });
 
-    const aiResponse = response.content[0].type === 'text' ?
-      JSON.parse(response.content[0].text) : {};
+      if (!apiResponse.ok) {
+        throw new Error(`Narrative API request failed: ${apiResponse.status}`);
+      }
+
+      const apiData = await apiResponse.json();
+      aiResponse = apiData.data || {};
+    } catch (error) {
+      console.warn('[DynamicScenarioEngine] Narrative API call failed, using fallback generation:', error);
+      // Use fallback generation when API fails
+      aiResponse = {};
+    }
 
     return {
       title: aiResponse.title || this.generateDefaultTitle(config),
@@ -558,7 +579,7 @@ export class DynamicScenarioEngine {
         name: criterion.name,
         score,
         passed: score >= criterion.threshold,
-        feedback: this.generateValidationFeedback(criterion.name, score)
+        feedback: this.generateValidationFeedback(criterion.name as 'Price Realism' | 'Volume Realism' | 'Participant Behavior' | 'Market Consistency', score)
       });
     }
 
@@ -730,7 +751,7 @@ Respond in JSON format with these fields.`;
     for (let i = 0; i < numEvents; i++) {
       const time = Math.random() * duration;
       const type = eventTypes[Math.floor(Math.random() * eventTypes.length)];
-      const impact = Math.random() > 0.7 ? 'high' : Math.random() > 0.4 ? 'medium' : 'low';
+      const impact: 'high' | 'medium' | 'low' = Math.random() > 0.7 ? 'high' : Math.random() > 0.4 ? 'medium' : 'low';
 
       const descriptions = {
         regulatory_change: 'NSW ESS rule update announced',
@@ -800,36 +821,41 @@ Respond in JSON format with these fields.`;
     return baseBiases[profile] || baseBiases.institutional;
   }
 
-  private generateParticipantConstraints(profile: ParticipantProfile, config: ScenarioGenerationConfig) {
+  private generateParticipantConstraints(profile: ParticipantProfile, config: ScenarioGenerationConfig): {
+    maxPositionSize: number;
+    maxDailyVolume: number;
+    priceRange: [number, number];
+    timeHorizon: number;
+  } {
     const baseConstraints = {
       institutional: {
         maxPositionSize: 50000,
         maxDailyVolume: 100000,
-        priceRange: [NSW_ESC_GENERATION_CONTEXT.HISTORICAL_PRICE_RANGE[0], NSW_ESC_GENERATION_CONTEXT.HISTORICAL_PRICE_RANGE[1]],
+        priceRange: [NSW_ESC_GENERATION_CONTEXT.HISTORICAL_PRICE_RANGE[0], NSW_ESC_GENERATION_CONTEXT.HISTORICAL_PRICE_RANGE[1]] as [number, number],
         timeHorizon: config.duration
       },
       retail: {
         maxPositionSize: 1000,
         maxDailyVolume: 2000,
-        priceRange: [NSW_ESC_GENERATION_CONTEXT.HISTORICAL_PRICE_RANGE[0] * 1.1, NSW_ESC_GENERATION_CONTEXT.HISTORICAL_PRICE_RANGE[1] * 0.9],
+        priceRange: [NSW_ESC_GENERATION_CONTEXT.HISTORICAL_PRICE_RANGE[0] * 1.1, NSW_ESC_GENERATION_CONTEXT.HISTORICAL_PRICE_RANGE[1] * 0.9] as [number, number],
         timeHorizon: config.duration * 0.8
       },
       corporate: {
         maxPositionSize: 10000,
         maxDailyVolume: 20000,
-        priceRange: [NSW_ESC_GENERATION_CONTEXT.HISTORICAL_PRICE_RANGE[0] * 1.05, NSW_ESC_GENERATION_CONTEXT.HISTORICAL_PRICE_RANGE[1] * 0.95],
+        priceRange: [NSW_ESC_GENERATION_CONTEXT.HISTORICAL_PRICE_RANGE[0] * 1.05, NSW_ESC_GENERATION_CONTEXT.HISTORICAL_PRICE_RANGE[1] * 0.95] as [number, number],
         timeHorizon: config.duration
       },
       government: {
         maxPositionSize: 25000,
         maxDailyVolume: 30000,
-        priceRange: [NSW_ESC_GENERATION_CONTEXT.HISTORICAL_PRICE_RANGE[0] * 1.1, NSW_ESC_GENERATION_CONTEXT.HISTORICAL_PRICE_RANGE[1] * 0.9],
+        priceRange: [NSW_ESC_GENERATION_CONTEXT.HISTORICAL_PRICE_RANGE[0] * 1.1, NSW_ESC_GENERATION_CONTEXT.HISTORICAL_PRICE_RANGE[1] * 0.9] as [number, number],
         timeHorizon: config.duration * 1.2
       },
       speculative: {
         maxPositionSize: 20000,
         maxDailyVolume: 100000,
-        priceRange: NSW_ESC_GENERATION_CONTEXT.HISTORICAL_PRICE_RANGE,
+        priceRange: [NSW_ESC_GENERATION_CONTEXT.HISTORICAL_PRICE_RANGE[0], NSW_ESC_GENERATION_CONTEXT.HISTORICAL_PRICE_RANGE[1]] as [number, number],
         timeHorizon: config.duration * 0.5
       }
     };
@@ -891,10 +917,10 @@ Respond in JSON format with these fields.`;
   // Utility methods
   private mapConfigToScenarioType(config: ScenarioGenerationConfig): ScenarioType {
     // Map generation config to existing scenario types
-    if (config.audience === 'executive') return 'esc_trading';
-    if (config.audience === 'technical') return 'trading_simulation_engine';
-    if (config.audience === 'compliance') return 'compliance_workflow';
-    return 'esc_trading';
+    if (config.audience === 'executive') return 'esc-market-trading';
+    if (config.audience === 'technical') return 'portfolio-optimization';
+    if (config.audience === 'compliance') return 'compliance-workflow';
+    return 'esc-market-trading';
   }
 
   private calculateGenerationConfidence(
@@ -1089,11 +1115,16 @@ Respond in JSON format with these fields.`;
     ];
   }
 
-  private extractProbabilisticOutcomes(results: MonteCarloResults) {
+  private extractProbabilisticOutcomes(results: MonteCarloResults): {
+    outcome: string;
+    probability: number;
+    impact: "positive" | "neutral" | "negative";
+    description: string;
+  }[] {
     return results.scenarioOutcomes.map(outcome => ({
       outcome: outcome.outcome,
       probability: outcome.probability,
-      impact: outcome.impact > 0 ? 'positive' : outcome.impact < 0 ? 'negative' : 'neutral' as const,
+      impact: (outcome.impact > 0 ? 'positive' : outcome.impact < 0 ? 'negative' : 'neutral') as "positive" | "neutral" | "negative",
       description: `${outcome.outcome} with ${Math.round(outcome.probability * 100)}% probability`
     }));
   }
@@ -1101,7 +1132,11 @@ Respond in JSON format with these fields.`;
   private generateDeterministicOutcomes(
     config: ScenarioGenerationConfig,
     marketConditions: GeneratedMarketCondition
-  ) {
+  ): {
+    outcome: string;
+    conditions: string[];
+    description: string;
+  }[] {
     return [
       {
         outcome: 'Compliance achievement',
@@ -1192,7 +1227,7 @@ Respond in JSON format with these fields.`;
     return Math.max(0, score);
   }
 
-  private generateValidationFeedback(criterionName: string, score: number): string {
+  private generateValidationFeedback(criterionName: 'Price Realism' | 'Volume Realism' | 'Participant Behavior' | 'Market Consistency', score: number): string {
     const feedback = {
       'Price Realism': score > 0.8 ? 'Prices are realistic and within historical ranges' :
                      score > 0.5 ? 'Some price points may be outside typical ranges' :
@@ -1212,7 +1247,12 @@ Respond in JSON format with these fields.`;
   }
 
   private generateValidationRecommendations(validation: ScenarioValidation) {
-    const recommendations = [];
+    const recommendations: {
+      type: 'improvement';
+      description: string;
+      priority: 'high' | 'medium';
+      estimatedImpact: number;
+    }[] = [];
 
     validation.results.criteriaScores.forEach((result, index) => {
       if (!result.passed) {
@@ -1263,7 +1303,7 @@ Respond in JSON format with these fields.`;
     return actions[phaseIndex] || [`Phase ${phaseIndex + 1} actions`];
   }
 
-  private generateEventOutcomes(event: any): string[] {
+  private generateEventOutcomes(event: { type: 'regulatory_change' | 'major_trade' | 'news_impact' | 'technical_break' }): string[] {
     const outcomeMap = {
       regulatory_change: ['Price adjustment', 'Compliance review', 'Strategy change'],
       major_trade: ['Price movement', 'Volume spike', 'Market response'],

@@ -96,7 +96,7 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
   // Initialize orchestration engine
   useEffect(() => {
     if (!engineRef.current) {
-      engineRef.current = new DemoOrchestrationEngine();
+      engineRef.current = DemoOrchestrationEngine.getInstance();
     }
   }, []);
 
@@ -149,7 +149,7 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
       onStateChange?.(currentState);
 
       // Generate and execute decisions
-      const decision = await engineRef.current.generateOrchestrationDecision();
+      const decision = await engineRef.current.generateOrchestrationDecisionForActiveSession();
       if (decision) {
         setCurrentDecision(decision);
         onDecisionMade?.(decision);
@@ -230,14 +230,14 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
     try {
       const config = {
         sessionId: sessionId || `session-${Date.now()}`,
-        audienceAnalysis: await engineRef.current.analyzeAudience({
+        audienceAnalysis: await engineRef.current.analyzeAudience(sessionId || `session-${Date.now()}`, {
           type: currentAudience,
           timestamp: new Date(),
           engagementLevel: 'medium' as EngagementLevel,
           knowledgeLevel: 'intermediate' as KnowledgeLevel,
           objectives: ['education' as DemoObjective]
         }),
-        contextAssessment: await engineRef.current.assessContext({
+        contextAssessment: await engineRef.current.assessContext(sessionId || `session-${Date.now()}`, {
           timeAvailable: maxDuration,
           environment: 'desktop',
           objectives: ['education' as DemoObjective]

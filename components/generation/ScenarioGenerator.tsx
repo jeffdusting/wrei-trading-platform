@@ -32,7 +32,7 @@ import {
   StopIcon,
   CogIcon,
   SparklesIcon,
-  ChartLineIcon,
+  ChartBarIcon,
   UsersIcon,
   ClockIcon,
   ExclamationTriangleIcon,
@@ -215,7 +215,7 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
 
   // Configuration helpers
   const getVolatilityRangeForCondition = (condition: MarketCondition): [number, number] => {
-    const ranges = {
+    const ranges: Record<MarketCondition, [number, number]> = {
       bull: [0.1, 0.25],
       bear: [0.15, 0.3],
       volatile: [0.25, 0.5],
@@ -237,7 +237,7 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
   };
 
   const getComplexityDescription = (complexity: string) => {
-    const descriptions = {
+    const descriptions: Record<string, string> = {
       simple: 'Basic trading scenario with clear outcomes',
       moderate: 'Intermediate complexity with multiple factors',
       complex: 'Advanced scenario with market dynamics',
@@ -459,7 +459,7 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
         <div className="px-6 py-4 bg-blue-50 border-b border-blue-200">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="flex items-center space-x-2">
-              <ChartLineIcon className="w-5 h-5 text-blue-600" />
+              <ChartBarIcon className="w-5 h-5 text-blue-600" />
               <div>
                 <p className="text-xs font-medium text-blue-600 uppercase">Success Rate</p>
                 <p className="text-sm font-semibold text-blue-900">
@@ -539,7 +539,7 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
 
             <div className="bg-gray-50 p-3 rounded-lg">
               <div className="flex items-center space-x-2 mb-1">
-                <ChartLineIcon className="w-4 h-4 text-gray-600" />
+                <ChartBarIcon className="w-4 h-4 text-gray-600" />
                 <span className="text-xs font-medium text-gray-600 uppercase">Realism</span>
               </div>
               <p className="text-sm font-semibold">
@@ -676,7 +676,7 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
           <SparklesIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-600 mb-2">No scenario generated yet</p>
           <p className="text-sm text-gray-500">
-            Configure your preferences and click "Generate Scenario" to create an AI-powered trading scenario
+            Configure your preferences and click &quot;Generate Scenario&quot; to create an AI-powered trading scenario
           </p>
         </div>
       )}

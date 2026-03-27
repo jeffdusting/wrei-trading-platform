@@ -11,6 +11,12 @@
  * @date 2026-03-26
  */
 
+// Import types for internal use
+import type {
+  AdaptivePresentationState,
+  AdaptivePresentationPerformanceMetrics
+} from '../analytics/types';
+
 // Core Engine Export
 export {
   AdaptivePresentationEngine,

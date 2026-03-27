@@ -63,6 +63,30 @@ export const TOUR_STEP_ROUTES: Record<DemoTourType, Record<string, string>> = {
     'risk-attribution': '/performance',
     'export-reporting': '/performance',
   },
+
+  'nsw-esc-executive': {
+    'value-proposition': '/',
+    'market-overview': '/',
+    'investment-case-esc': '/',
+  },
+
+  'nsw-esc-technical': {
+    'technical-specifications': '/developer',
+    'api-integration': '/developer',
+    'cer-compliance-integration': '/compliance',
+  },
+
+  'nsw-esc-compliance': {
+    'compliance-framework': '/compliance',
+    'regulatory-requirements': '/compliance',
+    'audit-reporting': '/compliance',
+  },
+
+  'northmore-gordon-overview': {
+    'firm-introduction': '/',
+    'service-offering': '/',
+    'client-benefits': '/',
+  },
 };
 
 export default TOUR_STEP_ROUTES;

@@ -20,7 +20,7 @@ import {
   PlayIcon,
   PauseIcon,
   EyeIcon,
-  DownloadIcon,
+  CloudArrowDownIcon,
   CogIcon,
   ArrowLeftIcon
 } from '@heroicons/react/24/outline';
@@ -107,7 +107,7 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
           validation_criteria: [
             {
               id: 'cert-format',
-              type: 'document-validation',
+              type: 'compliance-requirement',
               condition: {
                 metric: 'certificate_format',
                 operator: '==',
@@ -161,7 +161,7 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
           name: 'Additionality Assessment',
           type: 'automated-verification',
           estimated_time: 5,
-          automation_status: 'semi-automated',
+          automation_status: 'hybrid',
           validation_criteria: [
             {
               id: 'additionality-score',
@@ -236,7 +236,7 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
           ],
           outputs: [
             {
-              type: 'blockchain-record',
+              type: 'audit-entry',
               format: 'json',
               retention_period: 3650, // Permanent
               access_control: ['system', 'auditors']
@@ -317,7 +317,7 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
           name: 'Disclosure Document Verification',
           type: 'document-validation',
           estimated_time: 5,
-          automation_status: 'semi-automated',
+          automation_status: 'hybrid',
           validation_criteria: [],
           outputs: []
         },
@@ -430,7 +430,14 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
       await new Promise(resolve => setTimeout(resolve, step.estimated_time * 200)); // Accelerated
 
       // Generate step results
-      const stepResult = generateStepResult(step);
+      const stepResult = generateStepResult(step) as {
+        stepId: string;
+        status: "failed" | "completed" | "skipped";
+        duration: number;
+        outputs: any[];
+        validationResults: any[];
+        timestamp: Date;
+      };
 
       // Update execution with step result
       setCurrentExecution(prev => {
@@ -517,7 +524,7 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
 
     setCurrentExecution(prev => prev ? {
       ...prev,
-      status: overallScore >= 80 ? 'completed' : 'failed',
+      status: overallScore >= 80 ? 'completed' as const : 'failed' as const,
       endTime: new Date(),
       overallScore
     } : null);
@@ -525,7 +532,7 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
     setIsRunning(false);
 
     demoMode.trackInteraction({
-      type: 'workflow_complete',
+      type: 'step_complete',
       data: {
         workflow_id: execution.workflow.id,
         overall_score: overallScore,
@@ -762,7 +769,7 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
                         </div>
                         <div className={`text-xs px-2 py-1 rounded-full ${
                           step.automation_status === 'automated' ? 'bg-green-100 text-green-800' :
-                          step.automation_status === 'semi-automated' ? 'bg-yellow-100 text-yellow-800' :
+                          step.automation_status === 'hybrid' ? 'bg-yellow-100 text-yellow-800' :
                           'bg-orange-100 text-orange-800'
                         }`}>
                           {step.automation_status}
@@ -824,7 +831,7 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
             {currentExecution.status === 'completed' && (
               <>
                 <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                  <DownloadIcon className="w-4 h-4" />
+                  <CloudArrowDownIcon className="w-4 h-4" />
                   Export Report
                 </button>
                 <button className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">

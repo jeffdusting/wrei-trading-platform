@@ -16,8 +16,8 @@ import {
   StopIcon,
   UserGroupIcon,
   BoltIcon,
-  TrendingUpIcon,
-  TrendingDownIcon,
+  ArrowTrendingUpIcon,
+  ArrowTrendingDownIcon,
   ClockIcon,
   CurrencyDollarIcon,
   CheckCircleIcon,
@@ -260,7 +260,7 @@ const TradingSimulationEngine: React.FC<TradingSimulationEngineProps> = ({
 
     const finalMetrics = calculateFinalMetrics();
     demoMode.trackInteraction({
-      type: 'simulation_complete',
+      type: 'step_complete',
       data: { final_metrics: finalMetrics, audience: selectedAudience }
     });
 
@@ -556,9 +556,9 @@ const TradingSimulationEngine: React.FC<TradingSimulationEngineProps> = ({
             <div className="text-sm text-gray-600">Current Price</div>
             <div className="flex items-center justify-center gap-1 mt-1">
               {currentPrice > 47.80 ? (
-                <TrendingUpIcon className="w-4 h-4 text-green-500" />
+                <ArrowTrendingUpIcon className="w-4 h-4 text-green-500" />
               ) : (
-                <TrendingDownIcon className="w-4 h-4 text-red-500" />
+                <ArrowTrendingDownIcon className="w-4 h-4 text-red-500" />
               )}
               <span className={`text-sm ${currentPrice > 47.80 ? 'text-green-600' : 'text-red-600'}`}>
                 {((currentPrice - 47.80) / 47.80 * 100).toFixed(1)}%

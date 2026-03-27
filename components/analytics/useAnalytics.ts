@@ -230,11 +230,11 @@ const generateAnalyticsData = (config: AnalyticsConfig): AnalyticsData => {
  */
 export const useAnalytics = (initialConfig: AnalyticsConfig) => {
   const [config, setConfig] = useState<AnalyticsConfig>({
-    audience: 'executive',
-    autoRefresh: false,
-    refreshInterval: 30000, // 30 seconds default
-    historicalDays: 365,
-    ...initialConfig
+    ...initialConfig,
+    audience: initialConfig.audience || 'executive',
+    autoRefresh: initialConfig.autoRefresh ?? false,
+    refreshInterval: initialConfig.refreshInterval ?? 30000, // 30 seconds default
+    historicalDays: initialConfig.historicalDays ?? 365
   });
 
   const [data, setData] = useState<AnalyticsData | null>(null);
