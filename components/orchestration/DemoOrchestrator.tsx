@@ -93,6 +93,14 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
   const orchestrationIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const eventListenerRef = useRef<((event: OrchestrationEvent) => void) | null>(null);
 
+  // Refs for latest state values (avoids stale closures in setInterval callbacks)
+  const isActiveRef = useRef(false);
+  const isPausedRef = useRef(false);
+
+  // Keep refs in sync with state
+  useEffect(() => { isActiveRef.current = isActive; }, [isActive]);
+  useEffect(() => { isPausedRef.current = isPaused; }, [isPaused]);
+
   // Initialize orchestration engine
   useEffect(() => {
     if (!engineRef.current) {
@@ -135,9 +143,15 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
     };
   }, [currentAudience, onOrchestrationEvent, onAudienceChange, onScenarioChange]);
 
+  // Refs for callbacks (avoids stale closures in setInterval)
+  const onStateChangeRef = useRef(onStateChange);
+  const onDecisionMadeRef = useRef(onDecisionMade);
+  useEffect(() => { onStateChangeRef.current = onStateChange; }, [onStateChange]);
+  useEffect(() => { onDecisionMadeRef.current = onDecisionMade; }, [onDecisionMade]);
+
   // Main orchestration loop
   const runOrchestrationLoop = useCallback(async () => {
-    if (!engineRef.current || !isActive || isPaused) return;
+    if (!engineRef.current || !isActiveRef.current || isPausedRef.current) return;
 
     setIsProcessing(true);
 
@@ -146,13 +160,13 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
       if (!currentState) return;
 
       setOrchestrationState(currentState);
-      onStateChange?.(currentState);
+      onStateChangeRef.current?.(currentState);
 
       // Generate and execute decisions
       const decision = await engineRef.current.generateOrchestrationDecisionForActiveSession();
       if (decision) {
         setCurrentDecision(decision);
-        onDecisionMade?.(decision);
+        onDecisionMadeRef.current?.(decision);
 
         // Execute the decision
         await executeOrchestrationAction(decision.decision.action);
@@ -183,7 +197,7 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
     } finally {
       setIsProcessing(false);
     }
-  }, [isActive, isPaused, onStateChange, onDecisionMade, orchestrationState?.sessionId]);
+  }, [orchestrationState?.sessionId]);
 
   // Execute orchestration actions
   const executeOrchestrationAction = async (action: OrchestrationAction) => {
@@ -261,6 +275,10 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
       setIsActive(true);
       setIsPaused(false);
 
+      // Update refs immediately (before interval fires) to avoid stale closure issues
+      isActiveRef.current = true;
+      isPausedRef.current = false;
+
       // Start orchestration loop
       orchestrationIntervalRef.current = setInterval(runOrchestrationLoop, 5000); // Run every 5 seconds
 
@@ -282,7 +300,9 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
 
   // Pause orchestration
   const handlePauseOrchestration = () => {
-    setIsPaused(!isPaused);
+    const newPaused = !isPaused;
+    setIsPaused(newPaused);
+    isPausedRef.current = newPaused;
 
     if (orchestrationIntervalRef.current && isPaused) {
       clearInterval(orchestrationIntervalRef.current);
@@ -301,6 +321,8 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
 
     setIsActive(false);
     setIsPaused(false);
+    isActiveRef.current = false;
+    isPausedRef.current = false;
     setCurrentDecision(null);
 
     if (engineRef.current && orchestrationState) {

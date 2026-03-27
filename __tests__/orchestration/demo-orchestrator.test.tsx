@@ -127,6 +127,7 @@ describe('DemoOrchestrator Component', () => {
   };
 
   beforeEach(() => {
+    jest.useFakeTimers();
     jest.clearAllMocks();
 
     mockEngine = {
@@ -452,6 +453,16 @@ describe('DemoOrchestrator Component', () => {
         />
       );
 
+      // Wait for auto-start to complete
+      await waitFor(() => {
+        expect(mockEngine.startOrchestration).toHaveBeenCalled();
+      });
+
+      // Advance timers to trigger the orchestration loop
+      await act(async () => {
+        jest.advanceTimersByTime(5100);
+      });
+
       await waitFor(() => {
         expect(onStateChange).toHaveBeenCalledWith(mockOrchestrationState);
       });
@@ -466,6 +477,11 @@ describe('DemoOrchestrator Component', () => {
           onDecisionMade={onDecisionMade}
         />
       );
+
+      // Wait for auto-start to complete
+      await waitFor(() => {
+        expect(mockEngine.startOrchestration).toHaveBeenCalled();
+      });
 
       // Fast-forward to trigger orchestration loop
       await act(async () => {
@@ -636,11 +652,16 @@ describe('DemoOrchestrator Component', () => {
     });
 
     test('should handle orchestration loop errors', async () => {
-      mockEngine.generateOrchestrationDecision.mockRejectedValue(new Error('Decision failed'));
+      mockEngine.getCurrentState.mockRejectedValue(new Error('Decision failed'));
 
       const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
 
       render(<DemoOrchestrator currentAudience="executive" autoStart={true} />);
+
+      // Wait for auto-start to complete
+      await waitFor(() => {
+        expect(mockEngine.startOrchestration).toHaveBeenCalled();
+      });
 
       // Fast-forward to trigger orchestration loop with error
       await act(async () => {

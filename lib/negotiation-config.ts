@@ -24,7 +24,7 @@ export const PRICING_INDEX = {
   CCP_PREMIUM_HIGH: 1.25,
   INSTITUTIONAL_PREMIUM: 1.12,     // Institutional infrastructure premium
 
-  INDEX_TIMESTAMP: '2026-03-20T14:30:00Z', // Last market data update
+  INDEX_TIMESTAMP: '2026-03-27T09:30:00Z', // Last market data update
   DATA_SOURCES: ['Xpansiv CBL', 'AEMO', 'ClimateTrade', 'Sylvera', 'CER'] // Added Clean Energy Regulator
 } as const;
 
