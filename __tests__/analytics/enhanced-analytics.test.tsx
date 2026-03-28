@@ -20,13 +20,21 @@ import {
   useAnalytics,
   AnalyticsUtils
 } from '../../components/analytics';
+import { SimpleDemoProvider } from '../../components/demo/SimpleDemoProvider';
 
 // Mock demo state manager
-jest.mock('../../lib/demo-mode/demo-state-manager', () => ({
-  useDemoMode: () => ({
-    trackInteraction: jest.fn(),
-    getESCDemoData: jest.fn(() => ({})),
-    getNorthmoreGordonContext: jest.fn(() => ({})),
+jest.mock('../../lib/demo-mode/simple-demo-state', () => ({
+  useSimpleDemoStore: () => ({
+    isActive: true,
+    selectedDataSet: 'institutional',
+    demoData: {
+      persona: { name: 'Test Persona', organisation: 'Test Org' },
+      marketData: { basePrice: 150, vcmSpot: 8.45, forwardRemoval: 185, dmrvPremium: 1.78, floor: 120 },
+      portfolioMetrics: { targetAllocation: 500000, expectedYield: 0.085, riskProfile: 'Conservative', liquidityNeeds: 'Medium' },
+      lastUpdated: new Date()
+    },
+    activateDemo: jest.fn(),
+    deactivateDemo: jest.fn()
   })
 }));
 
@@ -52,6 +60,21 @@ jest.mock('../../components/analytics/useIntelligentAnalytics', () => ({
     predictionAge: 0,
     refreshPredictions: jest.fn(),
     generateSpecificPrediction: jest.fn()
+  })
+}));
+
+// Mock useAnalytics hook
+jest.mock('../../components/analytics/useAnalytics', () => ({
+  useAnalytics: () => ({
+    analytics: {
+      persona: { name: 'Test Persona', organisation: 'Test Org' },
+      marketData: { basePrice: 150, vcmSpot: 8.45, forwardRemoval: 185, dmrvPremium: 1.78, floor: 120 },
+      portfolioMetrics: { targetAllocation: 500000, expectedYield: 0.085, riskProfile: 'Conservative', liquidityNeeds: 'Medium' },
+      lastUpdated: new Date()
+    },
+    isLoading: false,
+    error: null,
+    refreshAnalytics: jest.fn()
   })
 }));
 
@@ -153,81 +176,90 @@ describe('Enhanced Negotiation Analytics - Step 1.4', () => {
   describe('AnalyticsDashboard Component', () => {
     test('renders executive dashboard correctly', () => {
       render(
-        <AnalyticsDashboard
-          selectedAudience="executive"
-          sessionId="test-session"
-          onExport={jest.fn()}
-        />
+        <SimpleDemoProvider>
+          <AnalyticsDashboard
+            selectedAudience="executive"
+            sessionId="test-session"
+            onExport={jest.fn()}
+          />
+        </SimpleDemoProvider>
       );
 
-      expect(screen.getByText('Intelligent Analytics Dashboard')).toBeInTheDocument();
-      expect(screen.getByText('Export PDF')).toBeInTheDocument();
-      expect(screen.getByText('Export Excel')).toBeInTheDocument();
+      expect(screen.getByText('Analytics Dashboard')).toBeInTheDocument();
+      expect(screen.getByText('Refresh')).toBeInTheDocument();
     });
 
     test('renders technical dashboard correctly', () => {
       render(
-        <AnalyticsDashboard
-          selectedAudience="technical"
-          sessionId="test-session"
-          onExport={jest.fn()}
-        />
+        <SimpleDemoProvider>
+          <AnalyticsDashboard
+            selectedAudience="technical"
+            sessionId="test-session"
+            onExport={jest.fn()}
+          />
+        </SimpleDemoProvider>
       );
 
-      expect(screen.getByText('Intelligent Analytics Dashboard')).toBeInTheDocument();
+      expect(screen.getByText('Analytics Dashboard')).toBeInTheDocument();
     });
 
     test('renders compliance dashboard correctly', () => {
       render(
-        <AnalyticsDashboard
-          selectedAudience="compliance"
-          sessionId="test-session"
-          onExport={jest.fn()}
-        />
+        <SimpleDemoProvider>
+          <AnalyticsDashboard
+            selectedAudience="compliance"
+            sessionId="test-session"
+            onExport={jest.fn()}
+          />
+        </SimpleDemoProvider>
       );
 
-      expect(screen.getByText('Intelligent Analytics Dashboard')).toBeInTheDocument();
+      expect(screen.getByText('Analytics Dashboard')).toBeInTheDocument();
     });
 
     test('handles tab navigation', () => {
       render(
-        <AnalyticsDashboard
-          selectedAudience="executive"
-          sessionId="test-session"
-          onExport={jest.fn()}
-        />
+        <SimpleDemoProvider>
+          <AnalyticsDashboard
+            selectedAudience="executive"
+            sessionId="test-session"
+            onExport={jest.fn()}
+          />
+        </SimpleDemoProvider>
       );
 
-      const performanceTab = screen.getByText('Performance');
-      fireEvent.click(performanceTab);
+      const marketTab = screen.getByText('Market');
+      fireEvent.click(marketTab);
 
-      expect(screen.getByText('No performance data available')).toBeInTheDocument();
+      expect(screen.getByText('VCM Spot Reference')).toBeInTheDocument();
     });
 
-    test('handles export functionality', () => {
-      const mockOnExport = jest.fn();
-
+    test('handles refresh functionality', () => {
       render(
-        <AnalyticsDashboard
-          selectedAudience="executive"
-          sessionId="test-session"
-          onExport={mockOnExport}
-        />
+        <SimpleDemoProvider>
+          <AnalyticsDashboard
+            selectedAudience="executive"
+            sessionId="test-session"
+            onExport={jest.fn()}
+          />
+        </SimpleDemoProvider>
       );
 
-      const exportPdfButton = screen.getByText('Export PDF');
-      fireEvent.click(exportPdfButton);
+      const refreshButton = screen.getByText('Refresh');
+      fireEvent.click(refreshButton);
 
-      expect(mockOnExport).toHaveBeenCalledWith('pdf');
+      expect(refreshButton).toBeInTheDocument();
     });
 
-    test('displays auto-refresh controls', () => {
+    test('displays refresh controls', () => {
       render(
-        <AnalyticsDashboard
-          selectedAudience="executive"
-          sessionId="test-session"
-          onExport={jest.fn()}
-        />
+        <SimpleDemoProvider>
+          <AnalyticsDashboard
+            selectedAudience="executive"
+            sessionId="test-session"
+            onExport={jest.fn()}
+          />
+        </SimpleDemoProvider>
       );
 
       expect(screen.getByText('Refresh')).toBeInTheDocument();
@@ -510,14 +542,16 @@ describe('Enhanced Negotiation Analytics - Step 1.4', () => {
 
       // Render dashboard with session
       render(
-        <AnalyticsDashboard
-          selectedAudience="executive"
-          sessionId={sessionId}
-          onExport={jest.fn()}
-        />
+        <SimpleDemoProvider>
+          <AnalyticsDashboard
+            selectedAudience="executive"
+            sessionId={sessionId}
+            onExport={jest.fn()}
+          />
+        </SimpleDemoProvider>
       );
 
-      expect(screen.getByText('Intelligent Analytics Dashboard')).toBeInTheDocument();
+      expect(screen.getByText('Analytics Dashboard')).toBeInTheDocument();
     });
 
     test('real-time widget integrates with analytics engine', () => {

@@ -218,39 +218,6 @@ export const MultiAudienceRouter: React.FC<MultiAudienceRouterProps> = ({
         </div>
       </div>
 
-      {/* Tour Overlay */}
-      {demoMode.isActive && demoMode.showTourOverlay && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg p-6 max-w-md mx-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Demo Tour Active
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Follow the guided tour to explore the {currentAudience} interface features.
-            </p>
-            <div className="flex space-x-3">
-              <button
-                onClick={demoMode.nextStep}
-                className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700"
-              >
-                Next Step
-              </button>
-              <button
-                onClick={demoMode.skipStep}
-                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-400"
-              >
-                Skip
-              </button>
-              <button
-                onClick={demoMode.endTour}
-                className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700"
-              >
-                Exit Tour
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Demo Mode Status */}
       {demoMode.isActive && (

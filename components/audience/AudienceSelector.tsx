@@ -11,7 +11,7 @@
 
 import React, { useState } from 'react';
 import { useDemoMode } from '@/lib/demo-mode/demo-state-manager';
-import { getNorthmoreGordonValueProp } from '@/lib/demo-mode/esc-market-context';
+// import { getNorthmoreGordonValueProp } from '@/lib/demo-mode/esc-market-context'; // Removed for Phase 4
 import { ChevronRightIcon, UserGroupIcon, CogIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 
 export type AudienceType = 'executive' | 'technical' | 'compliance';

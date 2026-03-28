@@ -74,6 +74,7 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
 
   // UI state
   const [showAdvancedControls, setShowAdvancedControls] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
 
   // Refs for intervals
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -110,7 +111,7 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
   // Event emission helper
   const emitEvent = useCallback((type: SimplifiedOrchestrationEvent['type'], data: any) => {
     const event: SimplifiedOrchestrationEvent = {
-      id: `event-${Date.now()}`,
+      id: `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       timestamp: new Date(),
       type,
       data

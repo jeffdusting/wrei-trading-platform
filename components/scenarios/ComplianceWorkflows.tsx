@@ -33,7 +33,7 @@ import {
 } from './types';
 import { AudienceType } from '../audience';
 import { useDemoMode } from '../../lib/demo-mode/demo-state-manager';
-import { getCERComplianceFramework } from '../../lib/demo-mode/esc-market-context';
+// import { getCERComplianceFramework } from '../../lib/demo-mode/esc-market-context'; // Removed for Phase 4
 
 interface ComplianceWorkflowsProps {
   workflowId?: string;

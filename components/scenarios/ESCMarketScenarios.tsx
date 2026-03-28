@@ -35,7 +35,7 @@ import {
 } from './types';
 import { AudienceType } from '../audience';
 import { useDemoMode } from '../../lib/demo-mode/demo-state-manager';
-import { getCurrentESCMarketContext } from '../../lib/demo-mode/esc-market-context';
+// import { getCurrentESCMarketContext } from '../../lib/demo-mode/esc-market-context'; // Removed for Phase 4
 
 interface ESCMarketScenariosProps {
   scenarioId?: string;
