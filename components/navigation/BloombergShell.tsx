@@ -17,12 +17,12 @@ interface NavigationItem {
 
 // Consolidated navigation from 9 to 6 items as per Bloomberg Terminal layout
 const navigationItems: NavigationItem[] = [
-  { label: 'Trading', href: '/negotiate', description: 'AI Carbon Credit Trading', icon: 'TRD' },
-  { label: 'Analytics', href: '/calculator', description: 'Investment Calculator & Analysis', icon: 'ANA' },
-  { label: 'Market', href: '/performance', description: 'Market Data & Monitoring', icon: 'MKT' },
-  { label: 'Portfolio', href: '/scenario', description: 'Scenario Analysis', icon: 'PRT' },
-  { label: 'Compliance', href: '/compliance', description: 'Regulatory Oversight', icon: 'CMP' },
-  { label: 'System', href: '/developer', description: 'Developer Access & Institutional', icon: 'SYS' }
+  { label: 'Trade', href: '/', description: 'Home dashboard with three-panel layout', icon: 'TRD' },
+  { label: 'Negotiate', href: '/negotiate', description: 'AI negotiation interface', icon: 'NEG' },
+  { label: 'Analyse', href: '/analyse', description: 'Investment calculator + market scenarios (tabbed)', icon: 'ANA' },
+  { label: 'Institutional', href: '/institutional/portal', description: 'Onboarding portal', icon: 'INS' },
+  { label: 'Compliance', href: '/compliance', description: 'Regulatory compliance', icon: 'CMP' },
+  { label: 'System', href: '/system', description: 'Demo mode + performance + API explorer (tabbed)', icon: 'SYS' }
 ]
 
 interface BloombergShellProps {
@@ -45,8 +45,6 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
   // Bloomberg Terminal styling with light theme adaptation
   const shellStyles = {
     backgroundColor: tokens.colors.surface.lightGrey,
-    fontFamily: tokens.typography.families.interface,
-    color: tokens.colors.text.primary,
     minHeight: '100vh',
     display: 'flex',
     flexDirection: 'column' as const
@@ -86,14 +84,14 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
   }
 
   return (
-    <div style={shellStyles} className="bloomberg-shell">
+    <div style={shellStyles} className="bloomberg-shell font-sans text-bloomberg-interface">
       {/* Bloomberg Terminal Top Bar - 40px */}
       <div style={topBarStyles} className="bloomberg-top-bar">
         <div className="flex items-center gap-6">
           {/* WREI Terminal Identifier */}
           <div className="flex items-center gap-3">
             <div
-              className="w-6 h-6 flex items-center justify-center text-xs font-bold"
+              className="w-6 h-6 flex items-center justify-center bloomberg-small-text font-medium"
               style={{
                 backgroundColor: tokens.colors.accent.info,
                 color: 'white',
@@ -102,12 +100,7 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
             >
               WR
             </div>
-            <span
-              style={{
-                fontWeight: tokens.typography.weights.bold,
-                color: tokens.colors.text.primary
-              }}
-            >
+            <span className="bloomberg-section-label text-slate-700">
               WREI PLATFORM
             </span>
           </div>
@@ -122,7 +115,7 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
                 backgroundColor: tokens.colors.status.online
               }}
             />
-            <span style={{ color: tokens.colors.text.secondary, fontSize: tokens.typography.sizes.xs }}>
+            <span className="bloomberg-small-text text-slate-500">
               SYSTEM ONLINE
             </span>
           </div>
@@ -132,13 +125,8 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
           {/* Demo Mode Toggle - Terminal Style */}
           <SimpleDemoToggle />
 
-          {/* System Time */}
-          <span
-            style={{
-              fontFamily: tokens.typography.families.financial,
-              color: tokens.colors.text.secondary
-            }}
-          >
+          {/* System Time - Monospace for timestamps */}
+          <span className="bloomberg-data bloomberg-small-text text-slate-500">
             {new Date().toLocaleTimeString()} AEDT
           </span>
         </div>
@@ -160,7 +148,7 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
                 key={item.href}
                 href={item.href}
                 className={`
-                  px-4 py-2 text-sm font-medium transition-all duration-200
+                  px-4 py-2 bloomberg-nav-item transition-all duration-200
                   border border-transparent hover:bg-slate-50
                   flex items-center gap-2
                   ${isActive(item.href)
@@ -169,19 +157,12 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
                   }
                 `}
                 style={{
-                  borderRadius: tokens.borderRadius.sm,
-                  fontFamily: tokens.typography.families.interface
+                  borderRadius: tokens.borderRadius.sm
                 }}
                 title={item.description}
               >
                 {/* Terminal-style icon */}
-                <span
-                  className="text-xs font-mono bg-slate-100 px-1 rounded"
-                  style={{
-                    fontFamily: tokens.typography.families.financial,
-                    fontSize: '10px'
-                  }}
-                >
+                <span className="bloomberg-data bloomberg-small-text bg-slate-100 px-1 rounded">
                   {item.icon}
                 </span>
                 {item.label}
@@ -220,7 +201,7 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
                   key={item.href}
                   href={item.href}
                   className={`
-                    block px-3 py-2 rounded text-sm font-medium transition-colors
+                    block px-3 py-2 rounded bloomberg-nav-item transition-colors
                     ${isActive(item.href)
                       ? 'bg-blue-50 text-blue-800'
                       : 'text-slate-700 hover:bg-slate-50'
@@ -229,15 +210,12 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <div className="flex items-center gap-2">
-                    <span
-                      className="text-xs font-mono bg-slate-100 px-1 rounded"
-                      style={{ fontFamily: tokens.typography.families.financial }}
-                    >
+                    <span className="bloomberg-data bloomberg-small-text bg-slate-100 px-1 rounded">
                       {item.icon}
                     </span>
                     <div>
                       <div>{item.label}</div>
-                      <div className="text-xs text-slate-500">{item.description}</div>
+                      <div className="bloomberg-small-text text-slate-500">{item.description}</div>
                     </div>
                   </div>
                 </Link>
@@ -256,7 +234,7 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
       </main>
 
       {/* Bloomberg Command Bar Footer - 36px */}
-      <footer style={commandBarStyles} className="bloomberg-command-bar">
+      <footer className="bloomberg-command-bar" style={commandBarStyles}>
         <div className="flex items-center gap-3">
           {/* Green prompt indicator */}
           <div className="flex items-center gap-2">
@@ -268,26 +246,26 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
                 backgroundColor: tokens.colors.status.online
               }}
             />
-            <span style={{ color: tokens.colors.text.secondary }}>
+            <span className="bloomberg-small-text text-slate-500">
               READY
             </span>
           </div>
 
-          {/* Command prompt styling */}
-          <span style={{ color: tokens.colors.text.secondary }}>
+          {/* Command prompt styling - Monospace */}
+          <span className="bloomberg-command bloomberg-small-text text-slate-500">
             wrei@platform:~$
           </span>
         </div>
 
         <div className="flex items-center gap-4">
           {/* Compliance Notice */}
-          <span style={{ color: tokens.colors.text.tertiary }}>
+          <span className="bloomberg-small-text text-slate-400">
             © 2026 WREI Platform | Institutional-grade carbon credit tokenisation
           </span>
 
           {/* Connection Status */}
           <div className="flex items-center gap-2">
-            <span style={{ color: tokens.colors.text.tertiary }}>
+            <span className="bloomberg-small-text text-slate-400">
               MARKET DATA
             </span>
             <div

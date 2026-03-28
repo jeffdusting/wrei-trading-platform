@@ -558,7 +558,7 @@ function getWREITokenContext(state: NegotiationState): string {
   switch (wreiTokenType) {
     case 'carbon_credits':
       return `
-🌱 WREI CARBON CREDIT TOKENS - Institutional Investment Grade
+WREI CARBON CREDIT TOKENS - Institutional Investment Grade
 
 ${marketAccessContext}
 
@@ -623,7 +623,7 @@ ${crossCollateralContext}`;
 
     case 'asset_co':
       return `
-🏗️ WREI ASSET CO TOKENS - Infrastructure Investment Grade
+WREI ASSET CO TOKENS - Infrastructure Investment Grade
 
 ${marketAccessContext}
 
@@ -691,7 +691,7 @@ ${crossCollateralContext}`;
 
     case 'dual_portfolio':
       return `
-🎯 WREI DUAL TOKEN PORTFOLIO - Diversified Investment Strategy
+WREI DUAL TOKEN PORTFOLIO - Diversified Investment Strategy
 
 ${marketAccessContext}
 
@@ -757,7 +757,7 @@ function getMarketAccessContext(marketType: string, investorClassification: stri
 
   if (isPrimary && isWholesale) {
     return `
-**🎯 PRIMARY MARKET ACCESS - INSTITUTIONAL ALLOCATION**
+**PRIMARY MARKET ACCESS - INSTITUTIONAL ALLOCATION**
 
 MARKET POSITIONING:
 - **Primary Market**: Direct allocation from Water Roads with institutional terms
@@ -1020,7 +1020,7 @@ function getMarketIntelligenceContext(state: NegotiationState): string {
     return `
 **MARKET INTELLIGENCE & COMPETITIVE POSITIONING:**
 
-📈 **Carbon Market Context (A$${(carbonProjections.projected2030Value / 1_000_000_000).toFixed(0)}B by 2030)**:
+**Carbon Market Context (A$${(carbonProjections.projected2030Value / 1_000_000_000).toFixed(0)}B by 2030)**:
 - Current Market: A$${(carbonProjections.currentValue / 1_000_000_000).toFixed(1)}B growing at ${(carbonProjections.cagr * 100).toFixed(1)}% CAGR
 - Premium Tier Credits: A$${carbonQuality.premiumTier.priceRange.min}-${carbonQuality.premiumTier.priceRange.max}/tonne (WREI's A$150 is positioned competitively)
 - Quality Standards: Verra VCS, Gold Standard compliance (WREI exceeds with triple-standard verification)
@@ -1032,19 +1032,19 @@ function getMarketIntelligenceContext(state: NegotiationState): string {
 - **Native Digital Advantage**: Real-time verification vs bridged credits with registry delays
 - **Settlement Superior**: T+0 atomic vs T+7-30 traditional credit settlement
 
-🏦 **Tokenized RWA Market Position**:
+**Tokenized RWA Market Position**:
 - Total Market: A$${(marketContext.marketSizes.rwa / 1_000_000_000).toFixed(0)}B (140% growth in 15 months)
 - Treasury Token Dominance: A$9B segment (USYC/BUIDL focus area)
 - **WREI Differentiation**: Real-world utility + yield generation vs. treasury-only exposure
 
 ${(buyerProfile.persona as string) === 'esg_impact' ? `
-🌱 **ESG Investment Context**:
+**ESG Investment Context**:
 - A$35T global ESG assets under management
 - 90% of institutions with ESG mandates
 - WREI SDG Alignment: SDG 6, SDG 7, SDG 13, SDG 14` : ''}
 
 ${(buyerProfile.persona as string) === 'infrastructure_fund' ? `
-🏗️ **Infrastructure Investment Context**:
+**Infrastructure Investment Context**:
 - Infrastructure REITs: 8-12% average yield
 - **WREI Premium**: +16-20% vs traditional infrastructure
 - Maritime Infrastructure: Underrepresented in traditional infrastructure portfolios` : ''}
@@ -1059,7 +1059,7 @@ ${(buyerProfile.persona as string) === 'infrastructure_fund' ? `
     return `
 **MARKET INTELLIGENCE & COMPETITIVE POSITIONING:**
 
-🏗️ **Infrastructure Investment Market Context & Positioning**:
+**Infrastructure Investment Market Context & Positioning**:
 - **Infrastructure Yield Comparison**: ${(0.283 * 100).toFixed(1)}% vs Toll Roads ${(infrastructureBenchmarks.tollRoads.averageYield * 100).toFixed(1)}%, Airports ${(infrastructureBenchmarks.airports.averageYield * 100).toFixed(1)}%, REITs ${(reitBenchmark.averageYield * 100).toFixed(1)}%
 - **Liquidity Advantage**: Quarterly redemptions vs 7-10 year traditional lock-ups
 - **Accessibility**: A$1K minimum vs A$50M+ traditional infrastructure minimums
@@ -1077,7 +1077,7 @@ ${(buyerProfile.persona as string) === 'infrastructure_fund' ? `
 - **Tokenization Premium**: Enhanced liquidity vs. traditional infrastructure funds
 
 ${buyerProfile.persona === 'infrastructure_fund' ? `
-🏦 **Infrastructure Fund Competitive Positioning**:
+**Infrastructure Fund Competitive Positioning**:
 - **Yield Premium**: ${(0.283 * 100).toFixed(1)}% vs ${(infrastructureBenchmarks.tollRoads.averageYield * 100).toFixed(1)}% toll roads, ${(infrastructureBenchmarks.airports.averageYield * 100).toFixed(1)}% airports
 - **Liquidity Advantage**: Quarterly redemptions vs 7-10 year traditional lock-ups
 - **Maritime Diversification**: Underrepresented asset class in traditional infrastructure portfolios
@@ -1091,7 +1091,7 @@ ${(buyerProfile.persona as string) === 'defi_farmer' ? `
 - **Regulatory**: Compliance framework vs DeFi regulatory uncertainty` : ''}
 
 ${(buyerProfile.persona as string) === 'sovereign_wealth' || (buyerProfile.persona as string) === 'pension_fund' ? `
-🏛️ **Institutional Infrastructure Context**:
+**Institutional Infrastructure Context**:
 - Strategic Asset Allocation: Infrastructure typically 5-15% of institutional portfolios
 - **WREI Strategic Value**: Domestic Australian infrastructure with ESG credentials
 - Fiduciary Benefits: Physical asset backing, regulated framework, yield sustainability` : ''}
@@ -1106,7 +1106,7 @@ ${(buyerProfile.persona as string) === 'sovereign_wealth' || (buyerProfile.perso
     return `
 **MARKET INTELLIGENCE & COMPETITIVE POSITIONING:**
 
-🎯 **Dual Market Exposure Strategy**:
+**Dual Market Exposure Strategy**:
 - **Carbon Market**: A$${(carbonProjections.projected2030Value / 1_000_000_000).toFixed(0)}B by 2030 (${(carbonProjections.cagr * 100).toFixed(1)}% CAGR)
 - **Infrastructure Market**: Traditional infrastructure 8-12% yields
 - **Tokenized RWA**: A$${(rwaContext.totalMarketValue / 1_000_000_000).toFixed(0)}B market (140% growth)
@@ -1116,7 +1116,7 @@ ${(buyerProfile.persona as string) === 'sovereign_wealth' || (buyerProfile.perso
 - **Cross-Collateral**: 90% LTV capability vs. 75-80% single-asset exposure
 - **Market Coverage**: Exposure to both high-growth carbon and stable infrastructure
 
-🏦 **Institutional Competitive Advantages**:
+**Institutional Competitive Advantages**:
 - **vs Traditional Portfolios**: Single investment accessing two distinct asset classes
 - **vs Carbon-Only Strategies**: Infrastructure backing provides stability
 - **vs Infrastructure-Only**: Carbon exposure captures sustainability premium

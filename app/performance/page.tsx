@@ -119,7 +119,7 @@ export default function PerformancePage() {
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
               <div className="flex items-center mb-4">
                 <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <span className="text-blue-600">📊</span>
+                  <span className="text-blue-600"></span>
                 </div>
                 <h3 className="text-lg font-semibold text-slate-900 ml-3">Real-time Monitoring</h3>
               </div>
@@ -353,7 +353,7 @@ export default function PerformancePage() {
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-4">
             <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
-              📊 Open Performance Dashboard
+               Open Performance Dashboard
             </button>
             <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
               🧪 Run Benchmark Tests

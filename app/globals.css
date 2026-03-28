@@ -1,3 +1,107 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  /* Bloomberg Terminal Typography System */
+
+  /* Sans-serif for ALL labels, headings, body copy, descriptions, navigation */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 500;
+    /* No font weights heavier than 500 anywhere */
+  }
+
+  p, span, div, button, a, label {
+    font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 400;
+  }
+
+  /* Monospace for ALL data, prices, metrics, numerical values */
+  .bloomberg-data,
+  .bloomberg-price,
+  .bloomberg-metric,
+  .bloomberg-number,
+  .bloomberg-percentage,
+  .bloomberg-currency,
+  .bloomberg-timestamp,
+  .bloomberg-command {
+    font-family: var(--font-jetbrains-mono), 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace !important;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Bloomberg Terminal font size constraints */
+  .bloomberg-section-label {
+    font-size: 10px;
+    line-height: 1.2;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #64748B; /* muted color */
+    font-weight: 500;
+  }
+
+  .bloomberg-nav-item {
+    font-size: 12px;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+
+  .bloomberg-body-text {
+    font-size: 12px;
+    line-height: 1.4;
+    font-weight: 400;
+  }
+
+  .bloomberg-card-title {
+    font-size: 12px;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+
+  .bloomberg-metric-value {
+    font-size: 16px;
+    line-height: 1.3;
+    font-family: var(--font-jetbrains-mono), 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace !important;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bloomberg-large-metric {
+    font-size: 18px;
+    line-height: 1.3;
+    font-family: var(--font-jetbrains-mono), 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace !important;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bloomberg-page-heading {
+    font-size: 18px; /* max size - no hero headings */
+    line-height: 1.3;
+    font-weight: 500;
+  }
+
+  .bloomberg-small-text {
+    font-size: 11px;
+    line-height: 1.3;
+    font-weight: 400;
+  }
+}
+
+@layer utilities {
+  /* Bloomberg Terminal utility classes */
+  .text-bloomberg-data {
+    font-family: var(--font-jetbrains-mono), 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace !important;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .text-bloomberg-interface {
+    font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif !important;
+  }
+
+  /* Override any oversized fonts */
+  .text-5xl, .text-6xl, .text-7xl, .text-8xl, .text-9xl {
+    font-size: 18px !important; /* Force Bloomberg max size */
+    line-height: 1.3 !important;
+  }
+}

@@ -741,7 +741,7 @@ export default function NegotiatePage() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold mb-2">
-                🏛️ WREI Investment Platform • Phase 6.2 Professional Interface
+WREI Investment Platform • Phase 6.2 Professional Interface
               </h2>
               <p className="text-blue-100">
                 Choose your investment pathway: Standard negotiation or professional institutional interface
@@ -756,7 +756,7 @@ export default function NegotiatePage() {
                     : 'bg-slate-700 text-white hover:bg-slate-600'
                 }`}
               >
-                📊 Standard Negotiation
+Standard Negotiation
               </button>
               <button
                 onClick={() => setInterfaceMode('professional')}
@@ -766,7 +766,7 @@ export default function NegotiatePage() {
                     : 'bg-slate-700 text-white hover:bg-slate-600'
                 }`}
               >
-                🏛️ Professional Interface
+Professional Interface
               </button>
               {interfaceMode === 'professional' && (
                 <button
@@ -866,7 +866,7 @@ export default function NegotiatePage() {
                     className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2 mt-1"
                   />
                   <div className="flex-1">
-                    <div className="font-semibold text-[#1E293B]">🌱 WREI Carbon Credit Tokens</div>
+                    <div className="font-semibold text-[#1E293B] border-l-4 border-green-500 pl-3">WREI Carbon Credit Tokens</div>
                     <div className="text-base font-medium text-green-600 mt-1">A${WREI_TOKEN_CONFIG.CARBON_CREDITS.ANCHOR_PRICE}/tonne</div>
                     <div className="text-sm text-[#64748B] mt-1">
                       Native digital carbon credits • Triple-standard verification • 3.12M-13.1M supply projection
@@ -888,7 +888,7 @@ export default function NegotiatePage() {
                     className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2 mt-1"
                   />
                   <div className="flex-1">
-                    <div className="font-semibold text-[#1E293B]">🏗️ WREI Asset Co Tokens</div>
+                    <div className="font-semibold text-[#1E293B] border-l-4 border-blue-500 pl-3">WREI Asset Co Tokens</div>
                     <div className="text-base font-medium text-blue-600 mt-1">{(WREI_TOKEN_CONFIG.ASSET_CO.STEADY_STATE.EQUITY_YIELD * 100).toFixed(1)}% Infrastructure Yield</div>
                     <div className="text-sm text-[#64748B] mt-1">
                       Fractional vessel fleet ownership • Predictable lease income • A${Math.round(WREI_TOKEN_CONFIG.ASSET_CO.TOKEN_EQUITY / 1_000_000)}M equity cap
@@ -910,7 +910,7 @@ export default function NegotiatePage() {
                     className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2 mt-1"
                   />
                   <div className="flex-1">
-                    <div className="font-semibold text-[#1E293B]">🎯 WREI Dual Token Portfolio</div>
+                    <div className="font-semibold text-[#1E293B] border-l-4 border-purple-500 pl-3">WREI Dual Token Portfolio</div>
                     <div className="text-base font-medium text-purple-600 mt-1">Diversified Strategy</div>
                     <div className="text-sm text-[#64748B] mt-1">
                       Carbon Credits + Asset Co • Risk diversification • Cross-collateralization opportunities
@@ -1104,7 +1104,6 @@ export default function NegotiatePage() {
                 {/* Market Intelligence Context (Phase 5.1) */}
                 <div className="mb-4 p-3 bg-gradient-to-r from-blue-50 to-slate-50 rounded-lg border border-blue-200">
                   <div className="flex items-center mb-3">
-                    <span className="text-blue-600 mr-2">📊</span>
                     <h4 className="text-sm font-semibold text-[#1E293B]">Market Intelligence</h4>
                   </div>
                   <div className="text-xs text-[#64748B] space-y-2">
@@ -1324,7 +1323,7 @@ export default function NegotiatePage() {
                 {/* Environmental Impact Section */}
                 {negotiationState.tokenMetadata.environmentalImpact && (
                   <div className="mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                    <h4 className="text-sm font-medium text-[#1E293B] mb-2">🌱 Environmental Impact</h4>
+                    <h4 className="text-sm font-medium text-[#1E293B] mb-2">Environmental Impact</h4>
                     <div className="text-xs text-[#64748B] space-y-1">
                       <div className="flex justify-between">
                         <span>Total CO₂ Reduced:</span>
@@ -1411,7 +1410,7 @@ export default function NegotiatePage() {
                 {/* Quality Metrics */}
                 {negotiationState.tokenMetadata.qualityMetrics && (
                   <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-                    <h4 className="text-sm font-medium text-[#1E293B] mb-2">📊 Data Quality Metrics</h4>
+                    <h4 className="text-sm font-medium text-[#1E293B] mb-2">Data Quality Metrics</h4>
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       <div className="flex justify-between">
                         <span className="text-[#64748B]">Completeness:</span>
@@ -1870,7 +1869,7 @@ export default function NegotiatePage() {
                   <div className="flex items-center justify-between mb-6">
                     <div>
                       <h3 className="text-xl font-bold text-gray-800">
-                        🏛️ Institutional Investment Dashboard
+Institutional Investment Dashboard
                       </h3>
                       <p className="text-sm text-gray-600 mt-1">
                         Professional analytics for {selectedPersona.replace('_', ' ')} • WREI Tokenization Platform
@@ -1885,7 +1884,7 @@ export default function NegotiatePage() {
                             : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300'
                         }`}
                       >
-                        📊 Standard Analytics
+Standard Analytics
                       </button>
                       <button
                         onClick={() => setActiveAnalyticsTab('institutional')}
@@ -1895,7 +1894,7 @@ export default function NegotiatePage() {
                             : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300'
                         }`}
                       >
-                        🏛️ Institutional View
+Institutional View
                       </button>
                       <button
                         onClick={() => setActiveAnalyticsTab('history')}
@@ -2007,18 +2006,18 @@ export default function NegotiatePage() {
                                 <div className="flex items-center justify-between mb-3">
                                   <div className="flex items-center space-x-3">
                                     <div className="flex items-center space-x-2">
-                                      <span className="text-2xl">
-                                        {session.persona === 'compliance_officer' ? '👨‍💼' :
-                                         session.persona === 'esg_fund_manager' ? '🌱' :
-                                         session.persona === 'trading_desk' ? '📈' :
-                                         session.persona === 'sustainability_director' ? '♻️' :
-                                         session.persona === 'government_procurement' ? '🏛️' :
-                                         session.persona === 'infrastructure_fund' ? '🏗️' :
-                                         session.persona === 'esg_impact_investor' ? '💚' :
-                                         session.persona === 'defi_yield_farmer' ? '🚜' :
-                                         session.persona === 'family_office' ? '👨‍👩‍👧‍👦' :
-                                         session.persona === 'sovereign_wealth' ? '🏦' :
-                                         session.persona === 'pension_fund' ? '📊' : '🎭'}
+                                      <span className="bloomberg-data bloomberg-small-text bg-slate-100 px-2 py-1 rounded">
+                                        {session.persona === 'compliance_officer' ? 'CMP' :
+                                         session.persona === 'esg_fund_manager' ? 'ESG' :
+                                         session.persona === 'trading_desk' ? 'TRD' :
+                                         session.persona === 'sustainability_director' ? 'SUS' :
+                                         session.persona === 'government_procurement' ? 'GOV' :
+                                         session.persona === 'infrastructure_fund' ? 'INF' :
+                                         session.persona === 'esg_impact_investor' ? 'ESG' :
+                                         session.persona === 'defi_yield_farmer' ? 'DEF' :
+                                         session.persona === 'family_office' ? 'FAM' :
+                                         session.persona === 'sovereign_wealth' ? 'SOV' :
+                                         session.persona === 'pension_fund' ? 'PEN' : 'GEN'}
                                       </span>
                                       <div>
                                         <div className="font-medium text-gray-800 capitalize">

@@ -54,18 +54,24 @@ const config: Config = {
           inverseSecondary: '#64748B'
         }
       },
-      // Bloomberg Terminal typography
+      // Bloomberg Terminal typography - strict two-font system
       fontFamily: {
-        'bloomberg-interface': ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        'bloomberg-financial': ['"SF Mono"', '"Monaco"', '"Inconsolata"', '"Roboto Mono"', 'monospace'],
-        'bloomberg-brand': ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif']
+        // Sans-serif for ALL labels, headings, body copy, descriptions, navigation
+        'sans': ['var(--font-inter)', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        'bloomberg-interface': ['var(--font-inter)', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        'bloomberg-brand': ['var(--font-inter)', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        // Monospace for ALL data, prices, metrics, numerical values, command bar
+        'mono': ['var(--font-jetbrains-mono)', 'JetBrains Mono', 'SF Mono', 'Fira Code', 'monospace'],
+        'bloomberg-financial': ['var(--font-jetbrains-mono)', 'JetBrains Mono', 'SF Mono', 'Fira Code', 'monospace']
       },
       fontSize: {
-        'bloomberg-xs': ['11px', { lineHeight: '1.2' }],
-        'bloomberg-sm': ['12px', { lineHeight: '1.2' }],
-        'bloomberg-md': ['14px', { lineHeight: '1.5' }],
-        'bloomberg-lg': ['16px', { lineHeight: '1.5' }],
-        'bloomberg-xl': ['18px', { lineHeight: '1.5' }]
+        // Bloomberg Terminal tight, controlled font sizes
+        'bloomberg-xs': ['10px', { lineHeight: '1.2', letterSpacing: '0.8px' }], // Section labels (uppercase)
+        'bloomberg-sm': ['11px', { lineHeight: '1.3' }], // Smallest text (timestamps, hints)
+        'bloomberg-md': ['12px', { lineHeight: '1.4' }], // Navigation, body text, descriptions, card titles
+        'bloomberg-lg': ['16px', { lineHeight: '1.3' }], // Metric values (monospace)
+        'bloomberg-xl': ['18px', { lineHeight: '1.3' }], // Page headings (max), large metrics
+        // NO sizes above 18px - Bloomberg terminals don't have hero sections
       },
       spacing: {
         // Terminal-specific spacing for data-dense layouts
