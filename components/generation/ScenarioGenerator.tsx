@@ -9,7 +9,7 @@
  * Date: March 28, 2026
  */
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useSimpleDemoStore, SimpleDemoDataSet } from '@/lib/demo-mode/simple-demo-state';
 import { getDemoDataForSet } from '@/lib/demo-mode/demo-data-simple';
 import {
@@ -102,10 +102,11 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
   });
 
   // Refs
-  const engineRef = useRef<DynamicScenarioEngine | null>(null);
+  const engineRef = useRef<any | null>(null);
   const generationIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Initialize engine
+  // Initialize engine - temporarily disabled
+  /*
   useEffect(() => {
     if (!engineRef.current) {
       engineRef.current = DynamicScenarioEngine.getInstance();
@@ -125,6 +126,7 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
 
     return () => clearInterval(pollInterval);
   }, [onGenerationStateChange]);
+  */
 
   // Update config when audience changes
   useEffect(() => {
