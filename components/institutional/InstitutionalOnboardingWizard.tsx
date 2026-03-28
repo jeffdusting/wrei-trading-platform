@@ -251,7 +251,7 @@ export const InstitutionalOnboardingWizard: React.FC<InstitutionalOnboardingWiza
         <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900">
+              <h1 className="bloomberg-page-heading text-slate-900">
                 Institutional Onboarding
               </h1>
               <p className="text-slate-600 mt-2">
@@ -271,7 +271,7 @@ export const InstitutionalOnboardingWizard: React.FC<InstitutionalOnboardingWiza
 
           {/* Progress Bar */}
           <div className="relative">
-            <div className="flex items-center justify-between text-sm text-slate-500 mb-2">
+            <div className="flex items-center justify-between bloomberg-small-text text-slate-500 mb-2">
               <span>Progress: {progress}% complete</span>
               <span>Step {currentStepIndex + 1} of {onboardingSteps.length}</span>
             </div>
@@ -286,7 +286,7 @@ export const InstitutionalOnboardingWizard: React.FC<InstitutionalOnboardingWiza
 
         {/* Step Navigation */}
         <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 mb-8">
-          <h2 className="text-lg font-semibold text-slate-900 mb-4">Onboarding Steps</h2>
+          <h2 className="bloomberg-card-title text-slate-900 mb-4">Onboarding Steps</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {onboardingSteps.map((step, index) => (
               <div
@@ -303,7 +303,7 @@ export const InstitutionalOnboardingWizard: React.FC<InstitutionalOnboardingWiza
               >
                 <div className="flex items-center mb-2">
                   <div
-                    className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-medium mr-3 ${
+                    className={`w-6 h-6 rounded-full flex items-center justify-center bloomberg-small-text font-medium mr-3 ${
                       step.status === 'completed'
                         ? 'bg-green-500 text-white'
                         : step.status === 'active'
@@ -323,8 +323,8 @@ export const InstitutionalOnboardingWizard: React.FC<InstitutionalOnboardingWiza
                   </div>
                   <h3 className="font-medium text-slate-900">{step.title}</h3>
                 </div>
-                <p className="text-sm text-slate-600 mb-2">{step.description}</p>
-                <p className="text-xs text-slate-400">Est. {step.estimatedTime}</p>
+                <p className="bloomberg-small-text text-slate-600 mb-2">{step.description}</p>
+                <p className="bloomberg-section-label text-slate-400">Est. {step.estimatedTime}</p>
               </div>
             ))}
           </div>
@@ -345,8 +345,8 @@ export const InstitutionalOnboardingWizard: React.FC<InstitutionalOnboardingWiza
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-amber-800">Warnings</h3>
-                <div className="mt-2 text-sm text-amber-700">
+                <h3 className="bloomberg-small-text font-medium text-amber-800">Warnings</h3>
+                <div className="mt-2 bloomberg-small-text text-amber-700">
                   <ul className="list-disc list-inside space-y-1">
                     {validationWarnings.map((warning, index) => (
                       <li key={index}>{warning}</li>
@@ -368,7 +368,7 @@ export const InstitutionalOnboardingWizard: React.FC<InstitutionalOnboardingWiza
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-slate-900 mb-2">
+                <h3 className="bloomberg-card-title font-medium text-slate-900 mb-2">
                   Onboarding Complete!
                 </h3>
                 <p className="text-slate-600 mb-6">

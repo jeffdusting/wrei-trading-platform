@@ -28,10 +28,10 @@ export const RealTimeMetricsWidget: React.FC<RealTimeMetricsWidgetProps> = ({
 }) => {
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <h3 className="bloomberg-card-title text-gray-900 mb-4">
         Real-Time Metrics ({selectedAudience})
       </h3>
-      <div className="space-y-2 text-sm text-gray-600">
+      <div className="space-y-2 bloomberg-small-text text-gray-600">
         <div>Session: {sessionId}</div>
         <div>Scenario: {scenarioId}</div>
         <div>Status: {isScenarioActive ? 'Active' : 'Inactive'}</div>

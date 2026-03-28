@@ -99,7 +99,7 @@ export const KYCAMLVerification: React.FC<KYCAMLVerificationProps> = ({
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">
+        <h2 className="bloomberg-large-metric text-slate-900 mb-2">
           KYC/AML Verification
         </h2>
         <p className="text-slate-600">
@@ -110,10 +110,10 @@ export const KYCAMLVerification: React.FC<KYCAMLVerificationProps> = ({
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Transaction Details */}
         <div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Transaction Profile</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Transaction Profile</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="transactionValue" className="block text-sm font-medium text-slate-700 mb-2">
+              <label htmlFor="transactionValue" className="block bloomberg-small-text font-medium text-slate-700 mb-2">
                 Expected Transaction Value *
               </label>
               <div className="relative">
@@ -128,13 +128,13 @@ export const KYCAMLVerification: React.FC<KYCAMLVerificationProps> = ({
                   min="0"
                 />
               </div>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 bloomberg-small-text text-slate-500">
                 Initial transaction size: {formatCurrency(amlParams.transactionValue)}
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block bloomberg-small-text font-medium text-slate-700 mb-2">
                 Business Purpose
               </label>
               <select
@@ -154,7 +154,7 @@ export const KYCAMLVerification: React.FC<KYCAMLVerificationProps> = ({
 
         {/* Risk Factors */}
         <div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Risk Assessment</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Risk Assessment</h3>
           <div className="space-y-4">
             <label className="flex items-start">
               <input
@@ -164,10 +164,10 @@ export const KYCAMLVerification: React.FC<KYCAMLVerificationProps> = ({
                 className="mr-3 mt-1 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
               />
               <div>
-                <span className="text-sm font-medium text-slate-700">
+                <span className="bloomberg-small-text font-medium text-slate-700">
                   Politically Exposed Person (PEP) Status
                 </span>
-                <p className="text-sm text-slate-500">
+                <p className="bloomberg-small-text text-slate-500">
                   Entity or beneficial owners hold prominent public positions or have significant political exposure
                 </p>
               </div>
@@ -184,10 +184,10 @@ export const KYCAMLVerification: React.FC<KYCAMLVerificationProps> = ({
                 className="mr-3 mt-1 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
               />
               <div>
-                <span className="text-sm font-medium text-slate-700">
+                <span className="bloomberg-small-text font-medium text-slate-700">
                   Sanctions Screening Cleared
                 </span>
-                <p className="text-sm text-slate-500">
+                <p className="bloomberg-small-text text-slate-500">
                   Entity and beneficial owners cleared against OFAC, UN, EU, and Australian sanctions lists
                 </p>
               </div>
@@ -202,10 +202,10 @@ export const KYCAMLVerification: React.FC<KYCAMLVerificationProps> = ({
             amlResult.riskRating === 'medium' ? 'bg-amber-50 border-amber-200' :
             'bg-green-50 border-green-200'
           }`}>
-            <h3 className="text-lg font-semibold text-slate-900 mb-3">AML Risk Assessment</h3>
+            <h3 className="bloomberg-card-title text-slate-900 mb-3">AML Risk Assessment</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div>
-                <p className="text-sm text-slate-600">Risk Rating</p>
+                <p className="bloomberg-small-text text-slate-600">Risk Rating</p>
                 <p className={`font-medium capitalize ${
                   amlResult.riskRating === 'high' ? 'text-red-800' :
                   amlResult.riskRating === 'medium' ? 'text-amber-800' :
@@ -215,21 +215,21 @@ export const KYCAMLVerification: React.FC<KYCAMLVerificationProps> = ({
                 </p>
               </div>
               <div>
-                <p className="text-sm text-slate-600">EDD Required</p>
+                <p className="bloomberg-small-text text-slate-600">EDD Required</p>
                 <p className={`font-medium ${amlResult.eddRequired ? 'text-red-800' : 'text-green-800'}`}>
                   {amlResult.eddRequired ? 'Yes' : 'No'}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-slate-600">Monitoring Level</p>
+                <p className="bloomberg-small-text text-slate-600">Monitoring Level</p>
                 <p className="font-medium text-slate-800 capitalize">{amlResult.monitoringLevel}</p>
               </div>
             </div>
 
             {amlResult.restrictionFlags.length > 0 && (
               <div>
-                <p className="text-sm font-medium text-slate-800 mb-2">Risk Factors:</p>
-                <ul className="text-sm text-slate-600 space-y-1">
+                <p className="bloomberg-small-text font-medium text-slate-800 mb-2">Risk Factors:</p>
+                <ul className="bloomberg-small-text text-slate-600 space-y-1">
                   {amlResult.restrictionFlags.map((flag: string, index: number) => (
                     <li key={index} className="flex items-start">
                       <span className="w-2 h-2 bg-amber-400 rounded-full mr-2 mt-2 flex-shrink-0"></span>
@@ -244,7 +244,7 @@ export const KYCAMLVerification: React.FC<KYCAMLVerificationProps> = ({
 
         {/* Documentation Checklist */}
         <div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Required Documentation</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Required Documentation</h3>
           <div className="bg-slate-50 rounded-lg p-6">
             <div className="space-y-4">
               {Object.entries({
@@ -264,9 +264,9 @@ export const KYCAMLVerification: React.FC<KYCAMLVerificationProps> = ({
                     className="mr-3 mt-1 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
                   />
                   <div>
-                    <span className="text-sm font-medium text-slate-700">{label}</span>
+                    <span className="bloomberg-small-text font-medium text-slate-700">{label}</span>
                     {key === 'businessPurpose' && (
-                      <p className="text-sm text-slate-500">Pre-completed based on platform purpose</p>
+                      <p className="bloomberg-small-text text-slate-500">Pre-completed based on platform purpose</p>
                     )}
                   </div>
                 </label>
@@ -275,10 +275,10 @@ export const KYCAMLVerification: React.FC<KYCAMLVerificationProps> = ({
 
             <div className="mt-6 pt-4 border-t border-slate-200">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-slate-700">
+                <span className="bloomberg-small-text font-medium text-slate-700">
                   Documentation Completion
                 </span>
-                <span className={`text-sm font-medium ${
+                <span className={`bloomberg-small-text font-medium ${
                   Object.values(documentationStatus).every(Boolean) ? 'text-green-600' : 'text-amber-600'
                 }`}>
                   {Object.values(documentationStatus).filter(Boolean).length} of {Object.keys(documentationStatus).length} complete

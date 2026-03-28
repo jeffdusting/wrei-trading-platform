@@ -64,7 +64,7 @@ const ComplianceStatusBadge: React.FC<{ status: 'compliant' | 'warning' | 'non-c
   };
 
   return (
-    <span className={`px-2 py-1 rounded-full text-xs font-medium ${styles[status]}`}>
+    <span className={`px-2 py-1 rounded-full bloomberg-section-label font-medium ${styles[status]}`}>
       {status.replace('-', ' ').toUpperCase()}
     </span>
   );
@@ -78,7 +78,7 @@ const RiskLevelBadge: React.FC<{ level: 'low' | 'medium' | 'high' }> = ({ level 
   };
 
   return (
-    <span className={`px-2 py-1 rounded-full text-xs font-medium ${styles[level]}`}>
+    <span className={`px-2 py-1 rounded-full bloomberg-section-label font-medium ${styles[level]}`}>
       {level.toUpperCase()} RISK
     </span>
   );
@@ -251,9 +251,9 @@ export const CompliancePanel: React.FC = () => {
       <div className="bg-gradient-to-r from-amber-600 to-amber-700 rounded-lg p-6 text-white">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Compliance & Risk Management</h1>
-            <p className="text-amber-100 text-lg">NSW ESC Trading - Regulatory Adherence Dashboard</p>
-            <div className="flex items-center space-x-4 mt-4 text-amber-100 text-sm">
+            <h1 className="bloomberg-page-heading mb-2">Compliance & Risk Management</h1>
+            <p className="text-amber-100 bloomberg-card-title">NSW ESC Trading - Regulatory Adherence Dashboard</p>
+            <div className="flex items-center space-x-4 mt-4 text-amber-100 bloomberg-small-text">
               <span>AFSL 246896</span>
               <span>•</span>
               <span>SOC2 Type II Certified</span>
@@ -262,11 +262,11 @@ export const CompliancePanel: React.FC = () => {
             </div>
           </div>
           <div className="text-right">
-            <div className="text-3xl font-bold">{overallComplianceScore}%</div>
+            <div className="bloomberg-page-heading">{overallComplianceScore}%</div>
             <div className="text-amber-200">Overall Compliance Score</div>
             <div className="flex items-center justify-end mt-2">
               <CheckCircleIcon className="w-5 h-5 text-green-300 mr-2" />
-              <span className="text-amber-100 text-sm">All Critical Requirements Met</span>
+              <span className="text-amber-100 bloomberg-small-text">All Critical Requirements Met</span>
             </div>
           </div>
         </div>
@@ -280,7 +280,7 @@ export const CompliancePanel: React.FC = () => {
               <button
                 key={tab.id}
                 onClick={() => setSelectedTab(tab.id)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                className={`py-4 px-1 border-b-2 font-medium bloomberg-small-text ${
                   selectedTab === tab.id
                     ? 'border-amber-500 text-amber-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -295,32 +295,32 @@ export const CompliancePanel: React.FC = () => {
         <div className="p-6">
           {selectedTab === 'overview' && (
             <div className="space-y-6" data-demo="compliance-overview">
-              <h3 className="text-xl font-semibold text-gray-900">Compliance Status Overview</h3>
+              <h3 className="bloomberg-metric-value text-gray-900">Compliance Status Overview</h3>
 
               {/* Compliance Metrics */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {complianceMetrics.map((metric, index) => (
                   <div key={index} className="border border-gray-200 rounded-lg p-6">
                     <div className="flex justify-between items-start mb-4">
-                      <h4 className="font-semibold text-gray-900">{metric.category}</h4>
+                      <h4 className=" text-gray-900">{metric.category}</h4>
                       <ComplianceStatusBadge status={metric.status} />
                     </div>
 
                     <div className="flex items-center mb-4">
-                      <div className="text-2xl font-bold text-gray-900 mr-2">{metric.score}%</div>
+                      <div className="bloomberg-large-metric text-gray-900 mr-2">{metric.score}%</div>
                       <RiskLevelBadge level={metric.riskLevel} />
                     </div>
 
                     <div className="space-y-2 mb-4">
                       {metric.details.map((detail, idx) => (
-                        <div key={idx} className="flex items-start text-sm text-gray-600">
+                        <div key={idx} className="flex items-start bloomberg-small-text text-gray-600">
                           <CheckCircleIcon className="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
                           {detail}
                         </div>
                       ))}
                     </div>
 
-                    <div className="text-sm text-gray-500 border-t pt-3">
+                    <div className="bloomberg-small-text text-gray-500 border-t pt-3">
                       <div className="flex justify-between">
                         <span>Last Audit: {metric.lastAudit}</span>
                         <span>Next Review: {metric.nextReview}</span>
@@ -332,19 +332,19 @@ export const CompliancePanel: React.FC = () => {
 
               {/* Key Achievements */}
               <div className="bg-green-50 rounded-lg p-6">
-                <h4 className="font-semibold text-green-800 mb-4">Recent Compliance Achievements</h4>
+                <h4 className=" text-green-800 mb-4">Recent Compliance Achievements</h4>
                 <div className="grid md:grid-cols-3 gap-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-green-700">100%</div>
-                    <div className="text-sm text-green-600">CER Reporting Compliance</div>
+                    <div className="bloomberg-large-metric text-green-700">100%</div>
+                    <div className="bloomberg-small-text text-green-600">CER Reporting Compliance</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-green-700">0</div>
-                    <div className="text-sm text-green-600">Regulatory Breaches (12 months)</div>
+                    <div className="bloomberg-large-metric text-green-700">0</div>
+                    <div className="bloomberg-small-text text-green-600">Regulatory Breaches (12 months)</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-green-700">24hrs</div>
-                    <div className="text-sm text-green-600">Average Response Time</div>
+                    <div className="bloomberg-large-metric text-green-700">24hrs</div>
+                    <div className="bloomberg-small-text text-green-600">Average Response Time</div>
                   </div>
                 </div>
               </div>
@@ -354,12 +354,12 @@ export const CompliancePanel: React.FC = () => {
           {selectedTab === 'requirements' && (
             <div className="space-y-6" data-demo="compliance-requirements">
               <div className="flex justify-between items-center">
-                <h3 className="text-xl font-semibold text-gray-900">Regulatory Requirements</h3>
+                <h3 className="bloomberg-metric-value text-gray-900">Regulatory Requirements</h3>
                 <div className="flex space-x-2">
                   <select
                     value={timeframe}
                     onChange={(e) => setTimeframe(e.target.value)}
-                    className="border border-gray-300 rounded-md px-3 py-2 text-sm"
+                    className="border border-gray-300 rounded-md px-3 py-2 bloomberg-small-text"
                   >
                     <option value="30d">Next 30 Days</option>
                     <option value="90d">Next 90 Days</option>
@@ -373,10 +373,10 @@ export const CompliancePanel: React.FC = () => {
                   <div key={index} className="border border-gray-200 rounded-lg p-6">
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900">{req.requirement}</h4>
-                        <p className="text-sm text-gray-600 mt-1">{req.description}</p>
+                        <h4 className=" text-gray-900">{req.requirement}</h4>
+                        <p className="bloomberg-small-text text-gray-600 mt-1">{req.description}</p>
                       </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      <span className={`px-3 py-1 rounded-full bloomberg-section-label font-medium ${
                         req.status === 'met' ? 'bg-green-100 text-green-700' :
                         req.status === 'partial' ? 'bg-yellow-100 text-yellow-700' :
                         'bg-red-100 text-red-700'
@@ -385,7 +385,7 @@ export const CompliancePanel: React.FC = () => {
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bloomberg-small-text">
                       <div>
                         <span className="text-gray-500">Authority:</span>
                         <div className="font-medium">{req.authority}</div>
@@ -415,7 +415,7 @@ export const CompliancePanel: React.FC = () => {
                               style={{ width: `${req.completionRate}%` }}
                             ></div>
                           </div>
-                          <span className="text-xs font-medium">{req.completionRate}%</span>
+                          <span className="bloomberg-section-label font-medium">{req.completionRate}%</span>
                         </div>
                       </div>
                     </div>
@@ -428,19 +428,19 @@ export const CompliancePanel: React.FC = () => {
           {selectedTab === 'audit' && (
             <div className="space-y-6" data-demo="compliance-audit-trail">
               <div className="flex justify-between items-center">
-                <h3 className="text-xl font-semibold text-gray-900">Audit Trail</h3>
+                <h3 className="bloomberg-metric-value text-gray-900">Audit Trail</h3>
                 <div className="flex space-x-2">
-                  <button className="bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-amber-700">
+                  <button className="bg-amber-600 text-white px-4 py-2 rounded-lg bloomberg-small-text font-medium hover:bg-amber-700">
                     Export Audit Log
                   </button>
-                  <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50">
+                  <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg bloomberg-small-text font-medium hover:bg-gray-50">
                     Filter Events
                   </button>
                 </div>
               </div>
 
               <div className="bg-gray-50 rounded-lg p-4">
-                <div className="flex items-center text-sm text-gray-600">
+                <div className="flex items-center bloomberg-small-text text-gray-600">
                   <EyeIcon className="w-4 h-4 mr-2" />
                   <span>All compliance-related activities are automatically logged and timestamped</span>
                 </div>
@@ -459,17 +459,17 @@ export const CompliancePanel: React.FC = () => {
                         <h4 className="font-medium text-gray-900">{entry.action}</h4>
                         <RiskLevelBadge level={entry.riskRating} />
                       </div>
-                      <span className="text-sm text-gray-500">{entry.timestamp}</span>
+                      <span className="bloomberg-small-text text-gray-500">{entry.timestamp}</span>
                     </div>
 
-                    <p className="text-sm text-gray-600 mb-2">{entry.details}</p>
+                    <p className="bloomberg-small-text text-gray-600 mb-2">{entry.details}</p>
 
-                    <div className="flex justify-between items-center text-xs text-gray-500">
+                    <div className="flex justify-between items-center bloomberg-section-label text-gray-500">
                       <div className="flex space-x-4">
                         <span>User: {entry.user}</span>
                         <span>Entity: {entry.entity}</span>
                       </div>
-                      <span className={`px-2 py-1 rounded text-xs font-medium ${
+                      <span className={`px-2 py-1 rounded bloomberg-section-label font-medium ${
                         entry.status === 'approved' ? 'bg-green-100 text-green-700' :
                         entry.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
                         'bg-red-100 text-red-700'
@@ -485,7 +485,7 @@ export const CompliancePanel: React.FC = () => {
 
           {selectedTab === 'reports' && (
             <div className="space-y-6" data-demo="compliance-reports">
-              <h3 className="text-xl font-semibold text-gray-900">Compliance Reports</h3>
+              <h3 className="bloomberg-metric-value text-gray-900">Compliance Reports</h3>
 
               <div className="grid md:grid-cols-2 gap-6">
                 {[
@@ -519,10 +519,10 @@ export const CompliancePanel: React.FC = () => {
                   }
                 ].map((report, index) => (
                   <div key={index} className="border border-gray-200 rounded-lg p-6">
-                    <h4 className="font-semibold text-gray-900 mb-2">{report.title}</h4>
-                    <p className="text-sm text-gray-600 mb-4">{report.description}</p>
+                    <h4 className=" text-gray-900 mb-2">{report.title}</h4>
+                    <p className="bloomberg-small-text text-gray-600 mb-4">{report.description}</p>
 
-                    <div className="space-y-2 text-sm">
+                    <div className="space-y-2 bloomberg-small-text">
                       <div className="flex justify-between">
                         <span className="text-gray-500">Last Generated:</span>
                         <span className="font-medium">{report.lastGenerated}</span>
@@ -533,7 +533,7 @@ export const CompliancePanel: React.FC = () => {
                       </div>
                     </div>
 
-                    <button className="w-full mt-4 bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-amber-700">
+                    <button className="w-full mt-4 bg-amber-600 text-white px-4 py-2 rounded-lg bloomberg-small-text font-medium hover:bg-amber-700">
                       Generate Report
                     </button>
                   </div>
@@ -544,7 +544,7 @@ export const CompliancePanel: React.FC = () => {
 
           {selectedTab === 'monitoring' && (
             <div className="space-y-6" data-demo="compliance-monitoring">
-              <h3 className="text-xl font-semibold text-gray-900">Risk Monitoring</h3>
+              <h3 className="bloomberg-metric-value text-gray-900">Risk Monitoring</h3>
 
               {/* Risk Dashboard */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -552,11 +552,11 @@ export const CompliancePanel: React.FC = () => {
                   <div className="flex items-center mb-4">
                     <CheckCircleIcon className="w-8 h-8 text-green-600 mr-3" />
                     <div>
-                      <div className="text-2xl font-bold text-green-800">Low Risk</div>
-                      <div className="text-sm text-green-600">Overall Assessment</div>
+                      <div className="bloomberg-large-metric text-green-800">Low Risk</div>
+                      <div className="bloomberg-small-text text-green-600">Overall Assessment</div>
                     </div>
                   </div>
-                  <p className="text-sm text-green-700">
+                  <p className="bloomberg-small-text text-green-700">
                     All critical compliance requirements are being met with robust controls in place.
                   </p>
                 </div>
@@ -565,11 +565,11 @@ export const CompliancePanel: React.FC = () => {
                   <div className="flex items-center mb-4">
                     <ExclamationTriangleIcon className="w-8 h-8 text-yellow-600 mr-3" />
                     <div>
-                      <div className="text-2xl font-bold text-yellow-800">1</div>
-                      <div className="text-sm text-yellow-600">Items Requiring Attention</div>
+                      <div className="bloomberg-large-metric text-yellow-800">1</div>
+                      <div className="bloomberg-small-text text-yellow-600">Items Requiring Attention</div>
                     </div>
                   </div>
-                  <p className="text-sm text-yellow-700">
+                  <p className="bloomberg-small-text text-yellow-700">
                     AFSL client classification procedures need updating within 30 days.
                   </p>
                 </div>
@@ -578,11 +578,11 @@ export const CompliancePanel: React.FC = () => {
                   <div className="flex items-center mb-4">
                     <ClockIcon className="w-8 h-8 text-blue-600 mr-3" />
                     <div>
-                      <div className="text-2xl font-bold text-blue-800">3</div>
-                      <div className="text-sm text-blue-600">Upcoming Reviews</div>
+                      <div className="bloomberg-large-metric text-blue-800">3</div>
+                      <div className="bloomberg-small-text text-blue-600">Upcoming Reviews</div>
                     </div>
                   </div>
-                  <p className="text-sm text-blue-700">
+                  <p className="bloomberg-small-text text-blue-700">
                     Scheduled compliance reviews and audits in the next 90 days.
                   </p>
                 </div>
@@ -590,7 +590,7 @@ export const CompliancePanel: React.FC = () => {
 
               {/* Monitoring Alerts */}
               <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h4 className="font-semibold text-gray-900 mb-4">Active Monitoring Alerts</h4>
+                <h4 className=" text-gray-900 mb-4">Active Monitoring Alerts</h4>
                 <div className="space-y-3">
                   {[
                     {
@@ -619,9 +619,9 @@ export const CompliancePanel: React.FC = () => {
                           alert.severity === 'medium' ? 'bg-yellow-500' :
                           'bg-green-500'
                         }`}></div>
-                        <span className="text-sm font-medium text-gray-900">{alert.alert}</span>
+                        <span className="bloomberg-small-text font-medium text-gray-900">{alert.alert}</span>
                       </div>
-                      <div className="text-right text-sm text-gray-500">
+                      <div className="text-right bloomberg-small-text text-gray-500">
                         <div>{alert.action}</div>
                         <div>{alert.timestamp}</div>
                       </div>

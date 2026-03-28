@@ -61,13 +61,13 @@ const TechnicalMetric: React.FC<{ metric: TechnicalMetric }> = ({ metric }) => {
     <div className="bg-white rounded-lg p-4 border border-gray-200">
       <div className="flex justify-between items-start mb-2">
         <h4 className="font-medium text-gray-900">{metric.label}</h4>
-        <span className={`px-2 py-1 rounded text-xs font-medium ${statusColors[metric.status]}`}>
+        <span className={`px-2 py-1 rounded bloomberg-section-label font-medium ${statusColors[metric.status]}`}>
           {metric.status.toUpperCase()}
         </span>
       </div>
-      <div className="text-2xl font-bold text-gray-900 mb-1">{metric.value}</div>
-      <div className="text-sm text-gray-600 mb-2">Target: {metric.target}</div>
-      <p className="text-xs text-gray-500">{metric.description}</p>
+      <div className="bloomberg-large-metric text-gray-900 mb-1">{metric.value}</div>
+      <div className="bloomberg-small-text text-gray-600 mb-2">Target: {metric.target}</div>
+      <p className="bloomberg-section-label text-gray-500">{metric.description}</p>
     </div>
   );
 };
@@ -224,9 +224,9 @@ export const TechnicalInterface: React.FC = () => {
       <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-lg p-6 text-white">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Technical Integration Dashboard</h1>
-            <p className="text-green-100 text-lg">NSW ESC Trading Platform - System Architecture & APIs</p>
-            <div className="flex items-center space-x-4 mt-4 text-green-100 text-sm">
+            <h1 className="bloomberg-page-heading mb-2">Technical Integration Dashboard</h1>
+            <p className="text-green-100 bloomberg-card-title">NSW ESC Trading Platform - System Architecture & APIs</p>
+            <div className="flex items-center space-x-4 mt-4 text-green-100 bloomberg-small-text">
               <span>API Version: v2.4.1</span>
               <span>•</span>
               <span>Uptime: 99.94%</span>
@@ -239,7 +239,7 @@ export const TechnicalInterface: React.FC = () => {
               <div className={`w-3 h-3 rounded-full ${liveMetrics ? 'bg-green-300 animate-pulse' : 'bg-gray-300'}`}></div>
               <span className="text-green-100">Live Metrics</span>
             </div>
-            <div className="text-green-200 text-sm mt-1">Last updated: 12s ago</div>
+            <div className="text-green-200 bloomberg-small-text mt-1">Last updated: 12s ago</div>
           </div>
         </div>
       </div>
@@ -252,7 +252,7 @@ export const TechnicalInterface: React.FC = () => {
               <button
                 key={tab.id}
                 onClick={() => setSelectedTab(tab.id)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                className={`py-4 px-1 border-b-2 font-medium bloomberg-small-text ${
                   selectedTab === tab.id
                     ? 'border-green-500 text-green-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -267,7 +267,7 @@ export const TechnicalInterface: React.FC = () => {
         <div className="p-6">
           {selectedTab === 'architecture' && (
             <div className="space-y-6" data-demo="technical-architecture">
-              <h3 className="text-xl font-semibold text-gray-900">System Architecture Overview</h3>
+              <h3 className="bloomberg-metric-value text-gray-900">System Architecture Overview</h3>
 
               {/* Architecture Diagram */}
               <div className="bg-gray-50 rounded-lg p-6">
@@ -276,8 +276,8 @@ export const TechnicalInterface: React.FC = () => {
                     <div className="bg-blue-100 rounded-lg p-4 mb-3">
                       <CloudIcon className="w-8 h-8 text-blue-600 mx-auto" />
                     </div>
-                    <h4 className="font-semibold text-gray-900">Data Layer</h4>
-                    <p className="text-sm text-gray-600 mt-2">
+                    <h4 className=" text-gray-900">Data Layer</h4>
+                    <p className="bloomberg-small-text text-gray-600 mt-2">
                       AEMO Market Data<br/>
                       CER Registry Integration<br/>
                       PostgreSQL + Redis
@@ -287,8 +287,8 @@ export const TechnicalInterface: React.FC = () => {
                     <div className="bg-green-100 rounded-lg p-4 mb-3">
                       <CpuChipIcon className="w-8 h-8 text-green-600 mx-auto" />
                     </div>
-                    <h4 className="font-semibold text-gray-900">Processing Layer</h4>
-                    <p className="text-sm text-gray-600 mt-2">
+                    <h4 className=" text-gray-900">Processing Layer</h4>
+                    <p className="bloomberg-small-text text-gray-600 mt-2">
                       Trading Engine<br/>
                       AI Negotiation<br/>
                       Compliance Validation
@@ -298,8 +298,8 @@ export const TechnicalInterface: React.FC = () => {
                     <div className="bg-purple-100 rounded-lg p-4 mb-3">
                       <ShieldCheckIcon className="w-8 h-8 text-purple-600 mx-auto" />
                     </div>
-                    <h4 className="font-semibold text-gray-900">Settlement Layer</h4>
-                    <p className="text-sm text-gray-600 mt-2">
+                    <h4 className=" text-gray-900">Settlement Layer</h4>
+                    <p className="bloomberg-small-text text-gray-600 mt-2">
                       Zoniqx zProtocol<br/>
                       Blockchain Settlement<br/>
                       Audit Trail Generation
@@ -311,8 +311,8 @@ export const TechnicalInterface: React.FC = () => {
               {/* Technology Stack */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">Core Technologies</h4>
-                  <div className="space-y-2 text-sm">
+                  <h4 className=" text-gray-900 mb-3">Core Technologies</h4>
+                  <div className="space-y-2 bloomberg-small-text">
                     <div className="flex justify-between">
                       <span>Runtime:</span>
                       <span className="font-medium">Node.js 18.x + TypeScript</span>
@@ -336,8 +336,8 @@ export const TechnicalInterface: React.FC = () => {
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">Infrastructure</h4>
-                  <div className="space-y-2 text-sm">
+                  <h4 className=" text-gray-900 mb-3">Infrastructure</h4>
+                  <div className="space-y-2 bloomberg-small-text">
                     <div className="flex justify-between">
                       <span>Hosting:</span>
                       <span className="font-medium">Vercel + AWS Lambda</span>
@@ -366,7 +366,7 @@ export const TechnicalInterface: React.FC = () => {
 
           {selectedTab === 'performance' && (
             <div className="space-y-6" data-demo="technical-performance">
-              <h3 className="text-xl font-semibold text-gray-900">Performance Metrics</h3>
+              <h3 className="bloomberg-metric-value text-gray-900">Performance Metrics</h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {systemMetrics.map((metric, index) => (
@@ -377,7 +377,7 @@ export const TechnicalInterface: React.FC = () => {
               {/* Performance Charts */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-3">Response Time Trend (24h)</h4>
+                  <h4 className=" text-gray-900 mb-3">Response Time Trend (24h)</h4>
                   <div className="flex items-end space-x-1 h-32">
                     {Array.from({ length: 24 }, (_, i) => (
                       <div
@@ -390,14 +390,14 @@ export const TechnicalInterface: React.FC = () => {
                       ></div>
                     ))}
                   </div>
-                  <div className="flex justify-between text-xs text-gray-500 mt-2">
+                  <div className="flex justify-between bloomberg-section-label text-gray-500 mt-2">
                     <span>00:00</span>
                     <span>12:00</span>
                     <span>23:59</span>
                   </div>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-3">Throughput (requests/min)</h4>
+                  <h4 className=" text-gray-900 mb-3">Throughput (requests/min)</h4>
                   <div className="flex items-end space-x-1 h-32">
                     {Array.from({ length: 24 }, (_, i) => (
                       <div
@@ -410,7 +410,7 @@ export const TechnicalInterface: React.FC = () => {
                       ></div>
                     ))}
                   </div>
-                  <div className="flex justify-between text-xs text-gray-500 mt-2">
+                  <div className="flex justify-between bloomberg-section-label text-gray-500 mt-2">
                     <span>00:00</span>
                     <span>12:00</span>
                     <span>23:59</span>
@@ -423,10 +423,10 @@ export const TechnicalInterface: React.FC = () => {
           {selectedTab === 'apis' && (
             <div className="space-y-6" data-demo="technical-apis">
               <div className="flex justify-between items-center">
-                <h3 className="text-xl font-semibold text-gray-900">API Endpoints</h3>
+                <h3 className="bloomberg-metric-value text-gray-900">API Endpoints</h3>
                 <a
                   href="#"
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700"
+                  className="bg-green-600 text-white px-4 py-2 rounded-lg bloomberg-small-text font-medium hover:bg-green-700"
                 >
                   View Full API Documentation
                 </a>
@@ -437,7 +437,7 @@ export const TechnicalInterface: React.FC = () => {
                   <div key={index} className="border border-gray-200 rounded-lg p-4">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center space-x-3">
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                        <span className={`px-2 py-1 rounded bloomberg-section-label font-medium ${
                           endpoint.method === 'GET' ? 'bg-blue-100 text-blue-700' :
                           endpoint.method === 'POST' ? 'bg-green-100 text-green-700' :
                           endpoint.method === 'PUT' ? 'bg-yellow-100 text-yellow-700' :
@@ -445,15 +445,15 @@ export const TechnicalInterface: React.FC = () => {
                         }`}>
                           {endpoint.method}
                         </span>
-                        <code className="text-sm font-mono text-gray-900">{endpoint.path}</code>
+                        <code className="bloomberg-small-text bloomberg-data text-gray-900">{endpoint.path}</code>
                       </div>
-                      <div className="text-right text-sm">
+                      <div className="text-right bloomberg-small-text">
                         <div className="font-medium text-gray-900">{endpoint.responseTime}</div>
                         <div className="text-gray-500">avg response</div>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-600 mb-2">{endpoint.description}</p>
-                    <div className="flex items-center justify-between text-xs text-gray-500">
+                    <p className="bloomberg-small-text text-gray-600 mb-2">{endpoint.description}</p>
+                    <div className="flex items-center justify-between bloomberg-section-label text-gray-500">
                       <span>Uptime: {endpoint.uptime}</span>
                       <span>Requests: {endpoint.requests}</span>
                     </div>
@@ -465,7 +465,7 @@ export const TechnicalInterface: React.FC = () => {
 
           {selectedTab === 'monitoring' && (
             <div className="space-y-6" data-demo="technical-monitoring">
-              <h3 className="text-xl font-semibold text-gray-900">System Monitoring</h3>
+              <h3 className="bloomberg-metric-value text-gray-900">System Monitoring</h3>
 
               <div className="space-y-4">
                 {systemComponents.map((component, index) => (
@@ -477,10 +477,10 @@ export const TechnicalInterface: React.FC = () => {
                           component.status === 'warning' ? 'bg-yellow-500' :
                           'bg-red-500'
                         }`}></div>
-                        <h4 className="font-semibold text-gray-900">{component.name}</h4>
-                        <span className="text-sm text-gray-500">{component.version}</span>
+                        <h4 className=" text-gray-900">{component.name}</h4>
+                        <span className="bloomberg-small-text text-gray-500">{component.version}</span>
                       </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      <span className={`px-3 py-1 rounded-full bloomberg-section-label font-medium ${
                         component.status === 'healthy' ? 'bg-green-100 text-green-700' :
                         component.status === 'warning' ? 'bg-yellow-100 text-yellow-700' :
                         'bg-red-100 text-red-700'
@@ -489,11 +489,11 @@ export const TechnicalInterface: React.FC = () => {
                       </span>
                     </div>
 
-                    <p className="text-sm text-gray-600 mb-3">{component.description}</p>
+                    <p className="bloomberg-small-text text-gray-600 mb-3">{component.description}</p>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <div className="flex justify-between text-sm mb-1">
+                        <div className="flex justify-between bloomberg-small-text mb-1">
                           <span>CPU Usage</span>
                           <span>{component.cpu}%</span>
                         </div>
@@ -509,7 +509,7 @@ export const TechnicalInterface: React.FC = () => {
                         </div>
                       </div>
                       <div>
-                        <div className="flex justify-between text-sm mb-1">
+                        <div className="flex justify-between bloomberg-small-text mb-1">
                           <span>Memory Usage</span>
                           <span>{component.memory}%</span>
                         </div>
@@ -533,15 +533,15 @@ export const TechnicalInterface: React.FC = () => {
 
           {selectedTab === 'integration' && (
             <div className="space-y-6" data-demo="technical-integration">
-              <h3 className="text-xl font-semibold text-gray-900">Integration Details</h3>
+              <h3 className="bloomberg-metric-value text-gray-900">Integration Details</h3>
 
               {/* Data Sources */}
               <div className="bg-gray-50 rounded-lg p-6">
-                <h4 className="font-semibold text-gray-900 mb-4">External Data Sources</h4>
+                <h4 className=" text-gray-900 mb-4">External Data Sources</h4>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <h5 className="font-medium text-gray-900 mb-2">AEMO Market Data</h5>
-                    <ul className="text-sm text-gray-600 space-y-1">
+                    <ul className="bloomberg-small-text text-gray-600 space-y-1">
                       <li>• Real-time ESC spot pricing</li>
                       <li>• Trading volume and liquidity data</li>
                       <li>• Market participant information</li>
@@ -550,7 +550,7 @@ export const TechnicalInterface: React.FC = () => {
                   </div>
                   <div>
                     <h5 className="font-medium text-gray-900 mb-2">Clean Energy Regulator</h5>
-                    <ul className="text-sm text-gray-600 space-y-1">
+                    <ul className="bloomberg-small-text text-gray-600 space-y-1">
                       <li>• NSW ESC Registry validation</li>
                       <li>• Certificate authenticity verification</li>
                       <li>• Compliance requirement updates</li>
@@ -563,8 +563,8 @@ export const TechnicalInterface: React.FC = () => {
               {/* Integration Patterns */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-white border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-3">Authentication</h4>
-                  <div className="space-y-2 text-sm">
+                  <h4 className=" text-gray-900 mb-3">Authentication</h4>
+                  <div className="space-y-2 bloomberg-small-text">
                     <div><strong>API Keys:</strong> Bearer token authentication</div>
                     <div><strong>OAuth 2.0:</strong> For third-party integrations</div>
                     <div><strong>mTLS:</strong> For high-security connections</div>
@@ -572,8 +572,8 @@ export const TechnicalInterface: React.FC = () => {
                   </div>
                 </div>
                 <div className="bg-white border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-900 mb-3">Data Formats</h4>
-                  <div className="space-y-2 text-sm">
+                  <h4 className=" text-gray-900 mb-3">Data Formats</h4>
+                  <div className="space-y-2 bloomberg-small-text">
                     <div><strong>Request/Response:</strong> JSON API</div>
                     <div><strong>WebSocket:</strong> Real-time market data</div>
                     <div><strong>Webhooks:</strong> Event notifications</div>
@@ -583,7 +583,7 @@ export const TechnicalInterface: React.FC = () => {
               </div>
 
               {/* Sample Code */}
-              <div className="bg-gray-900 rounded-lg p-6 text-green-400 font-mono text-sm">
+              <div className="bg-gray-900 rounded-lg p-6 text-green-400 bloomberg-data bloomberg-small-text">
                 <div className="text-gray-400 mb-2">{`// Sample API Integration`}</div>
                 <div className="space-y-1">
                   <div><span className="text-blue-400">const</span> response = <span className="text-blue-400">await</span> fetch(<span className="text-yellow-300">&apos;/api/v1/esc/market-data&apos;</span>, {`{`}</div>

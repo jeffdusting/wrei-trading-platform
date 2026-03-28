@@ -58,10 +58,10 @@ const KPICard: React.FC<KPICardProps> = ({ title, value, change, changeType, ico
     <div className="bg-white rounded-lg p-6 border border-gray-200 hover:border-gray-300 transition-colors">
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-2">{value}</p>
+          <p className="bloomberg-small-text font-medium text-gray-600">{title}</p>
+          <p className="bloomberg-large-metric text-gray-900 mt-2">{value}</p>
           {description && (
-            <p className="text-sm text-gray-500 mt-1">{description}</p>
+            <p className="bloomberg-small-text text-gray-500 mt-1">{description}</p>
           )}
         </div>
         <div className="ml-4">
@@ -71,7 +71,7 @@ const KPICard: React.FC<KPICardProps> = ({ title, value, change, changeType, ico
         </div>
       </div>
       <div className="mt-4">
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${changeColor}`}>
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full bloomberg-section-label font-medium ${changeColor}`}>
           {change}
         </span>
       </div>
@@ -188,8 +188,8 @@ export const ExecutiveDashboard: React.FC = () => {
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-8 text-white">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Executive Dashboard</h1>
-            <p className="text-blue-100 text-lg">NSW Energy Savings Certificates Trading Performance</p>
+            <h1 className="bloomberg-page-heading mb-2">Executive Dashboard</h1>
+            <p className="text-blue-100 bloomberg-card-title">NSW Energy Savings Certificates Trading Performance</p>
             <div className="flex items-center space-x-4 mt-4 text-blue-100">
               <span>Northmore Gordon</span>
               <span>•</span>
@@ -199,9 +199,9 @@ export const ExecutiveDashboard: React.FC = () => {
             </div>
           </div>
           <div className="text-right">
-            <div className="text-2xl font-bold">A$47.80</div>
-            <div className="text-blue-200 text-sm">Current ESC Spot Price</div>
-            <div className="text-blue-200 text-xs">AEMO Live Data</div>
+            <div className="bloomberg-large-metric">A$47.80</div>
+            <div className="text-blue-200 bloomberg-small-text">Current ESC Spot Price</div>
+            <div className="text-blue-200 bloomberg-section-label">AEMO Live Data</div>
           </div>
         </div>
       </div>
@@ -209,10 +209,10 @@ export const ExecutiveDashboard: React.FC = () => {
       {/* Time Frame Selector and Analytics Toggle */}
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-6">
-          <h2 className="text-2xl font-semibold text-gray-900">Key Performance Indicators</h2>
+          <h2 className="bloomberg-large-metric text-gray-900">Key Performance Indicators</h2>
           <button
             onClick={() => setShowAnalytics(!showAnalytics)}
-            className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`inline-flex items-center px-4 py-2 rounded-lg bloomberg-small-text font-medium transition-colors ${
               showAnalytics
                 ? 'bg-blue-600 text-white shadow-sm'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -227,7 +227,7 @@ export const ExecutiveDashboard: React.FC = () => {
             <button
               key={timeframe}
               onClick={() => setSelectedTimeframe(timeframe)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-md bloomberg-small-text font-medium transition-colors ${
                 selectedTimeframe === timeframe
                   ? 'bg-white text-blue-600 shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'
@@ -280,13 +280,13 @@ export const ExecutiveDashboard: React.FC = () => {
           {/* Market Intelligence with Analytics - temporarily disabled */}
           {false && (
             <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-6">
+              <h3 className="bloomberg-metric-value text-gray-900 mb-6">
                 Market Position & Competitive Intelligence
               </h3>
               <div className="grid lg:grid-cols-3 gap-6">
                 <div className="bg-blue-50 rounded-lg p-4">
-                  <h4 className="font-semibold text-blue-700 mb-3">Our Performance</h4>
-                  <div className="space-y-2 text-sm">
+                  <h4 className=" text-blue-700 mb-3">Our Performance</h4>
+                  <div className="space-y-2 bloomberg-small-text">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Market Share</span>
                       <span className="font-medium text-gray-900">12.5%</span>
@@ -303,8 +303,8 @@ export const ExecutiveDashboard: React.FC = () => {
                 </div>
 
                 <div className="bg-green-50 rounded-lg p-4">
-                  <h4 className="font-semibold text-green-700 mb-3">Market Outlook</h4>
-                  <div className="space-y-2 text-sm">
+                  <h4 className=" text-green-700 mb-3">Market Outlook</h4>
+                  <div className="space-y-2 bloomberg-small-text">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Market Size</span>
                       <span className="font-medium text-gray-900">A$850M</span>
@@ -321,8 +321,8 @@ export const ExecutiveDashboard: React.FC = () => {
                 </div>
 
                 <div className="bg-purple-50 rounded-lg p-4">
-                  <h4 className="font-semibold text-purple-700 mb-3">Competitive Advantages</h4>
-                  <ul className="text-sm text-gray-700 space-y-1">
+                  <h4 className=" text-purple-700 mb-3">Competitive Advantages</h4>
+                  <ul className="bloomberg-small-text text-gray-700 space-y-1">
                     <li className="flex items-start space-x-2">
                       <span className="text-purple-500 mt-1">•</span>
                       <span>dMRV verification technology</span>
@@ -347,7 +347,7 @@ export const ExecutiveDashboard: React.FC = () => {
 
       {/* ROI Analysis */}
       <div className="bg-white rounded-lg border border-gray-200 p-6" data-demo="executive-roi-analysis">
-        <h3 className="text-xl font-semibold text-gray-900 mb-6">
+        <h3 className="bloomberg-metric-value text-gray-900 mb-6">
           Platform ROI Analysis - AI vs Traditional Methods
         </h3>
         <div className="space-y-6">
@@ -355,12 +355,12 @@ export const ExecutiveDashboard: React.FC = () => {
             <div key={index} className="border-b border-gray-100 pb-4 last:border-b-0">
               <div className="flex justify-between items-start mb-2">
                 <h4 className="font-medium text-gray-900">{metric.category}</h4>
-                <span className="text-lg font-bold text-green-600">{metric.savings}</span>
+                <span className="bloomberg-card-title text-green-600">{metric.savings}</span>
               </div>
-              <p className="text-sm text-gray-600 mb-3">{metric.description}</p>
+              <p className="bloomberg-small-text text-gray-600 mb-3">{metric.description}</p>
               <div className="flex items-center space-x-4">
                 <div className="flex-1">
-                  <div className="flex justify-between text-sm text-gray-600 mb-1">
+                  <div className="flex justify-between bloomberg-small-text text-gray-600 mb-1">
                     <span>Traditional</span>
                     <span>WREI Platform</span>
                   </div>
@@ -376,7 +376,7 @@ export const ExecutiveDashboard: React.FC = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm font-medium text-green-600">
+                  <div className="bloomberg-small-text font-medium text-green-600">
                     {((metric.improved - metric.current) / metric.current * 100).toFixed(1)}% improvement
                   </div>
                 </div>
@@ -390,15 +390,15 @@ export const ExecutiveDashboard: React.FC = () => {
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Portfolio Metrics */}
         <div className="bg-white rounded-lg border border-gray-200 p-6" data-demo="executive-portfolio-metrics">
-          <h3 className="text-xl font-semibold text-gray-900 mb-6">Portfolio Overview</h3>
+          <h3 className="bloomberg-metric-value text-gray-900 mb-6">Portfolio Overview</h3>
           <div className="space-y-4">
             {portfolioMetrics.map((metric, index) => (
               <div key={index} className="flex justify-between items-center py-2">
                 <div>
                   <div className="font-medium text-gray-900">{metric.label}</div>
-                  <div className="text-sm text-gray-600">{metric.subtext}</div>
+                  <div className="bloomberg-small-text text-gray-600">{metric.subtext}</div>
                 </div>
-                <div className="text-lg font-bold text-blue-600">{metric.value}</div>
+                <div className="bloomberg-card-title text-blue-600">{metric.value}</div>
               </div>
             ))}
           </div>
@@ -406,35 +406,35 @@ export const ExecutiveDashboard: React.FC = () => {
 
         {/* Market Intelligence */}
         <div className="bg-white rounded-lg border border-gray-200 p-6" data-demo="executive-market-intelligence">
-          <h3 className="text-xl font-semibold text-gray-900 mb-6">Market Intelligence</h3>
+          <h3 className="bloomberg-metric-value text-gray-900 mb-6">Market Intelligence</h3>
           <div className="space-y-4">
             <div className="flex justify-between items-center py-2">
               <div>
                 <div className="font-medium text-gray-900">NSW ESC Market Size</div>
-                <div className="text-sm text-gray-600">Annual trading volume</div>
+                <div className="bloomberg-small-text text-gray-600">Annual trading volume</div>
               </div>
-              <div className="text-lg font-bold text-blue-600">A$200M+</div>
+              <div className="bloomberg-card-title text-blue-600">A$200M+</div>
             </div>
             <div className="flex justify-between items-center py-2">
               <div>
                 <div className="font-medium text-gray-900">Total Market Participants</div>
-                <div className="text-sm text-gray-600">Active traders and institutions</div>
+                <div className="bloomberg-small-text text-gray-600">Active traders and institutions</div>
               </div>
-              <div className="text-lg font-bold text-blue-600">850+</div>
+              <div className="bloomberg-card-title text-blue-600">850+</div>
             </div>
             <div className="flex justify-between items-center py-2">
               <div>
                 <div className="font-medium text-gray-900">Price Volatility Range</div>
-                <div className="text-sm text-gray-600">12-month historical</div>
+                <div className="bloomberg-small-text text-gray-600">12-month historical</div>
               </div>
-              <div className="text-lg font-bold text-blue-600">A$38-68</div>
+              <div className="bloomberg-card-title text-blue-600">A$38-68</div>
             </div>
             <div className="flex justify-between items-center py-2">
               <div>
                 <div className="font-medium text-gray-900">Competitive Position</div>
-                <div className="text-sm text-gray-600">Market share ranking</div>
+                <div className="bloomberg-small-text text-gray-600">Market share ranking</div>
               </div>
-              <div className="text-lg font-bold text-blue-600">#3 of 45</div>
+              <div className="bloomberg-card-title text-blue-600">#3 of 45</div>
             </div>
           </div>
         </div>
@@ -442,29 +442,29 @@ export const ExecutiveDashboard: React.FC = () => {
 
       {/* Strategic Recommendations */}
       <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-6" data-demo="executive-recommendations">
-        <h3 className="text-xl font-semibold text-gray-900 mb-4">
+        <h3 className="bloomberg-metric-value text-gray-900 mb-4">
           Strategic Recommendations
         </h3>
         <div className="grid md:grid-cols-3 gap-6">
           <div className="bg-white rounded-lg p-4">
-            <h4 className="font-semibold text-green-700 mb-2">Immediate Opportunities</h4>
-            <ul className="text-sm text-gray-700 space-y-1">
+            <h4 className=" text-green-700 mb-2">Immediate Opportunities</h4>
+            <ul className="bloomberg-small-text text-gray-700 space-y-1">
               <li>• Expand AI negotiation to additional ESC categories</li>
               <li>• Leverage real-time AEMO data for predictive pricing</li>
               <li>• Automate remaining manual compliance processes</li>
             </ul>
           </div>
           <div className="bg-white rounded-lg p-4">
-            <h4 className="font-semibold text-blue-700 mb-2">Growth Initiatives</h4>
-            <ul className="text-sm text-gray-700 space-y-1">
+            <h4 className=" text-blue-700 mb-2">Growth Initiatives</h4>
+            <ul className="bloomberg-small-text text-gray-700 space-y-1">
               <li>• Target 15% market share within 18 months</li>
               <li>• Expand client base to 100+ institutions</li>
               <li>• Develop cross-jurisdiction carbon trading</li>
             </ul>
           </div>
           <div className="bg-white rounded-lg p-4">
-            <h4 className="font-semibold text-purple-700 mb-2">Technology Roadmap</h4>
-            <ul className="text-sm text-gray-700 space-y-1">
+            <h4 className=" text-purple-700 mb-2">Technology Roadmap</h4>
+            <ul className="bloomberg-small-text text-gray-700 space-y-1">
               <li>• Implement advanced ML risk models</li>
               <li>• Enhance blockchain settlement capabilities</li>
               <li>• Develop mobile trading applications</li>
@@ -475,7 +475,7 @@ export const ExecutiveDashboard: React.FC = () => {
 
       {/* Action Items */}
       <div className="bg-white rounded-lg border border-gray-200 p-6" data-demo="executive-action-items">
-        <h3 className="text-xl font-semibold text-gray-900 mb-4">Priority Action Items</h3>
+        <h3 className="bloomberg-metric-value text-gray-900 mb-4">Priority Action Items</h3>
         <div className="space-y-3">
           {[
             { priority: 'High', task: 'Finalize Q2 ESC portfolio expansion strategy', due: '2 days', owner: 'Investment Committee' },
@@ -485,7 +485,7 @@ export const ExecutiveDashboard: React.FC = () => {
           ].map((item, index) => (
             <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
               <div className="flex items-center space-x-3">
-                <span className={`px-2 py-1 rounded text-xs font-medium ${
+                <span className={`px-2 py-1 rounded bloomberg-section-label font-medium ${
                   item.priority === 'High' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
                 }`}>
                   {item.priority}
@@ -493,8 +493,8 @@ export const ExecutiveDashboard: React.FC = () => {
                 <span className="font-medium text-gray-900">{item.task}</span>
               </div>
               <div className="text-right">
-                <div className="text-sm text-gray-600">Due: {item.due}</div>
-                <div className="text-xs text-gray-500">{item.owner}</div>
+                <div className="bloomberg-small-text text-gray-600">Due: {item.due}</div>
+                <div className="bloomberg-section-label text-gray-500">{item.owner}</div>
               </div>
             </div>
           ))}

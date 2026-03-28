@@ -28,21 +28,21 @@ function MetricCard({ title, value, status, target, description }: MetricCardPro
   return (
     <div className={`p-4 rounded-lg border-2 ${statusColors[status]}`}>
       <div className="flex items-center justify-between mb-2">
-        <h3 className="font-semibold text-sm">{title}</h3>
+        <h3 className=" bloomberg-small-text">{title}</h3>
         <div className={`w-3 h-3 rounded-full ${statusDots[status]}`}></div>
       </div>
       <div className="flex items-baseline space-x-2">
-        <span className="text-2xl font-bold">
+        <span className="bloomberg-large-metric">
           {typeof value === 'number' ? Math.round(value) : value}
         </span>
         {target && (
-          <span className="text-sm opacity-75">
+          <span className="bloomberg-small-text opacity-75">
             / {typeof target === 'number' ? Math.round(target) : target}
           </span>
         )}
       </div>
       {description && (
-        <p className="text-xs mt-1 opacity-75">{description}</p>
+        <p className="bloomberg-section-label mt-1 opacity-75">{description}</p>
       )}
     </div>
   );
@@ -58,7 +58,7 @@ function PerformanceChart({ data, title, color }: PerformanceChartProps) {
   if (data.length === 0) {
     return (
       <div className="bg-white border border-slate-200 rounded-lg p-4">
-        <h3 className="font-semibold text-slate-800 mb-4">{title}</h3>
+        <h3 className=" text-slate-800 mb-4">{title}</h3>
         <div className="h-32 flex items-center justify-center text-slate-500">
           No data available
         </div>
@@ -72,7 +72,7 @@ function PerformanceChart({ data, title, color }: PerformanceChartProps) {
 
   return (
     <div className="bg-white border border-slate-200 rounded-lg p-4">
-      <h3 className="font-semibold text-slate-800 mb-4">{title}</h3>
+      <h3 className=" text-slate-800 mb-4">{title}</h3>
       <div className="h-32 relative">
         <svg className="w-full h-full">
           <polyline
@@ -94,7 +94,7 @@ function PerformanceChart({ data, title, color }: PerformanceChartProps) {
             />
           ))}
         </svg>
-        <div className="absolute inset-0 flex items-end justify-between text-xs text-slate-500 pointer-events-none">
+        <div className="absolute inset-0 flex items-end justify-between bloomberg-section-label text-slate-500 pointer-events-none">
           <span>{minValue.toFixed(1)}</span>
           <span>{maxValue.toFixed(1)}</span>
         </div>
@@ -179,14 +179,14 @@ export default function PerformanceDashboard() {
         <div className="p-6 border-b border-slate-200">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold text-slate-800">WREI Performance Dashboard</h2>
+              <h2 className="bloomberg-large-metric text-slate-800">WREI Performance Dashboard</h2>
               <p className="text-slate-600 mt-1">
                 Last updated: {new Date(snapshot.timestamp).toLocaleString('en-AU')}
               </p>
             </div>
             <button
               onClick={() => setIsVisible(false)}
-              className="text-slate-500 hover:text-slate-700 text-2xl font-bold"
+              className="text-slate-500 hover:text-slate-700 bloomberg-large-metric"
             >
               ×
             </button>
@@ -196,7 +196,7 @@ export default function PerformanceDashboard() {
         <div className="p-6 space-y-6">
           {/* System Performance Metrics */}
           <div>
-            <h3 className="text-lg font-semibold text-slate-800 mb-3">System Performance</h3>
+            <h3 className="bloomberg-card-title text-slate-800 mb-3">System Performance</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <MetricCard
                 title="API Response Time"
@@ -230,7 +230,7 @@ export default function PerformanceDashboard() {
 
           {/* Business Metrics */}
           <div>
-            <h3 className="text-lg font-semibold text-slate-800 mb-3">Business Activity</h3>
+            <h3 className="bloomberg-card-title text-slate-800 mb-3">Business Activity</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <MetricCard
                 title="Negotiation Sessions"
@@ -261,7 +261,7 @@ export default function PerformanceDashboard() {
 
           {/* Performance Charts */}
           <div>
-            <h3 className="text-lg font-semibold text-slate-800 mb-3">Performance Trends</h3>
+            <h3 className="bloomberg-card-title text-slate-800 mb-3">Performance Trends</h3>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               <PerformanceChart
                 data={chartData.responseTime}
@@ -283,7 +283,7 @@ export default function PerformanceDashboard() {
 
           {/* System Metrics Bar Chart */}
           <div>
-            <h3 className="text-lg font-semibold text-slate-800 mb-3">System Metrics Overview</h3>
+            <h3 className="bloomberg-card-title text-slate-800 mb-3">System Metrics Overview</h3>
             <div className="bg-white border border-slate-200 rounded-lg p-4">
               <div className="h-80">
                 <WREIBarChart
@@ -336,9 +336,9 @@ export default function PerformanceDashboard() {
 
           {/* System Information */}
           <div>
-            <h3 className="text-lg font-semibold text-slate-800 mb-3">System Status</h3>
+            <h3 className="bloomberg-card-title text-slate-800 mb-3">System Status</h3>
             <div className="bg-slate-50 rounded-lg p-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bloomberg-small-text">
                 <div>
                   <span className="font-medium text-slate-700">Active API Calls:</span>
                   <br />

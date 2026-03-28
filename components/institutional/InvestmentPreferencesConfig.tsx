@@ -167,7 +167,7 @@ export const InvestmentPreferencesConfig: React.FC<InvestmentPreferencesConfigPr
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">
+        <h2 className="bloomberg-large-metric text-slate-900 mb-2">
           Investment Preferences
         </h2>
         <p className="text-slate-600">
@@ -178,7 +178,7 @@ export const InvestmentPreferencesConfig: React.FC<InvestmentPreferencesConfigPr
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Primary Token Selection */}
         <div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Token Strategy</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Token Strategy</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {tokenTypes.map((token) => (
               <div
@@ -199,7 +199,7 @@ export const InvestmentPreferencesConfig: React.FC<InvestmentPreferencesConfigPr
                   className="absolute top-4 right-4"
                 />
                 <h4 className="font-medium text-slate-900 mb-1">{token.label}</h4>
-                <p className="text-sm text-slate-600">{token.description}</p>
+                <p className="bloomberg-small-text text-slate-600">{token.description}</p>
               </div>
             ))}
           </div>
@@ -207,11 +207,11 @@ export const InvestmentPreferencesConfig: React.FC<InvestmentPreferencesConfigPr
 
         {/* Target Allocation */}
         <div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Target Allocation</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Target Allocation</h3>
           <div className="bg-slate-50 rounded-lg p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block bloomberg-small-text font-medium text-slate-700 mb-2">
                   Carbon Credits: {preferences.targetAllocation.carbonCredits}%
                 </label>
                 <input
@@ -225,7 +225,7 @@ export const InvestmentPreferencesConfig: React.FC<InvestmentPreferencesConfigPr
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block bloomberg-small-text font-medium text-slate-700 mb-2">
                   Asset Co Tokens: {preferences.targetAllocation.assetCo}%
                 </label>
                 <input
@@ -240,7 +240,7 @@ export const InvestmentPreferencesConfig: React.FC<InvestmentPreferencesConfigPr
               </div>
             </div>
             <div className="mt-4 p-3 bg-white rounded border">
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between bloomberg-small-text">
                 <span className="text-slate-600">Total Allocation:</span>
                 <span className={`font-medium ${
                   preferences.targetAllocation.carbonCredits + preferences.targetAllocation.assetCo === 100
@@ -255,10 +255,10 @@ export const InvestmentPreferencesConfig: React.FC<InvestmentPreferencesConfigPr
 
         {/* Yield and Risk Parameters */}
         <div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Yield and Risk Parameters</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Yield and Risk Parameters</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="yieldRequirement" className="block text-sm font-medium text-slate-700 mb-2">
+              <label htmlFor="yieldRequirement" className="block bloomberg-small-text font-medium text-slate-700 mb-2">
                 Minimum Yield Requirement (% p.a.)
               </label>
               <input
@@ -274,12 +274,12 @@ export const InvestmentPreferencesConfig: React.FC<InvestmentPreferencesConfigPr
                 max="50"
               />
               {getFieldError('yieldRequirement') && (
-                <p className="mt-1 text-sm text-red-600">{getFieldError('yieldRequirement')}</p>
+                <p className="mt-1 bloomberg-small-text text-red-600">{getFieldError('yieldRequirement')}</p>
               )}
             </div>
 
             <div>
-              <label htmlFor="riskTolerance" className="block text-sm font-medium text-slate-700 mb-2">
+              <label htmlFor="riskTolerance" className="block bloomberg-small-text font-medium text-slate-700 mb-2">
                 Risk Tolerance
               </label>
               <select
@@ -298,10 +298,10 @@ export const InvestmentPreferencesConfig: React.FC<InvestmentPreferencesConfigPr
 
         {/* Investment Size and Liquidity */}
         <div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Investment Size and Liquidity</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Investment Size and Liquidity</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label htmlFor="minimumTicketSize" className="block text-sm font-medium text-slate-700 mb-2">
+              <label htmlFor="minimumTicketSize" className="block bloomberg-small-text font-medium text-slate-700 mb-2">
                 Minimum Ticket Size
               </label>
               <div className="relative">
@@ -317,14 +317,14 @@ export const InvestmentPreferencesConfig: React.FC<InvestmentPreferencesConfigPr
                   step="100000"
                 />
               </div>
-              <p className="mt-1 text-sm text-slate-500">{formatCurrency(preferences.minimumTicketSize)}</p>
+              <p className="mt-1 bloomberg-small-text text-slate-500">{formatCurrency(preferences.minimumTicketSize)}</p>
               {getFieldError('minimumTicketSize') && (
-                <p className="mt-1 text-sm text-red-600">{getFieldError('minimumTicketSize')}</p>
+                <p className="mt-1 bloomberg-small-text text-red-600">{getFieldError('minimumTicketSize')}</p>
               )}
             </div>
 
             <div>
-              <label htmlFor="maximumTicketSize" className="block text-sm font-medium text-slate-700 mb-2">
+              <label htmlFor="maximumTicketSize" className="block bloomberg-small-text font-medium text-slate-700 mb-2">
                 Maximum Ticket Size
               </label>
               <div className="relative">
@@ -340,14 +340,14 @@ export const InvestmentPreferencesConfig: React.FC<InvestmentPreferencesConfigPr
                   step="1000000"
                 />
               </div>
-              <p className="mt-1 text-sm text-slate-500">{formatCurrency(preferences.maximumTicketSize)}</p>
+              <p className="mt-1 bloomberg-small-text text-slate-500">{formatCurrency(preferences.maximumTicketSize)}</p>
               {getFieldError('maximumTicketSize') && (
-                <p className="mt-1 text-sm text-red-600">{getFieldError('maximumTicketSize')}</p>
+                <p className="mt-1 bloomberg-small-text text-red-600">{getFieldError('maximumTicketSize')}</p>
               )}
             </div>
 
             <div>
-              <label htmlFor="liquidityRequirement" className="block text-sm font-medium text-slate-700 mb-2">
+              <label htmlFor="liquidityRequirement" className="block bloomberg-small-text font-medium text-slate-700 mb-2">
                 Liquidity Requirement
               </label>
               <select
@@ -368,10 +368,10 @@ export const InvestmentPreferencesConfig: React.FC<InvestmentPreferencesConfigPr
 
         {/* Concentration Limits */}
         <div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Concentration Limits</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Concentration Limits</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block bloomberg-small-text font-medium text-slate-700 mb-2">
                 Single Asset: {preferences.concentrationLimits.singleAssetMax}%
               </label>
               <input
@@ -385,7 +385,7 @@ export const InvestmentPreferencesConfig: React.FC<InvestmentPreferencesConfigPr
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block bloomberg-small-text font-medium text-slate-700 mb-2">
                 Single Region: {preferences.concentrationLimits.singleRegionMax}%
               </label>
               <input
@@ -399,7 +399,7 @@ export const InvestmentPreferencesConfig: React.FC<InvestmentPreferencesConfigPr
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block bloomberg-small-text font-medium text-slate-700 mb-2">
                 Single Sector: {preferences.concentrationLimits.singleSectorMax}%
               </label>
               <input
@@ -417,7 +417,7 @@ export const InvestmentPreferencesConfig: React.FC<InvestmentPreferencesConfigPr
 
         {/* ESG and Sustainability */}
         <div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">ESG and Sustainability</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">ESG and Sustainability</h3>
           <div className="space-y-4">
             <label className="flex items-start">
               <input
@@ -427,15 +427,15 @@ export const InvestmentPreferencesConfig: React.FC<InvestmentPreferencesConfigPr
                 className="mr-3 mt-1 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
               />
               <div>
-                <span className="text-sm font-medium text-slate-700">ESG compliance mandatory</span>
-                <p className="text-sm text-slate-500">
+                <span className="bloomberg-small-text font-medium text-slate-700">ESG compliance mandatory</span>
+                <p className="bloomberg-small-text text-slate-500">
                   All investments must meet defined Environmental, Social, and Governance criteria
                 </p>
               </div>
             </label>
 
             <div>
-              <label htmlFor="investmentHorizon" className="block text-sm font-medium text-slate-700 mb-2">
+              <label htmlFor="investmentHorizon" className="block bloomberg-small-text font-medium text-slate-700 mb-2">
                 Investment Horizon
               </label>
               <select
@@ -451,7 +451,7 @@ export const InvestmentPreferencesConfig: React.FC<InvestmentPreferencesConfigPr
             </div>
 
             <div>
-              <label htmlFor="yieldMechanism" className="block text-sm font-medium text-slate-700 mb-2">
+              <label htmlFor="yieldMechanism" className="block bloomberg-small-text font-medium text-slate-700 mb-2">
                 Preferred Yield Mechanism
               </label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -474,7 +474,7 @@ export const InvestmentPreferencesConfig: React.FC<InvestmentPreferencesConfigPr
                       className="absolute top-4 right-4"
                     />
                     <h4 className="font-medium text-slate-900 mb-1">{mechanism.label}</h4>
-                    <p className="text-sm text-slate-600">{mechanism.description}</p>
+                    <p className="bloomberg-small-text text-slate-600">{mechanism.description}</p>
                   </div>
                 ))}
               </div>

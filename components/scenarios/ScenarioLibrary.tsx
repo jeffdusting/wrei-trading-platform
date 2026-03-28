@@ -220,7 +220,7 @@ const ScenarioLibrary: React.FC<ScenarioLibraryProps> = ({
             </button>
           )}
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="bloomberg-page-heading text-gray-900">
               NSW ESC Scenario Library
             </h1>
             <p className="text-gray-600 mt-1">
@@ -233,22 +233,22 @@ const ScenarioLibrary: React.FC<ScenarioLibraryProps> = ({
         <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">A$47.80</div>
-              <div className="text-sm text-gray-600">Current ESC Spot Price</div>
+              <div className="bloomberg-large-metric text-blue-600">A$47.80</div>
+              <div className="bloomberg-small-text text-gray-600">Current ESC Spot Price</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">{filteredScenarios.length}</div>
-              <div className="text-sm text-gray-600">Available Scenarios</div>
+              <div className="bloomberg-large-metric text-green-600">{filteredScenarios.length}</div>
+              <div className="bloomberg-small-text text-gray-600">Available Scenarios</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">
+              <div className="bloomberg-large-metric text-purple-600">
                 {selectedAudience ? selectedAudience.charAt(0).toUpperCase() + selectedAudience.slice(1) : 'All'}
               </div>
-              <div className="text-sm text-gray-600">Target Audience</div>
+              <div className="bloomberg-small-text text-gray-600">Target Audience</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">12%</div>
-              <div className="text-sm text-gray-600">Northmore Gordon Market Share</div>
+              <div className="bloomberg-large-metric text-orange-600">12%</div>
+              <div className="bloomberg-small-text text-gray-600">Northmore Gordon Market Share</div>
             </div>
           </div>
         </div>
@@ -264,7 +264,7 @@ const ScenarioLibrary: React.FC<ScenarioLibraryProps> = ({
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-md bloomberg-small-text font-medium transition-colors ${
                 activeTab === tab.id
                   ? 'bg-white text-blue-600 shadow-sm'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
@@ -283,7 +283,7 @@ const ScenarioLibrary: React.FC<ScenarioLibraryProps> = ({
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value as ScenarioType | 'all')}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="px-3 py-2 border border-gray-300 rounded-lg bloomberg-small-text focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             {scenarioTypeOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -295,7 +295,7 @@ const ScenarioLibrary: React.FC<ScenarioLibraryProps> = ({
           <div className="flex gap-2">
             <button
               onClick={() => setViewMode('cards')}
-              className={`px-3 py-2 rounded-lg text-sm transition-colors ${
+              className={`px-3 py-2 rounded-lg bloomberg-small-text transition-colors ${
                 viewMode === 'cards'
                   ? 'bg-blue-100 text-blue-700 border-blue-300'
                   : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
@@ -305,7 +305,7 @@ const ScenarioLibrary: React.FC<ScenarioLibraryProps> = ({
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`px-3 py-2 rounded-lg text-sm transition-colors ${
+              className={`px-3 py-2 rounded-lg bloomberg-small-text transition-colors ${
                 viewMode === 'list'
                   ? 'bg-blue-100 text-blue-700 border-blue-300'
                   : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
@@ -342,8 +342,8 @@ const ScenarioLibrary: React.FC<ScenarioLibraryProps> = ({
                     {getScenarioIcon(scenario.type)}
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">{scenario.name}</h3>
-                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(scenario.status)}`}>
+                    <h3 className=" text-gray-900">{scenario.name}</h3>
+                    <span className={`inline-flex px-2 py-1 bloomberg-section-label font-medium rounded-full border ${getStatusColor(scenario.status)}`}>
                       {scenario.status}
                     </span>
                   </div>
@@ -352,7 +352,7 @@ const ScenarioLibrary: React.FC<ScenarioLibraryProps> = ({
 
               {/* Scenario Metrics */}
               <div className="space-y-3">
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between bloomberg-small-text">
                   <span className="text-gray-600">Duration:</span>
                   <div className="flex items-center gap-1 text-gray-900">
                     <ClockIcon className="w-4 h-4" />
@@ -360,20 +360,20 @@ const ScenarioLibrary: React.FC<ScenarioLibraryProps> = ({
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between bloomberg-small-text">
                   <span className="text-gray-600">Success Rate:</span>
                   <span className={`font-medium ${getSuccessRateColor(scenario.success_rate)}`}>
                     {(scenario.success_rate * 100).toFixed(0)}%
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between bloomberg-small-text">
                   <span className="text-gray-600">Target Audiences:</span>
                   <div className="flex gap-1">
                     {scenario.target_audiences.map((audience) => (
                       <span
                         key={audience}
-                        className={`px-2 py-1 text-xs rounded-full ${
+                        className={`px-2 py-1 bloomberg-section-label rounded-full ${
                           audience === selectedAudience
                             ? 'bg-blue-100 text-blue-800'
                             : 'bg-gray-100 text-gray-600'
@@ -386,7 +386,7 @@ const ScenarioLibrary: React.FC<ScenarioLibraryProps> = ({
                 </div>
 
                 {scenario.last_run && (
-                  <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center justify-between bloomberg-small-text">
                     <span className="text-gray-600">Last Run:</span>
                     <span className="text-gray-900">
                       {scenario.last_run.toLocaleDateString()}
@@ -398,7 +398,7 @@ const ScenarioLibrary: React.FC<ScenarioLibraryProps> = ({
               {/* Action Buttons */}
               <div className="mt-6 flex gap-2">
                 <button
-                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors bloomberg-small-text"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleScenarioSelect(scenario.id);
@@ -425,7 +425,7 @@ const ScenarioLibrary: React.FC<ScenarioLibraryProps> = ({
           <div className="text-gray-400 mb-4">
             <DocumentTextIcon className="w-16 h-16 mx-auto" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="bloomberg-card-title font-medium text-gray-900 mb-2">
             {activeTab === 'templates' && 'Scenario Templates'}
             {activeTab === 'running' && 'Running Scenarios'}
             {activeTab === 'history' && 'Scenario History'}

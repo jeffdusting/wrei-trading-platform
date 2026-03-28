@@ -339,7 +339,7 @@ const TemplateManager: React.FC<TemplateManagerProps> = ({
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Template Manager</h1>
+            <h1 className="bloomberg-page-heading text-gray-900">Template Manager</h1>
             <p className="text-gray-600 mt-1">
               Create, edit, and manage reusable scenario templates
             </p>
@@ -372,7 +372,7 @@ const TemplateManager: React.FC<TemplateManagerProps> = ({
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-md bloomberg-small-text font-medium transition-colors ${
                 activeTab === tab.id
                   ? 'bg-white text-blue-600 shadow-sm'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
@@ -440,8 +440,8 @@ const TemplateManager: React.FC<TemplateManagerProps> = ({
                     <DocumentTextIcon className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">{template.name}</h3>
-                    <p className="text-sm text-gray-600">v{template.version}</p>
+                    <h3 className=" text-gray-900">{template.name}</h3>
+                    <p className="bloomberg-small-text text-gray-600">v{template.version}</p>
                   </div>
                 </div>
                 {template.is_public && (
@@ -451,25 +451,25 @@ const TemplateManager: React.FC<TemplateManagerProps> = ({
                 )}
               </div>
 
-              <p className="text-gray-700 text-sm mb-4 line-clamp-2">{template.description}</p>
+              <p className="text-gray-700 bloomberg-small-text mb-4 line-clamp-2">{template.description}</p>
 
               {/* Template Metrics */}
               <div className="space-y-3 mb-4">
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between bloomberg-small-text">
                   <span className="text-gray-600">Type:</span>
                   <span className="font-medium text-gray-900">
                     {template.template.type.replace('-', ' ')}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between bloomberg-small-text">
                   <span className="text-gray-600">Complexity:</span>
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getComplexityColor(template.template.complexity)}`}>
+                  <span className={`px-2 py-1 bloomberg-section-label font-medium rounded-full border ${getComplexityColor(template.template.complexity)}`}>
                     {template.template.complexity}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between bloomberg-small-text">
                   <span className="text-gray-600">Duration:</span>
                   <div className="flex items-center gap-1 text-gray-900">
                     <ClockIcon className="w-4 h-4" />
@@ -477,18 +477,18 @@ const TemplateManager: React.FC<TemplateManagerProps> = ({
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between bloomberg-small-text">
                   <span className="text-gray-600">Used:</span>
                   <span className="text-gray-900">{template.usage_count} times</span>
                 </div>
 
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between bloomberg-small-text">
                   <span className="text-gray-600">Target Audiences:</span>
                   <div className="flex gap-1">
                     {template.template.targetAudience.map((audience) => (
                       <span
                         key={audience}
-                        className={`px-2 py-1 text-xs rounded-full ${
+                        className={`px-2 py-1 bloomberg-section-label rounded-full ${
                           audience === selectedAudience
                             ? 'bg-blue-100 text-blue-800'
                             : 'bg-gray-100 text-gray-600'
@@ -500,7 +500,7 @@ const TemplateManager: React.FC<TemplateManagerProps> = ({
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between bloomberg-small-text">
                   <span className="text-gray-600">Modified:</span>
                   <span className="text-gray-900">
                     {template.last_modified.toLocaleDateString()}
@@ -513,7 +513,7 @@ const TemplateManager: React.FC<TemplateManagerProps> = ({
                 {template.tags.map((tag, index) => (
                   <span
                     key={index}
-                    className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 bloomberg-section-label rounded-full"
                   >
                     <TagIcon className="w-3 h-3" />
                     {tag}
@@ -524,7 +524,7 @@ const TemplateManager: React.FC<TemplateManagerProps> = ({
               {/* Actions */}
               <div className="flex gap-2">
                 <button
-                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors bloomberg-small-text"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleTemplateSelect(template.id);
@@ -557,7 +557,7 @@ const TemplateManager: React.FC<TemplateManagerProps> = ({
           {filteredTemplates.length === 0 && (
             <div className="col-span-full text-center py-12">
               <DocumentTextIcon className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No templates found</h3>
+              <h3 className="bloomberg-card-title font-medium text-gray-900 mb-2">No templates found</h3>
               <p className="text-gray-600 mb-6">
                 No templates match your search criteria. Try adjusting your filters or create a new template.
               </p>
@@ -577,7 +577,7 @@ const TemplateManager: React.FC<TemplateManagerProps> = ({
             {activeTab === 'edit' && <PencilIcon className="w-16 h-16 mx-auto" />}
             {activeTab === 'history' && <ClockIcon className="w-16 h-16 mx-auto" />}
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="bloomberg-card-title font-medium text-gray-900 mb-2">
             {activeTab === 'create' && 'Template Creator'}
             {activeTab === 'edit' && 'Template Editor'}
             {activeTab === 'history' && 'Version History'}

@@ -26,7 +26,7 @@ export const NegotiationStrategyPanel: React.FC<NegotiationStrategyPanelProps> =
     return (
       <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-slate-800">AI Strategy Analysis</h3>
+          <h3 className="bloomberg-card-title text-slate-800">AI Strategy Analysis</h3>
           <button
             onClick={onToggle}
             className="text-slate-500 hover:text-slate-700 transition-colors"
@@ -94,7 +94,7 @@ export const NegotiationStrategyPanel: React.FC<NegotiationStrategyPanelProps> =
         >
           <span>🧠</span>
           <span>AI Strategy</span>
-          <div className={`px-2 py-1 rounded-full text-xs ${confidenceColors[explanation.confidenceLevel]}`}>
+          <div className={`px-2 py-1 rounded-full bloomberg-section-label ${confidenceColors[explanation.confidenceLevel]}`}>
             {explanation.confidenceLevel.toUpperCase()}
           </div>
         </button>
@@ -108,14 +108,14 @@ export const NegotiationStrategyPanel: React.FC<NegotiationStrategyPanelProps> =
       <div className="bg-slate-100 border-b border-slate-300 px-4 py-3 rounded-t-lg">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <h3 className="text-lg font-semibold text-slate-800">AI Negotiation Strategy</h3>
-            <div className={`px-3 py-1 rounded-full text-sm font-medium border ${confidenceColors[explanation.confidenceLevel]}`}>
+            <h3 className="bloomberg-card-title text-slate-800">AI Negotiation Strategy</h3>
+            <div className={`px-3 py-1 rounded-full bloomberg-small-text font-medium border ${confidenceColors[explanation.confidenceLevel]}`}>
               {explanation.confidenceLevel.toUpperCase()} CONFIDENCE
             </div>
           </div>
           <button
             onClick={onToggle}
-            className="text-slate-500 hover:text-slate-700 transition-colors text-xl"
+            className="text-slate-500 hover:text-slate-700 transition-colors bloomberg-metric-value"
             title="Hide strategy panel"
           >
             ✕
@@ -125,9 +125,9 @@ export const NegotiationStrategyPanel: React.FC<NegotiationStrategyPanelProps> =
         {/* Current Decision */}
         <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded">
           <div className="flex items-start gap-2">
-            <span className="text-blue-600 text-lg">🎯</span>
+            <span className="text-blue-600 bloomberg-card-title">🎯</span>
             <div>
-              <p className="font-semibold text-blue-800">Current AI Decision:</p>
+              <p className=" text-blue-800">Current AI Decision:</p>
               <p className="text-blue-700">{explanation.decision}</p>
             </div>
           </div>
@@ -145,10 +145,10 @@ export const NegotiationStrategyPanel: React.FC<NegotiationStrategyPanelProps> =
               className="w-full px-4 py-3 bg-slate-50 hover:bg-slate-100 transition-colors flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
-                <span className="text-lg">{section.icon}</span>
-                <span className="font-semibold text-slate-800">{section.title}</span>
+                <span className="bloomberg-card-title">{section.icon}</span>
+                <span className=" text-slate-800">{section.title}</span>
               </div>
-              <span className="text-slate-500 text-xl">
+              <span className="text-slate-500 bloomberg-metric-value">
                 {expandedSection === section.key ? '▲' : '▼'}
               </span>
             </button>
@@ -171,10 +171,10 @@ export const NegotiationStrategyPanel: React.FC<NegotiationStrategyPanelProps> =
               className="w-full px-4 py-3 bg-slate-50 hover:bg-slate-100 transition-colors flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
-                <span className="text-lg">🏛️</span>
-                <span className="font-semibold text-slate-800">Institutional Factors</span>
+                <span className="bloomberg-card-title">🏛️</span>
+                <span className=" text-slate-800">Institutional Factors</span>
               </div>
-              <span className="text-slate-500 text-xl">
+              <span className="text-slate-500 bloomberg-metric-value">
                 {expandedSection === 'institutional' ? '▲' : '▼'}
               </span>
             </button>
@@ -197,7 +197,7 @@ export const NegotiationStrategyPanel: React.FC<NegotiationStrategyPanelProps> =
 
       {/* Footer */}
       <div className="bg-slate-100 border-t border-slate-300 px-4 py-3 rounded-b-lg">
-        <p className="text-xs text-slate-600">
+        <p className="bloomberg-section-label text-slate-600">
           💡 <strong>Pro Tip:</strong> These insights help you understand the AI&apos;s negotiation approach and can inform your response strategy.
           The AI considers market conditions, your investor profile, and institutional requirements when making decisions.
         </p>

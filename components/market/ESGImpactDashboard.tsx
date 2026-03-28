@@ -101,16 +101,16 @@ export const ESGImpactDashboard: React.FC<ESGImpactDashboardProps> = ({
       <div className="border-b border-slate-200 p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-slate-900">ESG Impact Dashboard</h2>
+            <h2 className="bloomberg-metric-value text-slate-900">ESG Impact Dashboard</h2>
             <p className="text-slate-600 mt-1">
               Real-time environmental, social, and governance impact tracking
             </p>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+            <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full bloomberg-small-text font-medium">
               Impact Score: {dashboardData.portfolioOverview.totalImpactScore}/10
             </div>
-            <div className="text-xs text-slate-500">
+            <div className="bloomberg-section-label text-slate-500">
               Updated {dashboardData.portfolioOverview.lastCalculated.toLocaleTimeString()}
             </div>
           </div>
@@ -128,7 +128,7 @@ export const ESGImpactDashboard: React.FC<ESGImpactDashboardProps> = ({
             <button
               key={key}
               onClick={() => setCurrentView(key as DashboardView)}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-md bloomberg-small-text font-medium transition-colors ${
                 currentView === key
                   ? 'bg-white text-sky-600 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
@@ -229,25 +229,25 @@ const OverviewView: React.FC<{
 
       {/* Certification Status */}
       <div className="bg-slate-50 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">Verification Status</h3>
+        <h3 className="bloomberg-card-title text-slate-900 mb-4">Verification Status</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">
+            <div className="bloomberg-large-metric text-green-600">
               {certificationStatus.verifiedCredits.toLocaleString()}
             </div>
-            <div className="text-sm text-slate-600">Verified Credits</div>
+            <div className="bloomberg-small-text text-slate-600">Verified Credits</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-amber-600">
+            <div className="bloomberg-large-metric text-amber-600">
               {certificationStatus.pendingVerification.toLocaleString()}
             </div>
-            <div className="text-sm text-slate-600">Pending Verification</div>
+            <div className="bloomberg-small-text text-slate-600">Pending Verification</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-sky-600">
+            <div className="bloomberg-large-metric text-sky-600">
               {Math.round(certificationStatus.verificationRate * 100)}%
             </div>
-            <div className="text-sm text-slate-600">Verification Rate</div>
+            <div className="bloomberg-small-text text-slate-600">Verification Rate</div>
           </div>
         </div>
 
@@ -255,7 +255,7 @@ const OverviewView: React.FC<{
           {certificationStatus.certificationBodies.map((body, index) => (
             <span
               key={index}
-              className="bg-white px-3 py-1 rounded-full text-xs font-medium text-slate-600 border"
+              className="bg-white px-3 py-1 rounded-full bloomberg-section-label font-medium text-slate-600 border"
             >
               {body}
             </span>
@@ -265,7 +265,7 @@ const OverviewView: React.FC<{
 
       {/* Institutional Requirements */}
       <div className="bg-sky-50 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">
+        <h3 className="bloomberg-card-title text-slate-900 mb-4">
           Institutional Requirements ({requirements.classification})
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -275,7 +275,7 @@ const OverviewView: React.FC<{
               {requirements.mandatoryFrameworks.map((framework, index) => (
                 <div key={index} className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-slate-600">{framework}</span>
+                  <span className="bloomberg-small-text text-slate-600">{framework}</span>
                 </div>
               ))}
             </div>
@@ -286,7 +286,7 @@ const OverviewView: React.FC<{
               {requirements.requiredMetrics.map((metric, index) => (
                 <div key={index} className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-sky-500 rounded-full"></div>
-                  <span className="text-sm text-slate-600">
+                  <span className="bloomberg-small-text text-slate-600">
                     {metric.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                   </span>
                 </div>
@@ -337,11 +337,11 @@ const CategoriesView: React.FC<{
                   : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
               }`}
             >
-              <div className="text-2xl mb-2">{icon}</div>
-              <div className={`text-sm font-medium ${isSelected ? 'text-sky-900' : 'text-slate-900'}`}>
+              <div className="bloomberg-large-metric mb-2">{icon}</div>
+              <div className={`bloomberg-small-text font-medium ${isSelected ? 'text-sky-900' : 'text-slate-900'}`}>
                 {label}
               </div>
-              <div className={`text-xs ${isSelected ? 'text-sky-600' : 'text-slate-600'}`}>
+              <div className={`bloomberg-section-label ${isSelected ? 'text-sky-600' : 'text-slate-600'}`}>
                 Score: {data?.score?.toFixed(1) || '0.0'}/10
               </div>
             </button>
@@ -355,20 +355,20 @@ const CategoriesView: React.FC<{
           {/* Category Overview */}
           <div className="bg-slate-50 rounded-lg p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-slate-900">
+              <h3 className="bloomberg-card-title text-slate-900">
                 {categories.find(c => c.key === selectedCategory)?.label} Overview
               </h3>
               <div className="text-right">
-                <div className="text-2xl font-bold text-sky-600">
+                <div className="bloomberg-large-metric text-sky-600">
                   {categoryData.score.toFixed(1)}/10
                 </div>
-                <div className="text-sm text-slate-600">Impact Score</div>
+                <div className="bloomberg-small-text text-slate-600">Impact Score</div>
               </div>
             </div>
 
             {/* Progress to Target */}
             <div className="mb-4">
-              <div className="flex justify-between text-sm mb-2">
+              <div className="flex justify-between bloomberg-small-text mb-2">
                 <span className="text-slate-600">Progress to Target</span>
                 <span className="font-medium text-slate-900">{categoryData.targetProgress}%</span>
               </div>
@@ -402,7 +402,7 @@ const CategoriesView: React.FC<{
               <div key={metric.id} className="bg-white border border-slate-200 rounded-lg p-4">
                 <div className="flex items-start justify-between mb-2">
                   <h4 className="font-medium text-slate-900">{metric.name}</h4>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  <span className={`px-2 py-1 rounded-full bloomberg-section-label font-medium ${
                     metric.trend === 'improving'
                       ? 'bg-green-100 text-green-700'
                       : metric.trend === 'stable'
@@ -412,24 +412,24 @@ const CategoriesView: React.FC<{
                     {metric.trend}
                   </span>
                 </div>
-                <p className="text-sm text-slate-600 mb-3">{metric.description}</p>
+                <p className="bloomberg-small-text text-slate-600 mb-3">{metric.description}</p>
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-sm text-slate-600">Current</span>
+                    <span className="bloomberg-small-text text-slate-600">Current</span>
                     <span className="font-medium">{metric.value.toLocaleString()} {metric.unit.replace('_', ' ')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-slate-600">Target</span>
+                    <span className="bloomberg-small-text text-slate-600">Target</span>
                     <span className="font-medium">{metric.target.toLocaleString()} {metric.unit.replace('_', ' ')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-slate-600">Progress</span>
+                    <span className="bloomberg-small-text text-slate-600">Progress</span>
                     <span className="font-medium text-sky-600">
                       {Math.round(((metric.value - metric.baseline) / (metric.target - metric.baseline)) * 100)}%
                     </span>
                   </div>
                 </div>
-                <div className="mt-3 pt-3 border-t border-slate-100 text-xs text-slate-500">
+                <div className="mt-3 pt-3 border-t border-slate-100 bloomberg-section-label text-slate-500">
                   Verified by {metric.verificationSource} • {metric.confidenceLevel} confidence
                 </div>
               </div>
@@ -456,7 +456,7 @@ const ComplianceView: React.FC<{
     <div className="space-y-6">
       {/* Framework Selector */}
       <div>
-        <h3 className="text-lg font-semibold text-slate-900 mb-3">Reporting Framework</h3>
+        <h3 className="bloomberg-card-title text-slate-900 mb-3">Reporting Framework</h3>
         <div className="flex flex-wrap gap-2">
           {frameworks.map(framework => {
             const isMandatory = requirements.mandatoryFrameworks.includes(framework);
@@ -466,7 +466,7 @@ const ComplianceView: React.FC<{
               <button
                 key={framework}
                 onClick={() => onFrameworkSelect(framework)}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`px-3 py-2 rounded-lg bloomberg-small-text font-medium transition-colors ${
                   isSelected
                     ? 'bg-sky-500 text-white'
                     : isMandatory
@@ -475,12 +475,12 @@ const ComplianceView: React.FC<{
                 }`}
               >
                 {framework}
-                {isMandatory && <span className="ml-1 text-xs">*</span>}
+                {isMandatory && <span className="ml-1 bloomberg-section-label">*</span>}
               </button>
             );
           })}
         </div>
-        <p className="text-sm text-slate-600 mt-2">
+        <p className="bloomberg-small-text text-slate-600 mt-2">
           * Mandatory frameworks for {requirements.classification} classification
         </p>
       </div>
@@ -488,11 +488,11 @@ const ComplianceView: React.FC<{
       {/* Compliance Score */}
       <div className="bg-slate-50 rounded-lg p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-slate-900">
+          <h3 className="bloomberg-card-title text-slate-900">
             {selectedFramework} Compliance Status
           </h3>
           <div className="text-right">
-            <div className={`text-2xl font-bold ${
+            <div className={`bloomberg-large-metric ${
               complianceReport.complianceScore >= 80
                 ? 'text-green-600'
                 : complianceReport.complianceScore >= 60
@@ -501,7 +501,7 @@ const ComplianceView: React.FC<{
             }`}>
               {complianceReport.complianceScore}%
             </div>
-            <div className="text-sm text-slate-600">Compliance Score</div>
+            <div className="bloomberg-small-text text-slate-600">Compliance Score</div>
           </div>
         </div>
 
@@ -530,7 +530,7 @@ const ComplianceView: React.FC<{
             {complianceReport.completedDisclosures.map((disclosure, index) => (
               <div key={index} className="flex items-center space-x-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                <span className="text-sm text-green-700">{disclosure}</span>
+                <span className="bloomberg-small-text text-green-700">{disclosure}</span>
               </div>
             ))}
           </div>
@@ -545,7 +545,7 @@ const ComplianceView: React.FC<{
             {complianceReport.gaps.map((gap, index) => (
               <div key={index} className="flex items-center space-x-2">
                 <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
-                <span className="text-sm text-red-700">{gap}</span>
+                <span className="bloomberg-small-text text-red-700">{gap}</span>
               </div>
             ))}
           </div>
@@ -560,7 +560,7 @@ const ComplianceView: React.FC<{
             {complianceReport.recommendations.map((recommendation, index) => (
               <div key={index} className="flex items-start space-x-2">
                 <div className="w-2 h-2 bg-sky-500 rounded-full flex-shrink-0 mt-2"></div>
-                <span className="text-sm text-sky-700">{recommendation}</span>
+                <span className="bloomberg-small-text text-sky-700">{recommendation}</span>
               </div>
             ))}
           </div>
@@ -580,7 +580,7 @@ const ProjectionsView: React.FC<{
 
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-slate-900">Future Impact Projections</h3>
+      <h3 className="bloomberg-card-title text-slate-900">Future Impact Projections</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {impactProjections.map((projection, index) => (
@@ -614,7 +614,7 @@ const ProjectionsView: React.FC<{
             </div>
 
             <div className="mt-4 pt-4 border-t border-slate-200">
-              <div className="text-xs text-slate-600">
+              <div className="bloomberg-section-label text-slate-600">
                 Confidence interval: {Math.round(projection.confidenceInterval[0] * 100)}% - {Math.round(projection.confidenceInterval[1] * 100)}%
               </div>
             </div>
@@ -634,34 +634,34 @@ const ROIView: React.FC<{
 }> = ({ roiData, investmentAmount }) => {
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-slate-900">ESG Financial Impact Analysis</h3>
+      <h3 className="bloomberg-card-title text-slate-900">ESG Financial Impact Analysis</h3>
 
       {/* ROI Overview */}
       <div className="bg-slate-50 rounded-lg p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div className="text-center">
-            <div className={`text-2xl font-bold ${
+            <div className={`bloomberg-large-metric ${
               roiData.impactROI >= 0 ? 'text-green-600' : 'text-red-600'
             }`}>
               {roiData.impactROI >= 0 ? '+' : ''}{roiData.impactROI}%
             </div>
-            <div className="text-sm text-slate-600">ESG Impact ROI</div>
+            <div className="bloomberg-small-text text-slate-600">ESG Impact ROI</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-sky-600">
+            <div className="bloomberg-large-metric text-sky-600">
               ${roiData.totalESGValue.toLocaleString()}
             </div>
-            <div className="text-sm text-slate-600">Total ESG Value</div>
+            <div className="bloomberg-small-text text-slate-600">Total ESG Value</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-purple-600">
+            <div className="bloomberg-large-metric text-purple-600">
               {roiData.paybackPeriodMonths}
             </div>
-            <div className="text-sm text-slate-600">Payback (Months)</div>
+            <div className="bloomberg-small-text text-slate-600">Payback (Months)</div>
           </div>
         </div>
 
-        <div className="text-sm text-slate-600">
+        <div className="bloomberg-small-text text-slate-600">
           Based on ${investmentAmount.toLocaleString()} investment
         </div>
       </div>
@@ -705,8 +705,8 @@ const MetricCard: React.FC<{
 }> = ({ title, value, unit, trend, bgColor, textColor, icon }) => (
   <div className={`${bgColor} rounded-lg p-4`}>
     <div className="flex items-center justify-between mb-2">
-      <span className="text-2xl">{icon}</span>
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+      <span className="bloomberg-large-metric">{icon}</span>
+      <span className={`px-2 py-1 rounded-full bloomberg-section-label font-medium ${
         trend === 'improving'
           ? 'bg-green-100 text-green-700'
           : trend === 'stable'
@@ -716,10 +716,10 @@ const MetricCard: React.FC<{
         {trend}
       </span>
     </div>
-    <div className={`text-2xl font-bold ${textColor} mb-1`}>
-      {value}<span className="text-lg font-normal">{unit}</span>
+    <div className={`bloomberg-large-metric ${textColor} mb-1`}>
+      {value}<span className="bloomberg-card-title font-normal">{unit}</span>
     </div>
-    <div className={`text-sm ${textColor.replace('700', '600')}`}>{title}</div>
+    <div className={`bloomberg-small-text ${textColor.replace('700', '600')}`}>{title}</div>
   </div>
 );
 
@@ -742,12 +742,12 @@ const ProjectionMetric: React.FC<{
   return (
     <div>
       <div className="flex justify-between items-end">
-        <span className="text-sm text-slate-600">{label}</span>
-        <span className={`font-semibold ${colorClasses[color]}`}>
+        <span className="bloomberg-small-text text-slate-600">{label}</span>
+        <span className={` ${colorClasses[color]}`}>
           {value.toLocaleString()} {unit}
         </span>
       </div>
-      <div className="text-xs text-slate-500 mt-1">
+      <div className="bloomberg-section-label text-slate-500 mt-1">
         Range: {Math.round(value * confidence[0]).toLocaleString()} - {Math.round(value * confidence[1]).toLocaleString()}
       </div>
     </div>
@@ -772,8 +772,8 @@ const ValueCard: React.FC<{
   return (
     <div className={`${colorClasses[color]} rounded-lg p-4`}>
       <h4 className="font-medium mb-2">{title}</h4>
-      <div className="text-xl font-bold mb-1">${Math.round(value).toLocaleString()}</div>
-      <div className="text-sm opacity-80">{description}</div>
+      <div className="bloomberg-metric-value mb-1">${Math.round(value).toLocaleString()}</div>
+      <div className="bloomberg-small-text opacity-80">{description}</div>
     </div>
   );
 };

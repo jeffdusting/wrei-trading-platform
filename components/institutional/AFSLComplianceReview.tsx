@@ -83,7 +83,7 @@ export const AFSLComplianceReview: React.FC<AFSLComplianceReviewProps> = ({
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">
+        <h2 className="bloomberg-large-metric text-slate-900 mb-2">
           AFSL Compliance Review
         </h2>
         <p className="text-slate-600">
@@ -94,16 +94,16 @@ export const AFSLComplianceReview: React.FC<AFSLComplianceReviewProps> = ({
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Current Classification */}
         <div className="bg-slate-50 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-3">Current Classification</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-3">Current Classification</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <p className="text-sm text-slate-600">Investor Classification</p>
+              <p className="bloomberg-small-text text-slate-600">Investor Classification</p>
               <p className="font-medium text-slate-900 capitalize">
                 {onboardingState.investorClassification?.classification || 'Not determined'}
               </p>
             </div>
             <div>
-              <p className="text-sm text-slate-600">Existing License</p>
+              <p className="bloomberg-small-text text-slate-600">Existing License</p>
               <p className="font-medium text-slate-900">
                 {complianceParams.licenseDetails.afslNumber || 'Not provided'}
               </p>
@@ -113,7 +113,7 @@ export const AFSLComplianceReview: React.FC<AFSLComplianceReviewProps> = ({
 
         {/* Offering Structure */}
         <div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Investment Offering Structure</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Investment Offering Structure</h3>
           <div className="space-y-4">
             <label className="flex items-start">
               <input
@@ -126,8 +126,8 @@ export const AFSLComplianceReview: React.FC<AFSLComplianceReviewProps> = ({
                 className="mr-3 mt-1 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
               />
               <div>
-                <span className="text-sm font-medium text-slate-700">Wholesale Investors Only</span>
-                <p className="text-sm text-slate-500">Restrict offerings to wholesale investors (s708 exemption)</p>
+                <span className="bloomberg-small-text font-medium text-slate-700">Wholesale Investors Only</span>
+                <p className="bloomberg-small-text text-slate-500">Restrict offerings to wholesale investors (s708 exemption)</p>
               </div>
             </label>
 
@@ -142,8 +142,8 @@ export const AFSLComplianceReview: React.FC<AFSLComplianceReviewProps> = ({
                 className="mr-3 mt-1 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
               />
               <div>
-                <span className="text-sm font-medium text-slate-700">Sophisticated Investors Only</span>
-                <p className="text-sm text-slate-500">Further restrict to sophisticated investors</p>
+                <span className="bloomberg-small-text font-medium text-slate-700">Sophisticated Investors Only</span>
+                <p className="bloomberg-small-text text-slate-500">Further restrict to sophisticated investors</p>
               </div>
             </label>
 
@@ -158,8 +158,8 @@ export const AFSLComplianceReview: React.FC<AFSLComplianceReviewProps> = ({
                 className="mr-3 mt-1 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
               />
               <div>
-                <span className="text-sm font-medium text-slate-700">Include Retail Investors</span>
-                <p className="text-sm text-slate-500">Enable access for retail investors (requires AFSL)</p>
+                <span className="bloomberg-small-text font-medium text-slate-700">Include Retail Investors</span>
+                <p className="bloomberg-small-text text-slate-500">Enable access for retail investors (requires AFSL)</p>
               </div>
             </label>
           </div>
@@ -167,10 +167,10 @@ export const AFSLComplianceReview: React.FC<AFSLComplianceReviewProps> = ({
 
         {/* License Details */}
         <div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">License Information</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">License Information</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="afslNumber" className="block text-sm font-medium text-slate-700 mb-2">
+              <label htmlFor="afslNumber" className="block bloomberg-small-text font-medium text-slate-700 mb-2">
                 AFSL Number (if applicable)
               </label>
               <input
@@ -197,7 +197,7 @@ export const AFSLComplianceReview: React.FC<AFSLComplianceReviewProps> = ({
                   }))}
                   className="mr-2 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
                 />
-                <span className="text-sm font-medium text-slate-700">
+                <span className="bloomberg-small-text font-medium text-slate-700">
                   Authorised Representative of AFSL holder
                 </span>
               </label>
@@ -213,7 +213,7 @@ export const AFSLComplianceReview: React.FC<AFSLComplianceReviewProps> = ({
             'bg-blue-50 border-blue-200'
           }`}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-slate-900">AFSL Compliance Assessment</h3>
+              <h3 className="bloomberg-card-title text-slate-900">AFSL Compliance Assessment</h3>
               {isAssessing && (
                 <div className="flex items-center text-sky-600">
                   <svg className="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -227,7 +227,7 @@ export const AFSLComplianceReview: React.FC<AFSLComplianceReviewProps> = ({
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div>
-                <p className="text-sm text-slate-600">Compliance Status</p>
+                <p className="bloomberg-small-text text-slate-600">Compliance Status</p>
                 <p className={`font-medium capitalize ${
                   complianceResult.complianceStatus === 'license_required' ? 'text-amber-800' :
                   complianceResult.complianceStatus === 'compliant' ? 'text-green-800' :
@@ -237,13 +237,13 @@ export const AFSLComplianceReview: React.FC<AFSLComplianceReviewProps> = ({
                 </p>
               </div>
               <div>
-                <p className="text-sm text-slate-600">License Required</p>
+                <p className="bloomberg-small-text text-slate-600">License Required</p>
                 <p className={`font-medium ${complianceResult.licenseRequired ? 'text-amber-800' : 'text-green-800'}`}>
                   {complianceResult.licenseRequired ? 'Yes' : 'No'}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-slate-600">Exemption Available</p>
+                <p className="bloomberg-small-text text-slate-600">Exemption Available</p>
                 <p className="font-medium text-slate-800">
                   {complianceResult.exemptionType || 'None'}
                 </p>
@@ -252,8 +252,8 @@ export const AFSLComplianceReview: React.FC<AFSLComplianceReviewProps> = ({
 
             {complianceResult.restrictionNotes && complianceResult.restrictionNotes.length > 0 && (
               <div>
-                <p className="text-sm font-medium text-slate-800 mb-2">Compliance Notes:</p>
-                <ul className="text-sm text-slate-600 space-y-1">
+                <p className="bloomberg-small-text font-medium text-slate-800 mb-2">Compliance Notes:</p>
+                <ul className="bloomberg-small-text text-slate-600 space-y-1">
                   {complianceResult.restrictionNotes.map((note: string, index: number) => (
                     <li key={index} className="flex items-start">
                       <span className="w-2 h-2 bg-sky-400 rounded-full mr-2 mt-2 flex-shrink-0"></span>
@@ -266,8 +266,8 @@ export const AFSLComplianceReview: React.FC<AFSLComplianceReviewProps> = ({
 
             {complianceResult.complianceRequirements && complianceResult.complianceRequirements.length > 0 && (
               <div className="mt-4">
-                <p className="text-sm font-medium text-slate-800 mb-2">Ongoing Requirements:</p>
-                <ul className="text-sm text-slate-600 space-y-1">
+                <p className="bloomberg-small-text font-medium text-slate-800 mb-2">Ongoing Requirements:</p>
+                <ul className="bloomberg-small-text text-slate-600 space-y-1">
                   {complianceResult.complianceRequirements.map((req: string, index: number) => (
                     <li key={index} className="flex items-start">
                       <svg className="w-4 h-4 text-sky-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">

@@ -181,7 +181,7 @@ export const InfrastructureFundJourney: React.FC = () => {
         return (
           <div className="space-y-6">
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-blue-900 mb-4">
+              <h3 className="bloomberg-metric-value text-blue-900 mb-4">
                 📊 Portfolio Import & Analysis
               </h3>
               <p className="text-blue-800 mb-6">
@@ -190,25 +190,25 @@ export const InfrastructureFundJourney: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div className="bg-white border border-blue-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-slate-800">Current AUM</h4>
-                  <p className="text-2xl font-bold text-blue-600">A$15.2B</p>
-                  <p className="text-sm text-slate-600">Infrastructure Assets</p>
+                  <h4 className=" text-slate-800">Current AUM</h4>
+                  <p className="bloomberg-large-metric text-blue-600">A$15.2B</p>
+                  <p className="bloomberg-small-text text-slate-600">Infrastructure Assets</p>
                 </div>
                 <div className="bg-white border border-blue-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-slate-800">Tokenizable Assets</h4>
-                  <p className="text-2xl font-bold text-green-600">A$11.8B</p>
-                  <p className="text-sm text-slate-600">77% of Portfolio</p>
+                  <h4 className=" text-slate-800">Tokenizable Assets</h4>
+                  <p className="bloomberg-large-metric text-green-600">A$11.8B</p>
+                  <p className="bloomberg-small-text text-slate-600">77% of Portfolio</p>
                 </div>
                 <div className="bg-white border border-blue-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-slate-800">Target Allocation</h4>
-                  <p className="text-2xl font-bold text-purple-600">A$750M</p>
-                  <p className="text-sm text-slate-600">5% Asset Co Tokens</p>
+                  <h4 className=" text-slate-800">Target Allocation</h4>
+                  <p className="bloomberg-large-metric text-purple-600">A$750M</p>
+                  <p className="bloomberg-small-text text-slate-600">5% Asset Co Tokens</p>
                 </div>
               </div>
 
               <button
                 onClick={handlePortfolioImport}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg  transition-colors"
                 disabled={portfolioImported}
               >
                 {portfolioImported ? '✅ Portfolio Imported' : 'Import Portfolio Data'}
@@ -223,7 +223,7 @@ export const InfrastructureFundJourney: React.FC = () => {
         return (
           <div className="space-y-6">
             <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-green-900 mb-4">
+              <h3 className="bloomberg-metric-value text-green-900 mb-4">
                 🏗️ Asset Tokenization Assessment
               </h3>
               <p className="text-green-800 mb-6">
@@ -234,12 +234,12 @@ export const InfrastructureFundJourney: React.FC = () => {
                 <table className="w-full bg-white rounded-lg border border-green-200">
                   <thead className="bg-green-100">
                     <tr>
-                      <th className="px-4 py-3 text-left font-semibold text-green-900">Asset Class</th>
-                      <th className="px-4 py-3 text-right font-semibold text-green-900">Current Value</th>
-                      <th className="px-4 py-3 text-right font-semibold text-green-900">Tokenization Potential</th>
-                      <th className="px-4 py-3 text-center font-semibold text-green-900">Liquidity Score</th>
-                      <th className="px-4 py-3 text-center font-semibold text-green-900">Risk Rating</th>
-                      <th className="px-4 py-3 text-right font-semibold text-green-900">Yield Projection</th>
+                      <th className="px-4 py-3 text-left  text-green-900">Asset Class</th>
+                      <th className="px-4 py-3 text-right  text-green-900">Current Value</th>
+                      <th className="px-4 py-3 text-right  text-green-900">Tokenization Potential</th>
+                      <th className="px-4 py-3 text-center  text-green-900">Liquidity Score</th>
+                      <th className="px-4 py-3 text-center  text-green-900">Risk Rating</th>
+                      <th className="px-4 py-3 text-right  text-green-900">Yield Projection</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -249,16 +249,16 @@ export const InfrastructureFundJourney: React.FC = () => {
                         <td className="px-4 py-3 text-right text-slate-700">
                           A${(asset.currentValue / 1000000).toFixed(0)}M
                         </td>
-                        <td className="px-4 py-3 text-right font-semibold text-green-700">
+                        <td className="px-4 py-3 text-right  text-green-700">
                           A${(asset.tokenizationPotential / 1000000).toFixed(0)}M
                         </td>
                         <td className="px-4 py-3 text-center">
-                          <span className="px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-sm">
+                          <span className="px-2 py-1 rounded-full bg-blue-100 text-blue-800 bloomberg-small-text">
                             {asset.liquidityScore}/10
                           </span>
                         </td>
                         <td className="px-4 py-3 text-center">
-                          <span className={`px-2 py-1 rounded-full text-sm ${
+                          <span className={`px-2 py-1 rounded-full bloomberg-small-text ${
                             asset.riskRating === 'Low' ? 'bg-green-100 text-green-800' :
                             asset.riskRating === 'Low-Medium' ? 'bg-yellow-100 text-yellow-800' :
                             'bg-orange-100 text-orange-800'
@@ -266,7 +266,7 @@ export const InfrastructureFundJourney: React.FC = () => {
                             {asset.riskRating}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-right font-semibold text-green-700">
+                        <td className="px-4 py-3 text-right  text-green-700">
                           {asset.yieldProjection}%
                         </td>
                       </tr>
@@ -276,12 +276,12 @@ export const InfrastructureFundJourney: React.FC = () => {
               </div>
 
               <div className="mt-6 p-4 bg-white border border-green-200 rounded-lg">
-                <h4 className="font-semibold text-slate-800 mb-2">💡 Tokenization Opportunity Summary</h4>
+                <h4 className=" text-slate-800 mb-2">💡 Tokenization Opportunity Summary</h4>
                 <p className="text-slate-700 mb-3">
                   Your infrastructure portfolio shows strong tokenization potential with A$393M eligible for Asset Co token conversion.
                   Water infrastructure assets offer the highest risk-adjusted returns with established revenue streams.
                 </p>
-                <ul className="text-sm text-slate-600 space-y-1">
+                <ul className="bloomberg-small-text text-slate-600 space-y-1">
                   <li>• Cross-collateral opportunities with existing renewable energy portfolio</li>
                   <li>• Enhanced liquidity through WREI tokenization while maintaining operational control</li>
                   <li>• Diversification benefits across water infrastructure and transport sectors</li>
@@ -291,7 +291,7 @@ export const InfrastructureFundJourney: React.FC = () => {
 
               <button
                 onClick={handleAssetAnalysis}
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors mt-4"
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg  transition-colors mt-4"
                 disabled={assetAnalysisComplete}
               >
                 {assetAnalysisComplete ? '✅ Analysis Complete' : 'Complete Asset Analysis'}
@@ -304,7 +304,7 @@ export const InfrastructureFundJourney: React.FC = () => {
         return (
           <div className="space-y-6">
             <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-purple-900 mb-4">
+              <h3 className="bloomberg-metric-value text-purple-900 mb-4">
                 🔗 Asset Co Tokenization Demonstration
               </h3>
               <p className="text-purple-800 mb-6">
@@ -314,67 +314,67 @@ export const InfrastructureFundJourney: React.FC = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Token Structure */}
                 <div className="bg-white border border-purple-200 rounded-lg p-5">
-                  <h4 className="font-semibold text-slate-800 mb-4">🏗️ Token Structure: Murray River Water Treatment</h4>
+                  <h4 className=" text-slate-800 mb-4">🏗️ Token Structure: Murray River Water Treatment</h4>
 
                   <div className="space-y-3">
                     <div className="flex justify-between items-center pb-2 border-b border-slate-200">
                       <span className="text-slate-600">Asset Value</span>
-                      <span className="font-semibold">A$125,000,000</span>
+                      <span className="">A$125,000,000</span>
                     </div>
                     <div className="flex justify-between items-center pb-2 border-b border-slate-200">
                       <span className="text-slate-600">Tokenized Portion</span>
-                      <span className="font-semibold text-purple-600">A$95,000,000 (76%)</span>
+                      <span className=" text-purple-600">A$95,000,000 (76%)</span>
                     </div>
                     <div className="flex justify-between items-center pb-2 border-b border-slate-200">
                       <span className="text-slate-600">Token Supply</span>
-                      <span className="font-semibold">950,000 ACO-WTR tokens</span>
+                      <span className="">950,000 ACO-WTR tokens</span>
                     </div>
                     <div className="flex justify-between items-center pb-2 border-b border-slate-200">
                       <span className="text-slate-600">Token Price</span>
-                      <span className="font-semibold">A$100/token</span>
+                      <span className="">A$100/token</span>
                     </div>
                     <div className="flex justify-between items-center pb-2 border-b border-slate-200">
                       <span className="text-slate-600">Annual Yield</span>
-                      <span className="font-semibold text-green-600">6.2%</span>
+                      <span className=" text-green-600">6.2%</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-slate-600">Revenue Source</span>
-                      <span className="font-semibold">Water treatment contracts</span>
+                      <span className="">Water treatment contracts</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Cross-Collateral Benefits */}
                 <div className="bg-white border border-purple-200 rounded-lg p-5">
-                  <h4 className="font-semibold text-slate-800 mb-4">⚡ Cross-Collateral Opportunities</h4>
+                  <h4 className=" text-slate-800 mb-4">⚡ Cross-Collateral Opportunities</h4>
 
                   <div className="space-y-4">
                     <div className="p-3 bg-blue-50 border border-blue-200 rounded">
                       <h5 className="font-medium text-blue-900">Renewable Energy Synergy</h5>
-                      <p className="text-sm text-blue-800 mt-1">
+                      <p className="bloomberg-small-text text-blue-800 mt-1">
                         Use Asset Co tokens as collateral for renewable energy expansion projects
                       </p>
-                      <div className="text-xs text-blue-600 mt-2">
+                      <div className="bloomberg-section-label text-blue-600 mt-2">
                         LTV Ratio: 75% • Cost of Capital: 4.8%
                       </div>
                     </div>
 
                     <div className="p-3 bg-green-50 border border-green-200 rounded">
                       <h5 className="font-medium text-green-900">Portfolio Efficiency</h5>
-                      <p className="text-sm text-green-800 mt-1">
+                      <p className="bloomberg-small-text text-green-800 mt-1">
                         Increase capital deployment while maintaining infrastructure exposure
                       </p>
-                      <div className="text-xs text-green-600 mt-2">
+                      <div className="bloomberg-section-label text-green-600 mt-2">
                         Capital Efficiency: +23% • Risk-Adjusted Return: +15%
                       </div>
                     </div>
 
                     <div className="p-3 bg-amber-50 border border-amber-200 rounded">
                       <h5 className="font-medium text-amber-900">Liquidity Enhancement</h5>
-                      <p className="text-sm text-amber-800 mt-1">
+                      <p className="bloomberg-small-text text-amber-800 mt-1">
                         Access to secondary markets while retaining operational control
                       </p>
-                      <div className="text-xs text-amber-600 mt-2">
+                      <div className="bloomberg-section-label text-amber-600 mt-2">
                         Liquidity Premium: 180bps • Settlement: T+0
                       </div>
                     </div>
@@ -383,12 +383,12 @@ export const InfrastructureFundJourney: React.FC = () => {
               </div>
 
               <div className="mt-6 p-4 bg-white border border-purple-200 rounded-lg">
-                <h4 className="font-semibold text-slate-800 mb-2">📋 Next Steps: Asset Co Token Acquisition</h4>
+                <h4 className=" text-slate-800 mb-2">📋 Next Steps: Asset Co Token Acquisition</h4>
                 <p className="text-slate-700 mb-3">
                   Ready to proceed with Asset Co token negotiation? Our AI-powered negotiation system will provide
                   real-time strategy insights tailored to infrastructure fund requirements.
                 </p>
-                <div className="text-sm text-slate-600">
+                <div className="bloomberg-small-text text-slate-600">
                   <strong>Target Acquisition:</strong> A$50M Asset Co tokens (500,000 tokens) •
                   <strong>Strategy:</strong> Cross-collateral optimization •
                   <strong>Timeline:</strong> Q2 2026 deployment
@@ -397,7 +397,7 @@ export const InfrastructureFundJourney: React.FC = () => {
 
               <button
                 onClick={handleStartNegotiation}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors mt-4"
+                className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg  transition-colors mt-4"
               >
                 Begin AI Negotiation Process
               </button>
@@ -409,7 +409,7 @@ export const InfrastructureFundJourney: React.FC = () => {
         return (
           <div className="space-y-6">
             <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-indigo-900 mb-4">
+              <h3 className="bloomberg-metric-value text-indigo-900 mb-4">
                 🤖 AI-Powered Asset Co Token Negotiation
               </h3>
               <p className="text-indigo-800 mb-4">
@@ -417,8 +417,8 @@ export const InfrastructureFundJourney: React.FC = () => {
               </p>
 
               <div className="bg-white border border-indigo-200 rounded-lg p-4 mb-4">
-                <h4 className="font-semibold text-slate-800 mb-2">💼 Negotiation Context</h4>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <h4 className=" text-slate-800 mb-2">💼 Negotiation Context</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bloomberg-small-text">
                   <div>
                     <span className="text-slate-600">Fund Type:</span>
                     <p className="font-medium">Infrastructure Fund</p>
@@ -441,7 +441,7 @@ export const InfrastructureFundJourney: React.FC = () => {
               {/* Chat Interface */}
               <div className="bg-white border border-indigo-200 rounded-lg">
                 <div className="border-b border-indigo-200 p-4">
-                  <h4 className="font-semibold text-slate-800">💬 Negotiation Chat</h4>
+                  <h4 className=" text-slate-800">💬 Negotiation Chat</h4>
                 </div>
 
                 <div className="h-64 overflow-y-auto p-4 space-y-3">
@@ -462,7 +462,7 @@ export const InfrastructureFundJourney: React.FC = () => {
                               : 'bg-slate-100 text-slate-800'
                           }`}
                         >
-                          <div className="text-xs opacity-70 mb-1">
+                          <div className="bloomberg-section-label opacity-70 mb-1">
                             {message.role === 'user' ? 'Sarah Chen (You)' : 'WREI AI Agent'}
                           </div>
                           {message.content}
@@ -473,7 +473,7 @@ export const InfrastructureFundJourney: React.FC = () => {
                   {isLoading && (
                     <div className="flex justify-start">
                       <div className="bg-slate-100 p-3 rounded-lg">
-                        <div className="text-xs text-slate-500 mb-1">WREI AI Agent</div>
+                        <div className="bloomberg-section-label text-slate-500 mb-1">WREI AI Agent</div>
                         <div className="flex space-x-1">
                           <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
                           <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
@@ -524,7 +524,7 @@ export const InfrastructureFundJourney: React.FC = () => {
         return (
           <div className="space-y-6">
             <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-green-900 mb-4">
+              <h3 className="bloomberg-metric-value text-green-900 mb-4">
                 🔗 Cross-Collateral Strategy Configuration
               </h3>
               <p className="text-green-800 mb-6">
@@ -534,79 +534,79 @@ export const InfrastructureFundJourney: React.FC = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Collateral Configuration */}
                 <div className="bg-white border border-green-200 rounded-lg p-5">
-                  <h4 className="font-semibold text-slate-800 mb-4">⚙️ Collateral Configuration</h4>
+                  <h4 className=" text-slate-800 mb-4">⚙️ Collateral Configuration</h4>
 
                   <div className="space-y-4">
                     <div className="p-3 border border-slate-200 rounded-lg">
                       <div className="flex justify-between items-center mb-2">
                         <span className="font-medium">Asset Co Tokens (Primary)</span>
-                        <span className="text-green-600 font-semibold">A$50M</span>
+                        <span className="text-green-600 ">A$50M</span>
                       </div>
                       <div className="w-full bg-slate-200 rounded-full h-2">
                         <div className="bg-green-600 h-2 rounded-full" style={{ width: '75%' }}></div>
                       </div>
-                      <div className="text-sm text-slate-600 mt-1">LTV: 75% • Available: A$37.5M</div>
+                      <div className="bloomberg-small-text text-slate-600 mt-1">LTV: 75% • Available: A$37.5M</div>
                     </div>
 
                     <div className="p-3 border border-slate-200 rounded-lg">
                       <div className="flex justify-between items-center mb-2">
                         <span className="font-medium">Water Infrastructure (Backup)</span>
-                        <span className="text-blue-600 font-semibold">A$125M</span>
+                        <span className="text-blue-600 ">A$125M</span>
                       </div>
                       <div className="w-full bg-slate-200 rounded-full h-2">
                         <div className="bg-blue-600 h-2 rounded-full" style={{ width: '60%' }}></div>
                       </div>
-                      <div className="text-sm text-slate-600 mt-1">LTV: 60% • Available: A$75M</div>
+                      <div className="bloomberg-small-text text-slate-600 mt-1">LTV: 60% • Available: A$75M</div>
                     </div>
 
                     <div className="p-3 border border-slate-200 rounded-lg">
                       <div className="flex justify-between items-center mb-2">
                         <span className="font-medium">Total Collateral Capacity</span>
-                        <span className="text-purple-600 font-semibold">A$112.5M</span>
+                        <span className="text-purple-600 ">A$112.5M</span>
                       </div>
-                      <div className="text-sm text-slate-600">Combined cross-collateral borrowing power</div>
+                      <div className="bloomberg-small-text text-slate-600">Combined cross-collateral borrowing power</div>
                     </div>
                   </div>
                 </div>
 
                 {/* Strategy Benefits */}
                 <div className="bg-white border border-green-200 rounded-lg p-5">
-                  <h4 className="font-semibold text-slate-800 mb-4">📈 Strategy Benefits</h4>
+                  <h4 className=" text-slate-800 mb-4">📈 Strategy Benefits</h4>
 
                   <div className="space-y-4">
                     <div className="border-l-4 border-green-500 pl-4">
                       <h5 className="font-medium text-slate-800">Capital Efficiency</h5>
-                      <p className="text-sm text-slate-600 mt-1">
+                      <p className="bloomberg-small-text text-slate-600 mt-1">
                         Increase deployment capacity by 23% while maintaining infrastructure exposure
                       </p>
-                      <div className="text-xs text-green-600 mt-2 font-medium">+A$25M additional capacity</div>
+                      <div className="bloomberg-section-label text-green-600 mt-2 font-medium">+A$25M additional capacity</div>
                     </div>
 
                     <div className="border-l-4 border-blue-500 pl-4">
                       <h5 className="font-medium text-slate-800">Risk Management</h5>
-                      <p className="text-sm text-slate-600 mt-1">
+                      <p className="bloomberg-small-text text-slate-600 mt-1">
                         Diversified collateral base reduces concentration risk
                       </p>
-                      <div className="text-xs text-blue-600 mt-2 font-medium">Risk reduction: 18%</div>
+                      <div className="bloomberg-section-label text-blue-600 mt-2 font-medium">Risk reduction: 18%</div>
                     </div>
 
                     <div className="border-l-4 border-purple-500 pl-4">
                       <h5 className="font-medium text-slate-800">Yield Enhancement</h5>
-                      <p className="text-sm text-slate-600 mt-1">
+                      <p className="bloomberg-small-text text-slate-600 mt-1">
                         Cross-collateral strategies unlock additional yield opportunities
                       </p>
-                      <div className="text-xs text-purple-600 mt-2 font-medium">Portfolio yield: +180bps</div>
+                      <div className="bloomberg-section-label text-purple-600 mt-2 font-medium">Portfolio yield: +180bps</div>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="mt-6 p-4 bg-white border border-green-200 rounded-lg">
-                <h4 className="font-semibold text-slate-800 mb-2">✅ Journey Complete</h4>
+                <h4 className=" text-slate-800 mb-2">✅ Journey Complete</h4>
                 <p className="text-slate-700 mb-3">
                   Your infrastructure fund journey is now complete. You have successfully:
                 </p>
-                <ul className="text-sm text-slate-600 space-y-1 mb-4">
+                <ul className="bloomberg-small-text text-slate-600 space-y-1 mb-4">
                   <li>✓ Imported and analysed A$15.2B infrastructure portfolio</li>
                   <li>✓ Identified A$393M in tokenization opportunities</li>
                   <li>✓ Acquired A$50M in Asset Co tokens through AI negotiation</li>
@@ -645,12 +645,12 @@ export const InfrastructureFundJourney: React.FC = () => {
         <div className="bg-white border border-slate-200 rounded-lg p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-3xl font-bold text-slate-800">Infrastructure Fund Manager Journey</h1>
+              <h1 className="bloomberg-page-heading text-slate-800">Infrastructure Fund Manager Journey</h1>
               <p className="text-slate-600 mt-2">Sarah Chen • Australian Infrastructure Fund • A$15.2B AUM</p>
             </div>
             <div className="text-right">
-              <div className="text-sm text-slate-600">Phase 1 Milestone 1.2</div>
-              <div className="text-lg font-semibold text-indigo-600">Core Investor Journeys</div>
+              <div className="bloomberg-small-text text-slate-600">Phase 1 Milestone 1.2</div>
+              <div className="bloomberg-card-title text-indigo-600">Core Investor Journeys</div>
             </div>
           </div>
 
@@ -670,13 +670,13 @@ export const InfrastructureFundJourney: React.FC = () => {
                   {step.status === 'completed' ? '✓' : index + 1}
                 </div>
                 <div className="ml-3">
-                  <div className={`font-semibold ${
+                  <div className={` ${
                     step.status === 'active' ? 'text-blue-600' :
                     step.status === 'completed' ? 'text-green-600' : 'text-slate-400'
                   }`}>
                     {step.title}
                   </div>
-                  <div className="text-sm text-slate-600">{step.description}</div>
+                  <div className="bloomberg-small-text text-slate-600">{step.description}</div>
                 </div>
                 {index < journeySteps.length - 1 && (
                   <div className="mx-6 w-8 h-0.5 bg-slate-300"></div>

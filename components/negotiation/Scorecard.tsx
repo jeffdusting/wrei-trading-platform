@@ -130,23 +130,23 @@ export default function Scorecard({ scorecard, persona, onClose }: ScorecardProp
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-6">
             <div className="text-center">
-              <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full text-2xl font-black shadow-lg ${gradeColors[scorecard.letterGrade]}`}>
+              <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full bloomberg-large-metric font-black shadow-lg ${gradeColors[scorecard.letterGrade]}`}>
                 {scorecard.letterGrade}
               </div>
-              <div className="text-sm mt-2 opacity-90">Overall Grade</div>
+              <div className="bloomberg-small-text mt-2 opacity-90">Overall Grade</div>
             </div>
 
             <div>
-              <h1 className="text-3xl font-bold mb-2">Negotiation Scorecard</h1>
-              <div className="flex items-center space-x-4 text-lg">
+              <h1 className="bloomberg-page-heading mb-2">Negotiation Scorecard</h1>
+              <div className="flex items-center space-x-4 bloomberg-card-title">
                 <span className="opacity-90">Persona:</span>
-                <span className="font-semibold">{personaName}</span>
+                <span className="">{personaName}</span>
               </div>
-              <div className="flex items-center space-x-4 text-lg mt-1">
+              <div className="flex items-center space-x-4 bloomberg-card-title mt-1">
                 <span className="opacity-90">Score:</span>
-                <span className="font-bold text-2xl">{scorecard.overallScore}/100</span>
+                <span className="bloomberg-large-metric">{scorecard.overallScore}/100</span>
                 {scorecard.personaOptimal && (
-                  <span className="bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full bloomberg-small-text font-medium">
                     🌟 Persona Optimal
                   </span>
                 )}
@@ -191,7 +191,7 @@ export default function Scorecard({ scorecard, persona, onClose }: ScorecardProp
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Performance Radar Chart */}
           <div className="bg-gray-50 rounded-xl p-6">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
+            <h3 className="bloomberg-metric-value text-gray-800 mb-4 text-center">
               Performance Breakdown
             </h3>
             <div className="h-80">
@@ -220,7 +220,7 @@ export default function Scorecard({ scorecard, persona, onClose }: ScorecardProp
                 </RadarChart>
               </ResponsiveContainer>
             </div>
-            <div className="flex items-center justify-center space-x-6 mt-4 text-sm">
+            <div className="flex items-center justify-center space-x-6 mt-4 bloomberg-small-text">
               <div className="flex items-center">
                 <div className="w-4 h-4 bg-[#0EA5E9] rounded-full mr-2 opacity-60"></div>
                 <span>Your Performance</span>
@@ -234,7 +234,7 @@ export default function Scorecard({ scorecard, persona, onClose }: ScorecardProp
 
           {/* Detailed Scores */}
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">
+            <h3 className="bloomberg-metric-value text-gray-800 mb-4">
               Score Breakdown
             </h3>
 
@@ -242,17 +242,17 @@ export default function Scorecard({ scorecard, persona, onClose }: ScorecardProp
               <div key={dimension.name} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center space-x-3">
-                    <span className="text-2xl">{getScoreIcon(dimension.score)}</span>
+                    <span className="bloomberg-large-metric">{getScoreIcon(dimension.score)}</span>
                     <div>
-                      <h4 className="font-semibold text-gray-800">{dimension.name}</h4>
-                      <p className="text-sm text-gray-600">{dimension.description}</p>
+                      <h4 className=" text-gray-800">{dimension.name}</h4>
+                      <p className="bloomberg-small-text text-gray-600">{dimension.description}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className={`text-2xl font-bold ${getScoreColor(dimension.score)}`}>
+                    <div className={`bloomberg-large-metric ${getScoreColor(dimension.score)}`}>
                       {dimension.score}
                     </div>
-                    <div className="text-xs text-gray-500">/ {dimension.maxPoints}</div>
+                    <div className="bloomberg-section-label text-gray-500">/ {dimension.maxPoints}</div>
                   </div>
                 </div>
 
@@ -277,7 +277,7 @@ export default function Scorecard({ scorecard, persona, onClose }: ScorecardProp
 
         {/* Improvement Suggestions */}
         <div className="mt-8 bg-blue-50 rounded-xl p-6 border border-blue-200">
-          <h3 className="text-xl font-semibold text-blue-900 mb-4 flex items-center">
+          <h3 className="bloomberg-metric-value text-blue-900 mb-4 flex items-center">
             <span className="mr-2">💡</span>
             Personalised Improvement Tips
           </h3>
@@ -287,8 +287,8 @@ export default function Scorecard({ scorecard, persona, onClose }: ScorecardProp
               {scorecard.improvementSuggestions.map((suggestion, index) => (
                 <div key={index} className="bg-white rounded-lg p-4 border border-blue-200">
                   <div className="flex items-start space-x-2">
-                    <span className="text-blue-600 font-bold text-sm">#{index + 1}</span>
-                    <p className="text-gray-800 text-sm leading-relaxed">{suggestion}</p>
+                    <span className="text-blue-600  bloomberg-small-text">#{index + 1}</span>
+                    <p className="text-gray-800 bloomberg-small-text leading-relaxed">{suggestion}</p>
                   </div>
                 </div>
               ))}
@@ -296,8 +296,8 @@ export default function Scorecard({ scorecard, persona, onClose }: ScorecardProp
           ) : (
             <div className="text-center py-8 text-blue-700">
               <div className="text-6xl mb-4">🎉</div>
-              <p className="text-lg font-medium">Perfect performance!</p>
-              <p className="text-sm opacity-75">You&apos;ve mastered this negotiation scenario.</p>
+              <p className="bloomberg-card-title font-medium">Perfect performance!</p>
+              <p className="bloomberg-small-text opacity-75">You&apos;ve mastered this negotiation scenario.</p>
             </div>
           )}
         </div>
@@ -308,7 +308,7 @@ export default function Scorecard({ scorecard, persona, onClose }: ScorecardProp
             onClick={() => setShowDetails(!showDetails)}
             className="w-full flex items-center justify-between p-4 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
           >
-            <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+            <h3 className="bloomberg-card-title text-gray-800 flex items-center">
               <span className="mr-2">📊</span>
               Persona Benchmark Details
             </h3>
@@ -321,8 +321,8 @@ export default function Scorecard({ scorecard, persona, onClose }: ScorecardProp
             <div className="mt-4 bg-white rounded-lg border border-gray-200 p-6">
               <div className="grid md:grid-cols-3 gap-6">
                 <div>
-                  <h4 className="font-semibold text-gray-800 mb-3">Expected Performance</h4>
-                  <div className="space-y-2 text-sm">
+                  <h4 className=" text-gray-800 mb-3">Expected Performance</h4>
+                  <div className="space-y-2 bloomberg-small-text">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Price Achievement:</span>
                       <span className="font-medium">{scorecard.benchmarkData.expectedPriceAchievement}%</span>
@@ -346,10 +346,10 @@ export default function Scorecard({ scorecard, persona, onClose }: ScorecardProp
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-800 mb-3">Effective Arguments</h4>
+                  <h4 className=" text-gray-800 mb-3">Effective Arguments</h4>
                   <div className="space-y-1">
                     {scorecard.benchmarkData.strongestArguments.map((arg, index) => (
-                      <span key={index} className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-1 mb-1 capitalize">
+                      <span key={index} className="inline-block bg-blue-100 text-blue-800 bloomberg-section-label px-2 py-1 rounded mr-1 mb-1 capitalize">
                         {arg.replace('_', ' ')}
                       </span>
                     ))}
@@ -357,8 +357,8 @@ export default function Scorecard({ scorecard, persona, onClose }: ScorecardProp
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-800 mb-3">Emotional Profile</h4>
-                  <div className="space-y-2 text-sm">
+                  <h4 className=" text-gray-800 mb-3">Emotional Profile</h4>
+                  <div className="space-y-2 bloomberg-small-text">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Starting Emotion:</span>
                       <span className="font-medium capitalize">{scorecard.benchmarkData.emotionalProfile.startingEmotion}</span>
@@ -371,10 +371,10 @@ export default function Scorecard({ scorecard, persona, onClose }: ScorecardProp
                       </span>
                     </div>
                     <div>
-                      <span className="text-gray-600 text-sm">Concession Triggers:</span>
+                      <span className="text-gray-600 bloomberg-small-text">Concession Triggers:</span>
                       <div className="mt-1">
                         {scorecard.benchmarkData.emotionalProfile.concessionTriggers.map((emotion, index) => (
-                          <span key={index} className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded mr-1 mb-1 capitalize">
+                          <span key={index} className="inline-block bg-green-100 text-green-800 bloomberg-section-label px-2 py-1 rounded mr-1 mb-1 capitalize">
                             {emotion}
                           </span>
                         ))}
@@ -390,11 +390,11 @@ export default function Scorecard({ scorecard, persona, onClose }: ScorecardProp
         {/* Call to Action */}
         <div className="mt-8 text-center">
           <div className="bg-gradient-to-r from-[#1B2A4A] to-[#0EA5E9] rounded-xl p-6 text-white">
-            <h3 className="text-xl font-bold mb-2">Ready for Another Challenge?</h3>
+            <h3 className="bloomberg-metric-value mb-2">Ready for Another Challenge?</h3>
             <p className="opacity-90 mb-4">
               Try negotiating with different personas to master various trading scenarios.
             </p>
-            <button className="bg-white text-[#1B2A4A] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+            <button className="bg-white text-[#1B2A4A] px-6 py-3 rounded-lg  hover:bg-gray-100 transition-colors">
               🚀 Start New Negotiation
             </button>
           </div>

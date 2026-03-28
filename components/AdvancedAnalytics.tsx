@@ -214,17 +214,17 @@ export default function AdvancedAnalytics({
       <div className="border-b border-gray-200 p-6">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="bloomberg-large-metric text-gray-900">
               WREI Advanced Analytics
             </h2>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="bloomberg-small-text text-gray-600 mt-1">
               Real-time performance metrics for {tokenType.replace('_', ' ')} investment
             </p>
           </div>
           <div className="flex items-center space-x-4">
             <div className="text-right">
-              <div className="text-sm text-gray-600">Investment Value</div>
-              <div className="text-xl font-bold text-[#1B2A4A]">
+              <div className="bloomberg-small-text text-gray-600">Investment Value</div>
+              <div className="bloomberg-metric-value text-[#1B2A4A]">
                 A${(investmentAmount / 1000000).toFixed(2)}M
               </div>
             </div>
@@ -246,7 +246,7 @@ export default function AdvancedAnalytics({
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`py-4 px-2 text-sm font-medium border-b-2 transition-colors ${
+              className={`py-4 px-2 bloomberg-small-text font-medium border-b-2 transition-colors ${
                 activeTab === tab.id
                   ? 'border-[#0EA5E9] text-[#0EA5E9]'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -265,47 +265,47 @@ export default function AdvancedAnalytics({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Key Performance Indicators */}
             <div className="bg-gradient-to-r from-[#1B2A4A] to-[#0EA5E9] rounded-lg p-4 text-white">
-              <div className="text-sm opacity-90">Expected IRR</div>
-              <div className="text-2xl font-bold">{formattedMetrics.irr}</div>
-              <div className="text-xs opacity-75 mt-1">Annualised return</div>
+              <div className="bloomberg-small-text opacity-90">Expected IRR</div>
+              <div className="bloomberg-large-metric">{formattedMetrics.irr}</div>
+              <div className="bloomberg-section-label opacity-75 mt-1">Annualised return</div>
             </div>
 
             <div className="bg-gradient-to-r from-[#10B981] to-[#059669] rounded-lg p-4 text-white">
-              <div className="text-sm opacity-90">Cash-on-Cash</div>
-              <div className="text-2xl font-bold">{formattedMetrics.cashOnCash}</div>
-              <div className="text-xs opacity-75 mt-1">Return multiple</div>
+              <div className="bloomberg-small-text opacity-90">Cash-on-Cash</div>
+              <div className="bloomberg-large-metric">{formattedMetrics.cashOnCash}</div>
+              <div className="bloomberg-section-label opacity-75 mt-1">Return multiple</div>
             </div>
 
             <div className="bg-gradient-to-r from-[#F59E0B] to-[#D97706] rounded-lg p-4 text-white">
-              <div className="text-sm opacity-90">Payback Period</div>
-              <div className="text-2xl font-bold">{formattedMetrics.paybackPeriod}</div>
-              <div className="text-xs opacity-75 mt-1">Investment recovery</div>
+              <div className="bloomberg-small-text opacity-90">Payback Period</div>
+              <div className="bloomberg-large-metric">{formattedMetrics.paybackPeriod}</div>
+              <div className="bloomberg-section-label opacity-75 mt-1">Investment recovery</div>
             </div>
 
             <div className="bg-gradient-to-r from-[#8B5CF6] to-[#7C3AED] rounded-lg p-4 text-white">
-              <div className="text-sm opacity-90">Total Return</div>
-              <div className="text-2xl font-bold">{formattedMetrics.totalReturn}</div>
-              <div className="text-xs opacity-75 mt-1">Lifetime gain</div>
+              <div className="bloomberg-small-text opacity-90">Total Return</div>
+              <div className="bloomberg-large-metric">{formattedMetrics.totalReturn}</div>
+              <div className="bloomberg-section-label opacity-75 mt-1">Lifetime gain</div>
             </div>
 
             {/* Portfolio Composition */}
             <div className="md:col-span-2 bg-gray-50 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Portfolio Composition</h3>
+              <h3 className="bloomberg-card-title text-gray-900 mb-4">Portfolio Composition</h3>
               <div className="space-y-3">
                 {tokenType === 'dual_portfolio' ? (
                   <>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Carbon Credits (40%)</span>
+                      <span className="bloomberg-small-text text-gray-600">Carbon Credits (40%)</span>
                       <span className="font-medium">A${(collateralPosition.carbonCreditHoldings / 1000000).toFixed(2)}M</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Asset Co Tokens (60%)</span>
+                      <span className="bloomberg-small-text text-gray-600">Asset Co Tokens (60%)</span>
                       <span className="font-medium">A${(collateralPosition.assetCoHoldings / 1000000).toFixed(2)}M</span>
                     </div>
                   </>
                 ) : (
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">
+                    <span className="bloomberg-small-text text-gray-600">
                       {tokenType === 'carbon_credits' ? 'Carbon Credits (100%)' : 'Asset Co Tokens (100%)'}
                     </span>
                     <span className="font-medium">A${(investmentAmount / 1000000).toFixed(2)}M</span>
@@ -316,24 +316,24 @@ export default function AdvancedAnalytics({
 
             {/* Risk Metrics */}
             <div className="md:col-span-2 bg-gray-50 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Risk Profile</h3>
+              <h3 className="bloomberg-card-title text-gray-900 mb-4">Risk Profile</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Volatility</span>
+                  <span className="bloomberg-small-text text-gray-600">Volatility</span>
                   <span className="font-medium">
                     {tokenType === 'carbon_credits' ? '25%' :
                      tokenType === 'asset_co' ? '12%' : '15%'}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Sharpe Ratio</span>
+                  <span className="bloomberg-small-text text-gray-600">Sharpe Ratio</span>
                   <span className="font-medium">
                     {tokenType === 'carbon_credits' ? '0.8' :
                      tokenType === 'asset_co' ? '1.2' : '1.0'}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Market Correlation</span>
+                  <span className="bloomberg-small-text text-gray-600">Market Correlation</span>
                   <span className="font-medium">0.2 - 0.3</span>
                 </div>
               </div>
@@ -363,7 +363,7 @@ export default function AdvancedAnalytics({
       </div>
 
       {/* Footer */}
-      <div className="border-t border-gray-200 px-6 py-3 text-xs text-gray-500 flex justify-between items-center">
+      <div className="border-t border-gray-200 px-6 py-3 bloomberg-section-label text-gray-500 flex justify-between items-center">
         <div>
           Last updated: {new Date().toLocaleTimeString()} |
           Auto-refresh: {refreshInterval}s |
@@ -388,24 +388,24 @@ function FleetPerformanceTab({ fleetMetrics }: { fleetMetrics: FleetMetrics }) {
         {/* Fleet Status */}
         <div className="bg-blue-50 rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Fleet Status</h3>
-            <div className="text-2xl">🚢</div>
+            <h3 className="bloomberg-card-title text-gray-900">Fleet Status</h3>
+            <div className="bloomberg-large-metric">🚢</div>
           </div>
           <div className="space-y-3">
             <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Total Vessels</span>
+              <span className="bloomberg-small-text text-gray-600">Total Vessels</span>
               <span className="font-medium">{fleetMetrics.totalVessels}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Operational</span>
+              <span className="bloomberg-small-text text-gray-600">Operational</span>
               <span className="font-medium text-green-600">{fleetMetrics.operationalVessels}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Deep Power Units</span>
+              <span className="bloomberg-small-text text-gray-600">Deep Power Units</span>
               <span className="font-medium">{fleetMetrics.deepPowerUnits}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Fleet Utilization</span>
+              <span className="bloomberg-small-text text-gray-600">Fleet Utilization</span>
               <span className="font-medium">{(fleetMetrics.utilization * 100).toFixed(1)}%</span>
             </div>
           </div>
@@ -414,20 +414,20 @@ function FleetPerformanceTab({ fleetMetrics }: { fleetMetrics: FleetMetrics }) {
         {/* Operational Metrics */}
         <div className="bg-green-50 rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Operations</h3>
-            <div className="text-2xl">📊</div>
+            <h3 className="bloomberg-card-title text-gray-900">Operations</h3>
+            <div className="bloomberg-large-metric">📊</div>
           </div>
           <div className="space-y-3">
             <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Daily Trips</span>
+              <span className="bloomberg-small-text text-gray-600">Daily Trips</span>
               <span className="font-medium">{fleetMetrics.dailyTrips.toLocaleString()}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Avg Passengers/Trip</span>
+              <span className="bloomberg-small-text text-gray-600">Avg Passengers/Trip</span>
               <span className="font-medium">{fleetMetrics.averagePassengersPerTrip}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Daily Passengers</span>
+              <span className="bloomberg-small-text text-gray-600">Daily Passengers</span>
               <span className="font-medium">
                 {(fleetMetrics.dailyTrips * fleetMetrics.averagePassengersPerTrip).toLocaleString()}
               </span>
@@ -438,24 +438,24 @@ function FleetPerformanceTab({ fleetMetrics }: { fleetMetrics: FleetMetrics }) {
         {/* Financial Performance */}
         <div className="bg-yellow-50 rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Lease Income</h3>
-            <div className="text-2xl">💰</div>
+            <h3 className="bloomberg-card-title text-gray-900">Lease Income</h3>
+            <div className="bloomberg-large-metric">💰</div>
           </div>
           <div className="space-y-3">
             <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Monthly Income</span>
+              <span className="bloomberg-small-text text-gray-600">Monthly Income</span>
               <span className="font-medium">
                 A${(fleetMetrics.monthlyLeaseIncome / 1000000).toFixed(2)}M
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Annual Projection</span>
+              <span className="bloomberg-small-text text-gray-600">Annual Projection</span>
               <span className="font-medium">
                 A${(fleetMetrics.monthlyLeaseIncome * 12 / 1000000).toFixed(1)}M
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Total Capex</span>
+              <span className="bloomberg-small-text text-gray-600">Total Capex</span>
               <span className="font-medium">
                 A${(fleetMetrics.totalCapex / 1000000).toFixed(0)}M
               </span>
@@ -466,9 +466,9 @@ function FleetPerformanceTab({ fleetMetrics }: { fleetMetrics: FleetMetrics }) {
 
       {/* Fleet Timeline */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Fleet Deployment Timeline</h3>
+        <h3 className="bloomberg-card-title text-gray-900 mb-4">Fleet Deployment Timeline</h3>
         <div className="relative">
-          <div className="flex justify-between items-center text-sm text-gray-600 mb-2">
+          <div className="flex justify-between items-center bloomberg-small-text text-gray-600 mb-2">
             <span>2027</span>
             <span>2028</span>
             <span>2029</span>
@@ -480,7 +480,7 @@ function FleetPerformanceTab({ fleetMetrics }: { fleetMetrics: FleetMetrics }) {
                  style={{ width: '100%' }}>
             </div>
           </div>
-          <div className="flex justify-between items-center text-xs text-gray-500 mt-2">
+          <div className="flex justify-between items-center bloomberg-section-label text-gray-500 mt-2">
             <span>Ramp-up Phase</span>
             <span>Full Operations</span>
           </div>
@@ -497,60 +497,60 @@ function CarbonGenerationTab({ carbonMetrics }: { carbonMetrics: CarbonMetrics }
         {/* Generation Rates */}
         <div className="bg-green-50 rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Daily Generation</h3>
-            <div className="text-2xl">🌱</div>
+            <h3 className="bloomberg-card-title text-gray-900">Daily Generation</h3>
+            <div className="bloomberg-large-metric">🌱</div>
           </div>
-          <div className="text-2xl font-bold text-green-600">
+          <div className="bloomberg-large-metric text-green-600">
             {carbonMetrics.dailyCarbonGeneration.toFixed(1)} tCO₂e
           </div>
-          <div className="text-sm text-gray-600 mt-1">Per day</div>
+          <div className="bloomberg-small-text text-gray-600 mt-1">Per day</div>
         </div>
 
         <div className="bg-blue-50 rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Monthly Credits</h3>
-            <div className="text-2xl">📈</div>
+            <h3 className="bloomberg-card-title text-gray-900">Monthly Credits</h3>
+            <div className="bloomberg-large-metric">📈</div>
           </div>
-          <div className="text-2xl font-bold text-blue-600">
+          <div className="bloomberg-large-metric text-blue-600">
             {Math.round(carbonMetrics.monthlyCreditsGenerated).toLocaleString()}
           </div>
-          <div className="text-sm text-gray-600 mt-1">Credits generated</div>
+          <div className="bloomberg-small-text text-gray-600 mt-1">Credits generated</div>
         </div>
 
         <div className="bg-purple-50 rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Cumulative</h3>
-            <div className="text-2xl">🏆</div>
+            <h3 className="bloomberg-card-title text-gray-900">Cumulative</h3>
+            <div className="bloomberg-large-metric">🏆</div>
           </div>
-          <div className="text-2xl font-bold text-purple-600">
+          <div className="bloomberg-large-metric text-purple-600">
             {(carbonMetrics.cumulativeCredits / 1000000).toFixed(2)}M
           </div>
-          <div className="text-sm text-gray-600 mt-1">Total credits</div>
+          <div className="bloomberg-small-text text-gray-600 mt-1">Total credits</div>
         </div>
 
         <div className="bg-orange-50 rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Efficiency</h3>
-            <div className="text-2xl">⚡</div>
+            <h3 className="bloomberg-card-title text-gray-900">Efficiency</h3>
+            <div className="bloomberg-large-metric">⚡</div>
           </div>
-          <div className="text-2xl font-bold text-orange-600">
+          <div className="bloomberg-large-metric text-orange-600">
             {carbonMetrics.averageEmissionIntensity}
           </div>
-          <div className="text-sm text-gray-600 mt-1">kWh/pax-km</div>
+          <div className="bloomberg-small-text text-gray-600 mt-1">kWh/pax-km</div>
         </div>
       </div>
 
       {/* Generation Sources Breakdown */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Emission Generation Sources</h3>
+        <h3 className="bloomberg-card-title text-gray-900 mb-4">Emission Generation Sources</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="text-center">
-            <div className="text-3xl mb-2">🚢</div>
-            <div className="text-lg font-semibold text-gray-900">Vessel Efficiency</div>
-            <div className="text-2xl font-bold text-[#0EA5E9] mb-2">
+            <div className="bloomberg-page-heading mb-2">🚢</div>
+            <div className="bloomberg-card-title text-gray-900">Vessel Efficiency</div>
+            <div className="bloomberg-large-metric text-[#0EA5E9] mb-2">
               {carbonMetrics.vesselEfficiencyContribution}%
             </div>
-            <div className="text-sm text-gray-600">
+            <div className="bloomberg-small-text text-gray-600">
               Electric vs diesel baseline
               <br />
               96% efficiency improvement
@@ -558,12 +558,12 @@ function CarbonGenerationTab({ carbonMetrics }: { carbonMetrics: CarbonMetrics }
           </div>
 
           <div className="text-center">
-            <div className="text-3xl mb-2">🚗➡️🚢</div>
-            <div className="text-lg font-semibold text-gray-900">Modal Shift</div>
-            <div className="text-2xl font-bold text-[#10B981] mb-2">
+            <div className="bloomberg-page-heading mb-2">🚗➡️🚢</div>
+            <div className="bloomberg-card-title text-gray-900">Modal Shift</div>
+            <div className="bloomberg-large-metric text-[#10B981] mb-2">
               {carbonMetrics.modalShiftContribution}%
             </div>
-            <div className="text-sm text-gray-600">
+            <div className="bloomberg-small-text text-gray-600">
               40% passenger modal shift
               <br />
               From private vehicles
@@ -571,12 +571,12 @@ function CarbonGenerationTab({ carbonMetrics }: { carbonMetrics: CarbonMetrics }
           </div>
 
           <div className="text-center">
-            <div className="text-3xl mb-2">🏗️❌</div>
-            <div className="text-lg font-semibold text-gray-900">Construction Avoided</div>
-            <div className="text-2xl font-bold text-[#F59E0B] mb-2">
+            <div className="bloomberg-page-heading mb-2">🏗️❌</div>
+            <div className="bloomberg-card-title text-gray-900">Construction Avoided</div>
+            <div className="bloomberg-large-metric text-[#F59E0B] mb-2">
               {carbonMetrics.constructionAvoidanceContribution}%
             </div>
-            <div className="text-sm text-gray-600">
+            <div className="bloomberg-small-text text-gray-600">
               Infrastructure not built
               <br />
               30-year amortization
@@ -594,23 +594,23 @@ function CrossCollateralTab({ collateralPosition }: { collateralPosition: CrossC
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Position Overview */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Collateral Position</h3>
+          <h3 className="bloomberg-card-title text-gray-900 mb-4">Collateral Position</h3>
           <div className="space-y-4">
             <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
-              <span className="text-sm text-gray-600">Carbon Credit Holdings</span>
+              <span className="bloomberg-small-text text-gray-600">Carbon Credit Holdings</span>
               <span className="font-medium">
                 A${(collateralPosition.carbonCreditHoldings / 1000000).toFixed(2)}M
               </span>
             </div>
             <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-              <span className="text-sm text-gray-600">Asset Co Holdings</span>
+              <span className="bloomberg-small-text text-gray-600">Asset Co Holdings</span>
               <span className="font-medium">
                 A${(collateralPosition.assetCoHoldings / 1000000).toFixed(2)}M
               </span>
             </div>
             <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
-              <span className="text-sm text-gray-600">Total Portfolio Value</span>
-              <span className="font-bold text-lg">
+              <span className="bloomberg-small-text text-gray-600">Total Portfolio Value</span>
+              <span className=" bloomberg-card-title">
                 A${(collateralPosition.totalPortfolioValue / 1000000).toFixed(2)}M
               </span>
             </div>
@@ -619,16 +619,16 @@ function CrossCollateralTab({ collateralPosition }: { collateralPosition: CrossC
 
         {/* Borrowing Capacity */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Borrowing Power</h3>
+          <h3 className="bloomberg-card-title text-gray-900 mb-4">Borrowing Power</h3>
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Borrowing Capacity</span>
+              <span className="bloomberg-small-text text-gray-600">Borrowing Capacity</span>
               <span className="font-medium text-green-600">
                 A${(collateralPosition.borrowingCapacity / 1000000).toFixed(2)}M
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Current Utilization</span>
+              <span className="bloomberg-small-text text-gray-600">Current Utilization</span>
               <span className="font-medium">
                 {(collateralPosition.collateralUtilization * 100).toFixed(1)}%
               </span>
@@ -640,7 +640,7 @@ function CrossCollateralTab({ collateralPosition }: { collateralPosition: CrossC
               ></div>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Available to Borrow</span>
+              <span className="bloomberg-small-text text-gray-600">Available to Borrow</span>
               <span className="font-medium text-blue-600">
                 A${((collateralPosition.borrowingCapacity * (1 - collateralPosition.collateralUtilization)) / 1000000).toFixed(2)}M
               </span>
@@ -651,30 +651,30 @@ function CrossCollateralTab({ collateralPosition }: { collateralPosition: CrossC
 
       {/* Cross-Collateral Strategies */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Cross-Collateral Strategies</h3>
+        <h3 className="bloomberg-card-title text-gray-900 mb-4">Cross-Collateral Strategies</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <div className="text-2xl mb-2">🔄</div>
-            <div className="font-semibold text-gray-900 mb-2">Yield Optimization</div>
-            <div className="text-sm text-gray-600">
+            <div className="bloomberg-large-metric mb-2">🔄</div>
+            <div className=" text-gray-900 mb-2">Yield Optimization</div>
+            <div className="bloomberg-small-text text-gray-600">
               Use Asset Co yield as collateral to borrow stablecoins,
               deploy into Carbon Credits for additional exposure
             </div>
           </div>
 
           <div className="text-center p-4 bg-green-50 rounded-lg">
-            <div className="text-2xl mb-2">⚖️</div>
-            <div className="font-semibold text-gray-900 mb-2">Risk Balancing</div>
-            <div className="text-sm text-gray-600">
+            <div className="bloomberg-large-metric mb-2">⚖️</div>
+            <div className=" text-gray-900 mb-2">Risk Balancing</div>
+            <div className="bloomberg-small-text text-gray-600">
               Balance carbon price volatility with
               stable infrastructure yield through dynamic allocation
             </div>
           </div>
 
           <div className="text-center p-4 bg-purple-50 rounded-lg">
-            <div className="text-2xl mb-2">🏦</div>
-            <div className="font-semibold text-gray-900 mb-2">DeFi Integration</div>
-            <div className="text-sm text-gray-600">
+            <div className="bloomberg-large-metric mb-2">🏦</div>
+            <div className=" text-gray-900 mb-2">DeFi Integration</div>
+            <div className="bloomberg-small-text text-gray-600">
               Access institutional DeFi protocols using
               WREI tokens as yield-bearing collateral
             </div>
@@ -699,77 +699,77 @@ function FinancialMetricsTab({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Core Return Metrics */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Return Metrics</h3>
+          <h3 className="bloomberg-card-title text-gray-900 mb-4">Return Metrics</h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">IRR (Internal Rate of Return)</span>
-              <span className="font-bold text-[#0EA5E9]">{formattedMetrics.irr}</span>
+              <span className="bloomberg-small-text text-gray-600">IRR (Internal Rate of Return)</span>
+              <span className=" text-[#0EA5E9]">{formattedMetrics.irr}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Total Return</span>
-              <span className="font-bold text-[#10B981]">{formattedMetrics.totalReturn}</span>
+              <span className="bloomberg-small-text text-gray-600">Total Return</span>
+              <span className=" text-[#10B981]">{formattedMetrics.totalReturn}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">CAGR</span>
-              <span className="font-bold text-[#8B5CF6]">{formattedMetrics.compoundAnnualGrowthRate}</span>
+              <span className="bloomberg-small-text text-gray-600">CAGR</span>
+              <span className=" text-[#8B5CF6]">{formattedMetrics.compoundAnnualGrowthRate}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Risk-Adjusted Return</span>
-              <span className="font-bold text-[#F59E0B]">{formattedMetrics.riskAdjustedReturn}</span>
+              <span className="bloomberg-small-text text-gray-600">Risk-Adjusted Return</span>
+              <span className=" text-[#F59E0B]">{formattedMetrics.riskAdjustedReturn}</span>
             </div>
           </div>
         </div>
 
         {/* Cash Flow Metrics */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Cash Flow Analysis</h3>
+          <h3 className="bloomberg-card-title text-gray-900 mb-4">Cash Flow Analysis</h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Cash-on-Cash Multiple</span>
-              <span className="font-bold text-[#0EA5E9]">{formattedMetrics.cashOnCash}</span>
+              <span className="bloomberg-small-text text-gray-600">Cash-on-Cash Multiple</span>
+              <span className=" text-[#0EA5E9]">{formattedMetrics.cashOnCash}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Yield on Cost</span>
-              <span className="font-bold text-[#10B981]">{formattedMetrics.yieldOnCost}</span>
+              <span className="bloomberg-small-text text-gray-600">Yield on Cost</span>
+              <span className=" text-[#10B981]">{formattedMetrics.yieldOnCost}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Payback Period</span>
-              <span className="font-bold text-[#F59E0B]">{formattedMetrics.paybackPeriod}</span>
+              <span className="bloomberg-small-text text-gray-600">Payback Period</span>
+              <span className=" text-[#F59E0B]">{formattedMetrics.paybackPeriod}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Net Present Value</span>
-              <span className="font-bold text-[#8B5CF6]">{formattedMetrics.npv}</span>
+              <span className="bloomberg-small-text text-gray-600">Net Present Value</span>
+              <span className=" text-[#8B5CF6]">{formattedMetrics.npv}</span>
             </div>
           </div>
         </div>
 
         {/* Benchmark Comparisons */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Market Benchmarks</h3>
+          <h3 className="bloomberg-card-title text-gray-900 mb-4">Market Benchmarks</h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">vs USYC (Treasury)</span>
-              <span className="font-bold text-green-600">+{
+              <span className="bloomberg-small-text text-gray-600">vs USYC (Treasury)</span>
+              <span className=" text-green-600">+{
                 tokenType === 'asset_co' ? '23.3%' :
                 tokenType === 'carbon_credits' ? '3-7%' : '15-17%'
               }</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">vs Infrastructure REITs</span>
-              <span className="font-bold text-green-600">+{
+              <span className="bloomberg-small-text text-gray-600">vs Infrastructure REITs</span>
+              <span className=" text-green-600">+{
                 tokenType === 'asset_co' ? '16-20%' :
                 tokenType === 'carbon_credits' ? '0-4%' : '8-14%'
               }</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">vs Carbon ETFs</span>
-              <span className="font-bold text-green-600">+{
+              <span className="bloomberg-small-text text-gray-600">vs Carbon ETFs</span>
+              <span className=" text-green-600">+{
                 tokenType === 'asset_co' ? '26.3%' :
                 tokenType === 'carbon_credits' ? '6-10%' : '16-20%'
               }</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Market Correlation</span>
+              <span className="bloomberg-small-text text-gray-600">Market Correlation</span>
               <span className="font-medium text-blue-600">0.2-0.3</span>
             </div>
           </div>
@@ -778,13 +778,13 @@ function FinancialMetricsTab({
 
       {/* Performance Projection Chart Placeholder */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Investment Performance Projection</h3>
+        <h3 className="bloomberg-card-title text-gray-900 mb-4">Investment Performance Projection</h3>
         <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-lg p-8 text-center">
           <div className="text-4xl mb-4">📈</div>
-          <div className="text-lg font-semibold text-gray-900 mb-2">
+          <div className="bloomberg-card-title text-gray-900 mb-2">
             Performance Chart Visualization
           </div>
-          <div className="text-sm text-gray-600">
+          <div className="bloomberg-small-text text-gray-600">
             Real-time performance tracking and projection charts will be displayed here.
             <br />
             Integration with charting library (Chart.js/D3) for production deployment.

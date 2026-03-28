@@ -120,8 +120,8 @@ export function PipelineTransition({
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-sky-100 mb-6">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
             </div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-4">Preparing Your Profile</h2>
-            <p className="text-lg text-slate-600">
+            <h2 className="bloomberg-large-metric text-slate-900 mb-4">Preparing Your Profile</h2>
+            <p className="bloomberg-card-title text-slate-600">
               We&apos;re processing your institutional onboarding data and preparing your personalised trading interface...
             </p>
           </div>
@@ -137,8 +137,8 @@ export function PipelineTransition({
                 </svg>
               </div>
             </div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-4">Validating Compliance</h2>
-            <p className="text-lg text-slate-600">
+            <h2 className="bloomberg-large-metric text-slate-900 mb-4">Validating Compliance</h2>
+            <p className="bloomberg-card-title text-slate-600">
               Verifying your institutional credentials and regulatory compliance status...
             </p>
           </div>
@@ -152,12 +152,12 @@ export function PipelineTransition({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-4">Configuration Issue</h2>
-            <p className="text-lg text-slate-600 mb-6">
+            <h2 className="bloomberg-large-metric text-slate-900 mb-4">Configuration Issue</h2>
+            <p className="bloomberg-card-title text-slate-600 mb-6">
               We encountered an issue processing your onboarding data. The following information is missing:
             </p>
             <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-              <ul className="text-left text-sm text-red-700 space-y-1">
+              <ul className="text-left bloomberg-small-text text-red-700 space-y-1">
                 {validationErrors.map((error, index) => (
                   <li key={index} className="flex items-center">
                     <span className="mr-2">•</span>
@@ -166,7 +166,7 @@ export function PipelineTransition({
                 ))}
               </ul>
             </div>
-            <p className="text-sm text-slate-600 mb-6">
+            <p className="bloomberg-small-text text-slate-600 mb-6">
               Please contact our institutional support team or return to complete your onboarding.
             </p>
             <div className="space-x-4">
@@ -194,46 +194,46 @@ export function PipelineTransition({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-4">Ready to Begin Trading</h2>
-            <p className="text-lg text-slate-600 mb-8">
+            <h2 className="bloomberg-large-metric text-slate-900 mb-4">Ready to Begin Trading</h2>
+            <p className="bloomberg-card-title text-slate-600 mb-8">
               {welcomeMessage}
             </p>
 
             {preConfig && (
               <div className="bg-slate-50 rounded-lg p-6 mb-8">
-                <h3 className="text-lg font-semibold text-slate-900 mb-4">Your Configuration Summary</h3>
+                <h3 className="bloomberg-card-title text-slate-900 mb-4">Your Configuration Summary</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
                   <div>
-                    <h4 className="text-sm font-medium text-slate-700">Entity</h4>
-                    <p className="text-sm text-slate-900 font-medium">{preConfig.entityName}</p>
-                    <p className="text-sm text-slate-600 capitalize">
+                    <h4 className="bloomberg-small-text font-medium text-slate-700">Entity</h4>
+                    <p className="bloomberg-small-text text-slate-900 font-medium">{preConfig.entityName}</p>
+                    <p className="bloomberg-small-text text-slate-600 capitalize">
                       {preConfig.institutionalClassification} Investor
                     </p>
                   </div>
                   <div>
-                    <h4 className="text-sm font-medium text-slate-700">Trading Focus</h4>
-                    <p className="text-sm text-slate-900 font-medium capitalize">
+                    <h4 className="bloomberg-small-text font-medium text-slate-700">Trading Focus</h4>
+                    <p className="bloomberg-small-text text-slate-900 font-medium capitalize">
                       {preConfig.investmentFocus.primaryTokenType.replace('_', ' ')}
                     </p>
-                    <p className="text-sm text-slate-600">
+                    <p className="bloomberg-small-text text-slate-600">
                       {preConfig.investmentFocus.targetYield}% target yield
                     </p>
                   </div>
                   <div>
-                    <h4 className="text-sm font-medium text-slate-700">Investment Range</h4>
-                    <p className="text-sm text-slate-900 font-medium">
+                    <h4 className="bloomberg-small-text font-medium text-slate-700">Investment Range</h4>
+                    <p className="bloomberg-small-text text-slate-900 font-medium">
                       ${(preConfig.investmentFocus.minInvestmentSize / 1000).toFixed(0)}K - ${(preConfig.investmentFocus.maxInvestmentSize / 1000000).toFixed(1)}M
                     </p>
-                    <p className="text-sm text-slate-600 capitalize">
+                    <p className="bloomberg-small-text text-slate-600 capitalize">
                       {preConfig.investmentFocus.riskTolerance} Risk Profile
                     </p>
                   </div>
                   <div>
-                    <h4 className="text-sm font-medium text-slate-700">Settlement</h4>
-                    <p className="text-sm text-slate-900 font-medium uppercase">
+                    <h4 className="bloomberg-small-text font-medium text-slate-700">Settlement</h4>
+                    <p className="bloomberg-small-text text-slate-900 font-medium uppercase">
                       {preConfig.tradingPreferences.settlementTimeline}
                     </p>
-                    <p className="text-sm text-slate-600 capitalize">
+                    <p className="bloomberg-small-text text-slate-600 capitalize">
                       {preConfig.tradingPreferences.paymentMethod} Payment
                     </p>
                   </div>
@@ -249,8 +249,8 @@ export function PipelineTransition({
                   </svg>
                 </div>
                 <div className="ml-3 text-left">
-                  <h4 className="text-sm font-semibold text-sky-900">What Happens Next</h4>
-                  <p className="text-sm text-sky-800 mt-1">
+                  <h4 className="bloomberg-small-text  text-sky-900">What Happens Next</h4>
+                  <p className="bloomberg-small-text text-sky-800 mt-1">
                     You&apos;ll enter the WREI negotiation interface with your institutional profile pre-configured.
                     The AI negotiation agent will understand your compliance requirements, investment focus,
                     and trading preferences automatically.
@@ -282,8 +282,8 @@ export function PipelineTransition({
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-sky-100 mb-6">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
             </div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-4">Launching Negotiation Interface</h2>
-            <p className="text-lg text-slate-600">
+            <h2 className="bloomberg-large-metric text-slate-900 mb-4">Launching Negotiation Interface</h2>
+            <p className="bloomberg-card-title text-slate-600">
               Transferring your profile to the WREI trading platform...
             </p>
           </div>
@@ -305,7 +305,7 @@ export function PipelineTransition({
         {(stage === 'preparing' || stage === 'validating' || stage === 'transitioning' || stage === 'ready') && (
           <div className="mt-8">
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
-              <div className="flex items-center justify-center space-x-4 text-sm text-slate-600">
+              <div className="flex items-center justify-center space-x-4 bloomberg-small-text text-slate-600">
                 <div className={`flex items-center ${stage === 'preparing' ? 'text-sky-600' : stage === 'ready' ? 'text-green-600' : 'text-slate-400'}`}>
                   <div className={`w-2 h-2 rounded-full mr-2 ${stage === 'preparing' ? 'bg-sky-600 animate-pulse' : stage === 'ready' ? 'bg-green-600' : 'bg-slate-400'}`}></div>
                   Preparing

@@ -150,8 +150,8 @@ const CoachingPanel: React.FC<CoachingPanelProps> = ({
             </svg>
           </div>
           <div>
-            <h3 className="font-semibold">Real-Time Coaching</h3>
-            <p className="text-xs text-slate-300">Round {negotiationState.round} • {negotiationState.phase}</p>
+            <h3 className="">Real-Time Coaching</h3>
+            <p className="bloomberg-section-label text-slate-300">Round {negotiationState.round} • {negotiationState.phase}</p>
           </div>
         </div>
         <button
@@ -169,11 +169,11 @@ const CoachingPanel: React.FC<CoachingPanelProps> = ({
       <div className="p-4 border-b border-slate-200 bg-slate-50">
         {/* Difficulty Toggle */}
         <div className="mb-3">
-          <label className="text-xs font-medium text-slate-600 block mb-1">Coaching Level</label>
+          <label className="bloomberg-section-label font-medium text-slate-600 block mb-1">Coaching Level</label>
           <div className="flex bg-white rounded-lg border border-slate-200">
             <button
               onClick={() => setDifficulty('beginner')}
-              className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-l-lg transition-colors ${
+              className={`flex-1 px-3 py-1.5 bloomberg-section-label font-medium rounded-l-lg transition-colors ${
                 difficulty === 'beginner'
                   ? 'bg-[#0EA5E9] text-white'
                   : 'text-slate-600 hover:bg-slate-50'
@@ -183,7 +183,7 @@ const CoachingPanel: React.FC<CoachingPanelProps> = ({
             </button>
             <button
               onClick={() => setDifficulty('advanced')}
-              className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-r-lg transition-colors ${
+              className={`flex-1 px-3 py-1.5 bloomberg-section-label font-medium rounded-r-lg transition-colors ${
                 difficulty === 'advanced'
                   ? 'bg-[#0EA5E9] text-white'
                   : 'text-slate-600 hover:bg-slate-50'
@@ -196,13 +196,13 @@ const CoachingPanel: React.FC<CoachingPanelProps> = ({
 
         {/* Focus Areas */}
         <div>
-          <label className="text-xs font-medium text-slate-600 block mb-1">Focus Areas</label>
+          <label className="bloomberg-section-label font-medium text-slate-600 block mb-1">Focus Areas</label>
           <div className="flex flex-wrap gap-1">
             {getCoachingCategories().map(category => (
               <button
                 key={category}
                 onClick={() => toggleFocusArea(category)}
-                className={`px-2 py-1 text-xs rounded-full transition-colors ${
+                className={`px-2 py-1 bloomberg-section-label rounded-full transition-colors ${
                   focusAreas.includes(category)
                     ? 'bg-[#0EA5E9] text-white'
                     : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
@@ -219,7 +219,7 @@ const CoachingPanel: React.FC<CoachingPanelProps> = ({
         <div className="mt-3 flex justify-between items-center">
           <button
             onClick={() => setShowHistory(!showHistory)}
-            className="text-xs text-slate-600 hover:text-slate-800 flex items-center space-x-1"
+            className="bloomberg-section-label text-slate-600 hover:text-slate-800 flex items-center space-x-1"
           >
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -227,7 +227,7 @@ const CoachingPanel: React.FC<CoachingPanelProps> = ({
             <span>{showHistory ? 'Current' : 'History'} ({coachingHistory.length})</span>
           </button>
           {coaching && (
-            <div className="text-xs text-slate-500">
+            <div className="bloomberg-section-label text-slate-500">
               {coaching.warningFlags.length > 0 && (
                 <span className="text-red-500">⚠️ {coaching.warningFlags.length}</span>
               )}
@@ -247,23 +247,23 @@ const CoachingPanel: React.FC<CoachingPanelProps> = ({
                 <svg className="w-12 h-12 mx-auto mb-2 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
-                <p className="text-sm">No coaching history yet</p>
-                <p className="text-xs">Suggestions you interact with will appear here</p>
+                <p className="bloomberg-small-text">No coaching history yet</p>
+                <p className="bloomberg-section-label">Suggestions you interact with will appear here</p>
               </div>
             ) : (
               <div className="space-y-3">
                 {coachingHistory.slice().reverse().map((entry, index) => (
                   <div key={index} className="bg-slate-50 rounded-lg p-3 border border-slate-100">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-medium text-slate-600">Round {entry.round}</span>
-                      <span className={`text-xs px-2 py-1 rounded-full ${
+                      <span className="bloomberg-section-label font-medium text-slate-600">Round {entry.round}</span>
+                      <span className={`bloomberg-section-label px-2 py-1 rounded-full ${
                         entry.adopted ? 'bg-green-100 text-green-700' : 'bg-slate-200 text-slate-600'
                       }`}>
                         {entry.adopted ? 'Adopted' : 'Skipped'}
                       </span>
                     </div>
-                    <p className="text-sm font-medium text-slate-800">{entry.suggestion.title}</p>
-                    <p className="text-xs text-slate-600 mt-1">{entry.suggestion.content}</p>
+                    <p className="bloomberg-small-text font-medium text-slate-800">{entry.suggestion.title}</p>
+                    <p className="bloomberg-section-label text-slate-600 mt-1">{entry.suggestion.content}</p>
                   </div>
                 ))}
               </div>
@@ -277,33 +277,33 @@ const CoachingPanel: React.FC<CoachingPanelProps> = ({
                 {/* Quick Tip */}
                 <div className="mb-6">
                   <h4 className="font-medium text-slate-800 mb-2 flex items-center">
-                    <span className="w-6 h-6 bg-[#0EA5E9] text-white rounded-full flex items-center justify-center text-xs font-bold mr-2">
+                    <span className="w-6 h-6 bg-[#0EA5E9] text-white rounded-full flex items-center justify-center bloomberg-section-label mr-2">
                       !
                     </span>
                     Quick Tip
                   </h4>
                   <div className={`border rounded-lg p-3 ${getPriorityColor(coaching.quickTip.priority)}`}>
                     <div className="flex items-start justify-between mb-2">
-                      <h5 className="font-medium text-sm">{coaching.quickTip.title}</h5>
+                      <h5 className="font-medium bloomberg-small-text">{coaching.quickTip.title}</h5>
                       <div className="flex space-x-1">
                         <button
                           onClick={() => handleSuggestionAdoption(coaching.quickTip, true)}
-                          className="text-xs bg-white/50 hover:bg-white/80 px-2 py-1 rounded transition-colors"
+                          className="bloomberg-section-label bg-white/50 hover:bg-white/80 px-2 py-1 rounded transition-colors"
                           title="Mark as adopted"
                         >
                           ✓
                         </button>
                         <button
                           onClick={() => handleSuggestionAdoption(coaching.quickTip, false)}
-                          className="text-xs bg-white/50 hover:bg-white/80 px-2 py-1 rounded transition-colors"
+                          className="bloomberg-section-label bg-white/50 hover:bg-white/80 px-2 py-1 rounded transition-colors"
                           title="Skip suggestion"
                         >
                           ✗
                         </button>
                       </div>
                     </div>
-                    <p className="text-sm mb-2">{coaching.quickTip.content}</p>
-                    <div className="flex items-center justify-between text-xs">
+                    <p className="bloomberg-small-text mb-2">{coaching.quickTip.content}</p>
+                    <div className="flex items-center justify-between bloomberg-section-label">
                       <span className="flex items-center space-x-2">
                         <span>{getCategoryIcon(coaching.quickTip.category)}</span>
                         <span>{coaching.quickTip.category.replace(/_/g, ' ')}</span>
@@ -325,7 +325,7 @@ const CoachingPanel: React.FC<CoachingPanelProps> = ({
                       Warning Flags
                     </h4>
                     <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                      <ul className="text-sm text-red-700 space-y-1">
+                      <ul className="bloomberg-small-text text-red-700 space-y-1">
                         {coaching.warningFlags.map((flag, index) => (
                           <li key={index} className="flex items-start">
                             <span className="text-red-500 mr-2">•</span>
@@ -341,7 +341,7 @@ const CoachingPanel: React.FC<CoachingPanelProps> = ({
                 <div className="mb-6">
                   <h4 className="font-medium text-slate-800 mb-2">Phase Guidance</h4>
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                    <p className="text-sm text-blue-800">{coaching.phaseGuidance}</p>
+                    <p className="bloomberg-small-text text-blue-800">{coaching.phaseGuidance}</p>
                   </div>
                 </div>
 
@@ -360,15 +360,15 @@ const CoachingPanel: React.FC<CoachingPanelProps> = ({
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
                               <div className="flex items-center space-x-2 mb-1">
-                                <span className={`text-xs px-2 py-1 rounded-full ${getPriorityColor(suggestion.priority)}`}>
+                                <span className={`bloomberg-section-label px-2 py-1 rounded-full ${getPriorityColor(suggestion.priority)}`}>
                                   {suggestion.priority}
                                 </span>
-                                <span className="text-xs text-slate-500">
+                                <span className="bloomberg-section-label text-slate-500">
                                   {getCategoryIcon(suggestion.category)} {suggestion.category.replace(/_/g, ' ')}
                                 </span>
                               </div>
-                              <h5 className="font-medium text-sm text-slate-800">{suggestion.title}</h5>
-                              <p className="text-xs text-slate-600 mt-1">{suggestion.content}</p>
+                              <h5 className="font-medium bloomberg-small-text text-slate-800">{suggestion.title}</h5>
+                              <p className="bloomberg-section-label text-slate-600 mt-1">{suggestion.content}</p>
                             </div>
                             <svg
                               className={`w-4 h-4 text-slate-400 transition-transform ${
@@ -387,33 +387,33 @@ const CoachingPanel: React.FC<CoachingPanelProps> = ({
                           <div className="border-t border-slate-200 p-3 bg-slate-50">
                             <div className="space-y-2">
                               <div>
-                                <h6 className="text-xs font-medium text-slate-700">Rationale:</h6>
-                                <p className="text-xs text-slate-600">{suggestion.rationale}</p>
+                                <h6 className="bloomberg-section-label font-medium text-slate-700">Rationale:</h6>
+                                <p className="bloomberg-section-label text-slate-600">{suggestion.rationale}</p>
                               </div>
                               <div>
-                                <h6 className="text-xs font-medium text-slate-700">Expected Impact:</h6>
-                                <p className="text-xs text-slate-600">{suggestion.expectedImpact}</p>
+                                <h6 className="bloomberg-section-label font-medium text-slate-700">Expected Impact:</h6>
+                                <p className="bloomberg-section-label text-slate-600">{suggestion.expectedImpact}</p>
                               </div>
                               {suggestion.timing && (
                                 <div>
-                                  <h6 className="text-xs font-medium text-slate-700">Timing:</h6>
-                                  <p className="text-xs text-slate-600">{suggestion.timing}</p>
+                                  <h6 className="bloomberg-section-label font-medium text-slate-700">Timing:</h6>
+                                  <p className="bloomberg-section-label text-slate-600">{suggestion.timing}</p>
                                 </div>
                               )}
                               <div className="flex items-center justify-between pt-2">
-                                <span className={`text-xs ${getRiskColor(suggestion.riskLevel)}`}>
+                                <span className={`bloomberg-section-label ${getRiskColor(suggestion.riskLevel)}`}>
                                   Risk: {suggestion.riskLevel}
                                 </span>
                                 <div className="flex space-x-2">
                                   <button
                                     onClick={() => handleSuggestionAdoption(suggestion, true)}
-                                    className="text-xs bg-green-100 text-green-700 hover:bg-green-200 px-2 py-1 rounded transition-colors"
+                                    className="bloomberg-section-label bg-green-100 text-green-700 hover:bg-green-200 px-2 py-1 rounded transition-colors"
                                   >
                                     Adopt
                                   </button>
                                   <button
                                     onClick={() => handleSuggestionAdoption(suggestion, false)}
-                                    className="text-xs bg-slate-200 text-slate-600 hover:bg-slate-300 px-2 py-1 rounded transition-colors"
+                                    className="bloomberg-section-label bg-slate-200 text-slate-600 hover:bg-slate-300 px-2 py-1 rounded transition-colors"
                                   >
                                     Skip
                                   </button>
@@ -432,7 +432,7 @@ const CoachingPanel: React.FC<CoachingPanelProps> = ({
                   <div>
                     <h4 className="font-medium text-slate-800 mb-2">Next Best Actions</h4>
                     <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                      <ul className="text-sm text-green-800 space-y-1">
+                      <ul className="bloomberg-small-text text-green-800 space-y-1">
                         {coaching.nextBestActions.map((action, index) => (
                           <li key={index} className="flex items-start">
                             <span className="text-green-600 mr-2">→</span>

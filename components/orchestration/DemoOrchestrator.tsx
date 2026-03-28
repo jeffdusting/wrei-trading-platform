@@ -270,8 +270,8 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
               <CogIcon className="w-6 h-6 text-blue-600" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">Demo Scenario Manager</h2>
-              <p className="text-sm text-gray-500">Simplified demo orchestration with AI insights</p>
+              <h2 className="bloomberg-card-title text-gray-900">Demo Scenario Manager</h2>
+              <p className="bloomberg-small-text text-gray-500">Simplified demo orchestration with AI insights</p>
             </div>
           </div>
 
@@ -302,7 +302,7 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
                 value={selectedDataSet}
                 onChange={(e) => handleChangeDataSet(e.target.value as SimpleDemoDataSet)}
                 disabled={isProcessing}
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm disabled:opacity-50"
+                className="px-3 py-2 border border-gray-300 rounded-lg bloomberg-small-text disabled:opacity-50"
               >
                 <option value="institutional">ESG Fund Manager</option>
                 <option value="retail">Sustainability Director</option>
@@ -328,8 +328,8 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
             <div className="flex items-center space-x-2">
               {getPhaseIcon(currentPhase)}
               <div>
-                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Phase</p>
-                <p className="text-sm font-semibold text-gray-900">
+                <p className="bloomberg-section-label font-medium text-gray-500 uppercase tracking-wide">Phase</p>
+                <p className="bloomberg-small-text  text-gray-900">
                   {currentPhase.replace('_', ' ')}
                 </p>
               </div>
@@ -337,12 +337,12 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
 
             {/* Data Set */}
             <div className="flex items-center space-x-2">
-              <div className="px-2 py-1 bg-blue-100 rounded-full text-xs font-medium text-blue-700">
+              <div className="px-2 py-1 bg-blue-100 rounded-full bloomberg-section-label font-medium text-blue-700">
                 {selectedDataSet || 'None'}
               </div>
               <div>
-                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Scenario</p>
-                <p className="text-sm font-semibold text-gray-900">
+                <p className="bloomberg-section-label font-medium text-gray-500 uppercase tracking-wide">Scenario</p>
+                <p className="bloomberg-small-text  text-gray-900">
                   {selectedDataSet ? getDataSetDisplayName(selectedDataSet) : 'Not selected'}
                 </p>
               </div>
@@ -350,7 +350,7 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
 
             {/* Progress */}
             <div>
-              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Progress</p>
+              <p className="bloomberg-section-label font-medium text-gray-500 uppercase tracking-wide">Progress</p>
               <div className="flex items-center space-x-2 mt-1">
                 <div className="flex-1 bg-gray-200 rounded-full h-2">
                   <div
@@ -358,7 +358,7 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
                     style={{ width: `${completionPercentage}%` }}
                   />
                 </div>
-                <span className="text-sm font-semibold text-gray-900">
+                <span className="bloomberg-small-text  text-gray-900">
                   {completionPercentage}%
                 </span>
               </div>
@@ -366,12 +366,12 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
 
             {/* Engagement Level */}
             <div className="flex items-center space-x-2">
-              <div className={`px-2 py-1 rounded-full text-xs font-medium ${getEngagementColor(engagementLevel)}`}>
+              <div className={`px-2 py-1 rounded-full bloomberg-section-label font-medium ${getEngagementColor(engagementLevel)}`}>
                 {engagementLevel}
               </div>
               <div>
-                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Engagement</p>
-                <p className="text-sm font-semibold text-gray-900">
+                <p className="bloomberg-section-label font-medium text-gray-500 uppercase tracking-wide">Engagement</p>
+                <p className="bloomberg-small-text  text-gray-900">
                   Simulated
                 </p>
               </div>
@@ -388,17 +388,17 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
               <UserGroupIcon className="w-5 h-5 text-blue-600" />
             </div>
             <div className="flex-1">
-              <h4 className="text-sm font-semibold text-blue-900 mb-1">
+              <h4 className="bloomberg-small-text  text-blue-900 mb-1">
                 Active Scenario: {demoData.persona.name} ({demoData.persona.title})
               </h4>
-              <p className="text-sm text-blue-700 mb-2">
+              <p className="bloomberg-small-text text-blue-700 mb-2">
                 Organisation: {demoData.persona.organisation}
               </p>
               <div className="flex items-center justify-between">
-                <span className="text-xs text-blue-600">
+                <span className="bloomberg-section-label text-blue-600">
                   Base Price: ${demoData.marketData.basePrice}/tonne
                 </span>
-                <span className="text-xs text-blue-600">
+                <span className="bloomberg-section-label text-blue-600">
                   Target: {Math.round(demoData.portfolioMetrics.targetAllocation / 1000)}k allocation
                 </span>
               </div>
@@ -412,7 +412,7 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
         <div className="px-6 py-2 bg-amber-50 border-b border-amber-200">
           <div className="flex items-center space-x-2">
             <ArrowPathIcon className="w-4 h-4 text-amber-600 animate-spin" />
-            <span className="text-sm text-amber-700">Processing orchestration decisions...</span>
+            <span className="bloomberg-small-text text-amber-700">Processing orchestration decisions...</span>
           </div>
         </div>
       )}
@@ -420,14 +420,14 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
       {/* Advanced Controls */}
       {showAdvancedControls && (
         <div className="px-6 py-4 border-b border-gray-200">
-          <h4 className="text-sm font-semibold text-gray-900 mb-3">Advanced Controls</h4>
+          <h4 className="bloomberg-small-text  text-gray-900 mb-3">Advanced Controls</h4>
           <div className="grid grid-cols-2 gap-4">
             <button
               onClick={() => setShowAnalytics(!showAnalytics)}
               className="flex items-center justify-center space-x-2 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <ChartBarIcon className="w-4 h-4" />
-              <span className="text-sm">Analytics</span>
+              <span className="bloomberg-small-text">Analytics</span>
             </button>
           </div>
         </div>
@@ -436,14 +436,14 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
       {/* Recent Events */}
       {recentEvents.length > 0 && (
         <div className="px-6 py-4">
-          <h4 className="text-sm font-semibold text-gray-900 mb-3">Recent Events</h4>
+          <h4 className="bloomberg-small-text  text-gray-900 mb-3">Recent Events</h4>
           <div className="space-y-2 max-h-40 overflow-y-auto">
             {recentEvents.slice(0, 5).map((event) => (
-              <div key={event.id} className="flex items-start space-x-2 text-sm">
-                <span className="text-xs text-gray-500 min-w-16">
+              <div key={event.id} className="flex items-start space-x-2 bloomberg-small-text">
+                <span className="bloomberg-section-label text-gray-500 min-w-16">
                   {event.timestamp.toLocaleTimeString()}
                 </span>
-                <span className="px-2 py-1 bg-gray-100 rounded text-xs font-medium">
+                <span className="px-2 py-1 bg-gray-100 rounded bloomberg-section-label font-medium">
                   {event.type.replace('_', ' ')}
                 </span>
               </div>
@@ -457,7 +457,7 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
         <div className="px-6 py-4 bg-amber-50 border-l-4 border-amber-400">
           <div className="flex items-center space-x-2">
             <ExclamationTriangleIcon className="w-5 h-5 text-amber-600" />
-            <p className="text-sm text-amber-700">
+            <p className="bloomberg-small-text text-amber-700">
               Please select a data set to begin scenario orchestration
             </p>
           </div>

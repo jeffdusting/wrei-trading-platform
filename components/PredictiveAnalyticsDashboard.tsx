@@ -386,42 +386,42 @@ export const PredictiveAnalyticsDashboard: React.FC<PredictiveAnalyticsDashboard
       {/* Key Metrics Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white border border-slate-200 rounded-lg p-4">
-          <h3 className="text-sm font-medium text-slate-600">Predictive Confidence</h3>
-          <p className="text-2xl font-bold text-blue-600">
+          <h3 className="bloomberg-small-text font-medium text-slate-600">Predictive Confidence</h3>
+          <p className="bloomberg-large-metric text-blue-600">
             {predictiveInsights.length > 0 ? Math.round(predictiveInsights.reduce((sum, i) => sum + i.confidence, 0) / predictiveInsights.length) : 0}%
           </p>
-          <p className="text-sm text-green-600">High accuracy models</p>
+          <p className="bloomberg-small-text text-green-600">High accuracy models</p>
         </div>
         <div className="bg-white border border-slate-200 rounded-lg p-4">
-          <h3 className="text-sm font-medium text-slate-600">Active Insights</h3>
-          <p className="text-2xl font-bold text-purple-600">{predictiveInsights.length}</p>
-          <p className="text-sm text-slate-600">
+          <h3 className="bloomberg-small-text font-medium text-slate-600">Active Insights</h3>
+          <p className="bloomberg-large-metric text-purple-600">{predictiveInsights.length}</p>
+          <p className="bloomberg-small-text text-slate-600">
             {predictiveInsights.filter(i => i.priority === 'high' || i.priority === 'critical').length} high priority
           </p>
         </div>
         <div className="bg-white border border-slate-200 rounded-lg p-4">
-          <h3 className="text-sm font-medium text-slate-600">Portfolio Optimization</h3>
-          <p className="text-2xl font-bold text-green-600">
+          <h3 className="bloomberg-small-text font-medium text-slate-600">Portfolio Optimization</h3>
+          <p className="bloomberg-large-metric text-green-600">
             +{optimization ? optimization.improvementPotential.toFixed(1) : '0'}%
           </p>
-          <p className="text-sm text-green-600">Improvement potential</p>
+          <p className="bloomberg-small-text text-green-600">Improvement potential</p>
         </div>
         <div className="bg-white border border-slate-200 rounded-lg p-4">
-          <h3 className="text-sm font-medium text-slate-600">Risk Score</h3>
-          <p className="text-2xl font-bold text-orange-600">
+          <h3 className="bloomberg-small-text font-medium text-slate-600">Risk Score</h3>
+          <p className="bloomberg-large-metric text-orange-600">
             {portfolioMetrics ? Math.round((1 - portfolioMetrics.volatility) * 100) : 0}
           </p>
-          <p className="text-sm text-slate-600">Risk-adjusted score</p>
+          <p className="bloomberg-small-text text-slate-600">Risk-adjusted score</p>
         </div>
       </div>
 
       {/* Predictive Insights */}
       <div className="bg-white border border-slate-200 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">🔮 AI-Powered Predictive Insights</h3>
+        <h3 className="bloomberg-card-title text-slate-800 mb-4">🔮 AI-Powered Predictive Insights</h3>
         {predictiveInsights.length === 0 ? (
           <div className="text-center py-8">
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">🤖</span>
+              <span className="bloomberg-large-metric">🤖</span>
             </div>
             <p className="text-slate-600">AI models are analyzing market conditions...</p>
           </div>
@@ -440,12 +440,12 @@ export const PredictiveAnalyticsDashboard: React.FC<PredictiveAnalyticsDashboard
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <span className="text-lg">
+                      <span className="bloomberg-card-title">
                         {insight.category === 'opportunity' ? '🎯' :
                          insight.category === 'risk' ? '⚠️' :
                          insight.category === 'optimization' ? '⚡' : '⏰'}
                       </span>
-                      <h4 className={`font-semibold ${
+                      <h4 className={` ${
                         insight.priority === 'critical' ? 'text-red-800' :
                         insight.priority === 'high' ? 'text-orange-800' :
                         insight.priority === 'medium' ? 'text-blue-800' :
@@ -454,7 +454,7 @@ export const PredictiveAnalyticsDashboard: React.FC<PredictiveAnalyticsDashboard
                         {insight.title}
                       </h4>
                       <div className="flex items-center gap-2">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        <span className={`px-2 py-1 rounded-full bloomberg-section-label font-medium ${
                           insight.priority === 'critical' ? 'bg-red-200 text-red-800' :
                           insight.priority === 'high' ? 'bg-orange-200 text-orange-800' :
                           insight.priority === 'medium' ? 'bg-blue-200 text-blue-800' :
@@ -462,12 +462,12 @@ export const PredictiveAnalyticsDashboard: React.FC<PredictiveAnalyticsDashboard
                         }`}>
                           {insight.priority.toUpperCase()}
                         </span>
-                        <span className="px-2 py-1 bg-green-200 text-green-800 text-xs rounded-full font-medium">
+                        <span className="px-2 py-1 bg-green-200 text-green-800 bloomberg-section-label rounded-full font-medium">
                           {insight.confidence}% CONFIDENCE
                         </span>
                       </div>
                     </div>
-                    <p className={`text-sm mb-3 ${
+                    <p className={`bloomberg-small-text mb-3 ${
                       insight.priority === 'critical' ? 'text-red-700' :
                       insight.priority === 'high' ? 'text-orange-700' :
                       insight.priority === 'medium' ? 'text-blue-700' :
@@ -477,21 +477,21 @@ export const PredictiveAnalyticsDashboard: React.FC<PredictiveAnalyticsDashboard
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
-                      <div className="text-xs">
+                      <div className="bloomberg-section-label">
                         <span className="text-slate-600">Expected Return Impact:</span>
-                        <p className="font-semibold text-green-600">+{(insight.impact.expectedReturn * 100).toFixed(1)}%</p>
+                        <p className=" text-green-600">+{(insight.impact.expectedReturn * 100).toFixed(1)}%</p>
                       </div>
-                      <div className="text-xs">
+                      <div className="bloomberg-section-label">
                         <span className="text-slate-600">Risk Adjustment:</span>
-                        <p className="font-semibold text-blue-600">{(insight.impact.riskAdjustment * 100).toFixed(1)}%</p>
+                        <p className=" text-blue-600">{(insight.impact.riskAdjustment * 100).toFixed(1)}%</p>
                       </div>
-                      <div className="text-xs">
+                      <div className="bloomberg-section-label">
                         <span className="text-slate-600">Timeline:</span>
-                        <p className="font-semibold text-slate-700">{insight.timeline}</p>
+                        <p className=" text-slate-700">{insight.timeline}</p>
                       </div>
                     </div>
 
-                    <details className="text-xs">
+                    <details className="bloomberg-section-label">
                       <summary className="cursor-pointer text-slate-600 hover:text-slate-800">
                         Supporting Data & Analysis
                       </summary>
@@ -504,7 +504,7 @@ export const PredictiveAnalyticsDashboard: React.FC<PredictiveAnalyticsDashboard
                   </div>
 
                   {insight.actionRequired && (
-                    <button className={`ml-4 px-3 py-1 rounded text-xs font-medium ${
+                    <button className={`ml-4 px-3 py-1 rounded bloomberg-section-label font-medium ${
                       insight.priority === 'critical' ? 'bg-red-600 text-white hover:bg-red-700' :
                       insight.priority === 'high' ? 'bg-orange-600 text-white hover:bg-orange-700' :
                       'bg-blue-600 text-white hover:bg-blue-700'
@@ -525,7 +525,7 @@ export const PredictiveAnalyticsDashboard: React.FC<PredictiveAnalyticsDashboard
     <div className="space-y-6">
       {/* Scenario Modeling */}
       <div className="bg-white border border-slate-200 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">📊 Monte Carlo Scenario Modeling</h3>
+        <h3 className="bloomberg-card-title text-slate-800 mb-4">📊 Monte Carlo Scenario Modeling</h3>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -544,7 +544,7 @@ export const PredictiveAnalyticsDashboard: React.FC<PredictiveAnalyticsDashboard
                 <tr key={index} className="border-b border-slate-100">
                   <td className="py-3 px-2 font-medium text-slate-800">{scenario.scenario}</td>
                   <td className="py-3 px-2 text-center text-slate-700">{scenario.probability}%</td>
-                  <td className="py-3 px-2 text-right font-semibold text-green-600">
+                  <td className="py-3 px-2 text-right  text-green-600">
                     {(scenario.expectedReturn * 100).toFixed(1)}%
                   </td>
                   <td className="py-3 px-2 text-right text-slate-700">
@@ -570,41 +570,41 @@ export const PredictiveAnalyticsDashboard: React.FC<PredictiveAnalyticsDashboard
       {portfolioMetrics && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white border border-slate-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-slate-800 mb-4">Risk-Adjusted Metrics</h3>
+            <h3 className="bloomberg-card-title text-slate-800 mb-4">Risk-Adjusted Metrics</h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-slate-600">Sharpe Ratio</span>
-                <span className="font-semibold text-blue-600">{portfolioMetrics.sharpeRatio.toFixed(2)}</span>
+                <span className=" text-blue-600">{portfolioMetrics.sharpeRatio.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-600">Sortino Ratio</span>
-                <span className="font-semibold text-green-600">{portfolioMetrics.sortinoRatio.toFixed(2)}</span>
+                <span className=" text-green-600">{portfolioMetrics.sortinoRatio.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-600">Calmar Ratio</span>
-                <span className="font-semibold text-purple-600">{portfolioMetrics.calmarRatio.toFixed(2)}</span>
+                <span className=" text-purple-600">{portfolioMetrics.calmarRatio.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-600">Maximum Drawdown</span>
-                <span className="font-semibold text-red-600">{(portfolioMetrics.maxDrawdown * 100).toFixed(1)}%</span>
+                <span className=" text-red-600">{(portfolioMetrics.maxDrawdown * 100).toFixed(1)}%</span>
               </div>
             </div>
           </div>
 
           <div className="bg-white border border-slate-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-slate-800 mb-4">Portfolio Correlation</h3>
+            <h3 className="bloomberg-card-title text-slate-800 mb-4">Portfolio Correlation</h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-slate-600">Portfolio Beta</span>
-                <span className="font-semibold text-slate-800">{portfolioMetrics.correlationScore.toFixed(2)}</span>
+                <span className=" text-slate-800">{portfolioMetrics.correlationScore.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-600">Diversification Ratio</span>
-                <span className="font-semibold text-green-600">{portfolioMetrics.diversificationRatio.toFixed(2)}</span>
+                <span className=" text-green-600">{portfolioMetrics.diversificationRatio.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-600">Concentration Risk</span>
-                <span className="font-semibold text-orange-600">{(portfolioMetrics.concentrationRisk * 100).toFixed(1)}%</span>
+                <span className=" text-orange-600">{(portfolioMetrics.concentrationRisk * 100).toFixed(1)}%</span>
               </div>
             </div>
           </div>
@@ -617,11 +617,11 @@ export const PredictiveAnalyticsDashboard: React.FC<PredictiveAnalyticsDashboard
     <div className="space-y-6">
       {/* AI Recommendations */}
       <div className="bg-white border border-slate-200 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">🧠 AI-Powered Investment Recommendations</h3>
+        <h3 className="bloomberg-card-title text-slate-800 mb-4">🧠 AI-Powered Investment Recommendations</h3>
         {aiRecommendations.length === 0 ? (
           <div className="text-center py-8">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">✅</span>
+              <span className="bloomberg-large-metric">✅</span>
             </div>
             <p className="text-slate-600">Portfolio optimization is on track. No immediate actions required.</p>
           </div>
@@ -631,27 +631,27 @@ export const PredictiveAnalyticsDashboard: React.FC<PredictiveAnalyticsDashboard
               <div key={index} className="border border-slate-200 rounded-lg p-5">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">
+                    <span className="bloomberg-large-metric">
                       {rec.action === 'buy' ? '📈' : rec.action === 'sell' ? '📉' :
                        rec.action === 'rebalance' ? '⚖️' : '💎'}
                     </span>
                     <div>
-                      <h4 className="font-semibold text-slate-800 capitalize">
+                      <h4 className=" text-slate-800 capitalize">
                         {rec.action} {rec.asset.replace('_', ' ')}
                       </h4>
-                      <p className="text-sm text-slate-600">
+                      <p className="bloomberg-small-text text-slate-600">
                         AI Confidence: <span className="font-medium text-green-600">{rec.confidence}%</span>
                       </p>
                     </div>
                   </div>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg bloomberg-small-text font-medium">
                     Implement
                   </button>
                 </div>
 
                 <div className="mb-4">
                   <h5 className="font-medium text-slate-700 mb-2">Reasoning:</h5>
-                  <ul className="text-sm text-slate-600 space-y-1">
+                  <ul className="bloomberg-small-text text-slate-600 space-y-1">
                     {rec.reasoning.map((reason, idx) => (
                       <li key={idx}>• {reason}</li>
                     ))}
@@ -661,7 +661,7 @@ export const PredictiveAnalyticsDashboard: React.FC<PredictiveAnalyticsDashboard
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
                     <h5 className="font-medium text-slate-700 mb-2">Quantitative Analysis:</h5>
-                    <div className="text-sm space-y-1">
+                    <div className="bloomberg-small-text space-y-1">
                       <div className="flex justify-between">
                         <span className="text-slate-600">Expected Return:</span>
                         <span className="font-medium text-green-600">
@@ -685,7 +685,7 @@ export const PredictiveAnalyticsDashboard: React.FC<PredictiveAnalyticsDashboard
 
                   <div>
                     <h5 className="font-medium text-slate-700 mb-2">Implementation Plan:</h5>
-                    <div className="text-sm space-y-1">
+                    <div className="bloomberg-small-text space-y-1">
                       <div className="flex justify-between">
                         <span className="text-slate-600">Target Allocation:</span>
                         <span className="font-medium text-slate-800">
@@ -724,15 +724,15 @@ export const PredictiveAnalyticsDashboard: React.FC<PredictiveAnalyticsDashboard
         <div className="bg-white border border-slate-200 rounded-lg p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-3xl font-bold text-slate-800">Predictive Analytics Dashboard</h1>
+              <h1 className="bloomberg-page-heading text-slate-800">Predictive Analytics Dashboard</h1>
               <p className="text-slate-600 mt-2">
                 AI-powered investment intelligence and portfolio optimization for institutional investors
               </p>
             </div>
             <div className="text-right">
-              <div className="text-sm text-slate-600">Phase 1 Milestone 1.3</div>
-              <div className="text-lg font-semibold text-purple-600">Advanced Analytics</div>
-              <div className="text-xs text-slate-500 mt-1">
+              <div className="bloomberg-small-text text-slate-600">Phase 1 Milestone 1.3</div>
+              <div className="bloomberg-card-title text-purple-600">Advanced Analytics</div>
+              <div className="bloomberg-section-label text-slate-500 mt-1">
                 Last analysis: {lastAnalysisTime.toLocaleTimeString()}
                 {refreshing && <span className="ml-2 animate-pulse">🔄</span>}
               </div>
@@ -746,7 +746,7 @@ export const PredictiveAnalyticsDashboard: React.FC<PredictiveAnalyticsDashboard
                 <button
                   key={tab.id}
                   onClick={() => setActiveView(tab.id as any)}
-                  className={`py-3 px-1 border-b-2 font-medium text-sm ${
+                  className={`py-3 px-1 border-b-2 font-medium bloomberg-small-text ${
                     activeView === tab.id
                       ? 'border-purple-500 text-purple-600'
                       : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
@@ -768,9 +768,9 @@ export const PredictiveAnalyticsDashboard: React.FC<PredictiveAnalyticsDashboard
           {activeView === 'monitoring' && (
             <div className="bg-white border border-slate-200 rounded-lg p-8 text-center">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">📡</span>
+                <span className="bloomberg-large-metric">📡</span>
               </div>
-              <h3 className="text-lg font-semibold text-slate-800 mb-2">Real-time Monitoring</h3>
+              <h3 className="bloomberg-card-title text-slate-800 mb-2">Real-time Monitoring</h3>
               <p className="text-slate-600">
                 Coming soon: Live portfolio monitoring with automated alerts and risk management triggers.
               </p>

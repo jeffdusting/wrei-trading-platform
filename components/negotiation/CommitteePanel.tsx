@@ -45,7 +45,7 @@ function StanceBadge({ stance }: { stance: CommitteeStance }) {
 
   return (
     <span
-      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${config.bgColour} ${config.textColour}`}
+      className={`inline-flex items-center px-2 py-0.5 rounded-full bloomberg-section-label font-medium ${config.bgColour} ${config.textColour}`}
       data-testid={`stance-badge-${stance}`}
     >
       {config.label}
@@ -70,7 +70,7 @@ function RoleIcon({ role }: { role: CommitteeMemberRole }) {
 
   return (
     <div
-      className={`w-8 h-8 rounded-full ${colours[role]} flex items-center justify-center text-white text-xs font-bold`}
+      className={`w-8 h-8 rounded-full ${colours[role]} flex items-center justify-center text-white bloomberg-section-label`}
       data-testid={`role-icon-${role}`}
     >
       {icons[role]}
@@ -98,8 +98,8 @@ function CommitteeMemberCard({
         <div className="flex items-center gap-2">
           <RoleIcon role={perspective.role} />
           <div>
-            <p className="text-sm font-semibold text-slate-800">{perspective.name}</p>
-            <p className="text-xs text-slate-500">{perspective.title}</p>
+            <p className="bloomberg-small-text  text-slate-800">{perspective.name}</p>
+            <p className="bloomberg-section-label text-slate-500">{perspective.title}</p>
           </div>
         </div>
         <StanceBadge stance={perspective.stance} />
@@ -107,14 +107,14 @@ function CommitteeMemberCard({
 
       {showDiscussion && (
         <div className="mt-2 space-y-2">
-          <p className="text-sm text-slate-700" data-testid={`member-response-${perspective.role}`}>
+          <p className="bloomberg-small-text text-slate-700" data-testid={`member-response-${perspective.role}`}>
             {perspective.response}
           </p>
 
           {perspective.concerns.length > 0 && (
             <div>
-              <p className="text-xs font-medium text-slate-500 mb-1">Concerns:</p>
-              <ul className="text-xs text-slate-600 list-disc pl-4 space-y-0.5">
+              <p className="bloomberg-section-label font-medium text-slate-500 mb-1">Concerns:</p>
+              <ul className="bloomberg-section-label text-slate-600 list-disc pl-4 space-y-0.5">
                 {perspective.concerns.map((concern, i) => (
                   <li key={i}>{concern}</li>
                 ))}
@@ -124,8 +124,8 @@ function CommitteeMemberCard({
 
           {perspective.conditions.length > 0 && (
             <div>
-              <p className="text-xs font-medium text-amber-600 mb-1">Conditions:</p>
-              <ul className="text-xs text-amber-700 list-disc pl-4 space-y-0.5">
+              <p className="bloomberg-section-label font-medium text-amber-600 mb-1">Conditions:</p>
+              <ul className="bloomberg-section-label text-amber-700 list-disc pl-4 space-y-0.5">
                 {perspective.conditions.map((condition, i) => (
                   <li key={i}>{condition}</li>
                 ))}
@@ -138,7 +138,7 @@ function CommitteeMemberCard({
               {Object.entries(perspective.keyMetrics).map(([key, value]) => (
                 <span
                   key={key}
-                  className="inline-flex items-center px-1.5 py-0.5 rounded bg-slate-50 text-xs text-slate-600"
+                  className="inline-flex items-center px-1.5 py-0.5 rounded bg-slate-50 bloomberg-section-label text-slate-600"
                 >
                   <span className="font-medium mr-1">{formatMetricKey(key)}:</span>
                   {String(value)}
@@ -181,10 +181,10 @@ function VotingProgress({
   return (
     <div className="mb-3" data-testid="voting-progress">
       <div className="flex items-center justify-between mb-1">
-        <span className="text-xs font-medium text-slate-500">
+        <span className="bloomberg-section-label font-medium text-slate-500">
           Committee Progress ({votingMode} voting)
         </span>
-        <span className="text-xs text-slate-400">
+        <span className="bloomberg-section-label text-slate-400">
           {approvals + conditionals}/{total} supporting
         </span>
       </div>
@@ -221,7 +221,7 @@ function VotingProgress({
         </div>
       </div>
       <div className="flex justify-between mt-1">
-        <div className="flex gap-3 text-xs text-slate-500">
+        <div className="flex gap-3 bloomberg-section-label text-slate-500">
           {approvals > 0 && <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500" />{approvals} Approved</span>}
           {conditionals > 0 && <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-400" />{conditionals} Conditional</span>}
           {deferrals > 0 && <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-slate-300" />{deferrals} Reviewing</span>}
@@ -251,15 +251,15 @@ function DecisionDisplay({ decision }: { decision: CommitteeDecision }) {
       className={`rounded-lg p-3 ${config.colour} border ${config.border}`}
       data-testid="committee-decision"
     >
-      <h4 className="font-semibold text-sm mb-1" data-testid="decision-outcome">
+      <h4 className=" bloomberg-small-text mb-1" data-testid="decision-outcome">
         {config.label}
       </h4>
-      <p className="text-xs mb-2">{decision.summary}</p>
+      <p className="bloomberg-section-label mb-2">{decision.summary}</p>
 
       {decision.conditions.length > 0 && (
         <div className="mb-2">
-          <p className="text-xs font-medium mb-1">Outstanding Conditions:</p>
-          <ul className="text-xs list-disc pl-4 space-y-0.5">
+          <p className="bloomberg-section-label font-medium mb-1">Outstanding Conditions:</p>
+          <ul className="bloomberg-section-label list-disc pl-4 space-y-0.5">
             {decision.conditions.map((c, i) => (
               <li key={i}>{c}</li>
             ))}
@@ -269,8 +269,8 @@ function DecisionDisplay({ decision }: { decision: CommitteeDecision }) {
 
       {decision.nextSteps.length > 0 && (
         <div>
-          <p className="text-xs font-medium mb-1">Next Steps:</p>
-          <ul className="text-xs list-disc pl-4 space-y-0.5">
+          <p className="bloomberg-section-label font-medium mb-1">Next Steps:</p>
+          <ul className="bloomberg-section-label list-disc pl-4 space-y-0.5">
             {decision.nextSteps.map((s, i) => (
               <li key={i}>{s}</li>
             ))}
@@ -304,15 +304,15 @@ export default function CommitteePanel({
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div>
-          <h3 className="text-sm font-bold text-slate-800">Investment Committee</h3>
-          <p className="text-xs text-slate-500">
+          <h3 className="bloomberg-small-text text-slate-800">Investment Committee</h3>
+          <p className="bloomberg-section-label text-slate-500">
             {config.votingMode.charAt(0).toUpperCase() + config.votingMode.slice(1)} voting
             {config.roundsCompleted > 0 ? ` | Round ${config.roundsCompleted}` : ''}
           </p>
         </div>
         <button
           onClick={onToggleDiscussion}
-          className="text-xs text-sky-600 hover:text-sky-700 font-medium px-2 py-1 rounded hover:bg-sky-50 transition-colors"
+          className="bloomberg-section-label text-sky-600 hover:text-sky-700 font-medium px-2 py-1 rounded hover:bg-sky-50 transition-colors"
           data-testid="toggle-discussion"
         >
           {isDiscussionVisible ? 'Hide Discussion' : 'Show Discussion'}
@@ -348,8 +348,8 @@ export default function CommitteePanel({
                 <div className="flex items-center gap-2">
                   <RoleIcon role={member.role} />
                   <div>
-                    <p className="text-sm font-semibold text-slate-800">{member.name}</p>
-                    <p className="text-xs text-slate-500">{member.title}</p>
+                    <p className="bloomberg-small-text  text-slate-800">{member.name}</p>
+                    <p className="bloomberg-section-label text-slate-500">{member.title}</p>
                   </div>
                 </div>
                 <StanceBadge stance={member.stance} />

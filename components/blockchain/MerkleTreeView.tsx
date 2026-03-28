@@ -202,14 +202,14 @@ const MerkleTreeView: React.FC<MerkleTreeViewProps> = ({
           onClick={() => setSelectedNode(selectedNode === node.id ? null : node.id)}
         >
           <div className={getNodeStyle(node)}>
-            <div className="text-xs font-medium text-slate-700 mb-1">
+            <div className="bloomberg-section-label font-medium text-slate-700 mb-1">
               {node.data?.description || 'Node'}
             </div>
-            <div className="font-mono text-xs text-slate-600">
+            <div className="bloomberg-data bloomberg-section-label text-slate-600">
               {formatHash(node.hash)}
             </div>
             {node.isTarget && (
-              <div className="text-xs text-blue-600 font-semibold mt-1">
+              <div className="bloomberg-section-label text-blue-600  mt-1">
                 🎯 TARGET
               </div>
             )}
@@ -225,7 +225,7 @@ const MerkleTreeView: React.FC<MerkleTreeViewProps> = ({
             height="50"
             className="pointer-events-none"
           >
-            <div className="bg-slate-800 text-white text-xs p-2 rounded shadow-lg max-w-xs">
+            <div className="bg-slate-800 text-white bloomberg-section-label p-2 rounded shadow-lg max-w-xs">
               {node.data?.tooltip}
             </div>
           </foreignObject>
@@ -279,11 +279,11 @@ const MerkleTreeView: React.FC<MerkleTreeViewProps> = ({
   return (
     <div className={`merkle-tree-view ${className}`}>
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-2">
+        <h3 className="bloomberg-card-title text-slate-800 mb-2">
           Merkle Tree Proof Path
         </h3>
-        <p className="text-sm text-slate-600 mb-4">
-          Verification path for credit <span className="font-mono text-slate-800">{creditId}</span>.
+        <p className="bloomberg-small-text text-slate-600 mb-4">
+          Verification path for credit <span className="bloomberg-data text-slate-800">{creditId}</span>.
           Green nodes show the proof path needed to verify this credit&apos;s authenticity.
         </p>
       </div>
@@ -302,8 +302,8 @@ const MerkleTreeView: React.FC<MerkleTreeViewProps> = ({
 
       {/* Legend */}
       <div className="mt-4 p-4 bg-slate-50 rounded-lg">
-        <h4 className="text-sm font-semibold text-slate-700 mb-3">Legend</h4>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+        <h4 className="bloomberg-small-text  text-slate-700 mb-3">Legend</h4>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bloomberg-section-label">
           <div className="flex items-center space-x-2">
             <div className="w-4 h-4 border-2 border-blue-500 bg-blue-50 rounded"></div>
             <span className="text-slate-600">Target Credit (your credit)</span>
@@ -322,7 +322,7 @@ const MerkleTreeView: React.FC<MerkleTreeViewProps> = ({
       {/* Selected node details */}
       {selectedNode && (
         <div className="mt-4 p-4 bg-white border border-slate-200 rounded-lg">
-          <h4 className="text-sm font-semibold text-slate-700 mb-2">Node Details</h4>
+          <h4 className="bloomberg-small-text  text-slate-700 mb-2">Node Details</h4>
           {(() => {
             const findNode = (node: MerkleNode): MerkleNode | null => {
               if (node.id === selectedNode) return node;
@@ -339,24 +339,24 @@ const MerkleTreeView: React.FC<MerkleTreeViewProps> = ({
             if (!node) return null;
 
             return (
-              <div className="space-y-2 text-sm">
+              <div className="space-y-2 bloomberg-small-text">
                 <div className="flex justify-between">
                   <span className="text-slate-600">Description:</span>
                   <span className="font-medium">{node.data?.description}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Type:</span>
-                  <span className="font-mono">{node.data?.type}</span>
+                  <span className="bloomberg-data">{node.data?.type}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Level:</span>
-                  <span className="font-mono">{node.level}</span>
+                  <span className="bloomberg-data">{node.level}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-slate-600">Hash:</span>
                   <button
                     onClick={() => copyToClipboard(node.hash, node.id)}
-                    className="font-mono text-blue-600 hover:text-blue-800 text-xs bg-blue-50 px-2 py-1 rounded"
+                    className="bloomberg-data text-blue-600 hover:text-blue-800 bloomberg-section-label bg-blue-50 px-2 py-1 rounded"
                   >
                     {formatHash(node.hash)}
                     {copiedHash === node.id ? ' ✓' : ' 📋'}
@@ -375,8 +375,8 @@ const MerkleTreeView: React.FC<MerkleTreeViewProps> = ({
 
       {/* How it works section */}
       <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-        <h4 className="text-sm font-semibold text-blue-800 mb-2">🔍 How Merkle Proof Works</h4>
-        <div className="text-xs text-blue-700 space-y-2">
+        <h4 className="bloomberg-small-text  text-blue-800 mb-2">🔍 How Merkle Proof Works</h4>
+        <div className="bloomberg-section-label text-blue-700 space-y-2">
           <p>
             <strong>1.</strong> Your credit is hashed and becomes a &quot;leaf&quot; in the tree
           </p>

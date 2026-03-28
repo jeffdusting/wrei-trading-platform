@@ -223,7 +223,7 @@ export const ESGFundJourney: React.FC = () => {
         return (
           <div className="space-y-6">
             <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-green-900 mb-4">
+              <h3 className="bloomberg-metric-value text-green-900 mb-4">
                 📊 ESG Portfolio Analysis
               </h3>
               <p className="text-green-800 mb-6">
@@ -232,34 +232,34 @@ export const ESGFundJourney: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div className="bg-white border border-green-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-slate-800">ESG Fund AUM</h4>
-                  <p className="text-2xl font-bold text-green-600">A$8.5B</p>
-                  <p className="text-sm text-slate-600">ESG-Compliant Assets</p>
+                  <h4 className=" text-slate-800">ESG Fund AUM</h4>
+                  <p className="bloomberg-large-metric text-green-600">A$8.5B</p>
+                  <p className="bloomberg-small-text text-slate-600">ESG-Compliant Assets</p>
                 </div>
                 <div className="bg-white border border-green-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-slate-800">MSCI ESG Rating</h4>
-                  <p className="text-2xl font-bold text-blue-600">AA</p>
-                  <p className="text-sm text-slate-600">Industry Leading</p>
+                  <h4 className=" text-slate-800">MSCI ESG Rating</h4>
+                  <p className="bloomberg-large-metric text-blue-600">AA</p>
+                  <p className="bloomberg-small-text text-slate-600">Industry Leading</p>
                 </div>
                 <div className="bg-white border border-green-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-slate-800">Carbon Intensity</h4>
-                  <p className="text-2xl font-bold text-orange-600">147.2</p>
-                  <p className="text-sm text-slate-600">tCO2e/A$M revenue</p>
+                  <h4 className=" text-slate-800">Carbon Intensity</h4>
+                  <p className="bloomberg-large-metric text-orange-600">147.2</p>
+                  <p className="bloomberg-small-text text-slate-600">tCO2e/A$M revenue</p>
                 </div>
               </div>
 
               {/* ESG Metrics Table */}
               <div className="mb-6">
-                <h4 className="font-semibold text-slate-800 mb-3">🎯 ESG Performance Metrics</h4>
+                <h4 className=" text-slate-800 mb-3">🎯 ESG Performance Metrics</h4>
                 <div className="overflow-x-auto">
                   <table className="w-full bg-white rounded-lg border border-green-200">
                     <thead className="bg-green-100">
                       <tr>
-                        <th className="px-4 py-3 text-left font-semibold text-green-900">Metric</th>
-                        <th className="px-4 py-3 text-center font-semibold text-green-900">Current</th>
-                        <th className="px-4 py-3 text-center font-semibold text-green-900">Target</th>
-                        <th className="px-4 py-3 text-center font-semibold text-green-900">Gap</th>
-                        <th className="px-4 py-3 text-center font-semibold text-green-900">Status</th>
+                        <th className="px-4 py-3 text-left  text-green-900">Metric</th>
+                        <th className="px-4 py-3 text-center  text-green-900">Current</th>
+                        <th className="px-4 py-3 text-center  text-green-900">Target</th>
+                        <th className="px-4 py-3 text-center  text-green-900">Gap</th>
+                        <th className="px-4 py-3 text-center  text-green-900">Status</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -290,7 +290,7 @@ export const ESGFundJourney: React.FC = () => {
                               </span>
                             </td>
                             <td className="px-4 py-3 text-center">
-                              <span className={`px-2 py-1 rounded-full text-sm ${
+                              <span className={`px-2 py-1 rounded-full bloomberg-small-text ${
                                 isOnTrack
                                   ? 'bg-green-100 text-green-800'
                                   : 'bg-orange-100 text-orange-800'
@@ -307,8 +307,8 @@ export const ESGFundJourney: React.FC = () => {
               </div>
 
               <div className="p-4 bg-white border border-green-200 rounded-lg">
-                <h4 className="font-semibold text-slate-800 mb-2">🌱 Key Insights</h4>
-                <ul className="text-sm text-slate-600 space-y-1">
+                <h4 className=" text-slate-800 mb-2">🌱 Key Insights</h4>
+                <ul className="bloomberg-small-text text-slate-600 space-y-1">
                   <li>• Carbon intensity 73% above target - requires immediate offset strategy</li>
                   <li>• SDG alignment strong but needs 17% improvement to reach targets</li>
                   <li>• ESG score well-positioned for premium carbon credit investments</li>
@@ -318,7 +318,7 @@ export const ESGFundJourney: React.FC = () => {
 
               <button
                 onClick={handleESGAnalysis}
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors mt-4"
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg  transition-colors mt-4"
                 disabled={esgAnalysisComplete}
               >
                 {esgAnalysisComplete ? '✅ Analysis Complete' : 'Complete ESG Analysis'}
@@ -333,7 +333,7 @@ export const ESGFundJourney: React.FC = () => {
         return (
           <div className="space-y-6">
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-blue-900 mb-4">
+              <h3 className="bloomberg-metric-value text-blue-900 mb-4">
                 🔮 Impact Modeling & Forecasting
               </h3>
               <p className="text-blue-800 mb-6">
@@ -343,50 +343,50 @@ export const ESGFundJourney: React.FC = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Current vs Projected Impact */}
                 <div className="bg-white border border-blue-200 rounded-lg p-5">
-                  <h4 className="font-semibold text-slate-800 mb-4">📈 Impact Projection (12 months)</h4>
+                  <h4 className=" text-slate-800 mb-4">📈 Impact Projection (12 months)</h4>
 
                   <div className="space-y-4">
                     <div className="flex justify-between items-center pb-3 border-b border-slate-200">
                       <div>
                         <p className="font-medium text-slate-800">Carbon Neutrality Achievement</p>
-                        <p className="text-sm text-slate-600">Net Zero + 25% offset buffer</p>
+                        <p className="bloomberg-small-text text-slate-600">Net Zero + 25% offset buffer</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-2xl font-bold text-green-600">Q3 2026</p>
-                        <p className="text-sm text-green-700">6 months early</p>
+                        <p className="bloomberg-large-metric text-green-600">Q3 2026</p>
+                        <p className="bloomberg-small-text text-green-700">6 months early</p>
                       </div>
                     </div>
 
                     <div className="flex justify-between items-center pb-3 border-b border-slate-200">
                       <div>
                         <p className="font-medium text-slate-800">SDG Impact Score</p>
-                        <p className="text-sm text-slate-600">UN SDG alignment metric</p>
+                        <p className="bloomberg-small-text text-slate-600">UN SDG alignment metric</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-2xl font-bold text-blue-600">8.7/10</p>
-                        <p className="text-sm text-blue-700">+0.9 improvement</p>
+                        <p className="bloomberg-large-metric text-blue-600">8.7/10</p>
+                        <p className="bloomberg-small-text text-blue-700">+0.9 improvement</p>
                       </div>
                     </div>
 
                     <div className="flex justify-between items-center pb-3 border-b border-slate-200">
                       <div>
                         <p className="font-medium text-slate-800">Portfolio ESG Rating</p>
-                        <p className="text-sm text-slate-600">MSCI ESG Fund Rating</p>
+                        <p className="bloomberg-small-text text-slate-600">MSCI ESG Fund Rating</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-2xl font-bold text-purple-600">AAA</p>
-                        <p className="text-sm text-purple-700">Rating upgrade</p>
+                        <p className="bloomberg-large-metric text-purple-600">AAA</p>
+                        <p className="bloomberg-small-text text-purple-700">Rating upgrade</p>
                       </div>
                     </div>
 
                     <div className="flex justify-between items-center">
                       <div>
                         <p className="font-medium text-slate-800">Green Revenue Exposure</p>
-                        <p className="text-sm text-slate-600">% portfolio in green activities</p>
+                        <p className="bloomberg-small-text text-slate-600">% portfolio in green activities</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-2xl font-bold text-emerald-600">67%</p>
-                        <p className="text-sm text-emerald-700">+25% increase</p>
+                        <p className="bloomberg-large-metric text-emerald-600">67%</p>
+                        <p className="bloomberg-small-text text-emerald-700">+25% increase</p>
                       </div>
                     </div>
                   </div>
@@ -394,77 +394,77 @@ export const ESGFundJourney: React.FC = () => {
 
                 {/* Investment Requirements */}
                 <div className="bg-white border border-blue-200 rounded-lg p-5">
-                  <h4 className="font-semibold text-slate-800 mb-4">💰 Investment Requirements</h4>
+                  <h4 className=" text-slate-800 mb-4">💰 Investment Requirements</h4>
 
                   <div className="space-y-4">
                     <div className="p-3 bg-green-50 border border-green-200 rounded">
                       <h5 className="font-medium text-green-900">Premium Carbon Credits</h5>
-                      <p className="text-sm text-green-800 mt-1">
+                      <p className="bloomberg-small-text text-green-800 mt-1">
                         High-quality dMRV verified credits for immediate offset
                       </p>
                       <div className="flex justify-between items-center mt-2">
-                        <span className="text-xs text-green-600">50,000 tCO2e</span>
-                        <span className="font-semibold text-green-700">A$7.5M</span>
+                        <span className="bloomberg-section-label text-green-600">50,000 tCO2e</span>
+                        <span className=" text-green-700">A$7.5M</span>
                       </div>
                     </div>
 
                     <div className="p-3 bg-blue-50 border border-blue-200 rounded">
                       <h5 className="font-medium text-blue-900">Green Infrastructure Bonds</h5>
-                      <p className="text-sm text-blue-800 mt-1">
+                      <p className="bloomberg-small-text text-blue-800 mt-1">
                         ESG-compliant infrastructure for portfolio rebalancing
                       </p>
                       <div className="flex justify-between items-center mt-2">
-                        <span className="text-xs text-blue-600">8% allocation</span>
-                        <span className="font-semibold text-blue-700">A$680M</span>
+                        <span className="bloomberg-section-label text-blue-600">8% allocation</span>
+                        <span className=" text-blue-700">A$680M</span>
                       </div>
                     </div>
 
                     <div className="p-3 bg-purple-50 border border-purple-200 rounded">
                       <h5 className="font-medium text-purple-900">ESG Technology Investments</h5>
-                      <p className="text-sm text-purple-800 mt-1">
+                      <p className="bloomberg-small-text text-purple-800 mt-1">
                         Climate tech and sustainability solutions
                       </p>
                       <div className="flex justify-between items-center mt-2">
-                        <span className="text-xs text-purple-600">5% allocation</span>
-                        <span className="font-semibold text-purple-700">A$425M</span>
+                        <span className="bloomberg-section-label text-purple-600">5% allocation</span>
+                        <span className=" text-purple-700">A$425M</span>
                       </div>
                     </div>
 
                     <div className="pt-3 border-t border-slate-200">
                       <div className="flex justify-between items-center">
                         <span className="font-medium text-slate-800">Total Investment Required</span>
-                        <span className="text-xl font-bold text-slate-800">A$1.11B</span>
+                        <span className="bloomberg-metric-value text-slate-800">A$1.11B</span>
                       </div>
-                      <p className="text-sm text-slate-600 mt-1">13% of current AUM</p>
+                      <p className="bloomberg-small-text text-slate-600 mt-1">13% of current AUM</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="mt-6 p-4 bg-white border border-blue-200 rounded-lg">
-                <h4 className="font-semibold text-slate-800 mb-2">🎯 Strategic Priorities</h4>
+                <h4 className=" text-slate-800 mb-2">🎯 Strategic Priorities</h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-green-600">1st Priority</div>
-                    <div className="text-sm font-medium text-slate-800">Carbon Credits</div>
-                    <div className="text-xs text-slate-600">Immediate impact</div>
+                    <div className="bloomberg-large-metric text-green-600">1st Priority</div>
+                    <div className="bloomberg-small-text font-medium text-slate-800">Carbon Credits</div>
+                    <div className="bloomberg-section-label text-slate-600">Immediate impact</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600">2nd Priority</div>
-                    <div className="text-sm font-medium text-slate-800">Green Infrastructure</div>
-                    <div className="text-xs text-slate-600">Long-term growth</div>
+                    <div className="bloomberg-large-metric text-blue-600">2nd Priority</div>
+                    <div className="bloomberg-small-text font-medium text-slate-800">Green Infrastructure</div>
+                    <div className="bloomberg-section-label text-slate-600">Long-term growth</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-purple-600">3rd Priority</div>
-                    <div className="text-sm font-medium text-slate-800">Climate Tech</div>
-                    <div className="text-xs text-slate-600">Innovation exposure</div>
+                    <div className="bloomberg-large-metric text-purple-600">3rd Priority</div>
+                    <div className="bloomberg-small-text font-medium text-slate-800">Climate Tech</div>
+                    <div className="bloomberg-section-label text-slate-600">Innovation exposure</div>
                   </div>
                 </div>
               </div>
 
               <button
                 onClick={handleImpactModeling}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors mt-4"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg  transition-colors mt-4"
                 disabled={impactModelingComplete}
               >
                 {impactModelingComplete ? '✅ Modeling Complete' : 'Complete Impact Modeling'}
@@ -477,7 +477,7 @@ export const ESGFundJourney: React.FC = () => {
         return (
           <div className="space-y-6">
             <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-purple-900 mb-4">
+              <h3 className="bloomberg-metric-value text-purple-900 mb-4">
                 🌿 Carbon Credit Strategy Development
               </h3>
               <p className="text-purple-800 mb-6">
@@ -486,17 +486,17 @@ export const ESGFundJourney: React.FC = () => {
 
               {/* Current Carbon Portfolio */}
               <div className="mb-6">
-                <h4 className="font-semibold text-slate-800 mb-3">📋 Current Carbon Credit Portfolio</h4>
+                <h4 className=" text-slate-800 mb-3">📋 Current Carbon Credit Portfolio</h4>
                 <div className="overflow-x-auto">
                   <table className="w-full bg-white rounded-lg border border-purple-200">
                     <thead className="bg-purple-100">
                       <tr>
-                        <th className="px-4 py-3 text-left font-semibold text-purple-900">Region/Project</th>
-                        <th className="px-4 py-3 text-left font-semibold text-purple-900">Credit Type</th>
-                        <th className="px-4 py-3 text-center font-semibold text-purple-900">Vintage</th>
-                        <th className="px-4 py-3 text-right font-semibold text-purple-900">Quantity</th>
-                        <th className="px-4 py-3 text-right font-semibold text-purple-900">Price</th>
-                        <th className="px-4 py-3 text-center font-semibold text-purple-900">Impact Score</th>
+                        <th className="px-4 py-3 text-left  text-purple-900">Region/Project</th>
+                        <th className="px-4 py-3 text-left  text-purple-900">Credit Type</th>
+                        <th className="px-4 py-3 text-center  text-purple-900">Vintage</th>
+                        <th className="px-4 py-3 text-right  text-purple-900">Quantity</th>
+                        <th className="px-4 py-3 text-right  text-purple-900">Price</th>
+                        <th className="px-4 py-3 text-center  text-purple-900">Impact Score</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -508,11 +508,11 @@ export const ESGFundJourney: React.FC = () => {
                           <td className="px-4 py-3 text-right text-slate-700">
                             {credit.quantity.toLocaleString()} tCO2e
                           </td>
-                          <td className="px-4 py-3 text-right font-semibold text-slate-700">
+                          <td className="px-4 py-3 text-right  text-slate-700">
                             A${credit.price}
                           </td>
                           <td className="px-4 py-3 text-center">
-                            <span className={`px-2 py-1 rounded-full text-sm ${
+                            <span className={`px-2 py-1 rounded-full bloomberg-small-text ${
                               credit.impactScore >= 9 ? 'bg-green-100 text-green-800' :
                               credit.impactScore >= 8.5 ? 'bg-blue-100 text-blue-800' :
                               'bg-yellow-100 text-yellow-800'
@@ -530,33 +530,33 @@ export const ESGFundJourney: React.FC = () => {
               {/* Strategy Comparison */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="bg-white border border-purple-200 rounded-lg p-5">
-                  <h4 className="font-semibold text-slate-800 mb-4">🔍 WREI vs Traditional Credits</h4>
+                  <h4 className=" text-slate-800 mb-4">🔍 WREI vs Traditional Credits</h4>
 
                   <div className="space-y-4">
                     <div className="border-l-4 border-green-500 pl-4">
                       <h5 className="font-medium text-slate-800">WREI dMRV Credits</h5>
-                      <ul className="text-sm text-slate-600 mt-1 space-y-1">
+                      <ul className="bloomberg-small-text text-slate-600 mt-1 space-y-1">
                         <li>• Real-time verification and monitoring</li>
                         <li>• Blockchain-based transparency and auditability</li>
                         <li>• Premium quality with institutional-grade reporting</li>
                         <li>• Direct infrastructure project backing</li>
                         <li>• T+0 settlement and liquidity</li>
                       </ul>
-                      <div className="text-xs text-green-600 mt-2 font-medium">
+                      <div className="bloomberg-section-label text-green-600 mt-2 font-medium">
                         Price Premium: 45-60% • Impact Score: 9.5/10
                       </div>
                     </div>
 
                     <div className="border-l-4 border-amber-500 pl-4">
                       <h5 className="font-medium text-slate-800">Traditional VCS Credits</h5>
-                      <ul className="text-sm text-slate-600 mt-1 space-y-1">
+                      <ul className="bloomberg-small-text text-slate-600 mt-1 space-y-1">
                         <li>• Annual verification cycles</li>
                         <li>• Registry-based tracking</li>
                         <li>• Standard market pricing</li>
                         <li>• Variable project quality</li>
                         <li>• T+3 to T+7 settlement</li>
                       </ul>
-                      <div className="text-xs text-amber-600 mt-2 font-medium">
+                      <div className="bloomberg-section-label text-amber-600 mt-2 font-medium">
                         Base Market Price • Impact Score: 6.5-8.5/10
                       </div>
                     </div>
@@ -564,22 +564,22 @@ export const ESGFundJourney: React.FC = () => {
                 </div>
 
                 <div className="bg-white border border-purple-200 rounded-lg p-5">
-                  <h4 className="font-semibold text-slate-800 mb-4">📊 Strategic Allocation Recommendation</h4>
+                  <h4 className=" text-slate-800 mb-4">📊 Strategic Allocation Recommendation</h4>
 
                   <div className="space-y-3">
                     <div className="flex justify-between items-center pb-2 border-b border-slate-200">
                       <span className="text-slate-600">WREI dMRV Credits (Premium)</span>
-                      <span className="font-semibold text-purple-600">30,000 tCO2e</span>
+                      <span className=" text-purple-600">30,000 tCO2e</span>
                     </div>
                     <div className="flex justify-between items-center pb-2 border-b border-slate-200">
                       <span className="text-slate-600">Traditional High-Quality VCS</span>
-                      <span className="font-semibold text-blue-600">15,000 tCO2e</span>
+                      <span className=" text-blue-600">15,000 tCO2e</span>
                     </div>
                     <div className="flex justify-between items-center pb-2 border-b border-slate-200">
                       <span className="text-slate-600">Nature-Based Solutions</span>
-                      <span className="font-semibold text-green-600">5,000 tCO2e</span>
+                      <span className=" text-green-600">5,000 tCO2e</span>
                     </div>
-                    <div className="flex justify-between items-center font-semibold">
+                    <div className="flex justify-between items-center ">
                       <span className="text-slate-800">Total Acquisition Target</span>
                       <span className="text-slate-800">50,000 tCO2e</span>
                     </div>
@@ -587,7 +587,7 @@ export const ESGFundJourney: React.FC = () => {
 
                   <div className="mt-4 p-3 bg-purple-50 border border-purple-200 rounded">
                     <h5 className="font-medium text-purple-900">Portfolio Benefits</h5>
-                    <ul className="text-sm text-purple-800 mt-1 space-y-1">
+                    <ul className="bloomberg-small-text text-purple-800 mt-1 space-y-1">
                       <li>• Immediate carbon neutrality achievement</li>
                       <li>• Enhanced ESG reporting and transparency</li>
                       <li>• Premium quality supports rating upgrades</li>
@@ -599,12 +599,12 @@ export const ESGFundJourney: React.FC = () => {
               </div>
 
               <div className="mt-6 p-4 bg-white border border-purple-200 rounded-lg">
-                <h4 className="font-semibold text-slate-800 mb-2">🎯 Next Step: WREI Negotiation</h4>
+                <h4 className=" text-slate-800 mb-2">🎯 Next Step: WREI Negotiation</h4>
                 <p className="text-slate-700 mb-3">
                   Ready to negotiate the acquisition of 30,000 tonnes of premium WREI dMRV-verified carbon credits.
                   Our AI negotiation system will provide ESG-focused strategy insights.
                 </p>
-                <div className="text-sm text-slate-600">
+                <div className="bloomberg-small-text text-slate-600">
                   <strong>Target Investment:</strong> A$4.5M (30,000 tCO2e @ A$150/tonne) •
                   <strong>Premium Justification:</strong> dMRV verification and real-time monitoring •
                   <strong>Timeline:</strong> Q2 2026 delivery
@@ -613,7 +613,7 @@ export const ESGFundJourney: React.FC = () => {
 
               <button
                 onClick={handleStartNegotiation}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors mt-4"
+                className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg  transition-colors mt-4"
               >
                 Begin WREI Carbon Credit Negotiation
               </button>
@@ -625,7 +625,7 @@ export const ESGFundJourney: React.FC = () => {
         return (
           <div className="space-y-6">
             <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-indigo-900 mb-4">
+              <h3 className="bloomberg-metric-value text-indigo-900 mb-4">
                 🤖 WREI Carbon Credit Negotiation
               </h3>
               <p className="text-indigo-800 mb-4">
@@ -633,8 +633,8 @@ export const ESGFundJourney: React.FC = () => {
               </p>
 
               <div className="bg-white border border-indigo-200 rounded-lg p-4 mb-4">
-                <h4 className="font-semibold text-slate-800 mb-2">💼 Negotiation Context</h4>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <h4 className=" text-slate-800 mb-2">💼 Negotiation Context</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bloomberg-small-text">
                   <div>
                     <span className="text-slate-600">Fund Type:</span>
                     <p className="font-medium">ESG Impact Fund</p>
@@ -657,7 +657,7 @@ export const ESGFundJourney: React.FC = () => {
               {/* Chat Interface */}
               <div className="bg-white border border-indigo-200 rounded-lg">
                 <div className="border-b border-indigo-200 p-4">
-                  <h4 className="font-semibold text-slate-800">💬 Negotiation Chat</h4>
+                  <h4 className=" text-slate-800">💬 Negotiation Chat</h4>
                 </div>
 
                 <div className="h-64 overflow-y-auto p-4 space-y-3">
@@ -678,7 +678,7 @@ export const ESGFundJourney: React.FC = () => {
                               : 'bg-slate-100 text-slate-800'
                           }`}
                         >
-                          <div className="text-xs opacity-70 mb-1">
+                          <div className="bloomberg-section-label opacity-70 mb-1">
                             {message.role === 'user' ? 'James Rodriguez (You)' : 'WREI AI Agent'}
                           </div>
                           {message.content}
@@ -689,7 +689,7 @@ export const ESGFundJourney: React.FC = () => {
                   {isLoading && (
                     <div className="flex justify-start">
                       <div className="bg-slate-100 p-3 rounded-lg">
-                        <div className="text-xs text-slate-500 mb-1">WREI AI Agent</div>
+                        <div className="bloomberg-section-label text-slate-500 mb-1">WREI AI Agent</div>
                         <div className="flex space-x-1">
                           <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
                           <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
@@ -740,7 +740,7 @@ export const ESGFundJourney: React.FC = () => {
         return (
           <div className="space-y-6">
             <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-green-900 mb-4">
+              <h3 className="bloomberg-metric-value text-green-900 mb-4">
                 📊 ESG Impact Tracking Setup
               </h3>
               <p className="text-green-800 mb-6">
@@ -750,33 +750,33 @@ export const ESGFundJourney: React.FC = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Real-time ESG Dashboard */}
                 <div className="bg-white border border-green-200 rounded-lg p-5">
-                  <h4 className="font-semibold text-slate-800 mb-4">📈 Real-time ESG Monitoring</h4>
+                  <h4 className=" text-slate-800 mb-4">📈 Real-time ESG Monitoring</h4>
 
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-3 bg-green-50 border border-green-200 rounded">
                       <span className="font-medium text-slate-800">Carbon Footprint Tracking</span>
-                      <span className="text-green-600 font-semibold">Active ✅</span>
+                      <span className="text-green-600 ">Active ✅</span>
                     </div>
 
                     <div className="flex justify-between items-center p-3 bg-blue-50 border border-blue-200 rounded">
                       <span className="font-medium text-slate-800">ESG Score Monitoring</span>
-                      <span className="text-blue-600 font-semibold">Active ✅</span>
+                      <span className="text-blue-600 ">Active ✅</span>
                     </div>
 
                     <div className="flex justify-between items-center p-3 bg-purple-50 border border-purple-200 rounded">
                       <span className="font-medium text-slate-800">SDG Impact Measurement</span>
-                      <span className="text-purple-600 font-semibold">Active ✅</span>
+                      <span className="text-purple-600 ">Active ✅</span>
                     </div>
 
                     <div className="flex justify-between items-center p-3 bg-amber-50 border border-amber-200 rounded">
                       <span className="font-medium text-slate-800">Regulatory Compliance</span>
-                      <span className="text-amber-600 font-semibold">Active ✅</span>
+                      <span className="text-amber-600 ">Active ✅</span>
                     </div>
                   </div>
 
                   <div className="mt-4 p-3 bg-slate-50 border border-slate-200 rounded">
                     <h5 className="font-medium text-slate-800">Integration Status</h5>
-                    <ul className="text-sm text-slate-600 mt-1 space-y-1">
+                    <ul className="bloomberg-small-text text-slate-600 mt-1 space-y-1">
                       <li>✓ WREI dMRV verification system connected</li>
                       <li>✓ MSCI ESG rating feed integrated</li>
                       <li>✓ UN SDG impact scoring automated</li>
@@ -788,50 +788,50 @@ export const ESGFundJourney: React.FC = () => {
 
                 {/* Reporting Capabilities */}
                 <div className="bg-white border border-green-200 rounded-lg p-5">
-                  <h4 className="font-semibold text-slate-800 mb-4">📋 Automated Reporting</h4>
+                  <h4 className=" text-slate-800 mb-4">📋 Automated Reporting</h4>
 
                   <div className="space-y-4">
                     <div className="border-l-4 border-green-500 pl-4">
                       <h5 className="font-medium text-slate-800">Monthly ESG Reports</h5>
-                      <p className="text-sm text-slate-600 mt-1">
+                      <p className="bloomberg-small-text text-slate-600 mt-1">
                         Comprehensive portfolio ESG performance and impact metrics
                       </p>
-                      <div className="text-xs text-green-600 mt-2">Next report: April 1, 2026</div>
+                      <div className="bloomberg-section-label text-green-600 mt-2">Next report: April 1, 2026</div>
                     </div>
 
                     <div className="border-l-4 border-blue-500 pl-4">
                       <h5 className="font-medium text-slate-800">Quarterly Impact Assessment</h5>
-                      <p className="text-sm text-slate-600 mt-1">
+                      <p className="bloomberg-small-text text-slate-600 mt-1">
                         Detailed analysis of environmental and social impact progress
                       </p>
-                      <div className="text-xs text-blue-600 mt-2">Next report: June 30, 2026</div>
+                      <div className="bloomberg-section-label text-blue-600 mt-2">Next report: June 30, 2026</div>
                     </div>
 
                     <div className="border-l-4 border-purple-500 pl-4">
                       <h5 className="font-medium text-slate-800">Annual Sustainability Report</h5>
-                      <p className="text-sm text-slate-600 mt-1">
+                      <p className="bloomberg-small-text text-slate-600 mt-1">
                         Comprehensive sustainability disclosure and target progress
                       </p>
-                      <div className="text-xs text-purple-600 mt-2">Next report: December 31, 2026</div>
+                      <div className="bloomberg-section-label text-purple-600 mt-2">Next report: December 31, 2026</div>
                     </div>
 
                     <div className="border-l-4 border-amber-500 pl-4">
                       <h5 className="font-medium text-slate-800">Regulatory Submissions</h5>
-                      <p className="text-sm text-slate-600 mt-1">
+                      <p className="bloomberg-small-text text-slate-600 mt-1">
                         Automated compliance reporting for TCFD, SFDR, and local requirements
                       </p>
-                      <div className="text-xs text-amber-600 mt-2">Ongoing automated submission</div>
+                      <div className="bloomberg-section-label text-amber-600 mt-2">Ongoing automated submission</div>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="mt-6 p-4 bg-white border border-green-200 rounded-lg">
-                <h4 className="font-semibold text-slate-800 mb-2">✅ Journey Complete</h4>
+                <h4 className=" text-slate-800 mb-2">✅ Journey Complete</h4>
                 <p className="text-slate-700 mb-3">
                   Your ESG fund journey is now complete. You have successfully achieved comprehensive carbon credit portfolio optimisation with impact tracking:
                 </p>
-                <ul className="text-sm text-slate-600 space-y-1 mb-4">
+                <ul className="bloomberg-small-text text-slate-600 space-y-1 mb-4">
                   <li>✓ Completed comprehensive ESG portfolio analysis and gap identification</li>
                   <li>✓ Modeled environmental impact and SDG alignment improvements</li>
                   <li>✓ Developed strategic carbon credit acquisition plan</li>
@@ -872,12 +872,12 @@ export const ESGFundJourney: React.FC = () => {
         <div className="bg-white border border-slate-200 rounded-lg p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-3xl font-bold text-slate-800">ESG Fund Manager Journey</h1>
+              <h1 className="bloomberg-page-heading text-slate-800">ESG Fund Manager Journey</h1>
               <p className="text-slate-600 mt-2">James Rodriguez • Sustainable Horizons ESG Fund • A$8.5B AUM</p>
             </div>
             <div className="text-right">
-              <div className="text-sm text-slate-600">Phase 1 Milestone 1.2</div>
-              <div className="text-lg font-semibold text-green-600">Core Investor Journeys</div>
+              <div className="bloomberg-small-text text-slate-600">Phase 1 Milestone 1.2</div>
+              <div className="bloomberg-card-title text-green-600">Core Investor Journeys</div>
             </div>
           </div>
 
@@ -897,13 +897,13 @@ export const ESGFundJourney: React.FC = () => {
                   {step.status === 'completed' ? '✓' : index + 1}
                 </div>
                 <div className="ml-3">
-                  <div className={`font-semibold ${
+                  <div className={` ${
                     step.status === 'active' ? 'text-blue-600' :
                     step.status === 'completed' ? 'text-green-600' : 'text-slate-400'
                   }`}>
                     {step.title}
                   </div>
-                  <div className="text-sm text-slate-600">{step.description}</div>
+                  <div className="bloomberg-small-text text-slate-600">{step.description}</div>
                 </div>
                 {index < journeySteps.length - 1 && (
                   <div className="mx-6 w-8 h-0.5 bg-slate-300"></div>

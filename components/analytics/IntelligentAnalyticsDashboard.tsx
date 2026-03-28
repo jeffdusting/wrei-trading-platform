@@ -47,8 +47,8 @@ export const IntelligentAnalyticsDashboard: React.FC<IntelligentAnalyticsDashboa
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <div className="text-center">
           <ChartBarIcon className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">No Analytics Data</h3>
-          <p className="mt-1 text-sm text-gray-500">
+          <h3 className="mt-2 bloomberg-small-text font-medium text-gray-900">No Analytics Data</h3>
+          <p className="mt-1 bloomberg-small-text text-gray-500">
             Start demo mode to view analytics dashboard
           </p>
         </div>
@@ -66,8 +66,8 @@ export const IntelligentAnalyticsDashboard: React.FC<IntelligentAnalyticsDashboa
               <ChartBarIcon className="w-6 h-6 text-blue-600" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">Analytics Dashboard</h2>
-              <p className="text-sm text-gray-500">
+              <h2 className="bloomberg-card-title text-gray-900">Analytics Dashboard</h2>
+              <p className="bloomberg-small-text text-gray-500">
                 Scenario: {analytics.persona.name} ({analytics.persona.organisation})
               </p>
             </div>
@@ -90,7 +90,7 @@ export const IntelligentAnalyticsDashboard: React.FC<IntelligentAnalyticsDashboa
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`py-4 text-sm font-medium border-b-2 transition-colors ${
+              className={`py-4 bloomberg-small-text font-medium border-b-2 transition-colors ${
                 activeTab === tab
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
@@ -110,8 +110,8 @@ export const IntelligentAnalyticsDashboard: React.FC<IntelligentAnalyticsDashboa
               <div className="flex items-center">
                 <CurrencyDollarIcon className="w-8 h-8 text-green-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-500">Target Allocation</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="bloomberg-small-text font-medium text-gray-500">Target Allocation</p>
+                  <p className="bloomberg-large-metric text-gray-900">
                     ${(analytics.portfolioMetrics.targetAllocation / 1000).toFixed(0)}k
                   </p>
                 </div>
@@ -122,8 +122,8 @@ export const IntelligentAnalyticsDashboard: React.FC<IntelligentAnalyticsDashboa
               <div className="flex items-center">
                 <ArrowTrendingUpIcon className="w-8 h-8 text-blue-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-500">Expected Yield</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="bloomberg-small-text font-medium text-gray-500">Expected Yield</p>
+                  <p className="bloomberg-large-metric text-gray-900">
                     {(analytics.portfolioMetrics.expectedYield * 100).toFixed(1)}%
                   </p>
                 </div>
@@ -134,8 +134,8 @@ export const IntelligentAnalyticsDashboard: React.FC<IntelligentAnalyticsDashboa
               <div className="flex items-center">
                 <ChartBarIcon className="w-8 h-8 text-purple-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-500">Base Price</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="bloomberg-small-text font-medium text-gray-500">Base Price</p>
+                  <p className="bloomberg-large-metric text-gray-900">
                     ${analytics.marketData.basePrice}
                   </p>
                 </div>
@@ -146,8 +146,8 @@ export const IntelligentAnalyticsDashboard: React.FC<IntelligentAnalyticsDashboa
               <div className="flex items-center">
                 <UserGroupIcon className="w-8 h-8 text-amber-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-500">Risk Profile</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="bloomberg-small-text font-medium text-gray-500">Risk Profile</p>
+                  <p className="bloomberg-large-metric text-gray-900">
                     {analytics.portfolioMetrics.riskProfile}
                   </p>
                 </div>
@@ -160,16 +160,16 @@ export const IntelligentAnalyticsDashboard: React.FC<IntelligentAnalyticsDashboa
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="text-sm font-medium text-blue-900 mb-2">VCM Spot Reference</h4>
-                <p className="text-xl font-bold text-blue-700">${analytics.marketData.vcmSpot}</p>
+                <h4 className="bloomberg-small-text font-medium text-blue-900 mb-2">VCM Spot Reference</h4>
+                <p className="bloomberg-metric-value text-blue-700">${analytics.marketData.vcmSpot}</p>
               </div>
               <div className="bg-green-50 p-4 rounded-lg">
-                <h4 className="text-sm font-medium text-green-900 mb-2">Forward Removal</h4>
-                <p className="text-xl font-bold text-green-700">${analytics.marketData.forwardRemoval}</p>
+                <h4 className="bloomberg-small-text font-medium text-green-900 mb-2">Forward Removal</h4>
+                <p className="bloomberg-metric-value text-green-700">${analytics.marketData.forwardRemoval}</p>
               </div>
               <div className="bg-purple-50 p-4 rounded-lg">
-                <h4 className="text-sm font-medium text-purple-900 mb-2">dMRV Premium</h4>
-                <p className="text-xl font-bold text-purple-700">{analytics.marketData.dmrvPremium}x</p>
+                <h4 className="bloomberg-small-text font-medium text-purple-900 mb-2">dMRV Premium</h4>
+                <p className="bloomberg-metric-value text-purple-700">{analytics.marketData.dmrvPremium}x</p>
               </div>
             </div>
           </div>
@@ -178,23 +178,23 @@ export const IntelligentAnalyticsDashboard: React.FC<IntelligentAnalyticsDashboa
         {activeTab === 'portfolio' && (
           <div className="space-y-6">
             <div className="bg-gray-50 p-6 rounded-lg">
-              <h4 className="text-lg font-semibold text-gray-900 mb-4">Portfolio Details</h4>
+              <h4 className="bloomberg-card-title text-gray-900 mb-4">Portfolio Details</h4>
               <dl className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">Risk Profile</dt>
-                  <dd className="text-lg font-semibold text-gray-900">{analytics.portfolioMetrics.riskProfile}</dd>
+                  <dt className="bloomberg-small-text font-medium text-gray-500">Risk Profile</dt>
+                  <dd className="bloomberg-card-title text-gray-900">{analytics.portfolioMetrics.riskProfile}</dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">Liquidity Needs</dt>
-                  <dd className="text-lg font-semibold text-gray-900">{analytics.portfolioMetrics.liquidityNeeds}</dd>
+                  <dt className="bloomberg-small-text font-medium text-gray-500">Liquidity Needs</dt>
+                  <dd className="bloomberg-card-title text-gray-900">{analytics.portfolioMetrics.liquidityNeeds}</dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">Price Floor</dt>
-                  <dd className="text-lg font-semibold text-gray-900">${analytics.marketData.floor}/tonne</dd>
+                  <dt className="bloomberg-small-text font-medium text-gray-500">Price Floor</dt>
+                  <dd className="bloomberg-card-title text-gray-900">${analytics.marketData.floor}/tonne</dd>
                 </div>
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">Last Updated</dt>
-                  <dd className="text-lg font-semibold text-gray-900">
+                  <dt className="bloomberg-small-text font-medium text-gray-500">Last Updated</dt>
+                  <dd className="bloomberg-card-title text-gray-900">
                     {analytics.lastUpdated.toLocaleTimeString()}
                   </dd>
                 </div>

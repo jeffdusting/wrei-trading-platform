@@ -99,22 +99,22 @@ export const CoreInvestorJourneys: React.FC = () => {
           {/* Overview Header */}
           <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-lg p-8">
             <div className="max-w-4xl">
-              <h1 className="text-4xl font-bold mb-4">WREI Core Investor Journeys</h1>
-              <p className="text-xl text-blue-100 mb-6">
+              <h1 className="text-4xl  mb-4">WREI Core Investor Journeys</h1>
+              <p className="bloomberg-metric-value text-blue-100 mb-6">
                 Experience comprehensive investor workflows tailored to institutional requirements.
                 Each journey demonstrates the complete WREI platform capability from portfolio analysis through AI-powered negotiation to final execution.
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bloomberg-small-text">
                 <div className="bg-blue-500 bg-opacity-50 rounded-lg p-4">
-                  <h3 className="font-semibold mb-2">🏗️ Infrastructure Focus</h3>
+                  <h3 className=" mb-2">🏗️ Infrastructure Focus</h3>
                   <p className="text-blue-100">Asset Co tokens, cross-collateral strategies, and capital efficiency optimization</p>
                 </div>
                 <div className="bg-blue-500 bg-opacity-50 rounded-lg p-4">
-                  <h3 className="font-semibold mb-2">🌱 ESG Integration</h3>
+                  <h3 className=" mb-2">🌱 ESG Integration</h3>
                   <p className="text-blue-100">Premium carbon credits, impact measurement, and sustainability reporting</p>
                 </div>
                 <div className="bg-blue-500 bg-opacity-50 rounded-lg p-4">
-                  <h3 className="font-semibold mb-2">👨‍👩‍👧‍👦 Wealth Preservation</h3>
+                  <h3 className=" mb-2">👨‍👩‍👧‍👦 Wealth Preservation</h3>
                   <p className="text-blue-100">Multi-generational planning, family governance, and conservative growth</p>
                 </div>
               </div>
@@ -131,14 +131,14 @@ export const CoreInvestorJourneys: React.FC = () => {
                 {/* Card Header */}
                 <div className="bg-slate-50 border-b border-slate-200 p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-xl font-bold text-slate-800">{persona.name}</h3>
+                    <h3 className="bloomberg-metric-value text-slate-800">{persona.name}</h3>
                     <div className="text-right">
-                      <div className="text-sm text-slate-600">{persona.role}</div>
-                      <div className="text-lg font-semibold text-blue-600">{persona.aum}</div>
+                      <div className="bloomberg-small-text text-slate-600">{persona.role}</div>
+                      <div className="bloomberg-card-title text-blue-600">{persona.aum}</div>
                     </div>
                   </div>
 
-                  <div className="space-y-2 text-sm">
+                  <div className="space-y-2 bloomberg-small-text">
                     <div className="flex justify-between">
                       <span className="text-slate-600">Organization:</span>
                       <span className="font-medium text-slate-800">{persona.organization}</span>
@@ -160,13 +160,13 @@ export const CoreInvestorJourneys: React.FC = () => {
 
                 {/* Primary Objective */}
                 <div className="p-6">
-                  <h4 className="font-semibold text-slate-800 mb-3">🎯 Primary Objective</h4>
-                  <p className="text-slate-700 text-sm mb-4">{persona.primaryObjective}</p>
+                  <h4 className=" text-slate-800 mb-3">🎯 Primary Objective</h4>
+                  <p className="text-slate-700 bloomberg-small-text mb-4">{persona.primaryObjective}</p>
 
-                  <h4 className="font-semibold text-slate-800 mb-3">✨ Key Journey Benefits</h4>
+                  <h4 className=" text-slate-800 mb-3">✨ Key Journey Benefits</h4>
                   <ul className="space-y-2 mb-6">
                     {persona.keyBenefits.map((benefit, index) => (
-                      <li key={index} className="flex items-start text-sm text-slate-600">
+                      <li key={index} className="flex items-start bloomberg-small-text text-slate-600">
                         <span className="text-green-500 mr-2 mt-0.5">✓</span>
                         {benefit}
                       </li>
@@ -175,7 +175,7 @@ export const CoreInvestorJourneys: React.FC = () => {
 
                   <button
                     onClick={() => setActiveJourney(persona.id)}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-semibold transition-colors"
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg  transition-colors"
                   >
                     Start {persona.name}&apos;s Journey →
                   </button>
@@ -186,63 +186,63 @@ export const CoreInvestorJourneys: React.FC = () => {
 
           {/* Technology Integration */}
           <div className="bg-slate-50 border border-slate-200 rounded-lg p-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6 text-center">🚀 Integrated Platform Capabilities</h2>
+            <h2 className="bloomberg-large-metric text-slate-800 mb-6 text-center">🚀 Integrated Platform Capabilities</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="text-center">
                 <div className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">🧠</span>
+                  <span className="bloomberg-large-metric">🧠</span>
                 </div>
-                <h3 className="font-semibold text-slate-800 mb-2">AI Negotiation</h3>
-                <p className="text-sm text-slate-600">Real-time strategy insights with institutional persona awareness and market context analysis</p>
+                <h3 className=" text-slate-800 mb-2">AI Negotiation</h3>
+                <p className="bloomberg-small-text text-slate-600">Real-time strategy insights with institutional persona awareness and market context analysis</p>
               </div>
 
               <div className="text-center">
                 <div className="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">📊</span>
+                  <span className="bloomberg-large-metric">📊</span>
                 </div>
-                <h3 className="font-semibold text-slate-800 mb-2">Portfolio Analytics</h3>
-                <p className="text-sm text-slate-600">Professional data grids with Bloomberg Terminal-style interface and comprehensive metrics</p>
+                <h3 className=" text-slate-800 mb-2">Portfolio Analytics</h3>
+                <p className="bloomberg-small-text text-slate-600">Professional data grids with Bloomberg Terminal-style interface and comprehensive metrics</p>
               </div>
 
               <div className="text-center">
                 <div className="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">🔗</span>
+                  <span className="bloomberg-large-metric">🔗</span>
                 </div>
-                <h3 className="font-semibold text-slate-800 mb-2">Asset Tokenization</h3>
-                <p className="text-sm text-slate-600">Real asset backing with dMRV verification and institutional-grade settlement infrastructure</p>
+                <h3 className=" text-slate-800 mb-2">Asset Tokenization</h3>
+                <p className="bloomberg-small-text text-slate-600">Real asset backing with dMRV verification and institutional-grade settlement infrastructure</p>
               </div>
 
               <div className="text-center">
                 <div className="bg-amber-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">📈</span>
+                  <span className="bloomberg-large-metric">📈</span>
                 </div>
-                <h3 className="font-semibold text-slate-800 mb-2">Impact Tracking</h3>
-                <p className="text-sm text-slate-600">Real-time ESG monitoring with automated compliance reporting and stakeholder updates</p>
+                <h3 className=" text-slate-800 mb-2">Impact Tracking</h3>
+                <p className="bloomberg-small-text text-slate-600">Real-time ESG monitoring with automated compliance reporting and stakeholder updates</p>
               </div>
             </div>
           </div>
 
           {/* Implementation Status */}
           <div className="bg-white border border-slate-200 rounded-lg p-6">
-            <h3 className="text-xl font-bold text-slate-800 mb-4">📋 Phase 1 Milestone 1.2 Implementation Status</h3>
+            <h3 className="bloomberg-metric-value text-slate-800 mb-4">📋 Phase 1 Milestone 1.2 Implementation Status</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="border-l-4 border-green-500 pl-4">
-                <h4 className="font-semibold text-green-700">✅ Milestone 1.1 Complete</h4>
-                <p className="text-sm text-slate-600 mt-1">AI Negotiation Enhancement with real-time strategy explanations and institutional investor support</p>
-                <div className="text-xs text-green-600 mt-2">Status: Production Ready • Test Coverage: 262/262 passing</div>
+                <h4 className=" text-green-700">✅ Milestone 1.1 Complete</h4>
+                <p className="bloomberg-small-text text-slate-600 mt-1">AI Negotiation Enhancement with real-time strategy explanations and institutional investor support</p>
+                <div className="bloomberg-section-label text-green-600 mt-2">Status: Production Ready • Test Coverage: 262/262 passing</div>
               </div>
 
               <div className="border-l-4 border-blue-500 pl-4">
-                <h4 className="font-semibold text-blue-700">🚧 Milestone 1.2 Current</h4>
-                <p className="text-sm text-slate-600 mt-1">Core Investor Journeys with comprehensive workflow implementation for three institutional personas</p>
-                <div className="text-xs text-blue-600 mt-2">Status: Development Complete • Integration: Active</div>
+                <h4 className=" text-blue-700">🚧 Milestone 1.2 Current</h4>
+                <p className="bloomberg-small-text text-slate-600 mt-1">Core Investor Journeys with comprehensive workflow implementation for three institutional personas</p>
+                <div className="bloomberg-section-label text-blue-600 mt-2">Status: Development Complete • Integration: Active</div>
               </div>
 
               <div className="border-l-4 border-slate-400 pl-4">
-                <h4 className="font-semibold text-slate-600">⏳ Milestone 1.3 Planned</h4>
-                <p className="text-sm text-slate-600 mt-1">Advanced Analytics and Market Intelligence integration with professional dashboard enhancements</p>
-                <div className="text-xs text-slate-500 mt-2">Status: Planning Phase • Timeline: Q3 2026</div>
+                <h4 className=" text-slate-600">⏳ Milestone 1.3 Planned</h4>
+                <p className="bloomberg-small-text text-slate-600 mt-1">Advanced Analytics and Market Intelligence integration with professional dashboard enhancements</p>
+                <div className="bloomberg-section-label text-slate-500 mt-2">Status: Planning Phase • Timeline: Q3 2026</div>
               </div>
             </div>
           </div>
@@ -299,8 +299,8 @@ export const CoreInvestorJourneys: React.FC = () => {
             </div>
 
             <div className="text-right">
-              <div className="text-sm text-slate-600">Phase 1 Milestone 1.2</div>
-              <div className="text-lg font-semibold text-indigo-600">Core Investor Journeys</div>
+              <div className="bloomberg-small-text text-slate-600">Phase 1 Milestone 1.2</div>
+              <div className="bloomberg-card-title text-indigo-600">Core Investor Journeys</div>
             </div>
           </div>
         </div>

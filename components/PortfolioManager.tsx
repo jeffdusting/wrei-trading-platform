@@ -145,16 +145,16 @@ export const PortfolioManager: React.FC<PortfolioManagerProps> = ({
       <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">{personaInfo.name} - Portfolio Overview</h1>
+            <h1 className="bloomberg-large-metric text-slate-800">{personaInfo.name} - Portfolio Overview</h1>
             <p className="text-slate-600 mt-1">{personaInfo.title}, {personaInfo.organization}</p>
-            <p className="text-sm text-slate-500 mt-1">AUM: {personaInfo.aum} • Focus: {personaInfo.focus}</p>
+            <p className="bloomberg-small-text text-slate-500 mt-1">AUM: {personaInfo.aum} • Focus: {personaInfo.focus}</p>
           </div>
 
           <div className="text-right">
-            <div className="text-3xl font-bold text-slate-800">
+            <div className="bloomberg-page-heading text-slate-800">
               {portfolioSummary ? `A$${(portfolioSummary.totalValue / 1000000).toFixed(1)}M` : 'Loading...'}
             </div>
-            <div className={`text-lg font-semibold ${
+            <div className={`bloomberg-card-title ${
               portfolioSummary && portfolioSummary.totalPnL >= 0 ? 'text-green-600' : 'text-red-600'
             }`}>
               {portfolioSummary ? `${portfolioSummary.totalPnL >= 0 ? '+' : ''}A$${(portfolioSummary.totalPnL / 1000000).toFixed(2)}M` : ''}
@@ -184,26 +184,26 @@ export const PortfolioManager: React.FC<PortfolioManagerProps> = ({
       {portfolioSummary && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-            <div className="text-sm text-slate-600">Carbon Credits</div>
-            <div className="text-xl font-semibold text-slate-800">
+            <div className="bloomberg-small-text text-slate-600">Carbon Credits</div>
+            <div className="bloomberg-metric-value text-slate-800">
               {portfolioSummary.assetAllocation.carbonCredits.toFixed(1)}%
             </div>
           </div>
           <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-            <div className="text-sm text-slate-600">Asset Co Tokens</div>
-            <div className="text-xl font-semibold text-slate-800">
+            <div className="bloomberg-small-text text-slate-600">Asset Co Tokens</div>
+            <div className="bloomberg-metric-value text-slate-800">
               {portfolioSummary.assetAllocation.assetCoTokens.toFixed(1)}%
             </div>
           </div>
           <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-            <div className="text-sm text-slate-600">Infrastructure</div>
-            <div className="text-xl font-semibold text-slate-800">
+            <div className="bloomberg-small-text text-slate-600">Infrastructure</div>
+            <div className="bloomberg-metric-value text-slate-800">
               {portfolioSummary.assetAllocation.infrastructureAssets.toFixed(1)}%
             </div>
           </div>
           <div className="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
-            <div className="text-sm text-slate-600">Cash</div>
-            <div className="text-xl font-semibold text-slate-800">
+            <div className="bloomberg-small-text text-slate-600">Cash</div>
+            <div className="bloomberg-metric-value text-slate-800">
               {portfolioSummary.assetAllocation.cash.toFixed(1)}%
             </div>
           </div>
@@ -222,7 +222,7 @@ export const PortfolioManager: React.FC<PortfolioManagerProps> = ({
               <button
                 key={tab.key}
                 onClick={() => setSelectedView(tab.key as any)}
-                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                className={`px-4 py-2 bloomberg-small-text font-medium rounded-md transition-colors ${
                   selectedView === tab.key
                     ? 'bg-blue-100 text-blue-700'
                     : 'text-slate-600 hover:text-slate-800 hover:bg-slate-100'
@@ -238,12 +238,12 @@ export const PortfolioManager: React.FC<PortfolioManagerProps> = ({
           {selectedView === 'holdings' && (
             <div>
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-slate-800">Portfolio Holdings</h3>
+                <h3 className="bloomberg-card-title text-slate-800">Portfolio Holdings</h3>
                 <div className="flex gap-2">
-                  <button className="px-3 py-1 text-sm border border-slate-300 rounded hover:bg-slate-50">
+                  <button className="px-3 py-1 bloomberg-small-text border border-slate-300 rounded hover:bg-slate-50">
                     Filter
                   </button>
-                  <button className="px-3 py-1 text-sm border border-slate-300 rounded hover:bg-slate-50">
+                  <button className="px-3 py-1 bloomberg-small-text border border-slate-300 rounded hover:bg-slate-50">
                     Export
                   </button>
                 </div>
@@ -261,7 +261,7 @@ export const PortfolioManager: React.FC<PortfolioManagerProps> = ({
 
           {selectedView === 'allocation' && (
             <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-slate-800">Asset Allocation Analysis</h3>
+              <h3 className="bloomberg-card-title text-slate-800">Asset Allocation Analysis</h3>
 
               {portfolioSummary && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -271,7 +271,7 @@ export const PortfolioManager: React.FC<PortfolioManagerProps> = ({
                     <div className="space-y-3">
                       {Object.entries(portfolioSummary.assetAllocation).map(([asset, percentage]) => (
                         <div key={asset} className="flex items-center">
-                          <div className="w-32 text-sm text-slate-600 capitalize">
+                          <div className="w-32 bloomberg-small-text text-slate-600 capitalize">
                             {asset.replace(/([A-Z])/g, ' $1').toLowerCase()}
                           </div>
                           <div className="flex-1 mx-3 bg-slate-200 rounded-full h-2">
@@ -280,7 +280,7 @@ export const PortfolioManager: React.FC<PortfolioManagerProps> = ({
                               style={{width: `${percentage}%`}}
                             ></div>
                           </div>
-                          <div className="text-sm font-medium text-slate-800 w-12 text-right">
+                          <div className="bloomberg-small-text font-medium text-slate-800 w-12 text-right">
                             {percentage.toFixed(1)}%
                           </div>
                         </div>
@@ -293,16 +293,16 @@ export const PortfolioManager: React.FC<PortfolioManagerProps> = ({
                     <h4 className="text-md font-medium text-slate-700 mb-3">Risk Metrics</h4>
                     <div className="space-y-3">
                       <div className="flex justify-between">
-                        <span className="text-sm text-slate-600">Portfolio VaR (95%)</span>
-                        <span className="text-sm font-medium">A$${(portfolioSummary.riskMetrics.portfolioVar / 1000000).toFixed(1)}M</span>
+                        <span className="bloomberg-small-text text-slate-600">Portfolio VaR (95%)</span>
+                        <span className="bloomberg-small-text font-medium">A$${(portfolioSummary.riskMetrics.portfolioVar / 1000000).toFixed(1)}M</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-sm text-slate-600">Sharpe Ratio</span>
-                        <span className="text-sm font-medium">{portfolioSummary.riskMetrics.sharpeRatio.toFixed(2)}</span>
+                        <span className="bloomberg-small-text text-slate-600">Sharpe Ratio</span>
+                        <span className="bloomberg-small-text font-medium">{portfolioSummary.riskMetrics.sharpeRatio.toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-sm text-slate-600">Max Drawdown</span>
-                        <span className="text-sm font-medium">{(portfolioSummary.riskMetrics.maxDrawdown * 100).toFixed(1)}%</span>
+                        <span className="bloomberg-small-text text-slate-600">Max Drawdown</span>
+                        <span className="bloomberg-small-text font-medium">{(portfolioSummary.riskMetrics.maxDrawdown * 100).toFixed(1)}%</span>
                       </div>
                     </div>
                   </div>
@@ -313,15 +313,15 @@ export const PortfolioManager: React.FC<PortfolioManagerProps> = ({
 
           {selectedView === 'performance' && (
             <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-slate-800">Performance Analytics</h3>
+              <h3 className="bloomberg-card-title text-slate-800">Performance Analytics</h3>
 
               <div className="bg-slate-50 border border-slate-200 rounded-lg p-6 text-center">
                 <div className="text-slate-600 mb-2">📊</div>
                 <h4 className="text-md font-medium text-slate-700 mb-2">Advanced Performance Analytics</h4>
-                <p className="text-sm text-slate-600 mb-4">
+                <p className="bloomberg-small-text text-slate-600 mb-4">
                   Detailed performance attribution, benchmark comparison, and risk-adjusted returns
                 </p>
-                <button className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors">
+                <button className="px-4 py-2 bg-blue-600 text-white bloomberg-small-text rounded-lg hover:bg-blue-700 transition-colors">
                   Generate Performance Report
                 </button>
               </div>

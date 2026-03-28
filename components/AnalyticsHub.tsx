@@ -137,22 +137,22 @@ export const AnalyticsHub: React.FC<AnalyticsHubProps> = ({
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-700 text-white rounded-lg p-8">
         <div className="max-w-4xl">
-          <h1 className="text-4xl font-bold mb-4">Advanced Analytics & Market Intelligence</h1>
-          <p className="text-xl text-blue-100 mb-6">
+          <h1 className="text-4xl  mb-4">Advanced Analytics & Market Intelligence</h1>
+          <p className="bloomberg-metric-value text-blue-100 mb-6">
             Institutional-grade analytics platform powered by AI and real-time market intelligence.
             Make data-driven investment decisions with confidence.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bloomberg-small-text">
             <div className="bg-blue-500 bg-opacity-50 rounded-lg p-4">
-              <h3 className="font-semibold mb-2">🤖 AI-Powered Insights</h3>
+              <h3 className=" mb-2">🤖 AI-Powered Insights</h3>
               <p className="text-blue-100">Machine learning algorithms analyze market patterns and predict opportunities</p>
             </div>
             <div className="bg-blue-500 bg-opacity-50 rounded-lg p-4">
-              <h3 className="font-semibold mb-2">📊 Real-Time Analytics</h3>
+              <h3 className=" mb-2">📊 Real-Time Analytics</h3>
               <p className="text-blue-100">Live market data and portfolio performance tracking with instant alerts</p>
             </div>
             <div className="bg-blue-500 bg-opacity-50 rounded-lg p-4">
-              <h3 className="font-semibold mb-2">🎯 Precision Targeting</h3>
+              <h3 className=" mb-2">🎯 Precision Targeting</h3>
               <p className="text-blue-100">Persona-specific insights tailored to your investment profile and objectives</p>
             </div>
           </div>
@@ -162,8 +162,8 @@ export const AnalyticsHub: React.FC<AnalyticsHubProps> = ({
       {/* Analytics Capabilities Grid */}
       <div>
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-slate-800">Analytics Capabilities</h2>
-          <div className="text-sm text-slate-600">
+          <h2 className="bloomberg-large-metric text-slate-800">Analytics Capabilities</h2>
+          <div className="bloomberg-small-text text-slate-600">
             Showing capabilities for: <span className="font-medium">{persona.replace('_', ' ')}</span>
           </div>
         </div>
@@ -178,11 +178,11 @@ export const AnalyticsHub: React.FC<AnalyticsHubProps> = ({
               {/* Header */}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="text-3xl">{capability.icon}</div>
+                  <div className="bloomberg-page-heading">{capability.icon}</div>
                   <div>
-                    <h3 className="text-xl font-semibold text-slate-800">{capability.title}</h3>
+                    <h3 className="bloomberg-metric-value text-slate-800">{capability.title}</h3>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      <span className={`px-2 py-1 rounded-full bloomberg-section-label font-medium ${
                         capability.complexity === 'expert' ? 'bg-red-100 text-red-800' :
                         capability.complexity === 'advanced' ? 'bg-purple-100 text-purple-800' :
                         capability.complexity === 'intermediate' ? 'bg-blue-100 text-blue-800' :
@@ -190,13 +190,13 @@ export const AnalyticsHub: React.FC<AnalyticsHubProps> = ({
                       }`}>
                         {capability.complexity.toUpperCase()}
                       </span>
-                      <span className="text-xs text-slate-500">
+                      <span className="bloomberg-section-label text-slate-500">
                         {capability.targetAudience.length} investor types
                       </span>
                     </div>
                   </div>
                 </div>
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg bloomberg-small-text font-medium transition-colors">
                   Launch →
                 </button>
               </div>
@@ -209,13 +209,13 @@ export const AnalyticsHub: React.FC<AnalyticsHubProps> = ({
                 <h4 className="font-medium text-slate-700 mb-2">Key Features:</h4>
                 <ul className="space-y-1">
                   {capability.features.slice(0, 3).map((feature, index) => (
-                    <li key={index} className="text-sm text-slate-600 flex items-start">
+                    <li key={index} className="bloomberg-small-text text-slate-600 flex items-start">
                       <span className="text-green-500 mr-2 mt-0.5">✓</span>
                       {feature}
                     </li>
                   ))}
                   {capability.features.length > 3 && (
-                    <li className="text-sm text-slate-500">
+                    <li className="bloomberg-small-text text-slate-500">
                       +{capability.features.length - 3} more features
                     </li>
                   )}
@@ -228,50 +228,50 @@ export const AnalyticsHub: React.FC<AnalyticsHubProps> = ({
 
       {/* Integration Status */}
       <div className="bg-white border border-slate-200 rounded-lg p-6">
-        <h2 className="text-xl font-bold text-slate-800 mb-4">🔗 Platform Integration Status</h2>
+        <h2 className="bloomberg-metric-value text-slate-800 mb-4">🔗 Platform Integration Status</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="border-l-4 border-green-500 pl-4">
-            <h3 className="font-semibold text-green-800">✅ Milestone 1.1 Complete</h3>
-            <p className="text-sm text-slate-600 mt-1">
+            <h3 className=" text-green-800">✅ Milestone 1.1 Complete</h3>
+            <p className="bloomberg-small-text text-slate-600 mt-1">
               AI Negotiation Enhancement with real-time strategy explanations and institutional investor support
             </p>
-            <div className="text-xs text-green-600 mt-2">Status: Production Ready • 262/262 tests passing</div>
+            <div className="bloomberg-section-label text-green-600 mt-2">Status: Production Ready • 262/262 tests passing</div>
           </div>
 
           <div className="border-l-4 border-green-500 pl-4">
-            <h3 className="font-semibold text-green-800">✅ Milestone 1.2 Complete</h3>
-            <p className="text-sm text-slate-600 mt-1">
+            <h3 className=" text-green-800">✅ Milestone 1.2 Complete</h3>
+            <p className="bloomberg-small-text text-slate-600 mt-1">
               Core Investor Journeys with comprehensive workflow implementation for three institutional personas
             </p>
-            <div className="text-xs text-green-600 mt-2">Status: Production Ready • 29/29 tests passing</div>
+            <div className="bloomberg-section-label text-green-600 mt-2">Status: Production Ready • 29/29 tests passing</div>
           </div>
 
           <div className="border-l-4 border-blue-500 pl-4">
-            <h3 className="font-semibold text-blue-800">🚧 Milestone 1.3 Current</h3>
-            <p className="text-sm text-slate-600 mt-1">
+            <h3 className=" text-blue-800">🚧 Milestone 1.3 Current</h3>
+            <p className="bloomberg-small-text text-slate-600 mt-1">
               Advanced Analytics and Market Intelligence with AI-powered insights and predictive modeling
             </p>
-            <div className="text-xs text-blue-600 mt-2">Status: Development Complete • Testing in Progress</div>
+            <div className="bloomberg-section-label text-blue-600 mt-2">Status: Development Complete • Testing in Progress</div>
           </div>
         </div>
 
         <div className="mt-6 p-4 bg-slate-50 border border-slate-200 rounded-lg">
           <h4 className="font-medium text-slate-800 mb-2">🎯 Total Platform Capabilities</h4>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bloomberg-small-text">
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">291</div>
+              <div className="bloomberg-large-metric text-blue-600">291</div>
               <div className="text-slate-600">Total Tests Passing</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">3</div>
+              <div className="bloomberg-large-metric text-green-600">3</div>
               <div className="text-slate-600">Investor Journeys</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">4</div>
+              <div className="bloomberg-large-metric text-purple-600">4</div>
               <div className="text-slate-600">Analytics Modules</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">100%</div>
+              <div className="bloomberg-large-metric text-orange-600">100%</div>
               <div className="text-slate-600">Integration Success</div>
             </div>
           </div>
@@ -280,13 +280,13 @@ export const AnalyticsHub: React.FC<AnalyticsHubProps> = ({
 
       {/* User Preferences */}
       <div className="bg-white border border-slate-200 rounded-lg p-6">
-        <h2 className="text-xl font-bold text-slate-800 mb-4">⚙️ Analytics Preferences</h2>
+        <h2 className="bloomberg-metric-value text-slate-800 mb-4">⚙️ Analytics Preferences</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h4 className="font-medium text-slate-700 mb-3">Display Settings</h4>
             <div className="space-y-3">
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-1">
+                <label className="block bloomberg-small-text font-medium text-slate-600 mb-1">
                   Complexity Level
                 </label>
                 <select
@@ -305,7 +305,7 @@ export const AnalyticsHub: React.FC<AnalyticsHubProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-1">
+                <label className="block bloomberg-small-text font-medium text-slate-600 mb-1">
                   Auto-refresh Interval
                 </label>
                 <select
@@ -338,7 +338,7 @@ export const AnalyticsHub: React.FC<AnalyticsHubProps> = ({
                   }))}
                   className="mr-2"
                 />
-                <span className="text-sm text-slate-700">Enable auto-refresh</span>
+                <span className="bloomberg-small-text text-slate-700">Enable auto-refresh</span>
               </label>
 
               <label className="flex items-center">
@@ -351,7 +351,7 @@ export const AnalyticsHub: React.FC<AnalyticsHubProps> = ({
                   }))}
                   className="mr-2"
                 />
-                <span className="text-sm text-slate-700">Enable market alerts</span>
+                <span className="bloomberg-small-text text-slate-700">Enable market alerts</span>
               </label>
             </div>
           </div>
@@ -411,8 +411,8 @@ export const AnalyticsHub: React.FC<AnalyticsHubProps> = ({
               </div>
 
               <div className="text-right">
-                <div className="text-sm text-slate-600">Phase 1 Milestone 1.3</div>
-                <div className="text-lg font-semibold text-purple-600">Advanced Analytics</div>
+                <div className="bloomberg-small-text text-slate-600">Phase 1 Milestone 1.3</div>
+                <div className="bloomberg-card-title text-purple-600">Advanced Analytics</div>
               </div>
             </div>
           </div>

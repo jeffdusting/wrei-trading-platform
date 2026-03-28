@@ -111,7 +111,7 @@ export const ComplianceConfirmation: React.FC<ComplianceConfirmationProps> = ({
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">
+        <h2 className="bloomberg-large-metric text-slate-900 mb-2">
           Compliance Confirmation
         </h2>
         <p className="text-slate-600">
@@ -130,8 +130,8 @@ export const ComplianceConfirmation: React.FC<ComplianceConfirmationProps> = ({
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">Please address the following issues:</h3>
-                <div className="mt-2 text-sm text-red-700">
+                <h3 className="bloomberg-small-text font-medium text-red-800">Please address the following issues:</h3>
+                <div className="mt-2 bloomberg-small-text text-red-700">
                   <ul className="list-disc list-inside space-y-1">
                     {errors.map((error, index) => (
                       <li key={index}>{error}</li>
@@ -145,11 +145,11 @@ export const ComplianceConfirmation: React.FC<ComplianceConfirmationProps> = ({
 
         {/* Onboarding Summary */}
         <div className="bg-white border-2 border-slate-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Onboarding Summary</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Onboarding Summary</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div>
-              <h4 className="text-sm font-medium text-slate-900 mb-2">Entity Information</h4>
-              <dl className="text-sm text-slate-600 space-y-1">
+              <h4 className="bloomberg-small-text font-medium text-slate-900 mb-2">Entity Information</h4>
+              <dl className="bloomberg-small-text text-slate-600 space-y-1">
                 <div>
                   <dt className="inline font-medium">Name:</dt>
                   <dd className="inline ml-2">{onboardingState.institutionalIdentity?.entityName}</dd>
@@ -170,8 +170,8 @@ export const ComplianceConfirmation: React.FC<ComplianceConfirmationProps> = ({
             </div>
 
             <div>
-              <h4 className="text-sm font-medium text-slate-900 mb-2">Regulatory Classification</h4>
-              <dl className="text-sm text-slate-600 space-y-1">
+              <h4 className="bloomberg-small-text font-medium text-slate-900 mb-2">Regulatory Classification</h4>
+              <dl className="bloomberg-small-text text-slate-600 space-y-1">
                 <div>
                   <dt className="inline font-medium">Classification:</dt>
                   <dd className="inline ml-2 capitalize">
@@ -194,8 +194,8 @@ export const ComplianceConfirmation: React.FC<ComplianceConfirmationProps> = ({
             </div>
 
             <div>
-              <h4 className="text-sm font-medium text-slate-900 mb-2">Investment Preferences</h4>
-              <dl className="text-sm text-slate-600 space-y-1">
+              <h4 className="bloomberg-small-text font-medium text-slate-900 mb-2">Investment Preferences</h4>
+              <dl className="bloomberg-small-text text-slate-600 space-y-1">
                 <div>
                   <dt className="inline font-medium">Primary Token:</dt>
                   <dd className="inline ml-2 capitalize">
@@ -227,9 +227,9 @@ export const ComplianceConfirmation: React.FC<ComplianceConfirmationProps> = ({
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              <span className="text-lg text-slate-700">Generating Compliance Report...</span>
+              <span className="bloomberg-card-title text-slate-700">Generating Compliance Report...</span>
             </div>
-            <p className="text-sm text-slate-500">
+            <p className="bloomberg-small-text text-slate-500">
               Consolidating regulatory assessments and generating final compliance documentation.
             </p>
           </div>
@@ -256,14 +256,14 @@ export const ComplianceConfirmation: React.FC<ComplianceConfirmationProps> = ({
                 )}
               </div>
               <div>
-                <h3 className={`text-lg font-semibold ${
+                <h3 className={`bloomberg-card-title ${
                   complianceReport.overallStatus === 'compliant' ? 'text-green-800' :
                   complianceReport.overallStatus === 'conditional' ? 'text-amber-800' :
                   'text-red-800'
                 }`}>
                   Compliance Assessment: {complianceReport.overallStatus.toUpperCase()}
                 </h3>
-                <p className="text-sm text-slate-600">
+                <p className="bloomberg-small-text text-slate-600">
                   Report generated: {new Date().toLocaleDateString()}
                 </p>
               </div>
@@ -271,14 +271,14 @@ export const ComplianceConfirmation: React.FC<ComplianceConfirmationProps> = ({
 
             {complianceReport.summary && (
               <div className="mb-4">
-                <p className="text-sm text-slate-700">{complianceReport.summary}</p>
+                <p className="bloomberg-small-text text-slate-700">{complianceReport.summary}</p>
               </div>
             )}
 
             {complianceReport.requirements && complianceReport.requirements.length > 0 && (
               <div className="mb-4">
-                <h4 className="text-sm font-medium text-slate-800 mb-2">Compliance Requirements:</h4>
-                <ul className="text-sm text-slate-600 space-y-1">
+                <h4 className="bloomberg-small-text font-medium text-slate-800 mb-2">Compliance Requirements:</h4>
+                <ul className="bloomberg-small-text text-slate-600 space-y-1">
                   {complianceReport.requirements.map((req: string, index: number) => (
                     <li key={index} className="flex items-start">
                       <svg className="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -293,8 +293,8 @@ export const ComplianceConfirmation: React.FC<ComplianceConfirmationProps> = ({
 
             {complianceReport.restrictions && complianceReport.restrictions.length > 0 && (
               <div className="mb-4">
-                <h4 className="text-sm font-medium text-slate-800 mb-2">Investment Restrictions:</h4>
-                <ul className="text-sm text-slate-600 space-y-1">
+                <h4 className="bloomberg-small-text font-medium text-slate-800 mb-2">Investment Restrictions:</h4>
+                <ul className="bloomberg-small-text text-slate-600 space-y-1">
                   {complianceReport.restrictions.map((restriction: string, index: number) => (
                     <li key={index} className="flex items-start">
                       <span className="w-2 h-2 bg-amber-400 rounded-full mr-2 mt-2 flex-shrink-0"></span>
@@ -310,8 +310,8 @@ export const ComplianceConfirmation: React.FC<ComplianceConfirmationProps> = ({
         {/* Active Compliance Alerts */}
         {complianceAlerts.length > 0 && (
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-            <h3 className="text-sm font-medium text-amber-800 mb-2">Active Compliance Alerts</h3>
-            <ul className="text-sm text-amber-700 space-y-1">
+            <h3 className="bloomberg-small-text font-medium text-amber-800 mb-2">Active Compliance Alerts</h3>
+            <ul className="bloomberg-small-text text-amber-700 space-y-1">
               {complianceAlerts.slice(0, 3).map((alert, index) => (
                 <li key={index} className="flex items-start">
                   <svg className="w-4 h-4 text-amber-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -326,7 +326,7 @@ export const ComplianceConfirmation: React.FC<ComplianceConfirmationProps> = ({
 
         {/* Final Confirmations */}
         <div className="bg-slate-50 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Final Confirmations</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Final Confirmations</h3>
           <div className="space-y-4">
             <label className="flex items-start">
               <input
@@ -336,10 +336,10 @@ export const ComplianceConfirmation: React.FC<ComplianceConfirmationProps> = ({
                 className="mr-3 mt-1 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
               />
               <div>
-                <span className="text-sm font-medium text-slate-700">
+                <span className="bloomberg-small-text font-medium text-slate-700">
                   I confirm the accuracy of all provided information
                 </span>
-                <p className="text-sm text-slate-500">
+                <p className="bloomberg-small-text text-slate-500">
                   All entity information, financial details, and investment preferences are accurate and complete
                 </p>
               </div>
@@ -353,10 +353,10 @@ export const ComplianceConfirmation: React.FC<ComplianceConfirmationProps> = ({
                 className="mr-3 mt-1 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
               />
               <div>
-                <span className="text-sm font-medium text-slate-700">
+                <span className="bloomberg-small-text font-medium text-slate-700">
                   I accept the Terms and Conditions
                 </span>
-                <p className="text-sm text-slate-500">
+                <p className="bloomberg-small-text text-slate-500">
                   <a href="#" className="text-sky-600 hover:text-sky-800">Terms and Conditions</a> including
                   investment terms, fee structure, and platform usage guidelines
                 </p>
@@ -371,10 +371,10 @@ export const ComplianceConfirmation: React.FC<ComplianceConfirmationProps> = ({
                 className="mr-3 mt-1 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
               />
               <div>
-                <span className="text-sm font-medium text-slate-700">
+                <span className="bloomberg-small-text font-medium text-slate-700">
                   I acknowledge the Risk Disclosure Statement
                 </span>
-                <p className="text-sm text-slate-500">
+                <p className="bloomberg-small-text text-slate-500">
                   I understand the risks associated with carbon credit trading and tokenized asset investments
                 </p>
               </div>
@@ -388,10 +388,10 @@ export const ComplianceConfirmation: React.FC<ComplianceConfirmationProps> = ({
                 className="mr-3 mt-1 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
               />
               <div>
-                <span className="text-sm font-medium text-slate-700">
+                <span className="bloomberg-small-text font-medium text-slate-700">
                   I consent to ongoing compliance monitoring
                 </span>
-                <p className="text-sm text-slate-500">
+                <p className="bloomberg-small-text text-slate-500">
                   Regular reviews, transaction monitoring, and regulatory reporting as required by law
                 </p>
               </div>

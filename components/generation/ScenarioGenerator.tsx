@@ -274,8 +274,8 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
               <SparklesIcon className="w-6 h-6 text-purple-600" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">Dynamic Scenario Generator</h2>
-              <p className="text-sm text-gray-500">
+              <h2 className="bloomberg-card-title text-gray-900">Dynamic Scenario Generator</h2>
+              <p className="bloomberg-small-text text-gray-500">
                 AI-powered scenario generation for {audience} audience
               </p>
             </div>
@@ -317,7 +317,7 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Market Condition */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block bloomberg-small-text font-medium text-gray-700 mb-2">
               Market Condition
             </label>
             <select
@@ -331,14 +331,14 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
                 </option>
               ))}
             </select>
-            <div className={`inline-flex px-2 py-1 rounded-full text-xs font-medium mt-1 ${getMarketConditionColor(selectedMarketCondition)}`}>
+            <div className={`inline-flex px-2 py-1 rounded-full bloomberg-section-label font-medium mt-1 ${getMarketConditionColor(selectedMarketCondition)}`}>
               {selectedMarketCondition}
             </div>
           </div>
 
           {/* Duration */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block bloomberg-small-text font-medium text-gray-700 mb-2">
               Duration (minutes)
             </label>
             <input
@@ -356,7 +356,7 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
 
           {/* Complexity */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block bloomberg-small-text font-medium text-gray-700 mb-2">
               Complexity Level
             </label>
             <select
@@ -372,7 +372,7 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
               <option value="complex">Complex</option>
               <option value="expert">Expert</option>
             </select>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="bloomberg-section-label text-gray-500 mt-1">
               {getComplexityDescription(generationConfig.complexity || defaultComplexity)}
             </p>
           </div>
@@ -382,17 +382,17 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
       {/* Advanced Configuration */}
       {showAdvanced && (
         <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">Advanced Configuration</h3>
+          <h3 className="bloomberg-small-text  text-gray-900 mb-3">Advanced Configuration</h3>
 
           {/* Participant Mix */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block bloomberg-small-text font-medium text-gray-700 mb-2">
               Participant Mix (%)
             </label>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
               {Object.entries(participantMix).map(([profile, percentage]) => (
                 <div key={profile}>
-                  <label className="text-xs text-gray-600 capitalize">
+                  <label className="bloomberg-section-label text-gray-600 capitalize">
                     {profile.replace('_', ' ')}
                   </label>
                   <input
@@ -406,7 +406,7 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
                     }))}
                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                   />
-                  <div className="text-xs text-gray-500 text-center">{percentage}%</div>
+                  <div className="bloomberg-section-label text-gray-500 text-center">{percentage}%</div>
                 </div>
               ))}
             </div>
@@ -414,7 +414,7 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
 
           {/* Generation Mode */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block bloomberg-small-text font-medium text-gray-700 mb-2">
               Generation Mode
             </label>
             <div className="flex space-x-4">
@@ -431,7 +431,7 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
                     }))}
                     className="mr-2"
                   />
-                  <span className="text-sm capitalize">{mode}</span>
+                  <span className="bloomberg-small-text capitalize">{mode}</span>
                 </label>
               ))}
             </div>
@@ -439,7 +439,7 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
 
           {/* Participant Count */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block bloomberg-small-text font-medium text-gray-700 mb-2">
               Total Participants
             </label>
             <input
@@ -464,8 +464,8 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
             <div className="flex items-center space-x-2">
               <ChartBarIcon className="w-5 h-5 text-blue-600" />
               <div>
-                <p className="text-xs font-medium text-blue-600 uppercase">Success Rate</p>
-                <p className="text-sm font-semibold text-blue-900">
+                <p className="bloomberg-section-label font-medium text-blue-600 uppercase">Success Rate</p>
+                <p className="bloomberg-small-text  text-blue-900">
                   {Math.round(engineState.performance.successRate * 100)}%
                 </p>
               </div>
@@ -474,8 +474,8 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
             <div className="flex items-center space-x-2">
               <ClockIcon className="w-5 h-5 text-blue-600" />
               <div>
-                <p className="text-xs font-medium text-blue-600 uppercase">Avg Generation Time</p>
-                <p className="text-sm font-semibold text-blue-900">
+                <p className="bloomberg-section-label font-medium text-blue-600 uppercase">Avg Generation Time</p>
+                <p className="bloomberg-small-text  text-blue-900">
                   {Math.round(engineState.performance.averageGenerationTime / 1000)}s
                 </p>
               </div>
@@ -484,8 +484,8 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
             <div className="flex items-center space-x-2">
               <SparklesIcon className="w-5 h-5 text-blue-600" />
               <div>
-                <p className="text-xs font-medium text-blue-600 uppercase">Quality Score</p>
-                <p className="text-sm font-semibold text-blue-900">
+                <p className="bloomberg-section-label font-medium text-blue-600 uppercase">Quality Score</p>
+                <p className="bloomberg-small-text  text-blue-900">
                   {Math.round(engineState.performance.qualityScore * 100)}%
                 </p>
               </div>
@@ -494,8 +494,8 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
             <div className="flex items-center space-x-2">
               <UsersIcon className="w-5 h-5 text-blue-600" />
               <div>
-                <p className="text-xs font-medium text-blue-600 uppercase">Active Sources</p>
-                <p className="text-sm font-semibold text-blue-900">
+                <p className="bloomberg-section-label font-medium text-blue-600 uppercase">Active Sources</p>
+                <p className="bloomberg-small-text  text-blue-900">
                   {engineState.dataSources.active.length}
                 </p>
               </div>
@@ -508,11 +508,11 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
       {currentScenario && (
         <div className="px-6 py-4 border-b border-gray-200">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Generated Scenario</h3>
+            <h3 className="bloomberg-card-title text-gray-900">Generated Scenario</h3>
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => setShowPreview(!showPreview)}
-                className="flex items-center space-x-2 px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
+                className="flex items-center space-x-2 px-3 py-1 bloomberg-small-text border border-gray-300 rounded-md hover:bg-gray-50"
               >
                 <EyeIcon className="w-4 h-4" />
                 <span>{showPreview ? 'Hide' : 'Show'} Preview</span>
@@ -525,17 +525,17 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
             <div className="bg-gray-50 p-3 rounded-lg">
               <div className="flex items-center space-x-2 mb-1">
                 <DocumentIcon className="w-4 h-4 text-gray-600" />
-                <span className="text-xs font-medium text-gray-600 uppercase">Type</span>
+                <span className="bloomberg-section-label font-medium text-gray-600 uppercase">Type</span>
               </div>
-              <p className="text-sm font-semibold">{currentScenario.type}</p>
+              <p className="bloomberg-small-text ">{currentScenario.type}</p>
             </div>
 
             <div className="bg-gray-50 p-3 rounded-lg">
               <div className="flex items-center space-x-2 mb-1">
                 <SparklesIcon className="w-4 h-4 text-gray-600" />
-                <span className="text-xs font-medium text-gray-600 uppercase">Confidence</span>
+                <span className="bloomberg-section-label font-medium text-gray-600 uppercase">Confidence</span>
               </div>
-              <p className="text-sm font-semibold">
+              <p className="bloomberg-small-text ">
                 {Math.round(currentScenario.metadata.confidence * 100)}%
               </p>
             </div>
@@ -543,9 +543,9 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
             <div className="bg-gray-50 p-3 rounded-lg">
               <div className="flex items-center space-x-2 mb-1">
                 <ChartBarIcon className="w-4 h-4 text-gray-600" />
-                <span className="text-xs font-medium text-gray-600 uppercase">Realism</span>
+                <span className="bloomberg-section-label font-medium text-gray-600 uppercase">Realism</span>
               </div>
-              <p className="text-sm font-semibold">
+              <p className="bloomberg-small-text ">
                 {Math.round(currentScenario.metadata.realism * 100)}%
               </p>
             </div>
@@ -553,9 +553,9 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
             <div className="bg-gray-50 p-3 rounded-lg">
               <div className="flex items-center space-x-2 mb-1">
                 <CogIcon className="w-4 h-4 text-gray-600" />
-                <span className="text-xs font-medium text-gray-600 uppercase">Complexity</span>
+                <span className="bloomberg-section-label font-medium text-gray-600 uppercase">Complexity</span>
               </div>
-              <p className="text-sm font-semibold">
+              <p className="bloomberg-small-text ">
                 {Math.round(currentScenario.metadata.complexity * 100)}%
               </p>
             </div>
@@ -564,13 +564,13 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
           {/* Scenario Preview */}
           {showPreview && (
             <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-              <h4 className="font-semibold text-gray-900 mb-2">{currentScenario.narrative.title}</h4>
-              <p className="text-sm text-gray-700 mb-3">{currentScenario.narrative.description}</p>
+              <h4 className=" text-gray-900 mb-2">{currentScenario.narrative.title}</h4>
+              <p className="bloomberg-small-text text-gray-700 mb-3">{currentScenario.narrative.description}</p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <h5 className="text-sm font-medium text-gray-900 mb-2">Market Conditions</h5>
-                  <div className="space-y-1 text-sm">
+                  <h5 className="bloomberg-small-text font-medium text-gray-900 mb-2">Market Conditions</h5>
+                  <div className="space-y-1 bloomberg-small-text">
                     <p>Condition: <span className="font-medium">{currentScenario.marketConditions.condition}</span></p>
                     <p>Duration: <span className="font-medium">{currentScenario.marketConditions.duration} minutes</span></p>
                     <p>Price Range: <span className="font-medium">
@@ -581,8 +581,8 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
                 </div>
 
                 <div>
-                  <h5 className="text-sm font-medium text-gray-900 mb-2">Participants</h5>
-                  <div className="space-y-1 text-sm">
+                  <h5 className="bloomberg-small-text font-medium text-gray-900 mb-2">Participants</h5>
+                  <div className="space-y-1 bloomberg-small-text">
                     <p>Total: <span className="font-medium">{currentScenario.participants.length} participants</span></p>
                     <p>Profiles: <span className="font-medium">
                       {Array.from(new Set(currentScenario.participants.map(p => p.profile))).join(', ')}
@@ -601,7 +601,7 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
       {/* Validation Results */}
       {validationResults.length > 0 && (
         <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">Validation Results</h3>
+          <h3 className="bloomberg-small-text  text-gray-900 mb-3">Validation Results</h3>
 
           {validationResults.map(validation => (
             <div
@@ -611,16 +611,16 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center space-x-2">
                   {getValidationStatusIcon(validation)}
-                  <span className="text-sm font-medium">
+                  <span className="bloomberg-small-text font-medium">
                     {validation.validationType} validation
                   </span>
                 </div>
-                <div className="text-sm font-semibold">
+                <div className="bloomberg-small-text ">
                   Score: {Math.round(validation.results.overallScore * 100)}%
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 bloomberg-section-label">
                 {validation.results.criteriaScores.map((criteria, index) => (
                   <div key={index} className="flex justify-between">
                     <span>{criteria.name}:</span>
@@ -633,8 +633,8 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
 
               {validation.recommendations.length > 0 && (
                 <div className="mt-2">
-                  <p className="text-xs font-medium mb-1">Recommendations:</p>
-                  <ul className="text-xs space-y-1">
+                  <p className="bloomberg-section-label font-medium mb-1">Recommendations:</p>
+                  <ul className="bloomberg-section-label space-y-1">
                     {validation.recommendations.slice(0, 3).map((rec, index) => (
                       <li key={index} className="flex items-start space-x-1">
                         <span className="text-gray-500">•</span>
@@ -652,18 +652,18 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
       {/* Recent Events */}
       {recentEvents.length > 0 && (
         <div className="px-6 py-4">
-          <h3 className="text-sm font-semibold text-gray-900 mb-3">Recent Generation Events</h3>
+          <h3 className="bloomberg-small-text  text-gray-900 mb-3">Recent Generation Events</h3>
           <div className="space-y-2 max-h-32 overflow-y-auto">
             {recentEvents.slice(0, 5).map(event => (
-              <div key={event.id} className="flex items-start space-x-2 text-sm">
-                <span className="text-xs text-gray-500 min-w-16">
+              <div key={event.id} className="flex items-start space-x-2 bloomberg-small-text">
+                <span className="bloomberg-section-label text-gray-500 min-w-16">
                   {event.timestamp.toLocaleTimeString()}
                 </span>
-                <span className="px-2 py-1 bg-gray-100 rounded text-xs font-medium">
+                <span className="px-2 py-1 bg-gray-100 rounded bloomberg-section-label font-medium">
                   {event.type.replace(/_/g, ' ')}
                 </span>
                 {event.scenarioId && (
-                  <span className="text-xs text-gray-600 truncate">
+                  <span className="bloomberg-section-label text-gray-600 truncate">
                     {event.scenarioId.slice(0, 8)}...
                   </span>
                 )}
@@ -678,7 +678,7 @@ export const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({
         <div className="px-6 py-8 text-center">
           <SparklesIcon className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <p className="text-gray-600 mb-2">No scenario generated yet</p>
-          <p className="text-sm text-gray-500">
+          <p className="bloomberg-small-text text-gray-500">
             Configure your preferences and click &quot;Generate Scenario&quot; to create an AI-powered trading scenario
           </p>
         </div>

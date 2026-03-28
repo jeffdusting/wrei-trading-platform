@@ -137,23 +137,23 @@ const VesselProvenanceCard: React.FC<VesselProvenanceCardProps> = ({
       <div className="p-4 border-b border-slate-100">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center space-x-3">
-            <span className="text-2xl">{getVesselIcon(vesselData.vesselType)}</span>
+            <span className="bloomberg-large-metric">{getVesselIcon(vesselData.vesselType)}</span>
             <div>
-              <h3 className="text-lg font-semibold text-slate-800">
+              <h3 className="bloomberg-card-title text-slate-800">
                 {vesselData.vesselName}
               </h3>
-              <p className="text-sm text-slate-500">
+              <p className="bloomberg-small-text text-slate-500">
                 ID: {vesselData.vesselId} • Credit: {creditId}
               </p>
             </div>
           </div>
-          <div className={`px-2 py-1 rounded-full text-xs font-medium ${getQualityColor(vesselData.verification.dataQuality)}`}>
+          <div className={`px-2 py-1 rounded-full bloomberg-section-label font-medium ${getQualityColor(vesselData.verification.dataQuality)}`}>
             {vesselData.verification.dataQuality}% verified
           </div>
         </div>
 
         {/* Route info */}
-        <div className="flex items-center text-sm text-slate-600">
+        <div className="flex items-center bloomberg-small-text text-slate-600">
           <span className="font-medium">{vesselData.route.origin}</span>
           <span className="mx-2">→</span>
           <span className="font-medium">{vesselData.route.destination}</span>
@@ -167,28 +167,28 @@ const VesselProvenanceCard: React.FC<VesselProvenanceCardProps> = ({
       <div className="p-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
           <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">
+            <div className="bloomberg-large-metric text-blue-600">
               {vesselData.performance.energyUsed.toFixed(1)}
             </div>
-            <div className="text-xs text-slate-500">kWh Used</div>
+            <div className="bloomberg-section-label text-slate-500">kWh Used</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">
+            <div className="bloomberg-large-metric text-green-600">
               {vesselData.performance.passengersCarried}
             </div>
-            <div className="text-xs text-slate-500">Passengers</div>
+            <div className="bloomberg-section-label text-slate-500">Passengers</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-purple-600">
+            <div className="bloomberg-large-metric text-purple-600">
               {vesselData.route.distance}km
             </div>
-            <div className="text-xs text-slate-500">Distance</div>
+            <div className="bloomberg-section-label text-slate-500">Distance</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-orange-600">
+            <div className="bloomberg-large-metric text-orange-600">
               {vesselData.emissions.co2eSaved.toFixed(3)}t
             </div>
-            <div className="text-xs text-slate-500">CO₂e Saved</div>
+            <div className="bloomberg-section-label text-slate-500">CO₂e Saved</div>
           </div>
         </div>
 
@@ -196,10 +196,10 @@ const VesselProvenanceCard: React.FC<VesselProvenanceCardProps> = ({
         <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-sm font-medium text-green-800">
+              <div className="bloomberg-small-text font-medium text-green-800">
                 Energy Efficiency: {(vesselData.performance.efficiency * 1000).toFixed(1)} Wh/passenger-km
               </div>
-              <div className="text-xs text-green-600">
+              <div className="bloomberg-section-label text-green-600">
                 {vesselData.emissions.factors.vesselEfficiency}% more efficient than diesel baseline
               </div>
             </div>
@@ -217,7 +217,7 @@ const VesselProvenanceCard: React.FC<VesselProvenanceCardProps> = ({
           <div className="text-center">
             <button
               onClick={() => setShowDetails(!showDetails)}
-              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+              className="bloomberg-small-text text-blue-600 hover:text-blue-800 font-medium"
             >
               {showDetails ? 'Hide Details ▲' : 'Show Details ▼'}
             </button>
@@ -229,8 +229,8 @@ const VesselProvenanceCard: React.FC<VesselProvenanceCardProps> = ({
           <div className="space-y-4">
             {/* Emissions breakdown */}
             <div>
-              <h4 className="text-sm font-semibold text-slate-700 mb-2">Emissions Calculation</h4>
-              <div className="bg-slate-50 rounded-lg p-3 text-sm space-y-2">
+              <h4 className="bloomberg-small-text  text-slate-700 mb-2">Emissions Calculation</h4>
+              <div className="bg-slate-50 rounded-lg p-3 bloomberg-small-text space-y-2">
                 <div className="flex justify-between">
                   <span className="text-slate-600">Baseline:</span>
                   <span className="font-medium">{vesselData.emissions.baseline}</span>
@@ -248,19 +248,19 @@ const VesselProvenanceCard: React.FC<VesselProvenanceCardProps> = ({
 
             {/* Sensors & verification */}
             <div>
-              <h4 className="text-sm font-semibold text-slate-700 mb-2">Sensor Verification</h4>
+              <h4 className="bloomberg-small-text  text-slate-700 mb-2">Sensor Verification</h4>
               <div className="space-y-2">
                 <div className="flex flex-wrap gap-1">
                   {vesselData.verification.sensors.map((sensor, index) => (
                     <span
                       key={index}
-                      className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full"
+                      className="px-2 py-1 bg-blue-100 text-blue-700 bloomberg-section-label rounded-full"
                     >
                       {sensor}
                     </span>
                   ))}
                 </div>
-                <div className="text-xs text-slate-500">
+                <div className="bloomberg-section-label text-slate-500">
                   {vesselData.verification.auditTrail} •
                   Recorded: {new Date(vesselData.verification.timestamp).toLocaleString()}
                 </div>
@@ -269,15 +269,15 @@ const VesselProvenanceCard: React.FC<VesselProvenanceCardProps> = ({
 
             {/* Location info */}
             <div>
-              <h4 className="text-sm font-semibold text-slate-700 mb-2">Location & Context</h4>
-              <div className="bg-slate-50 rounded-lg p-3 text-sm space-y-1">
+              <h4 className="bloomberg-small-text  text-slate-700 mb-2">Location & Context</h4>
+              <div className="bg-slate-50 rounded-lg p-3 bloomberg-small-text space-y-1">
                 <div className="flex justify-between">
                   <span className="text-slate-600">Region:</span>
                   <span className="font-medium">{vesselData.location.region}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Coordinates:</span>
-                  <span className="font-mono text-xs">
+                  <span className="bloomberg-data bloomberg-section-label">
                     {vesselData.location.latitude.toFixed(4)}, {vesselData.location.longitude.toFixed(4)}
                   </span>
                 </div>
@@ -296,7 +296,7 @@ const VesselProvenanceCard: React.FC<VesselProvenanceCardProps> = ({
             {onViewProvenanceChain && (
               <button
                 onClick={onViewProvenanceChain}
-                className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg bloomberg-small-text font-medium hover:bg-blue-700 transition-colors"
               >
                 🔗 View Full Provenance Chain
               </button>
@@ -310,7 +310,7 @@ const VesselProvenanceCard: React.FC<VesselProvenanceCardProps> = ({
                   'noopener,noreferrer'
                 );
               }}
-              className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-200 transition-colors"
+              className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg bloomberg-small-text font-medium hover:bg-slate-200 transition-colors"
             >
               🔍 Blockchain Explorer
             </button>
@@ -323,13 +323,13 @@ const VesselProvenanceCard: React.FC<VesselProvenanceCardProps> = ({
         <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-3">
           <div className="flex items-center space-x-2">
             <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-xs">✓</span>
+              <span className="text-white bloomberg-section-label">✓</span>
             </div>
-            <div className="text-sm">
+            <div className="bloomberg-small-text">
               <div className="font-medium text-slate-800">
                 Verified by WREI dMRV Engine
               </div>
-              <div className="text-xs text-slate-500">
+              <div className="bloomberg-section-label text-slate-500">
                 Digital measurement, reporting & verification • Zoniqx zProtocol compliant
               </div>
             </div>

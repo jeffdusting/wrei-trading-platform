@@ -48,18 +48,18 @@ const TickerItem: React.FC<TickerItemProps> = ({ ticker, onClick }) => {
       title={`${ticker.name} - Click for details`}
     >
       {/* Symbol */}
-      <span className="font-semibold text-slate-800 text-sm">
+      <span className=" text-slate-800 bloomberg-small-text">
         {ticker.symbol}
       </span>
 
       {/* Price */}
-      <span className="font-mono text-sm text-slate-700">
+      <span className="bloomberg-data bloomberg-small-text text-slate-700">
         {formattedPrice}
       </span>
 
       {/* Change with icon */}
-      <span className={`font-mono text-sm ${changeColor} flex items-center space-x-1`}>
-        <span className="text-xs">{changeIcon}</span>
+      <span className={`bloomberg-data bloomberg-small-text ${changeColor} flex items-center space-x-1`}>
+        <span className="bloomberg-section-label">{changeIcon}</span>
         <span>{formattedChange}</span>
         <span>({formattedPercent})</span>
       </span>
@@ -119,7 +119,7 @@ const MarketTicker: React.FC<MarketTickerProps> = ({
         {/* Connection status */}
         <div className="absolute top-0 left-0 z-10 flex items-center space-x-2 bg-white/90 backdrop-blur-sm px-3 py-1">
           <div className={`w-2 h-2 rounded-full ${connectionDot}`} />
-          <span className="text-xs text-slate-500 font-medium">
+          <span className="bloomberg-section-label text-slate-500 font-medium">
             LIVE MARKET DATA
           </span>
         </div>
@@ -158,18 +158,18 @@ const MarketTicker: React.FC<MarketTickerProps> = ({
           <div className="flex justify-between items-start">
             <div>
               <div className="flex items-center space-x-3 mb-2">
-                <h3 className="text-lg font-semibold text-slate-800">
+                <h3 className="bloomberg-card-title text-slate-800">
                   {selectedTicker.name}
                 </h3>
-                <span className="text-sm text-slate-500 font-mono">
+                <span className="bloomberg-small-text text-slate-500 bloomberg-data">
                   {selectedTicker.symbol}
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bloomberg-small-text">
                 <div>
                   <span className="text-slate-500 block">Current Price</span>
-                  <span className="font-mono font-semibold text-slate-800">
+                  <span className="bloomberg-data  text-slate-800">
                     {selectedTicker.currency === 'USD'
                       ? `$${selectedTicker.price.toFixed(2)}`
                       : `A$${selectedTicker.price.toFixed(2)}`
@@ -179,7 +179,7 @@ const MarketTicker: React.FC<MarketTickerProps> = ({
 
                 <div>
                   <span className="text-slate-500 block">24h Change</span>
-                  <span className={`font-mono font-semibold ${
+                  <span className={`bloomberg-data  ${
                     selectedTicker.change >= 0 ? 'text-green-600' : 'text-red-600'
                   }`}>
                     {selectedTicker.change >= 0 ? '+' : ''}{selectedTicker.change.toFixed(2)}
@@ -190,7 +190,7 @@ const MarketTicker: React.FC<MarketTickerProps> = ({
                 {selectedTicker.high24h && (
                   <div>
                     <span className="text-slate-500 block">24h High</span>
-                    <span className="font-mono font-semibold text-slate-800">
+                    <span className="bloomberg-data  text-slate-800">
                       {selectedTicker.currency === 'USD'
                         ? `$${selectedTicker.high24h.toFixed(2)}`
                         : `A$${selectedTicker.high24h.toFixed(2)}`
@@ -202,7 +202,7 @@ const MarketTicker: React.FC<MarketTickerProps> = ({
                 {selectedTicker.low24h && (
                   <div>
                     <span className="text-slate-500 block">24h Low</span>
-                    <span className="font-mono font-semibold text-slate-800">
+                    <span className="bloomberg-data  text-slate-800">
                       {selectedTicker.currency === 'USD'
                         ? `$${selectedTicker.low24h.toFixed(2)}`
                         : `A$${selectedTicker.low24h.toFixed(2)}`
@@ -214,14 +214,14 @@ const MarketTicker: React.FC<MarketTickerProps> = ({
                 {selectedTicker.volume && (
                   <div>
                     <span className="text-slate-500 block">Volume (24h)</span>
-                    <span className="font-mono font-semibold text-slate-800">
+                    <span className="bloomberg-data  text-slate-800">
                       {selectedTicker.volume.toLocaleString()}
                     </span>
                   </div>
                 )}
               </div>
 
-              <div className="mt-3 text-xs text-slate-400">
+              <div className="mt-3 bloomberg-section-label text-slate-400">
                 Last updated: {selectedTicker.timestamp.toLocaleTimeString()}
               </div>
             </div>

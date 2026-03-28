@@ -140,7 +140,7 @@ const ProvenanceChain: React.FC<ProvenanceChainProps> = ({
         return (
           <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
             <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-xs animate-pulse">✓</span>
+              <span className="text-white bloomberg-section-label animate-pulse">✓</span>
             </div>
           </div>
         );
@@ -148,7 +148,7 @@ const ProvenanceChain: React.FC<ProvenanceChainProps> = ({
         return (
           <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
             <div className="w-4 h-4 bg-yellow-500 rounded-full animate-spin flex items-center justify-center">
-              <span className="text-white text-xs">⟳</span>
+              <span className="text-white bloomberg-section-label">⟳</span>
             </div>
           </div>
         );
@@ -156,7 +156,7 @@ const ProvenanceChain: React.FC<ProvenanceChainProps> = ({
         return (
           <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
             <div className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-xs">✕</span>
+              <span className="text-white bloomberg-section-label">✕</span>
             </div>
           </div>
         );
@@ -174,11 +174,11 @@ const ProvenanceChain: React.FC<ProvenanceChainProps> = ({
   return (
     <div className={`provenance-chain ${className}`}>
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-2">
+        <h3 className="bloomberg-card-title text-slate-800 mb-2">
           Blockchain Provenance Chain
         </h3>
-        <p className="text-sm text-slate-600">
-          Credit ID: <span className="font-mono text-slate-800">{creditId}</span>
+        <p className="bloomberg-small-text text-slate-600">
+          Credit ID: <span className="bloomberg-data text-slate-800">{creditId}</span>
         </p>
       </div>
 
@@ -212,10 +212,10 @@ const ProvenanceChain: React.FC<ProvenanceChainProps> = ({
                     <div className="flex items-center space-x-2">
                       <h4 className="font-medium text-slate-800">{step.title}</h4>
                       {step.status === 'verified' && (
-                        <span className="text-green-600 text-xs">✓ Verified</span>
+                        <span className="text-green-600 bloomberg-section-label">✓ Verified</span>
                       )}
                     </div>
-                    <div className="flex items-center space-x-2 text-xs text-slate-500">
+                    <div className="flex items-center space-x-2 bloomberg-section-label text-slate-500">
                       <span>{new Date(step.timestamp).toLocaleString()}</span>
                       <button
                         onClick={(e) => {
@@ -230,17 +230,17 @@ const ProvenanceChain: React.FC<ProvenanceChainProps> = ({
                   </div>
 
                   {/* Step description */}
-                  <p className="text-sm text-slate-600 mb-3">{step.description}</p>
+                  <p className="bloomberg-small-text text-slate-600 mb-3">{step.description}</p>
 
                   {/* Hash display */}
                   <div className="flex items-center space-x-2 mb-2">
-                    <span className="text-xs text-slate-500">Hash:</span>
+                    <span className="bloomberg-section-label text-slate-500">Hash:</span>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         copyToClipboard(step.hash, step.id);
                       }}
-                      className="font-mono text-xs text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded"
+                      className="bloomberg-data bloomberg-section-label text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded"
                       title="Click to copy full hash"
                     >
                       {formatHash(step.hash)}
@@ -250,7 +250,7 @@ const ProvenanceChain: React.FC<ProvenanceChainProps> = ({
 
                   {/* Transaction info */}
                   {step.transactionId && (
-                    <div className="text-xs text-slate-500">
+                    <div className="bloomberg-section-label text-slate-500">
                       Block #{step.blockNumber} • Tx: {formatHash(step.transactionId)}
                     </div>
                   )}
@@ -259,13 +259,13 @@ const ProvenanceChain: React.FC<ProvenanceChainProps> = ({
                   {isExpanded && (
                     <div className="mt-4 pt-4 border-t border-slate-200">
                       <h5 className="font-medium text-slate-700 mb-3">Verification Details</h5>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bloomberg-small-text">
                         {Object.entries(step.details).map(([key, value]) => (
                           <div key={key} className="flex justify-between">
                             <span className="text-slate-600 capitalize">
                               {key.replace(/([A-Z])/g, ' $1').trim()}:
                             </span>
-                            <span className="font-mono text-slate-800 text-right">
+                            <span className="bloomberg-data text-slate-800 text-right">
                               {typeof value === 'number' ? value.toLocaleString() : String(value)}
                             </span>
                           </div>
@@ -279,7 +279,7 @@ const ProvenanceChain: React.FC<ProvenanceChainProps> = ({
                               e.stopPropagation();
                               copyToClipboard(step.transactionId || '', `${step.id}-tx`);
                             }}
-                            className="text-xs text-blue-600 hover:text-blue-800"
+                            className="bloomberg-section-label text-blue-600 hover:text-blue-800"
                           >
                             📋 Copy Transaction ID
                             {copiedHash === `${step.id}-tx` && ' ✓'}
@@ -297,7 +297,7 @@ const ProvenanceChain: React.FC<ProvenanceChainProps> = ({
 
       {/* Summary footer */}
       <div className="mt-6 p-4 bg-slate-50 rounded-lg">
-        <div className="text-sm text-slate-600 text-center">
+        <div className="bloomberg-small-text text-slate-600 text-center">
           <strong>{steps.filter(s => s.status === 'verified').length}/{steps.length}</strong> steps verified •{' '}
           Chain integrity: <span className="text-green-600 font-medium">100% verified</span>
         </div>

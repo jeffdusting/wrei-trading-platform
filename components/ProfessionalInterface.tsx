@@ -313,7 +313,7 @@ const WholesalePathwaySelector: React.FC<{
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-      <h3 className="text-xl font-bold text-gray-800 mb-4">🏛️ Investor Classification & Pathway</h3>
+      <h3 className="bloomberg-metric-value text-gray-800 mb-4">🏛️ Investor Classification & Pathway</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {pathways.map((pathway) => {
@@ -334,24 +334,24 @@ const WholesalePathwaySelector: React.FC<{
               onClick={() => isAccessible && onClassificationChange(pathway)}
             >
               <div className="flex items-center justify-between mb-3">
-                <div className="font-semibold text-gray-800 capitalize">
+                <div className=" text-gray-800 capitalize">
                   {pathway.replace('_', ' ')}
                 </div>
                 {isSelected && (
                   <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xs">✓</span>
+                    <span className="text-white bloomberg-section-label">✓</span>
                   </div>
                 )}
               </div>
 
-              <div className="space-y-2 text-sm">
+              <div className="space-y-2 bloomberg-small-text">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Minimum:</span>
                   <span className={`font-medium ${isAccessible ? 'text-green-600' : 'text-red-600'}`}>
                     A${(pathwayData.minimumInvestment / 1_000_000).toFixed(1)}M
                   </span>
                 </div>
-                <div className="text-xs text-gray-600">
+                <div className="bloomberg-section-label text-gray-600">
                   <strong>Exemptions:</strong>
                   <ul className="mt-1 space-y-1">
                     {pathwayData.regulatoryExemptions.slice(0, 2).map((exemption, idx) => (
@@ -359,7 +359,7 @@ const WholesalePathwaySelector: React.FC<{
                     ))}
                   </ul>
                 </div>
-                <div className="text-xs text-gray-600">
+                <div className="bloomberg-section-label text-gray-600">
                   <strong>Tax:</strong> {pathwayData.taxTreatment.toUpperCase()} treatment
                 </div>
               </div>
@@ -370,7 +370,7 @@ const WholesalePathwaySelector: React.FC<{
 
       <div className="mt-4 p-4 bg-gray-50 rounded-lg">
         <h4 className="font-medium text-gray-800 mb-2">Your Current Status</h4>
-        <div className="text-sm text-gray-600">
+        <div className="bloomberg-small-text text-gray-600">
           Investment Size: <span className="font-medium">A${(investmentSize / 1_000_000).toFixed(1)}M</span> •
           Classification: <span className="font-medium capitalize">{currentClassification.replace('_', ' ')}</span>
         </div>
@@ -393,7 +393,7 @@ const MarketAccessToggles: React.FC<{
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-      <h3 className="text-xl font-bold text-gray-800 mb-4">📈 Market Access</h3>
+      <h3 className="bloomberg-metric-value text-gray-800 mb-4">📈 Market Access</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Primary Market */}
@@ -408,8 +408,8 @@ const MarketAccessToggles: React.FC<{
           onClick={() => marketAccess.primaryMarket.available && onMarketChange('primary')}
         >
           <div className="flex items-center justify-between mb-3">
-            <div className="font-semibold text-gray-800">Primary Market</div>
-            <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+            <div className=" text-gray-800">Primary Market</div>
+            <div className={`px-2 py-1 rounded-full bloomberg-section-label font-medium ${
               marketAccess.primaryMarket.available
                 ? 'bg-green-100 text-green-800'
                 : 'bg-gray-100 text-gray-600'
@@ -418,10 +418,10 @@ const MarketAccessToggles: React.FC<{
             </div>
           </div>
 
-          <div className="space-y-2 text-sm">
+          <div className="space-y-2 bloomberg-small-text">
             <div className="text-gray-600">
               <strong>Features:</strong>
-              <ul className="mt-1 space-y-1 text-xs">
+              <ul className="mt-1 space-y-1 bloomberg-section-label">
                 <li>• Institutional pricing {marketAccess.primaryMarket.institutionalPricing ? '✓' : '✗'}</li>
                 <li>• Early access terms {marketAccess.primaryMarket.earlyAccess ? '✓' : '✗'}</li>
                 <li>• Regulatory priority</li>
@@ -430,7 +430,7 @@ const MarketAccessToggles: React.FC<{
             </div>
             <div className="text-gray-600">
               <strong>Minimums:</strong>
-              <ul className="mt-1 space-y-1 text-xs">
+              <ul className="mt-1 space-y-1 bloomberg-section-label">
                 <li>• Carbon: A${(marketAccess.primaryMarket.minimums.carbon_credits / 1_000_000).toFixed(0)}M</li>
                 <li>• Asset Co: A${(marketAccess.primaryMarket.minimums.asset_co / 1_000_000).toFixed(0)}M</li>
                 <li>• Dual: A${(marketAccess.primaryMarket.minimums.dual_portfolio / 1_000_000).toFixed(0)}M</li>
@@ -449,16 +449,16 @@ const MarketAccessToggles: React.FC<{
           onClick={() => onMarketChange('secondary')}
         >
           <div className="flex items-center justify-between mb-3">
-            <div className="font-semibold text-gray-800">Secondary Market</div>
-            <div className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            <div className=" text-gray-800">Secondary Market</div>
+            <div className="px-2 py-1 rounded-full bloomberg-section-label font-medium bg-blue-100 text-blue-800">
               Available
             </div>
           </div>
 
-          <div className="space-y-2 text-sm">
+          <div className="space-y-2 bloomberg-small-text">
             <div className="text-gray-600">
               <strong>Features:</strong>
-              <ul className="mt-1 space-y-1 text-xs">
+              <ul className="mt-1 space-y-1 bloomberg-section-label">
                 <li>• {marketAccess.secondaryMarket.liquidity} settlement</li>
                 <li>• {marketAccess.secondaryMarket.tradingHours} trading</li>
                 <li>• Market makers {marketAccess.secondaryMarket.marketMakers ? '✓' : '✗'}</li>
@@ -467,7 +467,7 @@ const MarketAccessToggles: React.FC<{
             </div>
             <div className="text-gray-600">
               <strong>Benefits:</strong>
-              <ul className="mt-1 space-y-1 text-xs">
+              <ul className="mt-1 space-y-1 bloomberg-section-label">
                 <li>• Immediate liquidity</li>
                 <li>• Price discovery</li>
                 <li>• Lower minimums</li>
@@ -495,24 +495,24 @@ const AdvancedAnalyticsPanel: React.FC<{
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-      <h3 className="text-xl font-bold text-gray-800 mb-4">📊 Advanced Analytics</h3>
+      <h3 className="bloomberg-metric-value text-gray-800 mb-4">📊 Advanced Analytics</h3>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-blue-50 rounded-lg p-4 text-center">
-          <div className="text-2xl font-bold text-blue-600">{(analytics.irr * 100).toFixed(1)}%</div>
-          <div className="text-sm text-blue-700">IRR</div>
+          <div className="bloomberg-large-metric text-blue-600">{(analytics.irr * 100).toFixed(1)}%</div>
+          <div className="bloomberg-small-text text-blue-700">IRR</div>
         </div>
         <div className="bg-green-50 rounded-lg p-4 text-center">
-          <div className="text-2xl font-bold text-green-600">A${(analytics.npv / 1_000_000).toFixed(1)}M</div>
-          <div className="text-sm text-green-700">NPV</div>
+          <div className="bloomberg-large-metric text-green-600">A${(analytics.npv / 1_000_000).toFixed(1)}M</div>
+          <div className="bloomberg-small-text text-green-700">NPV</div>
         </div>
         <div className="bg-purple-50 rounded-lg p-4 text-center">
-          <div className="text-2xl font-bold text-purple-600">{(analytics.cashOnCash * 100).toFixed(1)}%</div>
-          <div className="text-sm text-purple-700">Cash-on-Cash</div>
+          <div className="bloomberg-large-metric text-purple-600">{(analytics.cashOnCash * 100).toFixed(1)}%</div>
+          <div className="bloomberg-small-text text-purple-700">Cash-on-Cash</div>
         </div>
         <div className="bg-amber-50 rounded-lg p-4 text-center">
-          <div className="text-2xl font-bold text-amber-600">{(analytics.cagr * 100).toFixed(1)}%</div>
-          <div className="text-sm text-amber-700">CAGR</div>
+          <div className="bloomberg-large-metric text-amber-600">{(analytics.cagr * 100).toFixed(1)}%</div>
+          <div className="bloomberg-small-text text-amber-700">CAGR</div>
         </div>
       </div>
 
@@ -545,7 +545,7 @@ const AdvancedAnalyticsPanel: React.FC<{
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <h4 className="font-medium text-gray-800 mb-3">Return Metrics</h4>
-          <div className="space-y-2 text-sm">
+          <div className="space-y-2 bloomberg-small-text">
             <div className="flex justify-between">
               <span className="text-gray-600">Sharpe Ratio:</span>
               <span className="font-medium">{analytics.sharpeRatio.toFixed(2)}</span>
@@ -567,7 +567,7 @@ const AdvancedAnalyticsPanel: React.FC<{
 
         <div>
           <h4 className="font-medium text-gray-800 mb-3">Investment Summary</h4>
-          <div className="space-y-2 text-sm">
+          <div className="space-y-2 bloomberg-small-text">
             <div className="flex justify-between">
               <span className="text-gray-600">Initial Investment:</span>
               <span className="font-medium">A${(investmentAmount / 1_000_000).toFixed(1)}M</span>
@@ -603,7 +603,7 @@ const RiskAssessmentTools: React.FC<{
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-      <h3 className="text-xl font-bold text-gray-800 mb-4">⚖️ Risk Assessment Tools</h3>
+      <h3 className="bloomberg-metric-value text-gray-800 mb-4">⚖️ Risk Assessment Tools</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Volatility Analysis */}
@@ -611,7 +611,7 @@ const RiskAssessmentTools: React.FC<{
           <h4 className="font-medium text-gray-800 mb-3">Volatility Analysis</h4>
           <div className="space-y-3">
             <div>
-              <div className="flex justify-between text-sm mb-1">
+              <div className="flex justify-between bloomberg-small-text mb-1">
                 <span className="text-gray-600">Historical Volatility</span>
                 <span className="font-medium">{(riskTools.volatilityAnalysis.historicalVolatility * 100).toFixed(1)}%</span>
               </div>
@@ -623,7 +623,7 @@ const RiskAssessmentTools: React.FC<{
               </div>
             </div>
             <div>
-              <div className="flex justify-between text-sm mb-1">
+              <div className="flex justify-between bloomberg-small-text mb-1">
                 <span className="text-gray-600">Implied Volatility</span>
                 <span className="font-medium">{(riskTools.volatilityAnalysis.impliedVolatility * 100).toFixed(1)}%</span>
               </div>
@@ -634,7 +634,7 @@ const RiskAssessmentTools: React.FC<{
                 ></div>
               </div>
             </div>
-            <div className="text-xs text-gray-600">
+            <div className="bloomberg-section-label text-gray-600">
               Volatility Rank: {riskTools.volatilityAnalysis.volatilityRank.toFixed(0)}th percentile
             </div>
           </div>
@@ -643,7 +643,7 @@ const RiskAssessmentTools: React.FC<{
         {/* Value at Risk */}
         <div>
           <h4 className="font-medium text-gray-800 mb-3">Value at Risk (95% Confidence)</h4>
-          <div className="space-y-2 text-sm">
+          <div className="space-y-2 bloomberg-small-text">
             <div className="flex justify-between">
               <span className="text-gray-600">1-Day VaR:</span>
               <span className="font-medium text-red-600">
@@ -663,7 +663,7 @@ const RiskAssessmentTools: React.FC<{
               </span>
             </div>
           </div>
-          <div className="mt-3 p-2 bg-red-50 rounded text-xs text-red-700">
+          <div className="mt-3 p-2 bg-red-50 rounded bloomberg-section-label text-red-700">
             <strong>Note:</strong> VaR represents potential loss over specified time periods
           </div>
         </div>
@@ -675,11 +675,11 @@ const RiskAssessmentTools: React.FC<{
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {Object.entries(riskTools.stressTestResults).map(([key, test]) => (
             <div key={key} className="p-3 bg-gray-50 rounded-lg">
-              <div className="font-medium text-gray-800 text-sm capitalize mb-1">
+              <div className="font-medium text-gray-800 bloomberg-small-text capitalize mb-1">
                 {key.replace(/([A-Z])/g, ' $1').trim()}
               </div>
-              <div className="text-xs text-gray-600 mb-2">{test.scenario}</div>
-              <div className={`text-sm font-medium ${test.impact < 0 ? 'text-red-600' : 'text-green-600'}`}>
+              <div className="bloomberg-section-label text-gray-600 mb-2">{test.scenario}</div>
+              <div className={`bloomberg-small-text font-medium ${test.impact < 0 ? 'text-red-600' : 'text-green-600'}`}>
                 {test.impact > 0 ? '+' : ''}{(test.impact * 100).toFixed(1)}%
               </div>
             </div>
@@ -690,7 +690,7 @@ const RiskAssessmentTools: React.FC<{
       {/* Correlation Matrix */}
       <div className="mt-6">
         <h4 className="font-medium text-gray-800 mb-3">Asset Correlations</h4>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-2 bloomberg-section-label">
           {Object.entries(riskTools.correlationMatrix).map(([asset, correlation]) => (
             <div key={asset} className="p-2 bg-gray-50 rounded text-center">
               <div className="font-medium text-gray-800">{asset}</div>
@@ -849,10 +849,10 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
         <div className="mb-8 bg-gradient-to-r from-slate-800 to-blue-900 rounded-xl p-8 text-white">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-4xl font-bold mb-2">
+              <h1 className="text-4xl  mb-2">
                 🏛️ WREI Professional Investment Interface
               </h1>
-              <p className="text-xl text-blue-100 mb-4">
+              <p className="bloomberg-metric-value text-blue-100 mb-4">
                 Institutional-Grade Investment Platform • Phase 6.2 Final Integration
               </p>
               <div className="flex items-center space-x-6 text-blue-100">
@@ -863,7 +863,7 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
               </div>
             </div>
             <div className="text-right">
-              <div className="text-3xl font-bold text-green-300">
+              <div className="bloomberg-page-heading text-green-300">
                 {investorProfile.classification?.toUpperCase() || 'WHOLESALE'}
               </div>
               <div className="text-blue-100">Classification</div>
@@ -878,7 +878,7 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
-                className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-lg font-medium text-sm transition-all ${
+                className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-lg font-medium bloomberg-small-text transition-all ${
                   activeSection === section.id
                     ? 'bg-blue-500 text-white shadow-md'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
@@ -897,32 +897,32 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
                 <div className="bg-white rounded-xl shadow-lg p-6">
-                  <h3 className="text-2xl font-bold text-gray-800 mb-4">Investment Overview</h3>
+                  <h3 className="bloomberg-large-metric text-gray-800 mb-4">Investment Overview</h3>
 
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                     <div className="bg-blue-50 rounded-lg p-4 text-center">
-                      <div className="text-2xl font-bold text-blue-600">
+                      <div className="bloomberg-large-metric text-blue-600">
                         A${(investmentSize / 1_000_000).toFixed(1)}M
                       </div>
-                      <div className="text-sm text-blue-700">Total Investment</div>
+                      <div className="bloomberg-small-text text-blue-700">Total Investment</div>
                     </div>
                     <div className="bg-green-50 rounded-lg p-4 text-center">
-                      <div className="text-2xl font-bold text-green-600">{timeHorizon}</div>
-                      <div className="text-sm text-green-700">Year Horizon</div>
+                      <div className="bloomberg-large-metric text-green-600">{timeHorizon}</div>
+                      <div className="bloomberg-small-text text-green-700">Year Horizon</div>
                     </div>
                     <div className="bg-purple-50 rounded-lg p-4 text-center">
-                      <div className="text-2xl font-bold text-purple-600">
+                      <div className="bloomberg-large-metric text-purple-600">
                         {selectedTokenType === 'carbon_credits' ? '8.0%' :
                          selectedTokenType === 'asset_co' ? '28.3%' : '18.5%'}
                       </div>
-                      <div className="text-sm text-purple-700">Target Yield</div>
+                      <div className="bloomberg-small-text text-purple-700">Target Yield</div>
                     </div>
                     <div className="bg-amber-50 rounded-lg p-4 text-center">
-                      <div className="text-2xl font-bold text-amber-600">
+                      <div className="bloomberg-large-metric text-amber-600">
                         {investorProfile.riskTolerance === 'conservative' ? 'Low' :
                          investorProfile.riskTolerance === 'moderate' ? 'Med' : 'High'}
                       </div>
-                      <div className="text-sm text-amber-700">Risk Level</div>
+                      <div className="bloomberg-small-text text-amber-700">Risk Level</div>
                     </div>
                   </div>
 
@@ -934,7 +934,7 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
                           <button
                             key={tokenType}
                             onClick={() => setSelectedTokenType(tokenType)}
-                            className={`p-3 rounded-lg border-2 text-sm font-medium transition-all ${
+                            className={`p-3 rounded-lg border-2 bloomberg-small-text font-medium transition-all ${
                               selectedTokenType === tokenType
                                 ? 'border-blue-500 bg-blue-50 text-blue-700'
                                 : 'border-gray-200 text-gray-700 hover:border-gray-300'
@@ -953,7 +953,7 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
                       <div className="grid grid-cols-2 gap-3">
                         <button
                           onClick={() => setYieldMechanism('revenue_share')}
-                          className={`p-3 rounded-lg border-2 text-sm font-medium transition-all ${
+                          className={`p-3 rounded-lg border-2 bloomberg-small-text font-medium transition-all ${
                             yieldMechanism === 'revenue_share'
                               ? 'border-blue-500 bg-blue-50 text-blue-700'
                               : 'border-gray-200 text-gray-700 hover:border-gray-300'
@@ -963,7 +963,7 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
                         </button>
                         <button
                           onClick={() => setYieldMechanism('nav_accruing')}
-                          className={`p-3 rounded-lg border-2 text-sm font-medium transition-all ${
+                          className={`p-3 rounded-lg border-2 bloomberg-small-text font-medium transition-all ${
                             yieldMechanism === 'nav_accruing'
                               ? 'border-green-500 bg-green-50 text-green-700'
                               : 'border-gray-200 text-gray-700 hover:border-gray-300'
@@ -979,7 +979,7 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
 
               <div className="space-y-6">
                 <div className="bg-white rounded-xl shadow-lg p-6">
-                  <h3 className="text-lg font-bold text-gray-800 mb-4">Platform Status</h3>
+                  <h3 className="bloomberg-card-title text-gray-800 mb-4">Platform Status</h3>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600">System Status</span>
@@ -1001,7 +1001,7 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
                 </div>
 
                 <div className="bg-white rounded-xl shadow-lg p-6">
-                  <h3 className="text-lg font-bold text-gray-800 mb-4">Integration Status</h3>
+                  <h3 className="bloomberg-card-title text-gray-800 mb-4">Integration Status</h3>
                   <div className="space-y-2">
                     {[
                       'Phase 1: Dual Token Architecture',
@@ -1011,9 +1011,9 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
                       'Phase 5: Market Intelligence',
                       'Phase 6: Professional Interface'
                     ].map((phase, idx) => (
-                      <div key={idx} className="flex items-center space-x-2 text-sm">
+                      <div key={idx} className="flex items-center space-x-2 bloomberg-small-text">
                         <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
-                          <span className="text-white text-xs">✓</span>
+                          <span className="text-white bloomberg-section-label">✓</span>
                         </div>
                         <span className="text-gray-700">{phase}</span>
                       </div>
@@ -1053,7 +1053,7 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
           {activeSection === 'esg' && (
             <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
               <div className="mb-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-2">🌱 ESG Impact Analysis</h3>
+                <h3 className="bloomberg-metric-value text-gray-800 mb-2">🌱 ESG Impact Analysis</h3>
                 <p className="text-gray-600">
                   Comprehensive environmental, social, and governance impact measurement for your WREI investment.
                   Track sustainability outcomes and compliance requirements.
@@ -1075,7 +1075,7 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
 
           {activeSection === 'export' && (
             <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-              <h3 className="text-xl font-bold text-gray-800 mb-4">Professional Report Export</h3>
+              <h3 className="bloomberg-metric-value text-gray-800 mb-4">Professional Report Export</h3>
               <p className="text-gray-600 mb-6">
                 Generate institutional-grade reports in multiple formats. All exports include
                 Australian number formatting, compliance disclosures, and professional presentation.
@@ -1083,19 +1083,19 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div className="bg-blue-50 rounded-lg p-4 text-center">
-                  <div className="text-3xl mb-2">CSV</div>
-                  <div className="text-sm font-medium text-blue-800">Spreadsheet Data</div>
-                  <div className="text-xs text-blue-600 mt-1">Excel-compatible format</div>
+                  <div className="bloomberg-page-heading mb-2">CSV</div>
+                  <div className="bloomberg-small-text font-medium text-blue-800">Spreadsheet Data</div>
+                  <div className="bloomberg-section-label text-blue-600 mt-1">Excel-compatible format</div>
                 </div>
                 <div className="bg-green-50 rounded-lg p-4 text-center">
-                  <div className="text-3xl mb-2">JSON</div>
-                  <div className="text-sm font-medium text-green-800">API Integration</div>
-                  <div className="text-xs text-green-600 mt-1">Structured data export</div>
+                  <div className="bloomberg-page-heading mb-2">JSON</div>
+                  <div className="bloomberg-small-text font-medium text-green-800">API Integration</div>
+                  <div className="bloomberg-section-label text-green-600 mt-1">Structured data export</div>
                 </div>
                 <div className="bg-purple-50 rounded-lg p-4 text-center">
-                  <div className="text-3xl mb-2">TXT</div>
-                  <div className="text-sm font-medium text-purple-800">Text Report</div>
-                  <div className="text-xs text-purple-600 mt-1">Print-to-PDF ready</div>
+                  <div className="bloomberg-page-heading mb-2">TXT</div>
+                  <div className="bloomberg-small-text font-medium text-purple-800">Text Report</div>
+                  <div className="bloomberg-section-label text-purple-600 mt-1">Print-to-PDF ready</div>
                 </div>
               </div>
 
@@ -1124,7 +1124,7 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
         <div className="mt-8 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl border border-green-200 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-xl font-bold text-gray-800">Ready to Proceed?</h3>
+              <h3 className="bloomberg-metric-value text-gray-800">Ready to Proceed?</h3>
               <p className="text-gray-600">Complete professional investment platform with all capabilities integrated</p>
             </div>
             <div className="flex items-center space-x-4">
@@ -1159,7 +1159,7 @@ const ProfessionalInterface: React.FC<ProfessionalInterfaceProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="mt-8 text-center text-sm text-gray-500">
+        <div className="mt-8 text-center bloomberg-small-text text-gray-500">
           <p>
             🏛️ WREI Professional Investment Platform • Phase 6.2 Complete • All Systems Integrated
           </p>

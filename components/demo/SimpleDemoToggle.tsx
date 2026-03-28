@@ -46,7 +46,7 @@ export default function SimpleDemoToggle() {
       <button
         onClick={handleToggleDemo}
         className={`
-          px-4 py-2 rounded-md text-sm font-medium transition-colors
+          px-4 py-2 rounded-md bloomberg-small-text font-medium transition-colors
           ${isActive
             ? 'bg-amber-500 text-white hover:bg-amber-600'
             : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
@@ -55,7 +55,7 @@ export default function SimpleDemoToggle() {
       >
         {isActive ? 'Exit Demo' : 'Demo Mode'}
         {isActive && selectedDataSet && (
-          <span className="ml-2 text-xs opacity-90">
+          <span className="ml-2 bloomberg-section-label opacity-90">
             ({getDataSetDisplayName(selectedDataSet)})
           </span>
         )}
@@ -65,7 +65,7 @@ export default function SimpleDemoToggle() {
       {showDataSetSelector && (
         <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
           <div className="p-4">
-            <h3 className="text-sm font-medium text-gray-900 mb-3">
+            <h3 className="bloomberg-small-text font-medium text-gray-900 mb-3">
               Choose Demo Scenario
             </h3>
             <div className="space-y-2">
@@ -74,7 +74,7 @@ export default function SimpleDemoToggle() {
                 className="w-full text-left p-3 rounded-md border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
               >
                 <div className="font-medium text-gray-900">Institutional ESG Fund</div>
-                <div className="text-xs text-gray-600 mt-1">
+                <div className="bloomberg-section-label text-gray-600 mt-1">
                   A$100M portfolio manager seeking premium credits
                 </div>
               </button>
@@ -84,7 +84,7 @@ export default function SimpleDemoToggle() {
                 className="w-full text-left p-3 rounded-md border border-gray-200 hover:border-green-300 hover:bg-green-50 transition-colors"
               >
                 <div className="font-medium text-gray-900">Sustainability Director</div>
-                <div className="text-xs text-gray-600 mt-1">
+                <div className="bloomberg-section-label text-gray-600 mt-1">
                   Mid-cap company&apos;s first offset programme
                 </div>
               </button>
@@ -94,7 +94,7 @@ export default function SimpleDemoToggle() {
                 className="w-full text-left p-3 rounded-md border border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-colors"
               >
                 <div className="font-medium text-gray-900">Government Procurement</div>
-                <div className="text-xs text-gray-600 mt-1">
+                <div className="bloomberg-section-label text-gray-600 mt-1">
                   Fixed budget, compliance-focused purchasing
                 </div>
               </button>
@@ -102,7 +102,7 @@ export default function SimpleDemoToggle() {
 
             <button
               onClick={() => setShowDataSetSelector(false)}
-              className="w-full mt-3 px-3 py-2 text-xs text-gray-500 hover:text-gray-700 border-t border-gray-200"
+              className="w-full mt-3 px-3 py-2 bloomberg-section-label text-gray-500 hover:text-gray-700 border-t border-gray-200"
             >
               Cancel
             </button>

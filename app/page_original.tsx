@@ -45,13 +45,13 @@ export default function Home() {
 
         <div className="max-w-7xl mx-auto px-4 py-20 sm:py-32">
           <div className="text-center">
-            <h1 className="text-5xl md:text-7xl font-bold text-[#1E293B] mb-8 leading-tight">
+            <h1 className="text-5xl md:text-7xl  text-[#1E293B] mb-8 leading-tight">
               WREI Carbon Credit
               <br />
               <span className="text-[#0EA5E9]">Trading Platform</span>
             </h1>
 
-            <p className="text-xl md:text-2xl text-[#64748B] max-w-3xl mx-auto mb-12 leading-relaxed">
+            <p className="bloomberg-metric-value md:bloomberg-large-metric text-[#64748B] max-w-3xl mx-auto mb-12 leading-relaxed">
               Experience institutional-grade carbon credit trading with AI-powered negotiation,
               real-time blockchain verification, and automated settlement infrastructure.
             </p>
@@ -59,24 +59,24 @@ export default function Home() {
             {/* Animated Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
               <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-slate-200">
-                <div className="text-3xl font-bold text-[#0EA5E9] mb-2">
+                <div className="bloomberg-page-heading text-[#0EA5E9] mb-2">
                   {verifiedCredits.toLocaleString()}+
                 </div>
-                <div className="text-sm text-[#64748B]">Credits Verified</div>
+                <div className="bloomberg-small-text text-[#64748B]">Credits Verified</div>
               </div>
 
               <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-slate-200">
-                <div className="text-3xl font-bold text-[#10B981] mb-2">
+                <div className="bloomberg-page-heading text-[#10B981] mb-2">
                   &lt; {avgSettlement}s
                 </div>
-                <div className="text-sm text-[#64748B]">Avg Settlement</div>
+                <div className="bloomberg-small-text text-[#64748B]">Avg Settlement</div>
               </div>
 
               <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-slate-200">
-                <div className="text-3xl font-bold text-[#F59E0B] mb-2">
+                <div className="bloomberg-page-heading text-[#F59E0B] mb-2">
                   {jurisdictions}
                 </div>
-                <div className="text-sm text-[#64748B]">Jurisdictions</div>
+                <div className="bloomberg-small-text text-[#64748B]">Jurisdictions</div>
               </div>
             </div>
 
@@ -84,13 +84,13 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/negotiate"
-                className="inline-block bg-[#0EA5E9] text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-[#0284C7] transition-all shadow-lg hover:shadow-xl"
+                className="inline-block bg-[#0EA5E9] text-white px-8 py-4 rounded-lg bloomberg-card-title hover:bg-[#0284C7] transition-all shadow-lg hover:shadow-xl"
               >
                 Begin Negotiation →
               </Link>
               <Link
                 href="/institutional/portal"
-                className="inline-block bg-white text-[#1E293B] px-8 py-4 rounded-lg text-lg font-semibold hover:bg-slate-50 transition-all shadow-sm border border-slate-200"
+                className="inline-block bg-white text-[#1E293B] px-8 py-4 rounded-lg bloomberg-card-title hover:bg-slate-50 transition-all shadow-sm border border-slate-200"
               >
                 Institutional Portal
               </Link>
@@ -103,10 +103,10 @@ export default function Home() {
       <section className="py-20 bg-white" data-demo="negotiation-preview">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-[#1E293B] mb-4">
+            <h2 className="bloomberg-page-heading md:text-4xl  text-[#1E293B] mb-4">
               Comprehensive Trading Platform
             </h2>
-            <p className="text-lg text-[#64748B] max-w-2xl mx-auto">
+            <p className="bloomberg-card-title text-[#64748B] max-w-2xl mx-auto">
               Built for institutions, accessible to individuals, powered by cutting-edge technology
             </p>
           </div>
@@ -120,11 +120,11 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-[#1E293B] mb-3">AI Negotiation</h3>
+                <h3 className="bloomberg-metric-value text-[#1E293B] mb-3">AI Negotiation</h3>
                 <p className="text-[#64748B] mb-4">
                   Advanced AI agent handles complex negotiations across 11 buyer personas with emotional intelligence
                 </p>
-                <span className="text-[#0EA5E9] font-semibold group-hover:underline">
+                <span className="text-[#0EA5E9]  group-hover:underline">
                   Start Trading →
                 </span>
               </div>
@@ -138,11 +138,11 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m5 0v-5a2 2 0 114 0v5M7 7h10" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-[#1E293B] mb-3">Institutional Portal</h3>
+                <h3 className="bloomberg-metric-value text-[#1E293B] mb-3">Institutional Portal</h3>
                 <p className="text-[#64748B] mb-4">
                   Full onboarding pipeline with AFSL compliance, KYC/AML verification, and portfolio management
                 </p>
-                <span className="text-[#10B981] font-semibold group-hover:underline">
+                <span className="text-[#10B981]  group-hover:underline">
                   Enter Portal →
                 </span>
               </div>
@@ -156,11 +156,11 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-[#1E293B] mb-3">Market Scenarios</h3>
+                <h3 className="bloomberg-metric-value text-[#1E293B] mb-3">Market Scenarios</h3>
                 <p className="text-[#64748B] mb-4">
                   Explore DeFi, ESG mandates, infrastructure, and sovereign wealth fund scenarios
                 </p>
-                <span className="text-[#8B5CF6] font-semibold group-hover:underline">
+                <span className="text-[#8B5CF6]  group-hover:underline">
                   Run Scenarios →
                 </span>
               </div>
@@ -173,11 +173,11 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-[#1E293B] mb-3">Market Intelligence</h3>
+              <h3 className="bloomberg-metric-value text-[#1E293B] mb-3">Market Intelligence</h3>
               <p className="text-[#64748B] mb-4">
                 Real-time pricing data, competitive analysis, and market trend forecasting
               </p>
-              <span className="text-[#F59E0B] font-semibold">
+              <span className="text-[#F59E0B] ">
                 Integrated Analytics
               </span>
             </div>
@@ -189,11 +189,11 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-[#1E293B] mb-3">Regulatory Compliance</h3>
+              <h3 className="bloomberg-metric-value text-[#1E293B] mb-3">Regulatory Compliance</h3>
               <p className="text-[#64748B] mb-4">
                 AFSL compliance, AML/CTF monitoring, and multi-jurisdiction regulatory framework
               </p>
-              <span className="text-[#EF4444] font-semibold">
+              <span className="text-[#EF4444] ">
                 Automated Compliance
               </span>
             </div>
@@ -206,11 +206,11 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-[#1E293B] mb-3">System Performance</h3>
+                <h3 className="bloomberg-metric-value text-[#1E293B] mb-3">System Performance</h3>
                 <p className="text-[#64748B] mb-4">
                   Real-time monitoring, API performance tracking, and system health dashboards
                 </p>
-                <span className="text-[#64748B] font-semibold group-hover:underline">
+                <span className="text-[#64748B]  group-hover:underline">
                   View Metrics →
                 </span>
               </div>
@@ -223,45 +223,45 @@ export default function Home() {
       <section className="py-20 bg-[#1B2A4A] text-white" data-demo="market-data">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="bloomberg-page-heading md:text-4xl  mb-4">
               Live Market Data
             </h2>
-            <p className="text-lg text-slate-300 max-w-2xl mx-auto">
+            <p className="bloomberg-card-title text-slate-300 max-w-2xl mx-auto">
               Real-time pricing and market intelligence from WREI Pricing Index
             </p>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="text-3xl font-bold text-[#0EA5E9] mb-2">
+              <div className="bloomberg-page-heading text-[#0EA5E9] mb-2">
                 A${PRICING_INDEX.VCM_SPOT_REFERENCE.toFixed(2)}
               </div>
-              <div className="text-sm text-slate-300 mb-1">VCM Spot Reference</div>
-              <div className="text-xs text-slate-400">EM SOVCM 2025</div>
+              <div className="bloomberg-small-text text-slate-300 mb-1">VCM Spot Reference</div>
+              <div className="bloomberg-section-label text-slate-400">EM SOVCM 2025</div>
             </div>
 
             <div className="text-center">
-              <div className="text-3xl font-bold text-[#10B981] mb-2">
+              <div className="bloomberg-page-heading text-[#10B981] mb-2">
                 A${PRICING_INDEX.FORWARD_REMOVAL_REFERENCE}
               </div>
-              <div className="text-sm text-slate-300 mb-1">Forward Removal</div>
-              <div className="text-xs text-slate-400">Sylvera SOCC 2025</div>
+              <div className="bloomberg-small-text text-slate-300 mb-1">Forward Removal</div>
+              <div className="bloomberg-section-label text-slate-400">Sylvera SOCC 2025</div>
             </div>
 
             <div className="text-center">
-              <div className="text-3xl font-bold text-[#F59E0B] mb-2">
+              <div className="bloomberg-page-heading text-[#F59E0B] mb-2">
                 +{((PRICING_INDEX.DMRV_PREMIUM_BENCHMARK - 1) * 100).toFixed(0)}%
               </div>
-              <div className="text-sm text-slate-300 mb-1">dMRV Premium</div>
-              <div className="text-xs text-slate-400">Verification Advantage</div>
+              <div className="bloomberg-small-text text-slate-300 mb-1">dMRV Premium</div>
+              <div className="bloomberg-section-label text-slate-400">Verification Advantage</div>
             </div>
 
             <div className="text-center">
-              <div className="text-3xl font-bold text-[#8B5CF6] mb-2">
+              <div className="bloomberg-page-heading text-[#8B5CF6] mb-2">
                 T+0
               </div>
-              <div className="text-sm text-slate-300 mb-1">Settlement</div>
-              <div className="text-xs text-slate-400">Atomic & Non-Custodial</div>
+              <div className="bloomberg-small-text text-slate-300 mb-1">Settlement</div>
+              <div className="bloomberg-section-label text-slate-400">Atomic & Non-Custodial</div>
             </div>
           </div>
         </div>
@@ -271,10 +271,10 @@ export default function Home() {
       <section className="py-20 bg-slate-50" data-demo="investment-case">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-[#1E293B] mb-4">
+            <h2 className="bloomberg-page-heading md:text-4xl  text-[#1E293B] mb-4">
               Choose Your Pathway
             </h2>
-            <p className="text-lg text-[#64748B] max-w-2xl mx-auto">
+            <p className="bloomberg-card-title text-[#64748B] max-w-2xl mx-auto">
               Different user types have different needs. Start with the pathway that matches your requirements.
             </p>
           </div>
@@ -287,11 +287,11 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-[#1E293B] mb-4">Investor Pathway</h3>
+              <h3 className="bloomberg-large-metric text-[#1E293B] mb-4">Investor Pathway</h3>
               <p className="text-[#64748B] mb-6">
                 For institutions and accredited investors seeking carbon credit exposure through tokenised assets
               </p>
-              <ul className="text-sm text-[#64748B] space-y-2 mb-8">
+              <ul className="bloomberg-small-text text-[#64748B] space-y-2 mb-8">
                 <li className="flex items-center">
                   <svg className="w-4 h-4 text-[#10B981] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -313,7 +313,7 @@ export default function Home() {
               </ul>
               <Link
                 href="/institutional/portal"
-                className="block text-center bg-[#0EA5E9] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#0284C7] transition-colors"
+                className="block text-center bg-[#0EA5E9] text-white px-6 py-3 rounded-lg  hover:bg-[#0284C7] transition-colors"
               >
                 Start Assessment
               </Link>
@@ -326,11 +326,11 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-[#1E293B] mb-4">Developer Pathway</h3>
+              <h3 className="bloomberg-large-metric text-[#1E293B] mb-4">Developer Pathway</h3>
               <p className="text-[#64748B] mb-6">
                 For technical teams building on WREI infrastructure or integrating tokenised carbon credits
               </p>
-              <ul className="text-sm text-[#64748B] space-y-2 mb-8">
+              <ul className="bloomberg-small-text text-[#64748B] space-y-2 mb-8">
                 <li className="flex items-center">
                   <svg className="w-4 h-4 text-[#10B981] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -350,7 +350,7 @@ export default function Home() {
                   Settlement infrastructure
                 </li>
               </ul>
-              <div className="text-center bg-slate-100 text-[#64748B] px-6 py-3 rounded-lg font-semibold">
+              <div className="text-center bg-slate-100 text-[#64748B] px-6 py-3 rounded-lg ">
                 Coming Soon
               </div>
             </div>
@@ -362,11 +362,11 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-[#1E293B] mb-4">Compliance Pathway</h3>
+              <h3 className="bloomberg-large-metric text-[#1E293B] mb-4">Compliance Pathway</h3>
               <p className="text-[#64748B] mb-6">
                 For compliance officers and legal teams assessing regulatory framework and requirements
               </p>
-              <ul className="text-sm text-[#64748B] space-y-2 mb-8">
+              <ul className="bloomberg-small-text text-[#64748B] space-y-2 mb-8">
                 <li className="flex items-center">
                   <svg className="w-4 h-4 text-[#10B981] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -386,7 +386,7 @@ export default function Home() {
                   Tax treatment guidance
                 </li>
               </ul>
-              <div className="text-center bg-slate-100 text-[#64748B] px-6 py-3 rounded-lg font-semibold">
+              <div className="text-center bg-slate-100 text-[#64748B] px-6 py-3 rounded-lg ">
                 Documentation Only
               </div>
             </div>
@@ -401,7 +401,7 @@ export default function Home() {
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
             </svg>
-            <span className="font-semibold">Demonstration Environment</span>
+            <span className="">Demonstration Environment</span>
           </div>
           <p className="text-amber-700 max-w-2xl mx-auto">
             This is a demonstration of the WREI platform capabilities. No real carbon credits are traded,

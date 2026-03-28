@@ -152,7 +152,7 @@ export const MultiAudienceRouter: React.FC<MultiAudienceRouterProps> = ({
                   className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
                 >
                   <ArrowLeftIcon className="w-5 h-5" />
-                  <span className="text-sm font-medium">Back to Selection</span>
+                  <span className="bloomberg-small-text font-medium">Back to Selection</span>
                 </button>
 
                 <ChevronRightIcon className="w-4 h-4 text-gray-400" />
@@ -161,7 +161,7 @@ export const MultiAudienceRouter: React.FC<MultiAudienceRouterProps> = ({
                   {currentNavItem && (
                     <>
                       <currentNavItem.icon className="w-5 h-5 text-gray-600" />
-                      <span className="text-sm font-medium text-gray-900">
+                      <span className="bloomberg-small-text font-medium text-gray-900">
                         {currentNavItem.label}
                       </span>
                     </>
@@ -171,7 +171,7 @@ export const MultiAudienceRouter: React.FC<MultiAudienceRouterProps> = ({
 
               {/* Audience Switch Menu */}
               <div className="flex items-center space-x-4">
-                <div className="text-sm text-gray-600">
+                <div className="bloomberg-small-text text-gray-600">
                   Switch to:
                 </div>
                 <div className="flex space-x-2">
@@ -181,7 +181,7 @@ export const MultiAudienceRouter: React.FC<MultiAudienceRouterProps> = ({
                       <button
                         key={item.id}
                         onClick={() => handleAudienceSelect(item.id as AudienceType)}
-                        className="flex items-center space-x-1 px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+                        className="flex items-center space-x-1 px-3 py-2 bloomberg-small-text font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
                         title={item.description}
                       >
                         <item.icon className="w-4 h-4" />
@@ -193,7 +193,7 @@ export const MultiAudienceRouter: React.FC<MultiAudienceRouterProps> = ({
                 {/* Tour Controls */}
                 {demoMode.isActive && demoMode.currentTour && (
                   <div className="border-l border-gray-200 pl-4">
-                    <div className="flex items-center space-x-2 text-sm text-gray-600">
+                    <div className="flex items-center space-x-2 bloomberg-small-text text-gray-600">
                       <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
                       <span>Tour Active</span>
                       <button
@@ -223,7 +223,7 @@ export const MultiAudienceRouter: React.FC<MultiAudienceRouterProps> = ({
       {demoMode.isActive && (
         <div className="fixed bottom-4 right-4 z-40" data-demo="demo-status">
           <div className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg">
-            <div className="flex items-center space-x-2 text-sm">
+            <div className="flex items-center space-x-2 bloomberg-small-text">
               <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
               <span>Demo Mode Active</span>
               {demoMode.currentTour && (

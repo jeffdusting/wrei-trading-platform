@@ -563,7 +563,7 @@ const ESCMarketScenarios: React.FC<ESCMarketScenariosProps> = ({
       <div className="min-h-screen bg-gray-50 p-6">
         <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
           <ExclamationTriangleIcon className="w-16 h-16 mx-auto text-yellow-500 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Scenario Not Found</h3>
+          <h3 className="bloomberg-card-title font-medium text-gray-900 mb-2">Scenario Not Found</h3>
           <p className="text-gray-600 mb-6">The requested ESC scenario could not be loaded.</p>
           {onBack && (
             <button
@@ -586,7 +586,7 @@ const ESCMarketScenarios: React.FC<ESCMarketScenariosProps> = ({
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">{scenario.name}</h1>
+            <h1 className="bloomberg-page-heading text-gray-900">{scenario.name}</h1>
             <p className="text-gray-600 mt-1">{scenario.description}</p>
           </div>
           <div className="flex gap-2">
@@ -631,31 +631,31 @@ const ESCMarketScenarios: React.FC<ESCMarketScenariosProps> = ({
 
         {/* Market Context */}
         <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-          <h3 className="font-semibold text-gray-900 mb-3">Market Context</h3>
+          <h3 className=" text-gray-900 mb-3">Market Context</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">
+              <div className="bloomberg-large-metric text-blue-600">
                 A${scenario.marketContext.spot_price}
               </div>
-              <div className="text-sm text-gray-600">ESC Spot Price</div>
+              <div className="bloomberg-small-text text-gray-600">ESC Spot Price</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">
+              <div className="bloomberg-large-metric text-green-600">
                 {scenario.marketContext.volume_available.toLocaleString()}
               </div>
-              <div className="text-sm text-gray-600">Volume Available</div>
+              <div className="bloomberg-small-text text-gray-600">Volume Available</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">
+              <div className="bloomberg-large-metric text-purple-600">
                 {scenario.marketContext.participant_count}
               </div>
-              <div className="text-sm text-gray-600">Active Participants</div>
+              <div className="bloomberg-small-text text-gray-600">Active Participants</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">
+              <div className="bloomberg-large-metric text-orange-600">
                 {scenario.marketContext.market_volatility}
               </div>
-              <div className="text-sm text-gray-600">Market Volatility</div>
+              <div className="bloomberg-small-text text-gray-600">Market Volatility</div>
             </div>
           </div>
         </div>
@@ -664,11 +664,11 @@ const ESCMarketScenarios: React.FC<ESCMarketScenariosProps> = ({
       {/* Simulation Progress */}
       {currentSimulation && (
         <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-          <h3 className="font-semibold text-gray-900 mb-4">Simulation Progress</h3>
+          <h3 className=" text-gray-900 mb-4">Simulation Progress</h3>
 
           {/* Progress Bar */}
           <div className="mb-6">
-            <div className="flex justify-between text-sm text-gray-600 mb-2">
+            <div className="flex justify-between bloomberg-small-text text-gray-600 mb-2">
               <span>Progress</span>
               <span>{simulationStep}/{scenario.scenarioSteps.length} steps</span>
             </div>
@@ -695,7 +695,7 @@ const ESCMarketScenarios: React.FC<ESCMarketScenariosProps> = ({
                   <h4 className="font-medium text-blue-900">
                     {scenario.scenarioSteps[simulationStep - 1]?.name}
                   </h4>
-                  <p className="text-blue-700 text-sm">
+                  <p className="text-blue-700 bloomberg-small-text">
                     {scenario.scenarioSteps[simulationStep - 1]?.description}
                   </p>
                 </div>
@@ -715,12 +715,12 @@ const ESCMarketScenarios: React.FC<ESCMarketScenariosProps> = ({
                     </span>
                     <div className="flex items-center gap-2">
                       <CheckCircleIcon className="w-4 h-4 text-green-600" />
-                      <span className="text-sm text-gray-600">
+                      <span className="bloomberg-small-text text-gray-600">
                         {'Completed'}
                       </span>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 bloomberg-small-text">
                     {Object.entries(result.metrics_captured).map(([key, value]) => (
                       <div key={key} className="bg-gray-50 rounded p-2">
                         <div className="font-medium text-gray-700">{key.replace(/_/g, ' ')}</div>
@@ -743,7 +743,7 @@ const ESCMarketScenarios: React.FC<ESCMarketScenariosProps> = ({
           <div className="flex items-center gap-3 mb-6">
             <CheckCircleIcon className="w-8 h-8 text-green-600" />
             <div>
-              <h3 className="text-xl font-semibold text-gray-900">Simulation Completed Successfully</h3>
+              <h3 className="bloomberg-metric-value text-gray-900">Simulation Completed Successfully</h3>
               <p className="text-gray-600">All trading objectives achieved within expected parameters</p>
             </div>
           </div>
@@ -751,7 +751,7 @@ const ESCMarketScenarios: React.FC<ESCMarketScenariosProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Performance Metrics */}
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4">
-              <h4 className="font-semibold text-blue-900 mb-3">Performance</h4>
+              <h4 className=" text-blue-900 mb-3">Performance</h4>
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-blue-700">Price Improvement:</span>
@@ -776,7 +776,7 @@ const ESCMarketScenarios: React.FC<ESCMarketScenariosProps> = ({
 
             {/* Market Impact */}
             <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4">
-              <h4 className="font-semibold text-green-900 mb-3">Market Impact</h4>
+              <h4 className=" text-green-900 mb-3">Market Impact</h4>
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-green-700">Volume Traded:</span>
@@ -801,7 +801,7 @@ const ESCMarketScenarios: React.FC<ESCMarketScenariosProps> = ({
 
             {/* Risk Metrics */}
             <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-lg p-4">
-              <h4 className="font-semibold text-yellow-900 mb-3">Risk Assessment</h4>
+              <h4 className=" text-yellow-900 mb-3">Risk Assessment</h4>
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-yellow-700">Settlement Risk:</span>
@@ -826,7 +826,7 @@ const ESCMarketScenarios: React.FC<ESCMarketScenariosProps> = ({
 
             {/* Compliance */}
             <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4">
-              <h4 className="font-semibold text-purple-900 mb-3">Compliance</h4>
+              <h4 className=" text-purple-900 mb-3">Compliance</h4>
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-purple-700">CER Score:</span>

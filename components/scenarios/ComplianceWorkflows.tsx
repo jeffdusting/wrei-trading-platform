@@ -580,7 +580,7 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Compliance Workflows</h1>
+            <h1 className="bloomberg-page-heading text-gray-900">Compliance Workflows</h1>
             <p className="text-gray-600 mt-1">
               NSW ESC regulatory compliance validation and workflow automation
             </p>
@@ -598,23 +598,23 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
 
         {/* Compliance Context */}
         <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-          <h3 className="font-semibold text-gray-900 mb-3">Regulatory Framework</h3>
+          <h3 className=" text-gray-900 mb-3">Regulatory Framework</h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">98%</div>
-              <div className="text-sm text-gray-600">CER Compliance Score</div>
+              <div className="bloomberg-large-metric text-green-600">98%</div>
+              <div className="bloomberg-small-text text-gray-600">CER Compliance Score</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">AFSL 246896</div>
-              <div className="text-sm text-gray-600">License Status: Active</div>
+              <div className="bloomberg-large-metric text-blue-600">AFSL 246896</div>
+              <div className="bloomberg-small-text text-gray-600">License Status: Active</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">28s</div>
-              <div className="text-sm text-gray-600">Avg Validation Time</div>
+              <div className="bloomberg-large-metric text-purple-600">28s</div>
+              <div className="bloomberg-small-text text-gray-600">Avg Validation Time</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">96%</div>
-              <div className="text-sm text-gray-600">Audit Readiness</div>
+              <div className="bloomberg-large-metric text-orange-600">96%</div>
+              <div className="bloomberg-small-text text-gray-600">Audit Readiness</div>
             </div>
           </div>
         </div>
@@ -633,19 +633,19 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
                   <ShieldCheckIcon className="w-6 h-6 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">{workflow.name}</h3>
-                  <p className="text-sm text-gray-600">{workflow.regulatory_framework.authority}</p>
+                  <h3 className=" text-gray-900">{workflow.name}</h3>
+                  <p className="bloomberg-small-text text-gray-600">{workflow.regulatory_framework.authority}</p>
                 </div>
               </div>
 
               <p className="text-gray-700 mb-4">{workflow.description}</p>
 
               <div className="space-y-3 mb-6">
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between bloomberg-small-text">
                   <span className="text-gray-600">Steps:</span>
                   <span className="font-medium">{workflow.steps.length}</span>
                 </div>
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between bloomberg-small-text">
                   <span className="text-gray-600">Automation:</span>
                   <span className={`font-medium ${
                     workflow.automation_level === 'fully-automated' ? 'text-green-600' :
@@ -654,7 +654,7 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
                     {workflow.automation_level.replace('-', ' ')}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between bloomberg-small-text">
                   <span className="text-gray-600">Est. Time:</span>
                   <span className="font-medium">
                     {workflow.steps.reduce((sum, step) => sum + step.estimated_time, 0)} min
@@ -663,8 +663,8 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
               </div>
 
               <div className="space-y-2 mb-6">
-                <h4 className="font-medium text-gray-900 text-sm">Key Requirements:</h4>
-                <ul className="text-xs text-gray-600 space-y-1">
+                <h4 className="font-medium text-gray-900 bloomberg-small-text">Key Requirements:</h4>
+                <ul className="bloomberg-section-label text-gray-600 space-y-1">
                   {workflow.regulatory_framework.requirements.slice(0, 3).map((req, index) => (
                     <li key={index} className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
@@ -691,7 +691,7 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">
+                <h2 className="bloomberg-metric-value text-gray-900">
                   {currentExecution.workflow.name}
                 </h2>
                 <p className="text-gray-600">
@@ -699,7 +699,7 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
                 </p>
               </div>
               <div className="flex items-center gap-4">
-                <span className={`px-3 py-1 text-sm font-medium rounded-full ${
+                <span className={`px-3 py-1 bloomberg-small-text font-medium rounded-full ${
                   currentExecution.status === 'completed' ? 'bg-green-100 text-green-800' :
                   currentExecution.status === 'failed' ? 'bg-red-100 text-red-800' :
                   currentExecution.status === 'running' ? 'bg-blue-100 text-blue-800' :
@@ -709,10 +709,10 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
                 </span>
                 {currentExecution.status === 'completed' && (
                   <div className="text-right">
-                    <div className="text-lg font-bold text-green-600">
+                    <div className="bloomberg-card-title text-green-600">
                       {currentExecution.overallScore.toFixed(0)}%
                     </div>
-                    <div className="text-xs text-gray-600">Overall Score</div>
+                    <div className="bloomberg-section-label text-gray-600">Overall Score</div>
                   </div>
                 )}
               </div>
@@ -720,7 +720,7 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
 
             {/* Progress Bar */}
             <div className="mb-4">
-              <div className="flex justify-between text-sm text-gray-600 mb-2">
+              <div className="flex justify-between bloomberg-small-text text-gray-600 mb-2">
                 <span>Progress</span>
                 <span>{currentExecution.currentStep}/{currentExecution.workflow.steps.length} steps</span>
               </div>
@@ -740,7 +740,7 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
 
           {/* Workflow Steps */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">Workflow Steps</h3>
+            <h3 className=" text-gray-900 mb-4">Workflow Steps</h3>
             <div className="space-y-4">
               {currentExecution.workflow.steps.map((step, index) => {
                 const stepResult = currentExecution.stepResults.find(r => r.stepId === step.id);
@@ -760,14 +760,14 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
                         {getStepStatusIcon(stepResult?.status || 'pending')}
                         <div>
                           <h4 className="font-medium text-gray-900">{step.name}</h4>
-                          <p className="text-sm text-gray-600">{step.type.replace('-', ' ')}</p>
+                          <p className="bloomberg-small-text text-gray-600">{step.type.replace('-', ' ')}</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm text-gray-600">
+                        <div className="bloomberg-small-text text-gray-600">
                           {stepResult ? `${stepResult.duration.toFixed(1)}s` : `~${step.estimated_time}m`}
                         </div>
-                        <div className={`text-xs px-2 py-1 rounded-full ${
+                        <div className={`bloomberg-section-label px-2 py-1 rounded-full ${
                           step.automation_status === 'automated' ? 'bg-green-100 text-green-800' :
                           step.automation_status === 'hybrid' ? 'bg-yellow-100 text-yellow-800' :
                           'bg-orange-100 text-orange-800'
@@ -787,8 +787,8 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
                               key={resultIndex}
                               className={`flex items-center justify-between p-2 rounded ${getValidationStatusColor(result.status)}`}
                             >
-                              <span className="text-sm font-medium">{result.message}</span>
-                              <span className="text-xs">
+                              <span className="bloomberg-small-text font-medium">{result.message}</span>
+                              <span className="bloomberg-section-label">
                                 {result.timestamp.toLocaleTimeString()}
                               </span>
                             </div>
@@ -798,12 +798,12 @@ const ComplianceWorkflows: React.FC<ComplianceWorkflowsProps> = ({
                         {/* Output Documents */}
                         {stepResult.outputs.length > 0 && (
                           <div className="mt-3">
-                            <h6 className="text-sm font-medium text-gray-700 mb-2">Generated Documents</h6>
+                            <h6 className="bloomberg-small-text font-medium text-gray-700 mb-2">Generated Documents</h6>
                             <div className="flex flex-wrap gap-2">
                               {stepResult.outputs.map((output, outputIndex) => (
                                 <div
                                   key={outputIndex}
-                                  className="flex items-center gap-1 px-2 py-1 bg-gray-100 rounded text-xs text-gray-700"
+                                  className="flex items-center gap-1 px-2 py-1 bg-gray-100 rounded bloomberg-section-label text-gray-700"
                                 >
                                   <DocumentTextIcon className="w-3 h-3" />
                                   {output.type}.{output.format}

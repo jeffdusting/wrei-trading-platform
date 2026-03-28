@@ -26,7 +26,7 @@ function MethodBadge({ method }: { method: string }) {
 
   return (
     <span
-      className={`inline-block px-2 py-0.5 text-xs font-bold rounded border ${colours[method] || 'bg-gray-100 text-gray-800 border-gray-200'}`}
+      className={`inline-block px-2 py-0.5 bloomberg-section-label rounded border ${colours[method] || 'bg-gray-100 text-gray-800 border-gray-200'}`}
       data-testid={`method-badge-${method.toLowerCase()}`}
     >
       {method}
@@ -62,7 +62,7 @@ function JsonDisplay({ data, maxHeight }: { data: unknown; maxHeight?: string })
   return (
     <div className={`relative ${maxHeight ? `max-h-[${maxHeight}] overflow-y-auto` : ''}`}>
       <pre
-        className="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre"
+        className="bg-slate-900 text-slate-100 p-4 rounded-lg bloomberg-data bloomberg-small-text overflow-x-auto whitespace-pre"
         data-testid="json-display"
       >
         {jsonString}
@@ -82,7 +82,7 @@ function CodeExamples({ examples }: { examples: CodeExample[] }) {
           <button
             key={ex.language}
             onClick={() => setActiveTab(i)}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            className={`px-4 py-2 bloomberg-small-text border-b-2 transition-colors ${
               activeTab === i
                 ? 'border-[#0EA5E9] text-[#0EA5E9]'
                 : 'border-transparent text-slate-500 hover:text-slate-700'
@@ -94,7 +94,7 @@ function CodeExamples({ examples }: { examples: CodeExample[] }) {
         ))}
       </div>
       <pre
-        className="bg-slate-900 text-slate-100 p-4 rounded-b-lg text-sm font-mono overflow-x-auto whitespace-pre"
+        className="bg-slate-900 text-slate-100 p-4 rounded-b-lg bloomberg-data bloomberg-small-text overflow-x-auto whitespace-pre"
         data-testid="code-display"
       >
         {examples[activeTab]?.code || ''}
@@ -109,20 +109,20 @@ function ParameterTable({ parameters }: { parameters: ApiEndpointAction['paramet
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full text-sm" data-testid="parameter-table">
+      <table className="w-full bloomberg-small-text" data-testid="parameter-table">
         <thead>
           <tr className="border-b border-slate-200">
-            <th className="text-left py-2 px-3 font-semibold text-slate-700">Parameter</th>
-            <th className="text-left py-2 px-3 font-semibold text-slate-700">Type</th>
-            <th className="text-left py-2 px-3 font-semibold text-slate-700">Required</th>
-            <th className="text-left py-2 px-3 font-semibold text-slate-700">Description</th>
+            <th className="text-left py-2 px-3 bloomberg-card-title text-slate-700">Parameter</th>
+            <th className="text-left py-2 px-3 bloomberg-card-title text-slate-700">Type</th>
+            <th className="text-left py-2 px-3 bloomberg-card-title text-slate-700">Required</th>
+            <th className="text-left py-2 px-3 bloomberg-card-title text-slate-700">Description</th>
           </tr>
         </thead>
         <tbody>
           {parameters.map((param) => (
             <tr key={param.name} className="border-b border-slate-100">
               <td className="py-2 px-3">
-                <code className="bg-slate-100 px-1.5 py-0.5 rounded text-xs font-mono text-[#1B2A4A]">
+                <code className="bg-slate-100 px-1.5 py-0.5 rounded bloomberg-data bloomberg-section-label text-[#1B2A4A]">
                   {param.name}
                 </code>
               </td>
@@ -138,16 +138,16 @@ function ParameterTable({ parameters }: { parameters: ApiEndpointAction['paramet
                 {param.description}
                 {param.enum && (
                   <div className="mt-1">
-                    <span className="text-xs text-slate-400">Values: </span>
+                    <span className="bloomberg-section-label text-slate-400">Values: </span>
                     {param.enum.map((v) => (
-                      <code key={v} className="bg-slate-100 px-1 py-0.5 rounded text-xs mr-1">
+                      <code key={v} className="bg-slate-100 px-1 py-0.5 rounded bloomberg-section-label mr-1">
                         {v}
                       </code>
                     ))}
                   </div>
                 )}
                 {param.default !== undefined && (
-                  <div className="mt-1 text-xs text-slate-400">
+                  <div className="mt-1 bloomberg-section-label text-slate-400">
                     Default: <code className="bg-slate-100 px-1 py-0.5 rounded">{String(param.default)}</code>
                   </div>
                 )}
@@ -252,7 +252,7 @@ function RequestBuilder({ endpoint, action }: RequestBuilderProps) {
       {/* API Key input */}
       {endpoint.authentication.required && (
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
+          <label className="block bloomberg-small-text text-slate-700 mb-1">
             API Key ({endpoint.authentication.header})
           </label>
           <input
@@ -260,10 +260,10 @@ function RequestBuilder({ endpoint, action }: RequestBuilderProps) {
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
             placeholder="Enter your API key (optional in dev mode)"
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] focus:border-transparent"
+            className="w-full px-3 py-2 border border-slate-300 rounded-lg bloomberg-small-text focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] focus:border-transparent"
             data-testid="api-key-input"
           />
-          <p className="mt-1 text-xs text-slate-400">{endpoint.authentication.devMode}</p>
+          <p className="mt-1 bloomberg-section-label text-slate-400">{endpoint.authentication.devMode}</p>
         </div>
       )}
 
@@ -271,10 +271,10 @@ function RequestBuilder({ endpoint, action }: RequestBuilderProps) {
       {endpoint.method === 'POST' && (
         <div>
           <div className="flex items-center justify-between mb-1">
-            <label className="block text-sm font-medium text-slate-700">Request Body</label>
+            <label className="block bloomberg-small-text text-slate-700">Request Body</label>
             <button
               onClick={resetToExample}
-              className="text-xs text-[#0EA5E9] hover:text-sky-600 transition-colors"
+              className="bloomberg-section-label text-[#0EA5E9] hover:text-sky-600 transition-colors"
               data-testid="reset-body-button"
             >
               Reset to Example
@@ -284,7 +284,7 @@ function RequestBuilder({ endpoint, action }: RequestBuilderProps) {
             value={requestBody}
             onChange={(e) => setRequestBody(e.target.value)}
             rows={Math.min(15, requestBody.split('\n').length + 2)}
-            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] focus:border-transparent bg-slate-50"
+            className="w-full px-3 py-2 border border-slate-300 rounded-lg bloomberg-data bloomberg-small-text focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] focus:border-transparent bg-slate-50"
             data-testid="request-body-editor"
             spellCheck={false}
           />
@@ -295,7 +295,7 @@ function RequestBuilder({ endpoint, action }: RequestBuilderProps) {
       <button
         onClick={handleSendRequest}
         disabled={loading}
-        className={`w-full py-2.5 px-4 rounded-lg font-medium text-sm transition-colors ${
+        className={`w-full py-2.5 px-4 rounded-lg font-medium bloomberg-small-text transition-colors ${
           loading
             ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
             : 'bg-[#0EA5E9] text-white hover:bg-sky-600 active:bg-sky-700'
@@ -309,11 +309,11 @@ function RequestBuilder({ endpoint, action }: RequestBuilderProps) {
       {response && (
         <div data-testid="response-panel">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-slate-700">Response</span>
+            <span className="bloomberg-small-text text-slate-700">Response</span>
             <div className="flex items-center space-x-3">
               {statusCode !== null && (
                 <span
-                  className={`text-xs font-mono px-2 py-0.5 rounded ${
+                  className={`bloomberg-data bloomberg-section-label px-2 py-0.5 rounded ${
                     statusCode >= 200 && statusCode < 300
                       ? 'bg-emerald-100 text-emerald-700'
                       : statusCode >= 400
@@ -326,13 +326,13 @@ function RequestBuilder({ endpoint, action }: RequestBuilderProps) {
                 </span>
               )}
               {responseTime !== null && (
-                <span className="text-xs text-slate-400" data-testid="response-time">
+                <span className="bloomberg-section-label text-slate-400" data-testid="response-time">
                   {responseTime}ms
                 </span>
               )}
             </div>
           </div>
-          <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto max-h-96 overflow-y-auto whitespace-pre">
+          <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg bloomberg-data bloomberg-small-text overflow-x-auto max-h-96 overflow-y-auto whitespace-pre">
             {response}
           </pre>
         </div>
@@ -362,31 +362,31 @@ function EndpointDetail({ endpoint }: EndpointDetailProps) {
       <div className="border-b border-slate-200 pb-4 mb-6">
         <div className="flex items-center space-x-3 mb-2">
           <MethodBadge method={endpoint.method} />
-          <code className="text-lg font-mono text-[#1B2A4A] font-semibold">{endpoint.path}</code>
+          <code className="bloomberg-card-title bloomberg-data text-[#1B2A4A] bloomberg-card-title">{endpoint.path}</code>
         </div>
-        <h2 className="text-xl font-bold text-[#1B2A4A]">{endpoint.title}</h2>
+        <h2 className="bloomberg-metric-value text-[#1B2A4A]">{endpoint.title}</h2>
         <p className="text-slate-600 mt-1">{endpoint.description}</p>
       </div>
 
       {/* Authentication & Rate Limit info */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="bg-slate-50 rounded-lg p-4">
-          <h3 className="text-sm font-semibold text-slate-700 mb-2">Authentication</h3>
-          <p className="text-sm text-slate-600">
+          <h3 className="bloomberg-small-text bloomberg-card-title text-slate-700 mb-2">Authentication</h3>
+          <p className="bloomberg-small-text text-slate-600">
             {endpoint.authentication.required ? (
               <>
-                Required via <code className="bg-white px-1 py-0.5 rounded text-xs border border-slate-200">{endpoint.authentication.header}</code> header
+                Required via <code className="bg-white px-1 py-0.5 rounded bloomberg-section-label border border-slate-200">{endpoint.authentication.header}</code> header
               </>
             ) : (
               'Not required'
             )}
           </p>
-          <p className="text-xs text-slate-400 mt-1">{endpoint.authentication.devMode}</p>
+          <p className="bloomberg-section-label text-slate-400 mt-1">{endpoint.authentication.devMode}</p>
         </div>
         <div className="bg-slate-50 rounded-lg p-4">
-          <h3 className="text-sm font-semibold text-slate-700 mb-2">Rate Limit</h3>
-          <p className="text-sm text-slate-600">{endpoint.rateLimit.windowDescription}</p>
-          <p className="text-xs text-slate-400 mt-1">
+          <h3 className="bloomberg-small-text bloomberg-card-title text-slate-700 mb-2">Rate Limit</h3>
+          <p className="bloomberg-small-text text-slate-600">{endpoint.rateLimit.windowDescription}</p>
+          <p className="bloomberg-section-label text-slate-400 mt-1">
             {endpoint.rateLimit.maxRequests} requests per {endpoint.rateLimit.windowMs / 1000}s window
           </p>
         </div>
@@ -395,13 +395,13 @@ function EndpointDetail({ endpoint }: EndpointDetailProps) {
       {/* Action selector (if multiple actions) */}
       {endpoint.actions.length > 1 && (
         <div className="mb-6">
-          <h3 className="text-sm font-semibold text-slate-700 mb-2">Actions</h3>
+          <h3 className="bloomberg-small-text bloomberg-card-title text-slate-700 mb-2">Actions</h3>
           <div className="flex flex-wrap gap-2">
             {endpoint.actions.map((act, i) => (
               <button
                 key={act.name}
                 onClick={() => { setSelectedAction(i); setActiveSection('docs') }}
-                className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
+                className={`px-3 py-1.5 bloomberg-small-text rounded-lg border transition-colors ${
                   selectedAction === i
                     ? 'bg-[#1B2A4A] text-white border-[#1B2A4A]'
                     : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
@@ -423,7 +423,7 @@ function EndpointDetail({ endpoint }: EndpointDetailProps) {
               <button
                 key={section}
                 onClick={() => setActiveSection(section)}
-                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                className={`px-4 py-2 bloomberg-small-text border-b-2 transition-colors ${
                   activeSection === section
                     ? 'border-[#0EA5E9] text-[#0EA5E9]'
                     : 'border-transparent text-slate-500 hover:text-slate-700'
@@ -439,14 +439,14 @@ function EndpointDetail({ endpoint }: EndpointDetailProps) {
           {activeSection === 'docs' && (
             <div className="space-y-6" data-testid="docs-section">
               <div>
-                <h3 className="text-sm font-semibold text-slate-700 mb-1">{action.name}</h3>
-                <p className="text-sm text-slate-600">{action.description}</p>
+                <h3 className="bloomberg-small-text bloomberg-card-title text-slate-700 mb-1">{action.name}</h3>
+                <p className="bloomberg-small-text text-slate-600">{action.description}</p>
               </div>
 
               {/* Parameters */}
               {action.parameters.length > 0 && (
                 <div>
-                  <h4 className="text-sm font-semibold text-slate-700 mb-2">Parameters</h4>
+                  <h4 className="bloomberg-small-text bloomberg-card-title text-slate-700 mb-2">Parameters</h4>
                   <ParameterTable parameters={action.parameters} />
                 </div>
               )}
@@ -454,25 +454,25 @@ function EndpointDetail({ endpoint }: EndpointDetailProps) {
               {/* Example request */}
               {Object.keys(action.exampleRequest).length > 0 && (
                 <div>
-                  <h4 className="text-sm font-semibold text-slate-700 mb-2">Example Request</h4>
+                  <h4 className="bloomberg-small-text bloomberg-card-title text-slate-700 mb-2">Example Request</h4>
                   <JsonDisplay data={action.exampleRequest} />
                 </div>
               )}
 
               {/* Example response */}
               <div>
-                <h4 className="text-sm font-semibold text-slate-700 mb-2">Example Response</h4>
+                <h4 className="bloomberg-small-text bloomberg-card-title text-slate-700 mb-2">Example Response</h4>
                 <JsonDisplay data={action.exampleResponse} />
               </div>
 
               {/* Error codes */}
               {endpoint.errorCodes.length > 0 && (
                 <div>
-                  <h4 className="text-sm font-semibold text-slate-700 mb-2">Error Codes</h4>
+                  <h4 className="bloomberg-small-text bloomberg-card-title text-slate-700 mb-2">Error Codes</h4>
                   <div className="space-y-2">
                     {endpoint.errorCodes.map((err) => (
-                      <div key={err.code} className="flex items-start space-x-3 text-sm">
-                        <span className={`font-mono px-2 py-0.5 rounded text-xs ${
+                      <div key={err.code} className="flex items-start space-x-3 bloomberg-small-text">
+                        <span className={`bloomberg-data px-2 py-0.5 rounded bloomberg-section-label ${
                           err.code >= 500 ? 'bg-red-100 text-red-700'
                           : err.code >= 400 ? 'bg-amber-100 text-amber-700'
                           : 'bg-slate-100 text-slate-700'
@@ -492,10 +492,10 @@ function EndpointDetail({ endpoint }: EndpointDetailProps) {
               {/* Notes */}
               {endpoint.notes && endpoint.notes.length > 0 && (
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                  <h4 className="text-sm font-semibold text-amber-800 mb-2">Notes</h4>
+                  <h4 className="bloomberg-small-text bloomberg-card-title text-amber-800 mb-2">Notes</h4>
                   <ul className="list-disc list-inside space-y-1">
                     {endpoint.notes.map((note, i) => (
-                      <li key={i} className="text-sm text-amber-700">{note}</li>
+                      <li key={i} className="bloomberg-small-text text-amber-700">{note}</li>
                     ))}
                   </ul>
                 </div>
@@ -541,8 +541,8 @@ export default function APIExplorer() {
       >
         <div className="w-80 p-4">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-[#1B2A4A]">API Endpoints</h3>
-            <span className="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded">
+            <h3 className="bloomberg-card-title text-[#1B2A4A]">API Endpoints</h3>
+            <span className="bloomberg-section-label text-slate-400 bg-slate-100 px-2 py-0.5 rounded">
               v2.2.0
             </span>
           </div>
@@ -555,7 +555,7 @@ export default function APIExplorer() {
 
               return (
                 <div key={cat.id}>
-                  <div className="flex items-center space-x-2 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 px-2">
+                  <div className="flex items-center space-x-2 bloomberg-section-label bloomberg-card-title text-slate-400 uppercase tracking-wider mb-2 px-2">
                     <CategoryIcon category={cat.id} />
                     <span>{cat.label}</span>
                   </div>
@@ -564,7 +564,7 @@ export default function APIExplorer() {
                       <button
                         key={ep.id}
                         onClick={() => setSelectedEndpointId(ep.id)}
-                        className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                        className={`w-full text-left px-3 py-2 rounded-lg bloomberg-small-text transition-colors ${
                           selectedEndpointId === ep.id
                             ? 'bg-[#0EA5E9]/10 text-[#0EA5E9] border border-[#0EA5E9]/20'
                             : 'text-slate-600 hover:bg-slate-50'
@@ -573,9 +573,9 @@ export default function APIExplorer() {
                       >
                         <div className="flex items-center space-x-2">
                           <MethodBadge method={ep.method} />
-                          <span className="font-mono text-xs truncate">{ep.path}</span>
+                          <span className="bloomberg-data bloomberg-section-label truncate">{ep.path}</span>
                         </div>
-                        <div className="text-xs text-slate-400 mt-0.5 ml-1 truncate">
+                        <div className="bloomberg-section-label text-slate-400 mt-0.5 ml-1 truncate">
                           {ep.title}
                         </div>
                       </button>

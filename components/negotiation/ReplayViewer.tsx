@@ -153,14 +153,14 @@ export default function ReplayViewer({ session, onClose }: ReplayViewerProps) {
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-[#1B2A4A] text-white">
         <div className="flex items-center space-x-4">
-          <h2 className="text-xl font-semibold">Negotiation Replay</h2>
-          <div className="flex items-center space-x-2 text-sm bg-[#0EA5E9] px-3 py-1 rounded-full">
+          <h2 className="bloomberg-metric-value ">Negotiation Replay</h2>
+          <div className="flex items-center space-x-2 bloomberg-small-text bg-[#0EA5E9] px-3 py-1 rounded-full">
             <span>📋</span>
             <span>{session.persona.replace(/_/g, ' ').split(' ').map(word =>
               word.charAt(0).toUpperCase() + word.slice(1)
             ).join(' ')}</span>
           </div>
-          <div className="flex items-center space-x-2 text-sm">
+          <div className="flex items-center space-x-2 bloomberg-small-text">
             {session.outcome === 'agreed' ? (
               <span className="bg-[#10B981] px-3 py-1 rounded-full flex items-center">
                 ✅ Agreed ({formatCurrency(session.metrics.finalPrice)})
@@ -198,12 +198,12 @@ export default function ReplayViewer({ session, onClose }: ReplayViewerProps) {
               </button>
 
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-600">Speed:</span>
+                <span className="bloomberg-small-text text-gray-600">Speed:</span>
                 {[0.5, 1, 1.5, 2].map((speed) => (
                   <button
                     key={speed}
                     onClick={() => setPlaySpeed(speed)}
-                    className={`px-2 py-1 rounded text-sm ${
+                    className={`px-2 py-1 rounded bloomberg-small-text ${
                       playSpeed === speed
                         ? 'bg-[#0EA5E9] text-white'
                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -214,7 +214,7 @@ export default function ReplayViewer({ session, onClose }: ReplayViewerProps) {
                 ))}
               </div>
 
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <div className="flex items-center space-x-2 bloomberg-small-text text-gray-600">
                 <span>Message {currentMessageIndex + 1} of {messages.length}</span>
               </div>
             </div>
@@ -232,7 +232,7 @@ export default function ReplayViewer({ session, onClose }: ReplayViewerProps) {
                   background: `linear-gradient(to right, #0EA5E9 0%, #0EA5E9 ${(currentMessageIndex / (messages.length - 1)) * 100}%, #e5e7eb ${(currentMessageIndex / (messages.length - 1)) * 100}%, #e5e7eb 100%)`
                 }}
               />
-              <div className="flex justify-between text-xs text-gray-500 mt-1">
+              <div className="flex justify-between bloomberg-section-label text-gray-500 mt-1">
                 <span>Start</span>
                 <span>{formatTimestamp(session.startTime)}</span>
                 <span>{session.endTime && formatTimestamp(session.endTime)}</span>
@@ -253,7 +253,7 @@ export default function ReplayViewer({ session, onClose }: ReplayViewerProps) {
                         key={idx}
                         className={`flex items-center p-3 rounded-lg border ${getHighlightColor(highlight.type)}`}
                       >
-                        <span className="text-xl mr-3">{getHighlightIcon(highlight.type)}</span>
+                        <span className="bloomberg-metric-value mr-3">{getHighlightIcon(highlight.type)}</span>
                         <span className="font-medium">{highlight.description}</span>
                       </div>
                     ))}
@@ -264,7 +264,7 @@ export default function ReplayViewer({ session, onClose }: ReplayViewerProps) {
                 <div className={`p-6 rounded-lg border-l-4 ${emotionalColors[currentMessage.emotionalState || 'neutral']}`}>
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-3">
-                      <div className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      <div className={`px-3 py-1 rounded-full bloomberg-small-text font-medium ${
                         currentMessage.role === 'agent'
                           ? 'bg-[#0EA5E9] text-white'
                           : 'bg-gray-200 text-gray-800'
@@ -272,17 +272,17 @@ export default function ReplayViewer({ session, onClose }: ReplayViewerProps) {
                         {currentMessage.role === 'agent' ? '🤖 WREI Agent' : '👤 Buyer'}
                       </div>
                       {currentMessage.argumentClassification && (
-                        <div className={`px-2 py-1 rounded text-xs border ${argumentColors[currentMessage.argumentClassification]}`}>
+                        <div className={`px-2 py-1 rounded bloomberg-section-label border ${argumentColors[currentMessage.argumentClassification]}`}>
                           {currentMessage.argumentClassification.replace(/_/g, ' ').toUpperCase()}
                         </div>
                       )}
                       {currentMessage.emotionalState && (
-                        <div className="px-2 py-1 rounded text-xs bg-gray-100 text-gray-600 border border-gray-300">
+                        <div className="px-2 py-1 rounded bloomberg-section-label bg-gray-100 text-gray-600 border border-gray-300">
                           😊 {currentMessage.emotionalState.toUpperCase()}
                         </div>
                       )}
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="bloomberg-section-label text-gray-500">
                       {formatTimestamp(currentMessage.timestamp)}
                     </div>
                   </div>
@@ -318,20 +318,20 @@ export default function ReplayViewer({ session, onClose }: ReplayViewerProps) {
         {/* State Panel */}
         <div className="w-80 border-l border-gray-200 bg-gray-50 overflow-y-auto">
           <div className="p-4">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">State at This Point</h3>
+            <h3 className="bloomberg-card-title text-gray-800 mb-4">State at This Point</h3>
 
             {currentSnapshot && (
               <div className="space-y-4">
                 {/* Round & Phase */}
                 <div className="bg-white p-4 rounded-lg border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-600">Round & Phase</span>
-                    <span className="text-2xl">{phaseIcons[currentSnapshot.phase] || '📊'}</span>
+                    <span className="bloomberg-small-text font-medium text-gray-600">Round & Phase</span>
+                    <span className="bloomberg-large-metric">{phaseIcons[currentSnapshot.phase] || '📊'}</span>
                   </div>
-                  <div className="text-lg font-bold text-[#1B2A4A]">
+                  <div className="bloomberg-card-title text-[#1B2A4A]">
                     Round {currentSnapshot.round}
                   </div>
-                  <div className="text-sm text-gray-600 capitalize">
+                  <div className="bloomberg-small-text text-gray-600 capitalize">
                     {currentSnapshot.phase.replace(/_/g, ' ')} Phase
                   </div>
                 </div>
@@ -339,16 +339,16 @@ export default function ReplayViewer({ session, onClose }: ReplayViewerProps) {
                 {/* Price Information */}
                 <div className="bg-white p-4 rounded-lg border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-600">Current Offer</span>
-                    <span className="text-2xl">💰</span>
+                    <span className="bloomberg-small-text font-medium text-gray-600">Current Offer</span>
+                    <span className="bloomberg-large-metric">💰</span>
                   </div>
-                  <div className="text-xl font-bold text-[#10B981]">
+                  <div className="bloomberg-metric-value text-[#10B981]">
                     {formatCurrency(currentSnapshot.currentPrice)}
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">
+                  <div className="bloomberg-section-label text-gray-500 mt-1">
                     Anchor: {formatCurrency(session.metrics.anchorPrice)}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="bloomberg-section-label text-gray-500">
                     Floor: {formatCurrency(session.metrics.priceFloor)}
                   </div>
                 </div>
@@ -356,10 +356,10 @@ export default function ReplayViewer({ session, onClose }: ReplayViewerProps) {
                 {/* Concession Progress */}
                 <div className="bg-white p-4 rounded-lg border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-600">Concessions Made</span>
-                    <span className="text-2xl">📈</span>
+                    <span className="bloomberg-small-text font-medium text-gray-600">Concessions Made</span>
+                    <span className="bloomberg-large-metric">📈</span>
                   </div>
-                  <div className="text-lg font-bold text-[#F59E0B]">
+                  <div className="bloomberg-card-title text-[#F59E0B]">
                     {currentSnapshot.totalConcessionSoFar.toFixed(1)}%
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
@@ -368,7 +368,7 @@ export default function ReplayViewer({ session, onClose }: ReplayViewerProps) {
                       style={{ width: `${Math.min(100, currentSnapshot.totalConcessionSoFar)}%` }}
                     ></div>
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">
+                  <div className="bloomberg-section-label text-gray-500 mt-1">
                     of {session.metrics.totalConcessionPercentage.toFixed(1)}% total
                   </div>
                 </div>
@@ -376,15 +376,15 @@ export default function ReplayViewer({ session, onClose }: ReplayViewerProps) {
                 {/* Emotional State */}
                 <div className="bg-white p-4 rounded-lg border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-600">Emotional State</span>
-                    <span className="text-2xl">😊</span>
+                    <span className="bloomberg-small-text font-medium text-gray-600">Emotional State</span>
+                    <span className="bloomberg-large-metric">😊</span>
                   </div>
-                  <div className="text-lg font-bold text-gray-800">
+                  <div className="bloomberg-card-title text-gray-800">
                     {currentSnapshot.emotionalState.replace(/_/g, ' ').split(' ').map(word =>
                       word.charAt(0).toUpperCase() + word.slice(1)
                     ).join(' ')}
                   </div>
-                  <div className={`inline-block px-2 py-1 rounded text-xs mt-2 ${emotionalColors[currentSnapshot.emotionalState]} border-l-0 border`}>
+                  <div className={`inline-block px-2 py-1 rounded bloomberg-section-label mt-2 ${emotionalColors[currentSnapshot.emotionalState]} border-l-0 border`}>
                     {currentSnapshot.emotionalState.toUpperCase()}
                   </div>
                 </div>
@@ -392,13 +392,13 @@ export default function ReplayViewer({ session, onClose }: ReplayViewerProps) {
                 {/* Message Count */}
                 <div className="bg-white p-4 rounded-lg border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-600">Progress</span>
-                    <span className="text-2xl">💬</span>
+                    <span className="bloomberg-small-text font-medium text-gray-600">Progress</span>
+                    <span className="bloomberg-large-metric">💬</span>
                   </div>
-                  <div className="text-lg font-bold text-[#0EA5E9]">
+                  <div className="bloomberg-card-title text-[#0EA5E9]">
                     {currentSnapshot.messageCount} / {messages.length}
                   </div>
-                  <div className="text-sm text-gray-600">
+                  <div className="bloomberg-small-text text-gray-600">
                     messages exchanged
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
@@ -413,8 +413,8 @@ export default function ReplayViewer({ session, onClose }: ReplayViewerProps) {
 
             {/* Session Summary at Bottom */}
             <div className="mt-6 pt-4 border-t border-gray-300">
-              <h4 className="text-sm font-medium text-gray-600 mb-3">Final Outcome</h4>
-              <div className="space-y-2 text-sm">
+              <h4 className="bloomberg-small-text font-medium text-gray-600 mb-3">Final Outcome</h4>
+              <div className="space-y-2 bloomberg-small-text">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Total Rounds:</span>
                   <span className="font-medium">{session.metrics.totalRounds}</span>

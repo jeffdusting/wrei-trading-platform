@@ -489,7 +489,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Portfolio Optimizer</h1>
+            <h1 className="bloomberg-page-heading text-gray-900">Portfolio Optimizer</h1>
             <p className="text-gray-600 mt-1">
               AI-powered ESC portfolio optimization with risk management and return maximization
             </p>
@@ -507,27 +507,27 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
 
         {/* Portfolio Overview */}
         <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-          <h3 className="font-semibold text-gray-900 mb-3">Current Portfolio Overview</h3>
+          <h3 className=" text-gray-900 mb-3">Current Portfolio Overview</h3>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">15,000t</div>
-              <div className="text-sm text-gray-600">Total Volume</div>
+              <div className="bloomberg-large-metric text-blue-600">15,000t</div>
+              <div className="bloomberg-small-text text-gray-600">Total Volume</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">A$735k</div>
-              <div className="text-sm text-gray-600">Current Value</div>
+              <div className="bloomberg-large-metric text-green-600">A$735k</div>
+              <div className="bloomberg-small-text text-gray-600">Current Value</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">12.8%</div>
-              <div className="text-sm text-gray-600">YTD Return</div>
+              <div className="bloomberg-large-metric text-purple-600">12.8%</div>
+              <div className="bloomberg-small-text text-gray-600">YTD Return</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">6.2</div>
-              <div className="text-sm text-gray-600">Risk Score (1-10)</div>
+              <div className="bloomberg-large-metric text-orange-600">6.2</div>
+              <div className="bloomberg-small-text text-gray-600">Risk Score (1-10)</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-gray-600">A$180k</div>
-              <div className="text-sm text-gray-600">Available Cash</div>
+              <div className="bloomberg-large-metric text-gray-600">A$180k</div>
+              <div className="bloomberg-small-text text-gray-600">Available Cash</div>
             </div>
           </div>
         </div>
@@ -538,7 +538,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Strategy Selection */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">Optimization Strategy</h3>
+            <h3 className=" text-gray-900 mb-4">Optimization Strategy</h3>
             <div className="space-y-3">
               {Object.values(scenarios).map((scenario) => (
                 <div
@@ -556,15 +556,15 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
                     </div>
                     <div>
                       <h4 className="font-medium text-gray-900">{scenario.name}</h4>
-                      <p className="text-sm text-gray-600">{scenario.time_horizon} months</p>
+                      <p className="bloomberg-small-text text-gray-600">{scenario.time_horizon} months</p>
                     </div>
                   </div>
-                  <p className="text-gray-700 text-sm">{scenario.description}</p>
+                  <p className="text-gray-700 bloomberg-small-text">{scenario.description}</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {scenario.objectives.map((obj, index) => (
                       <span
                         key={index}
-                        className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded-full"
+                        className="px-2 py-1 bloomberg-section-label bg-gray-100 text-gray-700 rounded-full"
                       >
                         {obj.type.replace('-', ' ')} ({(obj.weight * 100).toFixed(0)}%)
                       </span>
@@ -577,7 +577,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
 
           {/* Current Portfolio Composition */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">Portfolio Composition</h3>
+            <h3 className=" text-gray-900 mb-4">Portfolio Composition</h3>
             <div className="space-y-4">
               {scenarios[selectedScenario].portfolio.credits.map((credit) => (
                 <div key={credit.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
@@ -585,15 +585,15 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
                     <div className={`w-4 h-4 rounded-full ${getAssetTypeColor(credit.type)}`} />
                     <div>
                       <div className="font-medium text-gray-900">{credit.project_type}</div>
-                      <div className="text-sm text-gray-600">{credit.type} • {credit.vintage_year}</div>
+                      <div className="bloomberg-small-text text-gray-600">{credit.type} • {credit.vintage_year}</div>
                     </div>
                   </div>
                   <div className="text-right">
                     <div className="font-medium text-gray-900">{credit.volume.toLocaleString()}t</div>
-                    <div className="text-sm text-gray-600">A${credit.current_value.toFixed(2)}/t</div>
+                    <div className="bloomberg-small-text text-gray-600">A${credit.current_value.toFixed(2)}/t</div>
                   </div>
                   <div>
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${getRiskColor(credit.risk_rating)}`}>
+                    <span className={`px-2 py-1 bloomberg-section-label font-medium rounded-full ${getRiskColor(credit.risk_rating)}`}>
                       {credit.risk_rating} risk
                     </span>
                   </div>
@@ -604,10 +604,10 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
 
           {/* Optimization Controls */}
           <div className="lg:col-span-2 bg-white rounded-lg border border-gray-200 p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">Optimization Parameters</h3>
+            <h3 className=" text-gray-900 mb-4">Optimization Parameters</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block bloomberg-small-text font-medium text-gray-700 mb-2">
                   Time Horizon
                 </label>
                 <select
@@ -647,7 +647,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
             {/* Optimization Progress */}
             {isOptimizing && (
               <div className="mt-6">
-                <div className="flex justify-between text-sm text-gray-600 mb-2">
+                <div className="flex justify-between bloomberg-small-text text-gray-600 mb-2">
                   <span>Optimization Progress</span>
                   <span>{optimizationProgress.toFixed(0)}%</span>
                 </div>
@@ -657,7 +657,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
                     style={{ width: `${optimizationProgress}%` }}
                   />
                 </div>
-                <div className="mt-2 text-sm text-gray-600">
+                <div className="mt-2 bloomberg-small-text text-gray-600">
                   Analyzing market conditions, calculating optimal allocations, and evaluating risk factors...
                 </div>
               </div>
@@ -672,7 +672,7 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
             <div className="flex items-center gap-3 mb-6">
               <CheckCircleIcon className="w-8 h-8 text-green-600" />
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">Optimization Complete</h2>
+                <h2 className="bloomberg-metric-value text-gray-900">Optimization Complete</h2>
                 <p className="text-gray-600">Portfolio optimization completed successfully with significant improvements</p>
               </div>
             </div>
@@ -681,41 +681,41 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1 mb-1">
                   <ArrowTrendingUpIcon className="w-5 h-5 text-green-500" />
-                  <div className="text-2xl font-bold text-green-600">
+                  <div className="bloomberg-large-metric text-green-600">
                     +{optimizationResult.improvements.return_increase.toFixed(1)}%
                   </div>
                 </div>
-                <div className="text-sm text-gray-600">Return Increase</div>
+                <div className="bloomberg-small-text text-gray-600">Return Increase</div>
               </div>
 
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1 mb-1">
                   <ShieldCheckIcon className="w-5 h-5 text-blue-500" />
-                  <div className="text-2xl font-bold text-blue-600">
+                  <div className="bloomberg-large-metric text-blue-600">
                     -{optimizationResult.improvements.risk_reduction.toFixed(1)}%
                   </div>
                 </div>
-                <div className="text-sm text-gray-600">Risk Reduction</div>
+                <div className="bloomberg-small-text text-gray-600">Risk Reduction</div>
               </div>
 
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1 mb-1">
                   <BanknotesIcon className="w-5 h-5 text-purple-500" />
-                  <div className="text-2xl font-bold text-purple-600">
+                  <div className="bloomberg-large-metric text-purple-600">
                     A${(optimizationResult.improvements.cost_savings / 1000).toFixed(0)}k
                   </div>
                 </div>
-                <div className="text-sm text-gray-600">Cost Savings</div>
+                <div className="bloomberg-small-text text-gray-600">Cost Savings</div>
               </div>
 
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1 mb-1">
                   <ClockIcon className="w-5 h-5 text-orange-500" />
-                  <div className="text-2xl font-bold text-orange-600">
+                  <div className="bloomberg-large-metric text-orange-600">
                     {optimizationResult.risk_analysis.sharpe_ratio.toFixed(2)}
                   </div>
                 </div>
-                <div className="text-sm text-gray-600">Sharpe Ratio</div>
+                <div className="bloomberg-small-text text-gray-600">Sharpe Ratio</div>
               </div>
             </div>
           </div>
@@ -723,13 +723,13 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
           {/* Recommendations */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Optimization Recommendations</h3>
+              <h3 className=" text-gray-900 mb-4">Optimization Recommendations</h3>
               <div className="space-y-4">
                 {optimizationResult.recommendations.map((rec, index) => (
                   <div key={index} className="border border-gray-200 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                        <span className={`px-2 py-1 bloomberg-section-label font-medium rounded-full ${
                           rec.type === 'buy' ? 'bg-green-100 text-green-800' :
                           rec.type === 'sell' ? 'bg-red-100 text-red-800' :
                           rec.type === 'rebalance' ? 'bg-blue-100 text-blue-800' :
@@ -739,28 +739,28 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
                         </span>
                         <span className="font-medium text-gray-900">{rec.quantity.toLocaleString()}t</span>
                       </div>
-                      <div className="text-sm text-gray-600">Impact: {rec.impact.toFixed(1)}/10</div>
+                      <div className="bloomberg-small-text text-gray-600">Impact: {rec.impact.toFixed(1)}/10</div>
                     </div>
-                    <div className="text-sm text-gray-900 mb-1">{rec.asset}</div>
-                    <div className="text-xs text-gray-600">{rec.rationale}</div>
+                    <div className="bloomberg-small-text text-gray-900 mb-1">{rec.asset}</div>
+                    <div className="bloomberg-section-label text-gray-600">{rec.rationale}</div>
                   </div>
                 ))}
               </div>
             </div>
 
             <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Execution Plan</h3>
+              <h3 className=" text-gray-900 mb-4">Execution Plan</h3>
               <div className="space-y-3">
                 {optimizationResult.execution_plan.map((step, index) => (
                   <div key={index} className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg">
-                    <div className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-medium">
+                    <div className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center bloomberg-section-label font-medium">
                       {step.step}
                     </div>
                     <div className="flex-1">
-                      <div className="font-medium text-gray-900 text-sm">{step.action}</div>
-                      <div className="text-xs text-gray-600 mt-1">
+                      <div className="font-medium text-gray-900 bloomberg-small-text">{step.action}</div>
+                      <div className="bloomberg-section-label text-gray-600 mt-1">
                         {step.timeline} •
-                        <span className={`ml-1 px-2 py-0.5 rounded-full text-xs ${getPriorityColor(step.priority)}`}>
+                        <span className={`ml-1 px-2 py-0.5 rounded-full bloomberg-section-label ${getPriorityColor(step.priority)}`}>
                           {step.priority}
                         </span>
                       </div>
@@ -773,31 +773,31 @@ const PortfolioOptimizer: React.FC<PortfolioOptimizerProps> = ({
 
           {/* Risk Analysis */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">Risk Analysis</h3>
+            <h3 className=" text-gray-900 mb-4">Risk Analysis</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="text-center">
-                <div className="text-xl font-bold text-gray-900">
+                <div className="bloomberg-metric-value text-gray-900">
                   {(optimizationResult.risk_analysis.expected_return * 100).toFixed(1)}%
                 </div>
-                <div className="text-sm text-gray-600">Expected Return</div>
+                <div className="bloomberg-small-text text-gray-600">Expected Return</div>
               </div>
               <div className="text-center">
-                <div className="text-xl font-bold text-gray-900">
+                <div className="bloomberg-metric-value text-gray-900">
                   {(optimizationResult.risk_analysis.var_95 * 100).toFixed(1)}%
                 </div>
-                <div className="text-sm text-gray-600">Value at Risk (95%)</div>
+                <div className="bloomberg-small-text text-gray-600">Value at Risk (95%)</div>
               </div>
               <div className="text-center">
-                <div className="text-xl font-bold text-gray-900">
+                <div className="bloomberg-metric-value text-gray-900">
                   {(optimizationResult.risk_analysis.max_drawdown * 100).toFixed(1)}%
                 </div>
-                <div className="text-sm text-gray-600">Max Drawdown</div>
+                <div className="bloomberg-small-text text-gray-600">Max Drawdown</div>
               </div>
               <div className="text-center">
-                <div className="text-xl font-bold text-gray-900">
+                <div className="bloomberg-metric-value text-gray-900">
                   {optimizationResult.risk_analysis.sharpe_ratio.toFixed(2)}
                 </div>
-                <div className="text-sm text-gray-600">Sharpe Ratio</div>
+                <div className="bloomberg-small-text text-gray-600">Sharpe Ratio</div>
               </div>
             </div>
           </div>

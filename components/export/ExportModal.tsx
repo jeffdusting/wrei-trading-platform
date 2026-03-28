@@ -202,8 +202,8 @@ const ExportModal: React.FC<ExportModalProps> = ({
         <div className="border-b border-gray-200 px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-bold text-gray-800">Export Professional Report</h2>
-              <p className="text-sm text-gray-500 mt-1">
+              <h2 className="bloomberg-metric-value text-gray-800">Export Professional Report</h2>
+              <p className="bloomberg-small-text text-gray-500 mt-1">
                 Choose format and template for your institutional report
               </p>
             </div>
@@ -224,7 +224,7 @@ const ExportModal: React.FC<ExportModalProps> = ({
         <div className="px-6 py-4 space-y-6">
           {/* Format Selection */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+            <h3 className="bloomberg-small-text  text-gray-700 uppercase tracking-wide mb-3">
               Export Format
             </h3>
             <div className="grid grid-cols-3 gap-3">
@@ -240,7 +240,7 @@ const ExportModal: React.FC<ExportModalProps> = ({
                   data-testid={`format-${format.id}`}
                 >
                   <div className="flex items-center space-x-3 mb-2">
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold ${
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center bloomberg-section-label ${
                       selectedFormat === format.id
                         ? 'bg-blue-500 text-white'
                         : 'bg-gray-100 text-gray-600'
@@ -249,7 +249,7 @@ const ExportModal: React.FC<ExportModalProps> = ({
                     </div>
                     <div className="font-medium text-gray-800">{format.label}</div>
                   </div>
-                  <div className="text-xs text-gray-500">{format.description}</div>
+                  <div className="bloomberg-section-label text-gray-500">{format.description}</div>
                 </button>
               ))}
             </div>
@@ -257,7 +257,7 @@ const ExportModal: React.FC<ExportModalProps> = ({
 
           {/* Template Selection */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+            <h3 className="bloomberg-small-text  text-gray-700 uppercase tracking-wide mb-3">
               Report Template
             </h3>
             <div className="space-y-2">
@@ -274,7 +274,7 @@ const ExportModal: React.FC<ExportModalProps> = ({
                 >
                   <div>
                     <div className="font-medium text-gray-800">{template.label}</div>
-                    <div className="text-xs text-gray-500 mt-0.5">{template.description}</div>
+                    <div className="bloomberg-section-label text-gray-500 mt-0.5">{template.description}</div>
                   </div>
                   {selectedTemplate === template.id && (
                     <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 ml-3">
@@ -292,7 +292,7 @@ const ExportModal: React.FC<ExportModalProps> = ({
           <div>
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors"
+              className="bloomberg-small-text text-blue-600 hover:text-blue-800 font-medium transition-colors"
               data-testid="preview-toggle"
             >
               {showPreview ? 'Hide Preview' : 'Show Preview'}
@@ -300,7 +300,7 @@ const ExportModal: React.FC<ExportModalProps> = ({
 
             {showPreview && (
               <div className="mt-3 bg-gray-50 border border-gray-200 rounded-lg p-4 max-h-64 overflow-y-auto" data-testid="preview-pane">
-                <pre className="text-xs text-gray-700 font-mono whitespace-pre-wrap">
+                <pre className="bloomberg-section-label text-gray-700 bloomberg-data whitespace-pre-wrap">
                   {previewContent}
                 </pre>
               </div>
@@ -309,7 +309,7 @@ const ExportModal: React.FC<ExportModalProps> = ({
 
           {/* Export Summary */}
           <div className="bg-gray-50 rounded-lg p-4">
-            <div className="text-sm text-gray-600 space-y-1">
+            <div className="bloomberg-small-text text-gray-600 space-y-1">
               <div className="flex justify-between">
                 <span>Format:</span>
                 <span className="font-medium text-gray-800">
@@ -333,7 +333,7 @@ const ExportModal: React.FC<ExportModalProps> = ({
 
           {/* Error Display */}
           {exportError && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-700" data-testid="export-error">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 bloomberg-small-text text-red-700" data-testid="export-error">
               Export failed: {exportError}
             </div>
           )}

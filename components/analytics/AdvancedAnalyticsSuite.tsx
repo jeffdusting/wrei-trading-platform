@@ -89,19 +89,19 @@ export const AdvancedAnalyticsSuite: React.FC<AdvancedAnalyticsSuiteProps> = ({
       <div className="border-b border-slate-200 p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-slate-900">Advanced Analytics Suite</h2>
+            <h2 className="bloomberg-metric-value text-slate-900">Advanced Analytics Suite</h2>
             <p className="text-slate-600 mt-1">
               Institutional-grade analytics with predictive modeling and risk assessment
             </p>
           </div>
           <div className="flex items-center space-x-3">
-            <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+            <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full bloomberg-small-text font-medium">
               {analytics.portfolioOverview.totalReturn >= 0 ? '+' : ''}{analytics.portfolioOverview.totalReturn.toFixed(2)}%
             </div>
-            <div className="text-xs text-slate-500">
+            <div className="bloomberg-section-label text-slate-500">
               Risk-Adj: {analytics.portfolioOverview.riskAdjustedReturn.toFixed(2)}
             </div>
-            <div className="text-xs text-slate-500">
+            <div className="bloomberg-section-label text-slate-500">
               Updated {analytics.portfolioOverview.lastUpdated.toLocaleTimeString()}
             </div>
           </div>
@@ -120,7 +120,7 @@ export const AdvancedAnalyticsSuite: React.FC<AdvancedAnalyticsSuiteProps> = ({
             <button
               key={key}
               onClick={() => setCurrentView(key as AnalyticsView)}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-md bloomberg-small-text font-medium transition-colors ${
                 currentView === key
                   ? 'bg-white text-blue-600 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
@@ -210,12 +210,12 @@ const OverviewView: React.FC<{
 
       {/* Performance Chart Placeholder */}
       <div className="bg-slate-50 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">Price Performance</h3>
+        <h3 className="bloomberg-card-title text-slate-900 mb-4">Price Performance</h3>
         <div className="h-64 flex items-center justify-center border-2 border-dashed border-slate-300 rounded-lg">
           <div className="text-center">
             <div className="text-slate-400 mb-2">📊</div>
-            <p className="text-sm text-slate-600">Interactive chart would render here</p>
-            <p className="text-xs text-slate-500">
+            <p className="bloomberg-small-text text-slate-600">Interactive chart would render here</p>
+            <p className="bloomberg-section-label text-slate-500">
               {sampleData.length} data points • {sampleData[0].timestamp.toLocaleDateString()} to {sampleData[sampleData.length - 1].timestamp.toLocaleDateString()}
             </p>
           </div>
@@ -225,7 +225,7 @@ const OverviewView: React.FC<{
       {/* Performance Attribution */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-slate-50 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Performance vs Benchmarks</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Performance vs Benchmarks</h3>
           <div className="space-y-3">
             <BenchmarkComparisonBar
               label="vs Market"
@@ -246,7 +246,7 @@ const OverviewView: React.FC<{
         </div>
 
         <div className="bg-slate-50 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Return Attribution</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Return Attribution</h3>
           <div className="space-y-4">
             {Object.entries(performanceBenchmarking.attribution).map(([key, value]) => (
               <div key={key} className="flex justify-between items-center">
@@ -282,10 +282,10 @@ const TechnicalAnalysisView: React.FC<{
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {Object.entries(marketAnalysis.technicalIndicators).map(([indicator, value]) => (
           <div key={indicator} className="bg-slate-50 rounded-lg p-4">
-            <div className="text-sm font-medium text-slate-900 mb-1">
+            <div className="bloomberg-small-text font-medium text-slate-900 mb-1">
               {formatIndicatorName(indicator).toUpperCase()}
             </div>
-            <div className="text-lg font-bold text-blue-600">
+            <div className="bloomberg-card-title text-blue-600">
               {typeof value === 'number' ? value.toFixed(2) : value}
             </div>
           </div>
@@ -295,7 +295,7 @@ const TechnicalAnalysisView: React.FC<{
       {/* Trend Analysis */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-slate-50 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Trend Analysis</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Trend Analysis</h3>
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-slate-600">Direction</span>
@@ -309,23 +309,23 @@ const TechnicalAnalysisView: React.FC<{
         </div>
 
         <div className="bg-slate-50 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Support & Resistance</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Support & Resistance</h3>
           <div className="space-y-3">
             <div>
-              <div className="text-sm text-slate-600 mb-1">Resistance Levels</div>
+              <div className="bloomberg-small-text text-slate-600 mb-1">Resistance Levels</div>
               <div className="flex flex-wrap gap-2">
                 {marketAnalysis.resistanceLevels.map((level, index) => (
-                  <span key={index} className="bg-red-100 text-red-700 px-2 py-1 rounded text-sm">
+                  <span key={index} className="bg-red-100 text-red-700 px-2 py-1 rounded bloomberg-small-text">
                     ${level}
                   </span>
                 ))}
               </div>
             </div>
             <div>
-              <div className="text-sm text-slate-600 mb-1">Support Levels</div>
+              <div className="bloomberg-small-text text-slate-600 mb-1">Support Levels</div>
               <div className="flex flex-wrap gap-2">
                 {marketAnalysis.supportLevels.map((level, index) => (
-                  <span key={index} className="bg-green-100 text-green-700 px-2 py-1 rounded text-sm">
+                  <span key={index} className="bg-green-100 text-green-700 px-2 py-1 rounded bloomberg-small-text">
                     ${level}
                   </span>
                 ))}
@@ -337,12 +337,12 @@ const TechnicalAnalysisView: React.FC<{
 
       {/* Technical Chart Placeholder */}
       <div className="bg-slate-50 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">Technical Analysis Chart</h3>
+        <h3 className="bloomberg-card-title text-slate-900 mb-4">Technical Analysis Chart</h3>
         <div className="h-80 flex items-center justify-center border-2 border-dashed border-slate-300 rounded-lg">
           <div className="text-center">
             <div className="text-slate-400 mb-2">📈</div>
-            <p className="text-sm text-slate-600">Candlestick chart with technical overlays would render here</p>
-            <p className="text-xs text-slate-500">
+            <p className="bloomberg-small-text text-slate-600">Candlestick chart with technical overlays would render here</p>
+            <p className="bloomberg-section-label text-slate-500">
               Including: Bollinger Bands, Moving Averages, RSI, Volume Profile
             </p>
           </div>
@@ -397,7 +397,7 @@ const RiskAnalyticsView: React.FC<{
       {/* Risk-Return Analysis */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-slate-50 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Risk-Adjusted Performance</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Risk-Adjusted Performance</h3>
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-slate-600">Sharpe Ratio</span>
@@ -419,12 +419,12 @@ const RiskAnalyticsView: React.FC<{
         </div>
 
         <div className="bg-slate-50 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Risk Decomposition</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Risk Decomposition</h3>
           <div className="h-40 flex items-center justify-center border-2 border-dashed border-slate-300 rounded-lg">
             <div className="text-center">
               <div className="text-slate-400 mb-2">📊</div>
-              <p className="text-sm text-slate-600">Risk decomposition chart would render here</p>
-              <p className="text-xs text-slate-500">Factor analysis • Sector exposure • Asset allocation</p>
+              <p className="bloomberg-small-text text-slate-600">Risk decomposition chart would render here</p>
+              <p className="bloomberg-section-label text-slate-500">Factor analysis • Sector exposure • Asset allocation</p>
             </div>
           </div>
         </div>
@@ -446,10 +446,10 @@ const SentimentAnalysisView: React.FC<{
       {/* Overall Sentiment */}
       <div className="bg-slate-50 rounded-lg p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-slate-900">Overall Market Sentiment</h3>
+          <h3 className="bloomberg-card-title text-slate-900">Overall Market Sentiment</h3>
           <div className="flex items-center space-x-3">
             <SentimentIndicator sentiment={sentimentAnalysis.overallSentiment} />
-            <span className="text-2xl font-bold text-blue-600">
+            <span className="bloomberg-large-metric text-blue-600">
               {sentimentAnalysis.sentimentScore.toFixed(1)}
             </span>
           </div>
@@ -465,7 +465,7 @@ const SentimentAnalysisView: React.FC<{
             }}
           ></div>
         </div>
-        <div className="flex justify-between text-sm text-slate-600 mt-2">
+        <div className="flex justify-between bloomberg-small-text text-slate-600 mt-2">
           <span>Extremely Bearish</span>
           <span>Neutral</span>
           <span>Extremely Bullish</span>
@@ -475,7 +475,7 @@ const SentimentAnalysisView: React.FC<{
       {/* Sentiment Factors */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-slate-50 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Key Factors</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Key Factors</h3>
           <div className="space-y-3">
             {Object.entries(sentimentAnalysis.keyFactors).map(([factor, value]) => (
               <div key={factor} className="flex justify-between items-center">
@@ -487,7 +487,7 @@ const SentimentAnalysisView: React.FC<{
                       style={{ width: `${value}%` }}
                     ></div>
                   </div>
-                  <span className="text-sm font-medium">{value.toFixed(0)}%</span>
+                  <span className="bloomberg-small-text font-medium">{value.toFixed(0)}%</span>
                 </div>
               </div>
             ))}
@@ -495,7 +495,7 @@ const SentimentAnalysisView: React.FC<{
         </div>
 
         <div className="bg-slate-50 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Market Indicators</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Market Indicators</h3>
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-slate-600">News Impact</span>
@@ -542,26 +542,26 @@ const PredictiveModelsView: React.FC<{
       {/* Model Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-blue-50 rounded-lg p-4">
-          <div className="text-sm font-medium text-blue-900 mb-1">Model Type</div>
-          <div className="text-lg font-bold text-blue-700">
+          <div className="bloomberg-small-text font-medium text-blue-900 mb-1">Model Type</div>
+          <div className="bloomberg-card-title text-blue-700">
             {formatIndicatorName(model.modelType)}
           </div>
         </div>
         <div className="bg-green-50 rounded-lg p-4">
-          <div className="text-sm font-medium text-green-900 mb-1">Confidence</div>
-          <div className="text-lg font-bold text-green-700">
+          <div className="bloomberg-small-text font-medium text-green-900 mb-1">Confidence</div>
+          <div className="bloomberg-card-title text-green-700">
             {(model.confidence * 100).toFixed(1)}%
           </div>
         </div>
         <div className="bg-purple-50 rounded-lg p-4">
-          <div className="text-sm font-medium text-purple-900 mb-1">R-Squared</div>
-          <div className="text-lg font-bold text-purple-700">
+          <div className="bloomberg-small-text font-medium text-purple-900 mb-1">R-Squared</div>
+          <div className="bloomberg-card-title text-purple-700">
             {model.accuracy.r_squared.toFixed(3)}
           </div>
         </div>
         <div className="bg-amber-50 rounded-lg p-4">
-          <div className="text-sm font-medium text-amber-900 mb-1">MAPE</div>
-          <div className="text-lg font-bold text-amber-700">
+          <div className="bloomberg-small-text font-medium text-amber-900 mb-1">MAPE</div>
+          <div className="bloomberg-card-title text-amber-700">
             {model.accuracy.mape.toFixed(1)}%
           </div>
         </div>
@@ -569,14 +569,14 @@ const PredictiveModelsView: React.FC<{
 
       {/* Predictions Chart */}
       <div className="bg-slate-50 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">
+        <h3 className="bloomberg-card-title text-slate-900 mb-4">
           Price Predictions ({model.timeHorizon.toUpperCase()})
         </h3>
         <div className="h-64 flex items-center justify-center border-2 border-dashed border-slate-300 rounded-lg">
           <div className="text-center">
             <div className="text-slate-400 mb-2">📊</div>
-            <p className="text-sm text-slate-600">Predictive model chart would render here</p>
-            <p className="text-xs text-slate-500">
+            <p className="bloomberg-small-text text-slate-600">Predictive model chart would render here</p>
+            <p className="bloomberg-section-label text-slate-500">
               {model.predictions.price.length} predictions • Confidence intervals included
             </p>
           </div>
@@ -585,7 +585,7 @@ const PredictiveModelsView: React.FC<{
 
       {/* Feature Importance */}
       <div className="bg-slate-50 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">Feature Importance</h3>
+        <h3 className="bloomberg-card-title text-slate-900 mb-4">Feature Importance</h3>
         <div className="space-y-3">
           {Object.entries(model.featureImportance)
             .sort(([,a], [,b]) => b - a)
@@ -599,7 +599,7 @@ const PredictiveModelsView: React.FC<{
                       style={{ width: `${(importance * 100)}%` }}
                     ></div>
                   </div>
-                  <span className="text-sm font-medium">{(importance * 100).toFixed(1)}%</span>
+                  <span className="bloomberg-small-text font-medium">{(importance * 100).toFixed(1)}%</span>
                 </div>
               </div>
             ))}
@@ -622,20 +622,20 @@ const PortfolioOptimizationView: React.FC<{
       {/* Optimization Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-blue-50 rounded-lg p-4">
-          <div className="text-sm font-medium text-blue-900 mb-1">Expected Return</div>
-          <div className="text-lg font-bold text-blue-700">
+          <div className="bloomberg-small-text font-medium text-blue-900 mb-1">Expected Return</div>
+          <div className="bloomberg-card-title text-blue-700">
             {portfolioOptimization.expectedReturn.toFixed(2)}%
           </div>
         </div>
         <div className="bg-green-50 rounded-lg p-4">
-          <div className="text-sm font-medium text-green-900 mb-1">Expected Risk</div>
-          <div className="text-lg font-bold text-green-700">
+          <div className="bloomberg-small-text font-medium text-green-900 mb-1">Expected Risk</div>
+          <div className="bloomberg-card-title text-green-700">
             {portfolioOptimization.expectedRisk.toFixed(2)}%
           </div>
         </div>
         <div className="bg-purple-50 rounded-lg p-4">
-          <div className="text-sm font-medium text-purple-900 mb-1">Sharpe Ratio</div>
-          <div className="text-lg font-bold text-purple-700">
+          <div className="bloomberg-small-text font-medium text-purple-900 mb-1">Sharpe Ratio</div>
+          <div className="bloomberg-card-title text-purple-700">
             {portfolioOptimization.sharpeRatio.toFixed(3)}
           </div>
         </div>
@@ -655,7 +655,7 @@ const PortfolioOptimizationView: React.FC<{
 
       {/* Rebalancing Recommendations */}
       <div className="bg-slate-50 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">Rebalancing Recommendations</h3>
+        <h3 className="bloomberg-card-title text-slate-900 mb-4">Rebalancing Recommendations</h3>
         <div className="space-y-4">
           {portfolioOptimization.rebalanceRecommendations.map((rec, index) => (
             <div key={index} className="bg-white rounded-lg p-4 border border-slate-200">
@@ -663,7 +663,7 @@ const PortfolioOptimizationView: React.FC<{
                 <span className="font-medium text-slate-900">
                   {formatIndicatorName(rec.asset)}
                 </span>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                <span className={`px-3 py-1 rounded-full bloomberg-small-text font-medium ${
                   rec.action === 'buy'
                     ? 'bg-green-100 text-green-700'
                     : rec.action === 'sell'
@@ -673,7 +673,7 @@ const PortfolioOptimizationView: React.FC<{
                   {rec.action.toUpperCase()} {rec.quantity}%
                 </span>
               </div>
-              <p className="text-sm text-slate-600">{rec.reasoning}</p>
+              <p className="bloomberg-small-text text-slate-600">{rec.reasoning}</p>
             </div>
           ))}
         </div>
@@ -721,9 +721,9 @@ const MetricCard: React.FC<{
 }> = ({ title, value, change, subValue, trend, icon }) => (
   <div className="bg-slate-50 rounded-lg p-4">
     <div className="flex items-center justify-between mb-2">
-      <span className="text-2xl">{icon}</span>
+      <span className="bloomberg-large-metric">{icon}</span>
       {change !== undefined && (
-        <span className={`text-sm font-medium ${
+        <span className={`bloomberg-small-text font-medium ${
           trend === 'positive' ? 'text-green-600' :
           trend === 'negative' ? 'text-red-600' : 'text-slate-600'
         }`}>
@@ -731,9 +731,9 @@ const MetricCard: React.FC<{
         </span>
       )}
     </div>
-    <div className="text-2xl font-bold text-slate-900 mb-1">{value}</div>
-    <div className="text-sm text-slate-600">{title}</div>
-    {subValue && <div className="text-xs text-slate-500">{subValue}</div>}
+    <div className="bloomberg-large-metric text-slate-900 mb-1">{value}</div>
+    <div className="bloomberg-small-text text-slate-600">{title}</div>
+    {subValue && <div className="bloomberg-section-label text-slate-500">{subValue}</div>}
   </div>
 );
 
@@ -747,16 +747,16 @@ const RiskMetricCard: React.FC<{
     riskLevel === 'high' ? 'bg-red-50' :
     riskLevel === 'medium' ? 'bg-amber-50' : 'bg-green-50'
   }`}>
-    <div className="text-sm font-medium mb-1 capitalize">
+    <div className="bloomberg-small-text font-medium mb-1 capitalize">
       {title}
     </div>
-    <div className={`text-2xl font-bold mb-1 ${
+    <div className={`bloomberg-large-metric mb-1 ${
       riskLevel === 'high' ? 'text-red-700' :
       riskLevel === 'medium' ? 'text-amber-700' : 'text-green-700'
     }`}>
       {value}
     </div>
-    <div className="text-xs text-slate-600">{subtitle}</div>
+    <div className="bloomberg-section-label text-slate-600">{subtitle}</div>
   </div>
 );
 
@@ -777,7 +777,7 @@ const BenchmarkComparisonBar: React.FC<{
           style={{ width: `${Math.min(Math.abs(value), 20) * 5}%` }}
         ></div>
       </div>
-      <span className={`text-sm font-medium ${
+      <span className={`bloomberg-small-text font-medium ${
         value > 0 ? 'text-green-600' : value < 0 ? 'text-red-600' : 'text-slate-600'
       }`}>
         {value >= 0 ? '+' : ''}{value.toFixed(2)}%
@@ -787,7 +787,7 @@ const BenchmarkComparisonBar: React.FC<{
 );
 
 const TrendIndicator: React.FC<{ direction: TrendDirection }> = ({ direction }) => (
-  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+  <span className={`px-3 py-1 rounded-full bloomberg-small-text font-medium ${
     direction === 'bullish' ? 'bg-green-100 text-green-700' :
     direction === 'bearish' ? 'bg-red-100 text-red-700' :
     direction === 'volatile' ? 'bg-orange-100 text-orange-700' :
@@ -798,7 +798,7 @@ const TrendIndicator: React.FC<{ direction: TrendDirection }> = ({ direction }) 
 );
 
 const StrengthIndicator: React.FC<{ strength: TrendStrength }> = ({ strength }) => (
-  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+  <span className={`px-3 py-1 rounded-full bloomberg-small-text font-medium ${
     strength === 'very_strong' ? 'bg-blue-100 text-blue-700' :
     strength === 'strong' ? 'bg-indigo-100 text-indigo-700' :
     strength === 'moderate' ? 'bg-purple-100 text-purple-700' :
@@ -820,7 +820,7 @@ const SentimentIndicator: React.FC<{
   }[sentiment];
 
   return (
-    <span className={`px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1 ${config.color}`}>
+    <span className={`px-3 py-1 rounded-full bloomberg-small-text font-medium flex items-center space-x-1 ${config.color}`}>
       <span>{config.icon}</span>
       <span>{sentiment.replace('_', ' ').toUpperCase()}</span>
     </span>
@@ -844,7 +844,7 @@ const AllocationChart: React.FC<{
                 style={{ width: `${weight * 100}%` }}
               ></div>
             </div>
-            <span className="text-sm font-medium">{(weight * 100).toFixed(1)}%</span>
+            <span className="bloomberg-small-text font-medium">{(weight * 100).toFixed(1)}%</span>
           </div>
         </div>
       ))}

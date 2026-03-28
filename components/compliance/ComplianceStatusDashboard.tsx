@@ -335,7 +335,7 @@ function ScoreGauge({ score }: { score: number }) {
         <text
           x="60" y="55"
           textAnchor="middle"
-          className="text-2xl font-bold"
+          className="bloomberg-large-metric"
           fill="#1E293B"
           fontSize="24"
         >
@@ -350,7 +350,7 @@ function ScoreGauge({ score }: { score: number }) {
           out of 100
         </text>
       </svg>
-      <p className="text-sm font-medium text-slate-700 mt-2">Compliance Score</p>
+      <p className="bloomberg-small-text font-medium text-slate-700 mt-2">Compliance Score</p>
     </div>
   )
 }
@@ -411,24 +411,24 @@ export default function ComplianceStatusDashboard({
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
       {/* Header */}
       <div className="bg-[#1B2A4A] px-6 py-4">
-        <h2 className="text-xl font-semibold text-white">
+        <h2 className="bloomberg-metric-value text-white">
           Compliance Status Dashboard
         </h2>
-        <p className="text-slate-300 text-sm mt-1">
+        <p className="text-slate-300 bloomberg-small-text mt-1">
           Comprehensive compliance monitoring and requirement tracking
         </p>
       </div>
 
       {/* Investor Type Selector */}
       <div className="px-6 py-4 bg-slate-50 border-b border-slate-200">
-        <label htmlFor="dashboard-investor-type" className="block text-sm font-medium text-slate-700 mb-1">
+        <label htmlFor="dashboard-investor-type" className="block bloomberg-small-text font-medium text-slate-700 mb-1">
           View Requirements For
         </label>
         <select
           id="dashboard-investor-type"
           value={investorType}
           onChange={(e) => setInvestorType(e.target.value as InvestorClassification)}
-          className="w-full sm:w-64 rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-800 focus:border-[#0EA5E9] focus:ring-1 focus:ring-[#0EA5E9] outline-none"
+          className="w-full sm:w-64 rounded-lg border border-slate-300 px-3 py-2 bloomberg-small-text text-slate-800 focus:border-[#0EA5E9] focus:ring-1 focus:ring-[#0EA5E9] outline-none"
         >
           <option value="retail">Retail Investor</option>
           <option value="wholesale">Wholesale Investor</option>
@@ -446,19 +446,19 @@ export default function ComplianceStatusDashboard({
 
         {/* Framework Scores */}
         <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-slate-700">Framework Compliance</h3>
+          <h3 className="bloomberg-small-text  text-slate-700">Framework Compliance</h3>
           {[
             { label: 'AFSL Licensing', body: 'ASIC', status: report.afsl.status },
             { label: 'AML/CTF', body: 'AUSTRAC', status: report.amlCtf.status },
             { label: 'Digital Assets', body: 'Treasury', status: report.digitalAssetsFramework.status },
             { label: 'Tax Treatment', body: 'ATO', status: 'compliant' },
           ].map((fw) => (
-            <div key={fw.label} className="flex items-center justify-between text-sm">
+            <div key={fw.label} className="flex items-center justify-between bloomberg-small-text">
               <div>
                 <span className="text-slate-700">{fw.label}</span>
-                <span className="text-slate-400 text-xs ml-2">({fw.body})</span>
+                <span className="text-slate-400 bloomberg-section-label ml-2">({fw.body})</span>
               </div>
-              <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+              <span className={`bloomberg-section-label font-medium px-2 py-0.5 rounded-full ${
                 fw.status === 'licensed' || fw.status === 'exemption_claimed' || fw.status === 'registered' || fw.status === 'in_force' || fw.status === 'compliant'
                   ? 'bg-emerald-100 text-emerald-700'
                   : fw.status === 'registration_pending' || fw.status === 'application_pending'
@@ -473,23 +473,23 @@ export default function ComplianceStatusDashboard({
 
         {/* Requirements Summary */}
         <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-slate-700">Requirements Summary</h3>
+          <h3 className="bloomberg-small-text  text-slate-700">Requirements Summary</h3>
           <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm" data-testid="requirements-met">
+            <div className="flex items-center justify-between bloomberg-small-text" data-testid="requirements-met">
               <span className="text-emerald-600 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-500" />
                 Met
               </span>
               <span className="font-medium text-slate-700">{metCount} of {requirements.length}</span>
             </div>
-            <div className="flex items-center justify-between text-sm" data-testid="requirements-pending">
+            <div className="flex items-center justify-between bloomberg-small-text" data-testid="requirements-pending">
               <span className="text-amber-600 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-amber-500" />
                 Pending
               </span>
               <span className="font-medium text-slate-700">{pendingCount} of {requirements.length}</span>
             </div>
-            <div className="flex items-center justify-between text-sm" data-testid="requirements-not-met">
+            <div className="flex items-center justify-between bloomberg-small-text" data-testid="requirements-not-met">
               <span className="text-red-600 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-red-500" />
                 Not Met
@@ -515,7 +515,7 @@ export default function ComplianceStatusDashboard({
 
       {/* Requirements Checklist */}
       <div className="px-6 py-5 border-b border-slate-200">
-        <h3 className="text-sm font-semibold text-slate-700 mb-3">
+        <h3 className="bloomberg-small-text  text-slate-700 mb-3">
           Requirements Checklist - {investorType.charAt(0).toUpperCase() + investorType.slice(1)} Investor
         </h3>
         <div className="space-y-2" role="list" aria-label="Compliance requirements">
@@ -526,19 +526,19 @@ export default function ComplianceStatusDashboard({
               role="listitem"
               data-testid={`requirement-${req.id}`}
             >
-              <span className={`text-lg font-bold mt-0.5 ${getReqStatusColour(req.status)}`}>
+              <span className={`bloomberg-card-title mt-0.5 ${getReqStatusColour(req.status)}`}>
                 {getReqIcon(req.status)}
               </span>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-sm font-medium text-slate-800">{req.label}</span>
-                  <span className="text-xs text-slate-400 bg-slate-200 px-1.5 py-0.5 rounded">
+                  <span className="bloomberg-small-text font-medium text-slate-800">{req.label}</span>
+                  <span className="bloomberg-section-label text-slate-400 bg-slate-200 px-1.5 py-0.5 rounded">
                     {req.framework}
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 mt-0.5">{req.description}</p>
+                <p className="bloomberg-section-label text-slate-500 mt-0.5">{req.description}</p>
               </div>
-              <span className={`text-xs font-medium px-2 py-1 rounded ${
+              <span className={`bloomberg-section-label font-medium px-2 py-1 rounded ${
                 req.status === 'met' ? 'bg-emerald-100 text-emerald-700' :
                 req.status === 'pending' ? 'bg-amber-100 text-amber-700' :
                 'bg-red-100 text-red-700'
@@ -552,7 +552,7 @@ export default function ComplianceStatusDashboard({
 
       {/* Upcoming Deadlines */}
       <div className="px-6 py-5 border-b border-slate-200">
-        <h3 className="text-sm font-semibold text-slate-700 mb-3">Upcoming Deadlines</h3>
+        <h3 className="bloomberg-small-text  text-slate-700 mb-3">Upcoming Deadlines</h3>
         <div className="space-y-2" role="list" aria-label="Upcoming compliance deadlines">
           {deadlines.map((dl) => (
             <div
@@ -566,12 +566,12 @@ export default function ComplianceStatusDashboard({
               data-testid={`deadline-${dl.id}`}
             >
               <div>
-                <div className="text-sm font-medium text-slate-800">{dl.title}</div>
-                <div className="text-xs text-slate-500 mt-0.5">
+                <div className="bloomberg-small-text font-medium text-slate-800">{dl.title}</div>
+                <div className="bloomberg-section-label text-slate-500 mt-0.5">
                   {dl.regulatoryBody} &middot; Due: {new Date(dl.date).toLocaleDateString('en-AU')}
                 </div>
               </div>
-              <div className={`text-sm font-semibold ${
+              <div className={`bloomberg-small-text  ${
                 dl.urgency === 'critical' ? 'text-red-600' :
                 dl.urgency === 'warning' ? 'text-amber-600' :
                 'text-slate-600'
@@ -585,11 +585,11 @@ export default function ComplianceStatusDashboard({
 
       {/* Document Status */}
       <div className="px-6 py-5">
-        <h3 className="text-sm font-semibold text-slate-700 mb-3">Document Status Tracker</h3>
+        <h3 className="bloomberg-small-text  text-slate-700 mb-3">Document Status Tracker</h3>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm" role="table">
+          <table className="w-full bloomberg-small-text" role="table">
             <thead>
-              <tr className="text-left text-xs text-slate-500 uppercase tracking-wider border-b border-slate-200">
+              <tr className="text-left bloomberg-section-label text-slate-500 uppercase tracking-wider border-b border-slate-200">
                 <th className="pb-2 pr-4">Document</th>
                 <th className="pb-2 pr-4">Status</th>
                 <th className="pb-2 pr-4">Last Updated</th>
@@ -601,14 +601,14 @@ export default function ComplianceStatusDashboard({
                 <tr key={doc.id} className="border-b border-slate-100 last:border-0" data-testid={`doc-${doc.id}`}>
                   <td className="py-2 pr-4 text-slate-700">{doc.name}</td>
                   <td className="py-2 pr-4">
-                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${getDocStatusColour(doc.status)}`}>
+                    <span className={`bloomberg-section-label font-medium px-2 py-0.5 rounded-full ${getDocStatusColour(doc.status)}`}>
                       {getDocStatusLabel(doc.status)}
                     </span>
                   </td>
-                  <td className="py-2 pr-4 text-slate-500 text-xs">
+                  <td className="py-2 pr-4 text-slate-500 bloomberg-section-label">
                     {doc.lastUpdated ? new Date(doc.lastUpdated).toLocaleDateString('en-AU') : '-'}
                   </td>
-                  <td className="py-2 text-slate-500 text-xs">
+                  <td className="py-2 text-slate-500 bloomberg-section-label">
                     {doc.expiryDate ? new Date(doc.expiryDate).toLocaleDateString('en-AU') : '-'}
                   </td>
                 </tr>

@@ -60,7 +60,7 @@ export default function InvestmentCalculator() {
     <div className="space-y-6">
       {/* Profile Selection */}
       <div data-testid="profile-selector">
-        <h3 className="text-lg font-semibold text-[#1E293B] mb-3">Investment Profile</h3>
+        <h3 className="bloomberg-card-title text-[#1E293B] mb-3">Investment Profile</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {(Object.entries(INVESTMENT_PROFILES) as [RiskToleranceLevel, typeof INVESTMENT_PROFILES['conservative']][]).map(
             ([key, profile]) => (
@@ -75,12 +75,12 @@ export default function InvestmentCalculator() {
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-semibold text-[#1E293B]">{profile.name}</span>
+                  <span className=" text-[#1E293B]">{profile.name}</span>
                   {activeProfile === key && (
-                    <span className="text-[#0EA5E9] text-sm font-medium">Active</span>
+                    <span className="text-[#0EA5E9] bloomberg-small-text font-medium">Active</span>
                   )}
                 </div>
-                <p className="text-sm text-[#64748B] leading-snug">{profile.description}</p>
+                <p className="bloomberg-small-text text-[#64748B] leading-snug">{profile.description}</p>
               </button>
             )
           )}
@@ -90,15 +90,15 @@ export default function InvestmentCalculator() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input Panel */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6" data-testid="input-panel">
-          <h3 className="text-lg font-semibold text-[#1E293B] mb-4">Investment Parameters</h3>
+          <h3 className="bloomberg-card-title text-[#1E293B] mb-4">Investment Parameters</h3>
 
           {/* Investment Amount */}
           <div className="mb-5">
-            <label className="block text-sm font-medium text-[#1E293B] mb-1">
+            <label className="block bloomberg-small-text font-medium text-[#1E293B] mb-1">
               Investment Amount
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] text-sm">A$</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] bloomberg-small-text">A$</span>
               <input
                 type="number"
                 data-testid="input-investment-amount"
@@ -109,12 +109,12 @@ export default function InvestmentCalculator() {
                 className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] focus:border-transparent text-[#1E293B]"
               />
             </div>
-            <p className="text-xs text-[#64748B] mt-1">{formatCurrency(inputs.investmentAmount)}</p>
+            <p className="bloomberg-section-label text-[#64748B] mt-1">{formatCurrency(inputs.investmentAmount)}</p>
           </div>
 
           {/* Time Horizon */}
           <div className="mb-5">
-            <label className="block text-sm font-medium text-[#1E293B] mb-1">
+            <label className="block bloomberg-small-text font-medium text-[#1E293B] mb-1">
               Time Horizon: {inputs.timeHorizon} {inputs.timeHorizon === 1 ? 'year' : 'years'}
             </label>
             <input
@@ -127,7 +127,7 @@ export default function InvestmentCalculator() {
               step={1}
               className="w-full accent-[#0EA5E9]"
             />
-            <div className="flex justify-between text-xs text-[#64748B]">
+            <div className="flex justify-between bloomberg-section-label text-[#64748B]">
               <span>{CALCULATOR_BOUNDS.timeHorizon.min}yr</span>
               <span>{CALCULATOR_BOUNDS.timeHorizon.max}yr</span>
             </div>
@@ -135,7 +135,7 @@ export default function InvestmentCalculator() {
 
           {/* Token Type */}
           <div className="mb-5">
-            <label className="block text-sm font-medium text-[#1E293B] mb-1">Token Type</label>
+            <label className="block bloomberg-small-text font-medium text-[#1E293B] mb-1">Token Type</label>
             <select
               data-testid="input-token-type"
               value={inputs.tokenType}
@@ -146,21 +146,21 @@ export default function InvestmentCalculator() {
                 <option key={value} value={value}>{label}</option>
               ))}
             </select>
-            <p className="text-xs text-[#64748B] mt-1">
+            <p className="bloomberg-section-label text-[#64748B] mt-1">
               {TOKEN_TYPE_DESCRIPTIONS[inputs.tokenType]}
             </p>
           </div>
 
           {/* Risk Tolerance */}
           <div className="mb-5">
-            <label className="block text-sm font-medium text-[#1E293B] mb-1">Risk Tolerance</label>
+            <label className="block bloomberg-small-text font-medium text-[#1E293B] mb-1">Risk Tolerance</label>
             <div className="grid grid-cols-3 gap-2">
               {(['conservative', 'moderate', 'aggressive'] as const).map(level => (
                 <button
                   key={level}
                   data-testid={`risk-${level}`}
                   onClick={() => updateInput('riskTolerance', level)}
-                  className={`py-2 px-3 rounded-lg text-sm font-medium capitalize transition-all ${
+                  className={`py-2 px-3 rounded-lg bloomberg-small-text font-medium capitalize transition-all ${
                     inputs.riskTolerance === level
                       ? level === 'conservative'
                         ? 'bg-[#10B981] text-white'
@@ -179,7 +179,7 @@ export default function InvestmentCalculator() {
           {/* Advanced Parameters Toggle */}
           <button
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className="text-[#0EA5E9] text-sm font-medium mb-4 flex items-center gap-1"
+            className="text-[#0EA5E9] bloomberg-small-text font-medium mb-4 flex items-center gap-1"
             data-testid="toggle-advanced"
           >
             <svg
@@ -195,7 +195,7 @@ export default function InvestmentCalculator() {
             <div className="space-y-4 border-t border-slate-200 pt-4" data-testid="advanced-params">
               {/* Discount Rate */}
               <div>
-                <label className="block text-sm font-medium text-[#1E293B] mb-1">
+                <label className="block bloomberg-small-text font-medium text-[#1E293B] mb-1">
                   Discount Rate: {(inputs.discountRate * 100).toFixed(1)}%
                 </label>
                 <input
@@ -212,7 +212,7 @@ export default function InvestmentCalculator() {
 
               {/* Tax Rate */}
               <div>
-                <label className="block text-sm font-medium text-[#1E293B] mb-1">
+                <label className="block bloomberg-small-text font-medium text-[#1E293B] mb-1">
                   Tax Rate: {(inputs.taxRate * 100).toFixed(1)}%
                 </label>
                 <input
@@ -229,7 +229,7 @@ export default function InvestmentCalculator() {
 
               {/* Inflation Rate */}
               <div>
-                <label className="block text-sm font-medium text-[#1E293B] mb-1">
+                <label className="block bloomberg-small-text font-medium text-[#1E293B] mb-1">
                   Inflation Rate: {(inputs.inflationRate * 100).toFixed(1)}%
                 </label>
                 <input
@@ -246,7 +246,7 @@ export default function InvestmentCalculator() {
 
               {/* Exit Multiple */}
               <div>
-                <label className="block text-sm font-medium text-[#1E293B] mb-1">
+                <label className="block bloomberg-small-text font-medium text-[#1E293B] mb-1">
                   Exit Multiple: {inputs.exitMultiple.toFixed(1)}x
                 </label>
                 <input
@@ -267,7 +267,7 @@ export default function InvestmentCalculator() {
           {validationErrors.length > 0 && (
             <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg" data-testid="validation-errors">
               {validationErrors.map((err, i) => (
-                <p key={i} className="text-sm text-[#EF4444]">{err.message}</p>
+                <p key={i} className="bloomberg-small-text text-[#EF4444]">{err.message}</p>
               ))}
             </div>
           )}
@@ -275,7 +275,7 @@ export default function InvestmentCalculator() {
 
         {/* Results Panel */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6" data-testid="results-panel">
-          <h3 className="text-lg font-semibold text-[#1E293B] mb-4">Investment Projections</h3>
+          <h3 className="bloomberg-card-title text-[#1E293B] mb-4">Investment Projections</h3>
 
           {results ? (
             <div className="space-y-6">
@@ -321,7 +321,7 @@ export default function InvestmentCalculator() {
 
               {/* Value Summary */}
               <div className="border-t border-slate-200 pt-4">
-                <h4 className="font-semibold text-[#1E293B] text-sm mb-3">Value Summary</h4>
+                <h4 className=" text-[#1E293B] bloomberg-small-text mb-3">Value Summary</h4>
                 <div className="space-y-2">
                   <SummaryRow label="Initial Investment" value={formatCurrency(inputs.investmentAmount)} />
                   <SummaryRow label="Total Distributions" value={formatCurrency(results.totalDistributions)} />
@@ -338,7 +338,7 @@ export default function InvestmentCalculator() {
 
               {/* Risk Metrics */}
               <div className="border-t border-slate-200 pt-4">
-                <h4 className="font-semibold text-[#1E293B] text-sm mb-3">Risk Metrics</h4>
+                <h4 className=" text-[#1E293B] bloomberg-small-text mb-3">Risk Metrics</h4>
                 <div className="grid grid-cols-2 gap-3">
                   <MiniMetric label="Volatility" value={formatPercentage(results.riskMetrics.volatility)} />
                   <MiniMetric label="Sharpe Ratio" value={results.riskMetrics.sharpeRatio.toFixed(2)} />
@@ -350,9 +350,9 @@ export default function InvestmentCalculator() {
 
               {/* Cash Flow Projection Table */}
               <div className="border-t border-slate-200 pt-4">
-                <h4 className="font-semibold text-[#1E293B] text-sm mb-3">Cash Flow Projection</h4>
+                <h4 className=" text-[#1E293B] bloomberg-small-text mb-3">Cash Flow Projection</h4>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-sm" data-testid="cashflow-table">
+                  <table className="w-full bloomberg-small-text" data-testid="cashflow-table">
                     <thead>
                       <tr className="border-b border-slate-200">
                         <th className="text-left py-2 text-[#64748B] font-medium">Year</th>
@@ -386,8 +386,8 @@ export default function InvestmentCalculator() {
           ) : (
             <div className="flex items-center justify-center h-64 text-[#64748B]" data-testid="no-results">
               <div className="text-center">
-                <p className="text-lg font-medium">Adjust parameters to see projections</p>
-                <p className="text-sm mt-1">Please correct any validation errors above</p>
+                <p className="bloomberg-card-title font-medium">Adjust parameters to see projections</p>
+                <p className="bloomberg-small-text mt-1">Please correct any validation errors above</p>
               </div>
             </div>
           )}
@@ -396,7 +396,7 @@ export default function InvestmentCalculator() {
 
       {/* Disclaimer */}
       <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
-        <p className="text-xs text-[#64748B] leading-relaxed">
+        <p className="bloomberg-section-label text-[#64748B] leading-relaxed">
           <strong>Important Disclaimer:</strong> These projections are for illustrative purposes only and do not
           constitute financial advice. Past performance is not indicative of future results. Actual returns may vary
           significantly from projections. All calculations are based on WREI model assumptions and are subject to
@@ -433,9 +433,9 @@ function MetricCard({
 
   return (
     <div className={`p-3 rounded-lg border ${colourMap[colour]}`} data-testid={`metric-${label.toLowerCase().replace(/\s+/g, '-')}`}>
-      <p className="text-xs text-[#64748B] font-medium uppercase tracking-wide">{label}</p>
-      <p className="text-xl font-bold text-[#1E293B] mt-1">{value}</p>
-      <p className="text-xs text-[#64748B] mt-0.5">{description}</p>
+      <p className="bloomberg-section-label text-[#64748B] font-medium uppercase tracking-wide">{label}</p>
+      <p className="bloomberg-metric-value text-[#1E293B] mt-1">{value}</p>
+      <p className="bloomberg-section-label text-[#64748B] mt-0.5">{description}</p>
     </div>
   )
 }
@@ -450,9 +450,9 @@ function SummaryRow({
   highlight?: boolean
 }) {
   return (
-    <div className={`flex justify-between items-center py-1 ${highlight ? 'font-semibold text-[#1E293B]' : 'text-[#64748B]'}`}>
-      <span className="text-sm">{label}</span>
-      <span className={`text-sm ${highlight ? 'text-[#10B981]' : 'text-[#1E293B]'}`}>{value}</span>
+    <div className={`flex justify-between items-center py-1 ${highlight ? ' text-[#1E293B]' : 'text-[#64748B]'}`}>
+      <span className="bloomberg-small-text">{label}</span>
+      <span className={`bloomberg-small-text ${highlight ? 'text-[#10B981]' : 'text-[#1E293B]'}`}>{value}</span>
     </div>
   )
 }
@@ -460,8 +460,8 @@ function SummaryRow({
 function MiniMetric({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between items-center py-1 px-2 bg-slate-50 rounded">
-      <span className="text-xs text-[#64748B]">{label}</span>
-      <span className="text-xs font-semibold text-[#1E293B]">{value}</span>
+      <span className="bloomberg-section-label text-[#64748B]">{label}</span>
+      <span className="bloomberg-section-label  text-[#1E293B]">{value}</span>
     </div>
   )
 }

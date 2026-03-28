@@ -114,7 +114,7 @@ const MarketStatus: React.FC<MarketStatusProps> = ({
     <div className={`flex items-center space-x-3 ${className}`}>
       {/* Market Status Badge */}
       <div className={`
-        flex items-center space-x-2 px-3 py-1.5 rounded-full border text-xs font-medium
+        flex items-center space-x-2 px-3 py-1.5 rounded-full border bloomberg-section-label font-medium
         ${config.badge}
       `}>
         <div className={`w-2 h-2 rounded-full ${config.dot}`} />
@@ -124,7 +124,7 @@ const MarketStatus: React.FC<MarketStatusProps> = ({
 
       {/* Connection Status (if showing details) */}
       {showDetails && (
-        <div className="flex items-center space-x-2 text-xs text-slate-500">
+        <div className="flex items-center space-x-2 bloomberg-section-label text-slate-500">
           <div className={`w-1.5 h-1.5 rounded-full ${connConfig.dot}`} />
           <span>{connConfig.text}</span>
         </div>
@@ -132,21 +132,21 @@ const MarketStatus: React.FC<MarketStatusProps> = ({
 
       {/* Last Update Time (if showing details) */}
       {showDetails && connectionStatus === 'connected' && (
-        <div className="text-xs text-slate-400">
+        <div className="bloomberg-section-label text-slate-400">
           Updated {formatLastUpdate(marketStatus.lastUpdate)}
         </div>
       )}
 
       {/* Next Change Info (if available and showing details) */}
       {showDetails && marketStatus.nextChange && marketStatus.nextChange !== "Market operates 24/7" && (
-        <div className="text-xs text-slate-500">
+        <div className="bloomberg-section-label text-slate-500">
           {marketStatus.nextChange}
         </div>
       )}
 
       {/* Timezone */}
       {showDetails && (
-        <div className="text-xs text-slate-400 font-mono">
+        <div className="bloomberg-section-label text-slate-400 bloomberg-data">
           {marketStatus.timezone}
         </div>
       )}

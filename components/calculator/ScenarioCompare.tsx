@@ -107,12 +107,12 @@ export default function ScenarioCompare() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-[#1E293B]">Scenario Comparison</h3>
-          <p className="text-sm text-[#64748B]">Compare up to {MAX_SCENARIOS} investment scenarios side-by-side</p>
+          <h3 className="bloomberg-card-title text-[#1E293B]">Scenario Comparison</h3>
+          <p className="bloomberg-small-text text-[#64748B]">Compare up to {MAX_SCENARIOS} investment scenarios side-by-side</p>
         </div>
         <button
           onClick={resetToPresets}
-          className="px-4 py-2 text-sm font-medium text-[#0EA5E9] border border-[#0EA5E9] rounded-lg hover:bg-sky-50 transition-colors"
+          className="px-4 py-2 bloomberg-small-text font-medium text-[#0EA5E9] border border-[#0EA5E9] rounded-lg hover:bg-sky-50 transition-colors"
           data-testid="reset-scenarios"
         >
           Reset to Presets
@@ -132,7 +132,7 @@ export default function ScenarioCompare() {
               type="text"
               value={scenario.label}
               onChange={e => updateScenarioLabel(index, e.target.value)}
-              className="w-full text-sm font-semibold text-[#1E293B] bg-transparent border-b border-slate-300 focus:outline-none focus:border-[#0EA5E9] mb-3 pb-1"
+              className="w-full bloomberg-small-text  text-[#1E293B] bg-transparent border-b border-slate-300 focus:outline-none focus:border-[#0EA5E9] mb-3 pb-1"
               data-testid={`scenario-label-${index}`}
             />
 
@@ -159,11 +159,11 @@ export default function ScenarioCompare() {
                 testId={`scenario-${index}-horizon`}
               />
               <div>
-                <label className="block text-xs text-[#64748B] mb-1">Token Type</label>
+                <label className="block bloomberg-section-label text-[#64748B] mb-1">Token Type</label>
                 <select
                   value={scenario.inputs.tokenType}
                   onChange={e => updateScenarioInput(index, 'tokenType', e.target.value as WREITokenType)}
-                  className="w-full px-2 py-1.5 rounded text-xs border border-slate-300 bg-white text-[#1E293B]"
+                  className="w-full px-2 py-1.5 rounded bloomberg-section-label border border-slate-300 bg-white text-[#1E293B]"
                   data-testid={`scenario-${index}-token`}
                 >
                   {(Object.entries(TOKEN_TYPE_LABELS) as [WREITokenType, string][]).map(([val, lbl]) => (
@@ -172,13 +172,13 @@ export default function ScenarioCompare() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs text-[#64748B] mb-1">Risk</label>
+                <label className="block bloomberg-section-label text-[#64748B] mb-1">Risk</label>
                 <div className="flex gap-1">
                   {(['conservative', 'moderate', 'aggressive'] as const).map(level => (
                     <button
                       key={level}
                       onClick={() => updateScenarioInput(index, 'riskTolerance', level)}
-                      className={`flex-1 py-1 text-xs rounded capitalize transition-all ${
+                      className={`flex-1 py-1 bloomberg-section-label rounded capitalize transition-all ${
                         scenario.inputs.riskTolerance === level
                           ? 'bg-[#1B2A4A] text-white'
                           : 'bg-white text-[#64748B] border border-slate-200'
@@ -208,7 +208,7 @@ export default function ScenarioCompare() {
       {/* Comparison Table */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden" data-testid="comparison-table">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full bloomberg-small-text">
             <thead>
               <tr className="bg-[#1B2A4A]">
                 <th className="text-left py-3 px-4 text-white font-medium">Metric</th>
@@ -331,7 +331,7 @@ export default function ScenarioCompare() {
 
       {/* Disclaimer */}
       <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
-        <p className="text-xs text-[#64748B] leading-relaxed">
+        <p className="bloomberg-section-label text-[#64748B] leading-relaxed">
           <strong>Important:</strong> Scenario comparisons are for illustrative purposes only. Projections are based
           on model assumptions and do not guarantee future performance. All values in Australian dollars (A$).
         </p>
@@ -366,8 +366,8 @@ function ScenarioSlider({
   return (
     <div>
       <div className="flex justify-between items-center mb-1">
-        <label className="text-xs text-[#64748B]">{label}</label>
-        <span className="text-xs font-semibold text-[#1E293B]">{format(value)}</span>
+        <label className="bloomberg-section-label text-[#64748B]">{label}</label>
+        <span className="bloomberg-section-label  text-[#1E293B]">{format(value)}</span>
       </div>
       <input
         type="range"
@@ -401,12 +401,12 @@ function ComparisonRow({
         <td
           key={i}
           className={`py-2.5 px-4 text-right ${
-            bestId === scenarioIds[i] ? 'font-bold text-[#10B981]' : 'text-[#1E293B]'
+            bestId === scenarioIds[i] ? ' text-[#10B981]' : 'text-[#1E293B]'
           }`}
         >
           {val}
           {bestId === scenarioIds[i] && (
-            <span className="ml-1 text-xs text-[#10B981]" title="Best in class">*</span>
+            <span className="ml-1 bloomberg-section-label text-[#10B981]" title="Best in class">*</span>
           )}
         </td>
       ))}
@@ -425,10 +425,10 @@ function CalloutCard({
 }) {
   return (
     <div className="bg-white rounded-lg border border-slate-200 p-3">
-      <p className="text-xs text-[#64748B] uppercase tracking-wide">{title}</p>
+      <p className="bloomberg-section-label text-[#64748B] uppercase tracking-wide">{title}</p>
       <div className="flex items-center gap-2 mt-1">
         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: colour }} />
-        <span className="text-sm font-semibold text-[#1E293B]">{scenarioLabel}</span>
+        <span className="bloomberg-small-text  text-[#1E293B]">{scenarioLabel}</span>
       </div>
     </div>
   )

@@ -219,7 +219,7 @@ export const InvestorClassificationAssessment: React.FC<InvestorClassificationAs
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">
+        <h2 className="bloomberg-large-metric text-slate-900 mb-2">
           Investor Classification Assessment
         </h2>
         <p className="text-slate-600">
@@ -238,8 +238,8 @@ export const InvestorClassificationAssessment: React.FC<InvestorClassificationAs
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">Please correct the following errors:</h3>
-                <div className="mt-2 text-sm text-red-700">
+                <h3 className="bloomberg-small-text font-medium text-red-800">Please correct the following errors:</h3>
+                <div className="mt-2 bloomberg-small-text text-red-700">
                   <ul className="list-disc list-inside space-y-1">
                     {errors.map((error, index) => (
                       <li key={index}>{error}</li>
@@ -253,22 +253,22 @@ export const InvestorClassificationAssessment: React.FC<InvestorClassificationAs
 
         {/* Entity Summary */}
         <div className="bg-slate-50 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-3">Entity Summary</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-3">Entity Summary</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <p className="text-sm text-slate-600">Entity Name</p>
+              <p className="bloomberg-small-text text-slate-600">Entity Name</p>
               <p className="font-medium text-slate-900">
                 {onboardingState.institutionalIdentity?.entityName || 'Not provided'}
               </p>
             </div>
             <div>
-              <p className="text-sm text-slate-600">Entity Type</p>
+              <p className="bloomberg-small-text text-slate-600">Entity Type</p>
               <p className="font-medium text-slate-900 capitalize">
                 {onboardingState.institutionalIdentity?.entityType?.replace('_', ' ') || 'Not provided'}
               </p>
             </div>
             <div>
-              <p className="text-sm text-slate-600">Jurisdiction</p>
+              <p className="bloomberg-small-text text-slate-600">Jurisdiction</p>
               <p className="font-medium text-slate-900 capitalize">
                 {onboardingState.institutionalIdentity?.jurisdiction || 'Not provided'}
               </p>
@@ -278,11 +278,11 @@ export const InvestorClassificationAssessment: React.FC<InvestorClassificationAs
 
         {/* Financial Information */}
         <div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Financial Thresholds</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Financial Thresholds</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Net Assets */}
             <div>
-              <label htmlFor="netAssets" className="block text-sm font-medium text-slate-700 mb-2">
+              <label htmlFor="netAssets" className="block bloomberg-small-text font-medium text-slate-700 mb-2">
                 Net Assets *
               </label>
               <div className="relative">
@@ -300,13 +300,13 @@ export const InvestorClassificationAssessment: React.FC<InvestorClassificationAs
                   min="0"
                 />
               </div>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 bloomberg-small-text text-slate-500">
                 Total assets minus liabilities: {formatCurrency(classificationParams.netAssets)}
               </p>
               {getFieldError('netAssets') && (
-                <p className="mt-1 text-sm text-red-600">{getFieldError('netAssets')}</p>
+                <p className="mt-1 bloomberg-small-text text-red-600">{getFieldError('netAssets')}</p>
               )}
-              <div className="mt-2 text-xs">
+              <div className="mt-2 bloomberg-section-label">
                 <span className={classificationParams.netAssets >= 2500000 ? 'text-green-600' : 'text-slate-500'}>
                   Wholesale threshold: A$2.5M {classificationParams.netAssets >= 2500000 ? '✓' : '✗'}
                 </span>
@@ -315,7 +315,7 @@ export const InvestorClassificationAssessment: React.FC<InvestorClassificationAs
 
             {/* Gross Income */}
             <div>
-              <label htmlFor="grossIncome" className="block text-sm font-medium text-slate-700 mb-2">
+              <label htmlFor="grossIncome" className="block bloomberg-small-text font-medium text-slate-700 mb-2">
                 Annual Gross Income *
               </label>
               <div className="relative">
@@ -333,13 +333,13 @@ export const InvestorClassificationAssessment: React.FC<InvestorClassificationAs
                   min="0"
                 />
               </div>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 bloomberg-small-text text-slate-500">
                 Gross income for past 2 financial years: {formatCurrency(classificationParams.grossIncome)}
               </p>
               {getFieldError('grossIncome') && (
-                <p className="mt-1 text-sm text-red-600">{getFieldError('grossIncome')}</p>
+                <p className="mt-1 bloomberg-small-text text-red-600">{getFieldError('grossIncome')}</p>
               )}
-              <div className="mt-2 text-xs">
+              <div className="mt-2 bloomberg-section-label">
                 <span className={classificationParams.grossIncome >= 250000 ? 'text-green-600' : 'text-slate-500'}>
                   Wholesale threshold: A$250K {classificationParams.grossIncome >= 250000 ? '✓' : '✗'}
                 </span>
@@ -350,7 +350,7 @@ export const InvestorClassificationAssessment: React.FC<InvestorClassificationAs
 
         {/* Professional Experience */}
         <div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Professional Experience</h3>
+          <h3 className="bloomberg-card-title text-slate-900 mb-4">Professional Experience</h3>
           <div className="space-y-4">
             <label className="flex items-start">
               <input
@@ -360,10 +360,10 @@ export const InvestorClassificationAssessment: React.FC<InvestorClassificationAs
                 className="mr-3 mt-1 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
               />
               <div>
-                <span className="text-sm font-medium text-slate-700">
+                <span className="bloomberg-small-text font-medium text-slate-700">
                   Professional investment experience
                 </span>
-                <p className="text-sm text-slate-500">
+                <p className="bloomberg-small-text text-slate-500">
                   Entity has professional experience in investments, including management of financial assets,
                   institutional investment strategies, or relevant financial services experience.
                 </p>
@@ -376,7 +376,7 @@ export const InvestorClassificationAssessment: React.FC<InvestorClassificationAs
         {classificationResult && (
           <div className="bg-white border-2 border-slate-200 rounded-lg p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-slate-900">Assessment Result</h3>
+              <h3 className="bloomberg-card-title text-slate-900">Assessment Result</h3>
               {isAssessing && (
                 <div className="flex items-center text-sky-600">
                   <svg className="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -395,7 +395,7 @@ export const InvestorClassificationAssessment: React.FC<InvestorClassificationAs
                 classificationResult.classification === 'wholesale' ? 'bg-amber-50 border border-amber-200' :
                 'bg-slate-50 border border-slate-200'
               }`}>
-                <h4 className={`font-semibold mb-2 ${
+                <h4 className={` mb-2 ${
                   classificationResult.classification === 'sophisticated' ? 'text-green-800' :
                   classificationResult.classification === 'professional' ? 'text-blue-800' :
                   classificationResult.classification === 'wholesale' ? 'text-amber-800' :
@@ -403,12 +403,12 @@ export const InvestorClassificationAssessment: React.FC<InvestorClassificationAs
                 }`}>
                   {explanation.title}
                 </h4>
-                <p className="text-sm text-slate-600 mb-3">{explanation.description}</p>
+                <p className="bloomberg-small-text text-slate-600 mb-3">{explanation.description}</p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <h5 className="font-medium text-slate-800 mb-2">Benefits</h5>
-                    <ul className="text-sm text-slate-600 space-y-1">
+                    <ul className="bloomberg-small-text text-slate-600 space-y-1">
                       {explanation.benefits.map((benefit, index) => (
                         <li key={index} className="flex items-start">
                           <svg className="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -421,7 +421,7 @@ export const InvestorClassificationAssessment: React.FC<InvestorClassificationAs
                   </div>
                   <div>
                     <h5 className="font-medium text-slate-800 mb-2">Requirements</h5>
-                    <ul className="text-sm text-slate-600 space-y-1">
+                    <ul className="bloomberg-small-text text-slate-600 space-y-1">
                       {explanation.requirements.map((requirement, index) => (
                         <li key={index} className="flex items-start">
                           <span className="w-2 h-2 bg-slate-400 rounded-full mr-2 mt-2 flex-shrink-0"></span>
@@ -434,7 +434,7 @@ export const InvestorClassificationAssessment: React.FC<InvestorClassificationAs
               </div>
             )}
 
-            <div className="text-sm text-slate-600">
+            <div className="bloomberg-small-text text-slate-600">
               <p><strong>Rationale:</strong> {classificationResult.rationale}</p>
               {classificationResult.complianceNotes && classificationResult.complianceNotes.length > 0 && (
                 <div className="mt-2">
@@ -453,7 +453,7 @@ export const InvestorClassificationAssessment: React.FC<InvestorClassificationAs
         {/* Manual Override Option */}
         {classificationResult && classificationResult.classification !== 'retail' && (
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-            <h3 className="text-sm font-medium text-amber-800 mb-2">Manual Override Option</h3>
+            <h3 className="bloomberg-small-text font-medium text-amber-800 mb-2">Manual Override Option</h3>
             <label className="flex items-start">
               <input
                 type="checkbox"
@@ -462,10 +462,10 @@ export const InvestorClassificationAssessment: React.FC<InvestorClassificationAs
                 className="mr-3 mt-1 rounded border-amber-300 text-amber-600 focus:ring-amber-500"
               />
               <div>
-                <span className="text-sm font-medium text-amber-800">
+                <span className="bloomberg-small-text font-medium text-amber-800">
                   Request retail investor treatment
                 </span>
-                <p className="text-sm text-amber-700">
+                <p className="bloomberg-small-text text-amber-700">
                   You may choose to be treated as a retail investor to receive full regulatory protections,
                   though this may limit access to certain investment products.
                 </p>
@@ -474,7 +474,7 @@ export const InvestorClassificationAssessment: React.FC<InvestorClassificationAs
 
             {manualOverride && (
               <div className="mt-3">
-                <label htmlFor="overrideReason" className="block text-sm font-medium text-amber-800 mb-1">
+                <label htmlFor="overrideReason" className="block bloomberg-small-text font-medium text-amber-800 mb-1">
                   Reason for override *
                 </label>
                 <textarea

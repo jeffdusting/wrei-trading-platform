@@ -321,10 +321,10 @@ export default function RegulatoryMap({
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
       {/* Header */}
       <div className="bg-[#1B2A4A] px-6 py-4">
-        <h2 className="text-xl font-semibold text-white">
+        <h2 className="bloomberg-metric-value text-white">
           Regulatory Compliance Map
         </h2>
-        <p className="text-slate-300 text-sm mt-1">
+        <p className="text-slate-300 bloomberg-small-text mt-1">
           Australian Financial Services Framework - Jurisdictional Requirements
         </p>
       </div>
@@ -333,7 +333,7 @@ export default function RegulatoryMap({
       <div className="px-6 py-4 bg-slate-50 border-b border-slate-200">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
-            <label htmlFor="investor-filter" className="block text-sm font-medium text-slate-700 mb-1">
+            <label htmlFor="investor-filter" className="block bloomberg-small-text font-medium text-slate-700 mb-1">
               Investor Type
             </label>
             <select
@@ -343,7 +343,7 @@ export default function RegulatoryMap({
                 setInvestorFilter(e.target.value as InvestorFilter)
                 setSelectedNode(null)
               }}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-800 focus:border-[#0EA5E9] focus:ring-1 focus:ring-[#0EA5E9] outline-none"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 bloomberg-small-text text-slate-800 focus:border-[#0EA5E9] focus:ring-1 focus:ring-[#0EA5E9] outline-none"
             >
               <option value="all">All Investor Types</option>
               <option value="retail">Retail Investor</option>
@@ -353,7 +353,7 @@ export default function RegulatoryMap({
             </select>
           </div>
           <div className="flex-1">
-            <label htmlFor="offering-structure" className="block text-sm font-medium text-slate-700 mb-1">
+            <label htmlFor="offering-structure" className="block bloomberg-small-text font-medium text-slate-700 mb-1">
               Offering Structure
             </label>
             <select
@@ -363,7 +363,7 @@ export default function RegulatoryMap({
                 setOfferingStructure(e.target.value as OfferingStructure)
                 setSelectedNode(null)
               }}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-800 focus:border-[#0EA5E9] focus:ring-1 focus:ring-[#0EA5E9] outline-none"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 bloomberg-small-text text-slate-800 focus:border-[#0EA5E9] focus:ring-1 focus:ring-[#0EA5E9] outline-none"
             >
               <option value="wholesale_only">Wholesale Only</option>
               <option value="sophisticated_only">Sophisticated Only</option>
@@ -378,7 +378,7 @@ export default function RegulatoryMap({
         {['compliant', 'pending', 'non_compliant', 'under_review'].map((status) => (
           <div key={status} className="flex items-center gap-2" role="listitem">
             <span className={`w-3 h-3 rounded-full ${getStatusDot(status)}`} />
-            <span className="text-xs text-slate-600">{getStatusLabel(status)}</span>
+            <span className="bloomberg-section-label text-slate-600">{getStatusLabel(status)}</span>
           </div>
         ))}
       </div>
@@ -398,8 +398,8 @@ export default function RegulatoryMap({
               aria-label={`${investorNode.label} - ${getStatusLabel(investorNode.status)}`}
               data-testid={`node-${investorNode.id}`}
             >
-              <div className="font-semibold text-sm">{investorNode.label}</div>
-              <div className="text-xs mt-1 opacity-75">Click for details</div>
+              <div className=" bloomberg-small-text">{investorNode.label}</div>
+              <div className="bloomberg-section-label mt-1 opacity-75">Click for details</div>
             </button>
           )}
 
@@ -423,13 +423,13 @@ export default function RegulatoryMap({
                 data-testid={`node-${node.id}`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-semibold text-sm">{node.label}</span>
+                  <span className=" bloomberg-small-text">{node.label}</span>
                   <span className={`w-2.5 h-2.5 rounded-full ${getStatusDot(node.status)}`} />
                 </div>
                 {node.regulatoryBody && (
-                  <div className="text-xs opacity-75">{node.regulatoryBody}</div>
+                  <div className="bloomberg-section-label opacity-75">{node.regulatoryBody}</div>
                 )}
-                <div className="text-xs mt-1 opacity-60">Click for details</div>
+                <div className="bloomberg-section-label mt-1 opacity-60">Click for details</div>
               </button>
             ))}
           </div>
@@ -453,10 +453,10 @@ export default function RegulatoryMap({
               aria-label={`${statusNode.label} - ${getStatusLabel(statusNode.status)}`}
               data-testid={`node-${statusNode.id}`}
             >
-              <div className="font-semibold text-sm">{statusNode.label}</div>
+              <div className=" bloomberg-small-text">{statusNode.label}</div>
               <div className="flex items-center justify-center gap-2 mt-1">
                 <span className={`w-2.5 h-2.5 rounded-full ${getStatusDot(statusNode.status)}`} />
-                <span className="text-xs">{getStatusLabel(statusNode.status)}</span>
+                <span className="bloomberg-section-label">{getStatusLabel(statusNode.status)}</span>
               </div>
             </button>
           )}
@@ -472,20 +472,20 @@ export default function RegulatoryMap({
           aria-label={`Details for ${selectedNodeData.label}`}
         >
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-slate-800">{selectedNodeData.label}</h3>
+            <h3 className=" text-slate-800">{selectedNodeData.label}</h3>
             <div className="flex items-center gap-2">
               <span className={`w-2.5 h-2.5 rounded-full ${getStatusDot(selectedNodeData.status)}`} />
-              <span className="text-sm text-slate-600">{getStatusLabel(selectedNodeData.status)}</span>
+              <span className="bloomberg-small-text text-slate-600">{getStatusLabel(selectedNodeData.status)}</span>
             </div>
           </div>
           {selectedNodeData.regulatoryBody && (
-            <p className="text-sm text-slate-500 mb-2">
+            <p className="bloomberg-small-text text-slate-500 mb-2">
               Regulatory Body: {selectedNodeData.regulatoryBody}
             </p>
           )}
           <ul className="space-y-1" role="list">
             {selectedNodeData.details.map((detail, idx) => (
-              <li key={idx} className="text-sm text-slate-600 flex items-start gap-2">
+              <li key={idx} className="bloomberg-small-text text-slate-600 flex items-start gap-2">
                 <span className="text-slate-400 mt-0.5 flex-shrink-0">&bull;</span>
                 <span>{detail}</span>
               </li>
@@ -493,7 +493,7 @@ export default function RegulatoryMap({
           </ul>
           <button
             onClick={() => setSelectedNode(null)}
-            className="mt-3 text-sm text-[#0EA5E9] hover:underline"
+            className="mt-3 bloomberg-small-text text-[#0EA5E9] hover:underline"
           >
             Close details
           </button>
@@ -503,12 +503,12 @@ export default function RegulatoryMap({
       {/* Active Alerts */}
       {alerts.length > 0 && (
         <div className="px-6 py-4 border-t border-slate-200">
-          <h3 className="font-semibold text-slate-800 mb-3">Active Compliance Alerts</h3>
+          <h3 className=" text-slate-800 mb-3">Active Compliance Alerts</h3>
           <div className="space-y-2">
             {alerts.slice(0, 3).map((alert, idx) => (
               <div
                 key={idx}
-                className={`px-4 py-3 rounded-lg border text-sm ${
+                className={`px-4 py-3 rounded-lg border bloomberg-small-text ${
                   alert.severity === 'critical' ? 'bg-red-50 border-red-200 text-red-800' :
                   alert.severity === 'high' ? 'bg-amber-50 border-amber-200 text-amber-800' :
                   alert.severity === 'medium' ? 'bg-sky-50 border-sky-200 text-sky-800' :
@@ -518,11 +518,11 @@ export default function RegulatoryMap({
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium">{alert.title}</span>
-                  <span className="text-xs uppercase font-semibold opacity-75">
+                  <span className="bloomberg-section-label uppercase  opacity-75">
                     {alert.severity}
                   </span>
                 </div>
-                <p className="text-xs mt-1 opacity-75">{alert.description}</p>
+                <p className="bloomberg-section-label mt-1 opacity-75">{alert.description}</p>
               </div>
             ))}
           </div>

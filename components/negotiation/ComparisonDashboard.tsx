@@ -152,9 +152,9 @@ export default function ComparisonDashboard({
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-[#1B2A4A] text-white">
         <div className="flex items-center space-x-4">
-          <h2 className="text-xl font-semibold">Negotiation Comparison</h2>
+          <h2 className="bloomberg-metric-value ">Negotiation Comparison</h2>
           {comparison && (
-            <div className="flex items-center space-x-2 text-sm">
+            <div className="flex items-center space-x-2 bloomberg-small-text">
               <span className="bg-[#0EA5E9] px-3 py-1 rounded-full">
                 {comparison.outcomeComparison.winnerSession === 'tie' ? '🤝' : '🏆'}
                 {comparison.outcomeComparison.winnerSession === 'tie' ? 'Tie' : `Session ${comparison.outcomeComparison.winnerSession.slice(-1)} Wins`}
@@ -166,7 +166,7 @@ export default function ComparisonDashboard({
           {comparison && (
             <button
               onClick={exportComparison}
-              className="flex items-center px-3 py-2 bg-[#10B981] text-white rounded-lg hover:bg-green-600 transition-colors text-sm"
+              className="flex items-center px-3 py-2 bg-[#10B981] text-white rounded-lg hover:bg-green-600 transition-colors bloomberg-small-text"
             >
               📊 Export Report
             </button>
@@ -187,7 +187,7 @@ export default function ComparisonDashboard({
           /* Session Selection */
           <div className="p-6">
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">Select Two Sessions to Compare</h3>
+              <h3 className="bloomberg-card-title text-gray-800 mb-2">Select Two Sessions to Compare</h3>
               <p className="text-gray-600">Choose 2 negotiation sessions to analyse their performance and strategies.</p>
             </div>
 
@@ -210,7 +210,7 @@ export default function ComparisonDashboard({
                           : 'border-gray-300'
                       }`}>
                         {selectedSessionIds.includes(session.id) && (
-                          <span className="text-white text-xs">✓</span>
+                          <span className="text-white bloomberg-section-label">✓</span>
                         )}
                       </div>
 
@@ -218,7 +218,7 @@ export default function ComparisonDashboard({
                         <div className="font-medium text-gray-800">
                           {formatPersona(session.persona)}
                         </div>
-                        <div className="text-sm text-gray-600">
+                        <div className="bloomberg-small-text text-gray-600">
                           {new Date(session.startTime).toLocaleDateString('en-AU')} at {' '}
                           {new Date(session.startTime).toLocaleTimeString('en-AU', {
                             hour: '2-digit',
@@ -228,22 +228,22 @@ export default function ComparisonDashboard({
                       </div>
                     </div>
 
-                    <div className="flex items-center space-x-6 text-sm">
+                    <div className="flex items-center space-x-6 bloomberg-small-text">
                       <div className="text-center">
                         <div className="text-gray-600">Final Price</div>
-                        <div className="font-bold text-[#10B981]">
+                        <div className=" text-[#10B981]">
                           {formatCurrency(session.metrics.finalPrice)}
                         </div>
                       </div>
                       <div className="text-center">
                         <div className="text-gray-600">Rounds</div>
-                        <div className="font-bold text-gray-800">
+                        <div className=" text-gray-800">
                           {session.metrics.totalRounds}
                         </div>
                       </div>
                       <div className="text-center">
                         <div className="text-gray-600">Outcome</div>
-                        <div className={`px-2 py-1 rounded text-xs font-medium ${getOutcomeColor(session.outcome || 'unknown', session.metrics.outcomeSuccess)}`}>
+                        <div className={`px-2 py-1 rounded bloomberg-section-label font-medium ${getOutcomeColor(session.outcome || 'unknown', session.metrics.outcomeSuccess)}`}>
                           {session.outcome?.toUpperCase()}
                         </div>
                       </div>
@@ -255,7 +255,7 @@ export default function ComparisonDashboard({
 
             {selectedSessionIds.length === 1 && (
               <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-blue-800 text-sm">
+                <p className="text-blue-800 bloomberg-small-text">
                   Select one more session to start the comparison.
                 </p>
               </div>
@@ -274,7 +274,7 @@ export default function ComparisonDashboard({
                 <button
                   key={tab.key}
                   onClick={() => setSelectedTab(tab.key as any)}
-                  className={`flex items-center px-6 py-3 text-sm font-medium transition-colors ${
+                  className={`flex items-center px-6 py-3 bloomberg-small-text font-medium transition-colors ${
                     selectedTab === tab.key
                       ? 'border-b-2 border-[#0EA5E9] text-[#0EA5E9] bg-white'
                       : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
@@ -291,46 +291,46 @@ export default function ComparisonDashboard({
                 <div className="p-6 grid lg:grid-cols-2 gap-8">
                   {/* Side-by-side Comparison */}
                   <div className="lg:col-span-2">
-                    <h3 className="text-lg font-semibold mb-4">Head-to-Head Comparison</h3>
+                    <h3 className="bloomberg-card-title mb-4">Head-to-Head Comparison</h3>
                     <div className="grid md:grid-cols-2 gap-6">
                       {/* Session 1 */}
                       <div className="border border-gray-200 rounded-lg overflow-hidden">
                         <div className="bg-[#1B2A4A] text-white p-4">
-                          <h4 className="font-semibold">{formatPersona(comparison.session1.persona)}</h4>
-                          <p className="text-sm text-white/70">
+                          <h4 className="">{formatPersona(comparison.session1.persona)}</h4>
+                          <p className="bloomberg-small-text text-white/70">
                             {new Date(comparison.session1.startTime).toLocaleDateString('en-AU')}
                           </p>
                         </div>
                         <div className="p-4 space-y-4">
-                          <div className="grid grid-cols-2 gap-4 text-sm">
+                          <div className="grid grid-cols-2 gap-4 bloomberg-small-text">
                             <div>
                               <div className="text-gray-600">Final Price</div>
-                              <div className="font-bold text-lg text-[#10B981]">
+                              <div className=" bloomberg-card-title text-[#10B981]">
                                 {formatCurrency(comparison.session1.metrics.finalPrice)}
                               </div>
                             </div>
                             <div>
                               <div className="text-gray-600">Total Rounds</div>
-                              <div className="font-bold text-lg text-gray-800">
+                              <div className=" bloomberg-card-title text-gray-800">
                                 {comparison.session1.metrics.totalRounds}
                               </div>
                             </div>
                             <div>
                               <div className="text-gray-600">Duration</div>
-                              <div className="font-bold text-gray-800">
+                              <div className=" text-gray-800">
                                 {formatDuration(comparison.session1.metrics.duration)}
                               </div>
                             </div>
                             <div>
                               <div className="text-gray-600">Concessions</div>
-                              <div className="font-bold text-[#F59E0B]">
+                              <div className=" text-[#F59E0B]">
                                 {comparison.session1.metrics.totalConcessionPercentage.toFixed(1)}%
                               </div>
                             </div>
                           </div>
                           <div>
-                            <div className="text-gray-600 text-sm mb-2">Outcome</div>
-                            <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getOutcomeColor(comparison.session1.outcome || 'unknown', comparison.session1.metrics.outcomeSuccess)}`}>
+                            <div className="text-gray-600 bloomberg-small-text mb-2">Outcome</div>
+                            <div className={`inline-block px-3 py-1 rounded-full bloomberg-small-text font-medium ${getOutcomeColor(comparison.session1.outcome || 'unknown', comparison.session1.metrics.outcomeSuccess)}`}>
                               {comparison.session1.outcome?.toUpperCase()} {comparison.session1.metrics.outcomeSuccess ? '✓' : '✗'}
                             </div>
                           </div>
@@ -340,41 +340,41 @@ export default function ComparisonDashboard({
                       {/* Session 2 */}
                       <div className="border border-gray-200 rounded-lg overflow-hidden">
                         <div className="bg-[#0EA5E9] text-white p-4">
-                          <h4 className="font-semibold">{formatPersona(comparison.session2.persona)}</h4>
-                          <p className="text-sm text-white/70">
+                          <h4 className="">{formatPersona(comparison.session2.persona)}</h4>
+                          <p className="bloomberg-small-text text-white/70">
                             {new Date(comparison.session2.startTime).toLocaleDateString('en-AU')}
                           </p>
                         </div>
                         <div className="p-4 space-y-4">
-                          <div className="grid grid-cols-2 gap-4 text-sm">
+                          <div className="grid grid-cols-2 gap-4 bloomberg-small-text">
                             <div>
                               <div className="text-gray-600">Final Price</div>
-                              <div className="font-bold text-lg text-[#10B981]">
+                              <div className=" bloomberg-card-title text-[#10B981]">
                                 {formatCurrency(comparison.session2.metrics.finalPrice)}
                               </div>
                             </div>
                             <div>
                               <div className="text-gray-600">Total Rounds</div>
-                              <div className="font-bold text-lg text-gray-800">
+                              <div className=" bloomberg-card-title text-gray-800">
                                 {comparison.session2.metrics.totalRounds}
                               </div>
                             </div>
                             <div>
                               <div className="text-gray-600">Duration</div>
-                              <div className="font-bold text-gray-800">
+                              <div className=" text-gray-800">
                                 {formatDuration(comparison.session2.metrics.duration)}
                               </div>
                             </div>
                             <div>
                               <div className="text-gray-600">Concessions</div>
-                              <div className="font-bold text-[#F59E0B]">
+                              <div className=" text-[#F59E0B]">
                                 {comparison.session2.metrics.totalConcessionPercentage.toFixed(1)}%
                               </div>
                             </div>
                           </div>
                           <div>
-                            <div className="text-gray-600 text-sm mb-2">Outcome</div>
-                            <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getOutcomeColor(comparison.session2.outcome || 'unknown', comparison.session2.metrics.outcomeSuccess)}`}>
+                            <div className="text-gray-600 bloomberg-small-text mb-2">Outcome</div>
+                            <div className={`inline-block px-3 py-1 rounded-full bloomberg-small-text font-medium ${getOutcomeColor(comparison.session2.outcome || 'unknown', comparison.session2.metrics.outcomeSuccess)}`}>
                               {comparison.session2.outcome?.toUpperCase()} {comparison.session2.metrics.outcomeSuccess ? '✓' : '✗'}
                             </div>
                           </div>
@@ -385,7 +385,7 @@ export default function ComparisonDashboard({
 
                   {/* Performance Radar Chart */}
                   <div className="bg-white border border-gray-200 rounded-lg p-6">
-                    <h4 className="text-lg font-semibold mb-4">Performance Radar</h4>
+                    <h4 className="bloomberg-card-title mb-4">Performance Radar</h4>
                     <div className="h-80">
                       <ResponsiveContainer width="100%" height="100%">
                         <RadarChart data={radarData}>
@@ -415,7 +415,7 @@ export default function ComparisonDashboard({
 
                   {/* Key Insights */}
                   <div className="bg-white border border-gray-200 rounded-lg p-6">
-                    <h4 className="text-lg font-semibold mb-4">Key Success Factors</h4>
+                    <h4 className="bloomberg-card-title mb-4">Key Success Factors</h4>
                     {comparison.outcomeComparison.successFactors.length > 0 ? (
                       <ul className="space-y-2">
                         {comparison.outcomeComparison.successFactors.map((factor, index) => (
@@ -430,7 +430,7 @@ export default function ComparisonDashboard({
                     )}
 
                     <div className="mt-4 pt-4 border-t border-gray-200">
-                      <div className="text-sm text-gray-600 mb-2">Financial Impact</div>
+                      <div className="bloomberg-small-text text-gray-600 mb-2">Financial Impact</div>
                       {comparison.priceComparison.finalPriceDifference !== 0 && (
                         <div className="text-gray-800">
                           <strong>Price Difference:</strong> {formatCurrency(Math.abs(comparison.priceComparison.finalPriceDifference))}
@@ -450,12 +450,12 @@ export default function ComparisonDashboard({
 
               {selectedTab === 'strategy' && (
                 <div className="p-6">
-                  <h3 className="text-lg font-semibold mb-6">Strategy Analysis</h3>
+                  <h3 className="bloomberg-card-title mb-6">Strategy Analysis</h3>
 
                   <div className="grid lg:grid-cols-2 gap-8">
                     {/* Argument Distribution */}
                     <div className="bg-white border border-gray-200 rounded-lg p-6">
-                      <h4 className="font-semibold mb-4">Argument Strategy Distribution</h4>
+                      <h4 className=" mb-4">Argument Strategy Distribution</h4>
                       <div className="space-y-4">
                         {Object.keys(comparison.strategyComparison.argumentDistribution1).map((argType) => {
                           const count1 = comparison.strategyComparison.argumentDistribution1[argType as ArgumentClassification];
@@ -464,7 +464,7 @@ export default function ComparisonDashboard({
 
                           return (
                             <div key={argType} className="space-y-2">
-                              <div className="flex justify-between text-sm">
+                              <div className="flex justify-between bloomberg-small-text">
                                 <span className="font-medium">{argType.replace(/_/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</span>
                                 <span className="text-gray-600">{count1} vs {count2}</span>
                               </div>
@@ -490,10 +490,10 @@ export default function ComparisonDashboard({
 
                     {/* Emotional Progression */}
                     <div className="bg-white border border-gray-200 rounded-lg p-6">
-                      <h4 className="font-semibold mb-4">Emotional Pattern Analysis</h4>
+                      <h4 className=" mb-4">Emotional Pattern Analysis</h4>
                       <div className="space-y-4">
                         <div>
-                          <div className="text-sm text-gray-600 mb-2">Emotional Pattern Similarity</div>
+                          <div className="bloomberg-small-text text-gray-600 mb-2">Emotional Pattern Similarity</div>
                           <div className="flex items-center">
                             <div className="flex-1 bg-gray-200 rounded-full h-3 mr-3">
                               <div
@@ -501,20 +501,20 @@ export default function ComparisonDashboard({
                                 style={{ width: `${comparison.strategyComparison.emotionalPatternSimilarity * 100}%` }}
                               />
                             </div>
-                            <span className="text-sm font-medium">
+                            <span className="bloomberg-small-text font-medium">
                               {(comparison.strategyComparison.emotionalPatternSimilarity * 100).toFixed(0)}% Similar
                             </span>
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div className="grid grid-cols-2 gap-4 bloomberg-small-text">
                           <div>
                             <div className="font-medium text-gray-800 mb-2">
                               {formatPersona(comparison.session1.persona)} Emotions
                             </div>
                             <div className="space-y-1">
                               {comparison.session1.metrics.emotionalProgression.map((emotion, idx) => (
-                                <span key={idx} className="inline-block px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs mr-1 mb-1 capitalize">
+                                <span key={idx} className="inline-block px-2 py-1 bg-gray-100 text-gray-700 rounded bloomberg-section-label mr-1 mb-1 capitalize">
                                   {emotion.replace(/_/g, ' ')}
                                 </span>
                               ))}
@@ -526,7 +526,7 @@ export default function ComparisonDashboard({
                             </div>
                             <div className="space-y-1">
                               {comparison.session2.metrics.emotionalProgression.map((emotion, idx) => (
-                                <span key={idx} className="inline-block px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs mr-1 mb-1 capitalize">
+                                <span key={idx} className="inline-block px-2 py-1 bg-gray-100 text-gray-700 rounded bloomberg-section-label mr-1 mb-1 capitalize">
                                   {emotion.replace(/_/g, ' ')}
                                 </span>
                               ))}
@@ -538,14 +538,14 @@ export default function ComparisonDashboard({
 
                     {/* Efficiency Metrics */}
                     <div className="lg:col-span-2 bg-white border border-gray-200 rounded-lg p-6">
-                      <h4 className="font-semibold mb-4">Efficiency Comparison</h4>
+                      <h4 className=" mb-4">Efficiency Comparison</h4>
                       <div className="grid md:grid-cols-3 gap-6">
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-[#0EA5E9] mb-2">
+                          <div className="bloomberg-large-metric text-[#0EA5E9] mb-2">
                             {comparison.strategyComparison.roundsComparison > 0 ? '+' : ''}{comparison.strategyComparison.roundsComparison}
                           </div>
-                          <div className="text-sm text-gray-600">Round Difference</div>
-                          <div className="text-xs text-gray-500 mt-1">
+                          <div className="bloomberg-small-text text-gray-600">Round Difference</div>
+                          <div className="bloomberg-section-label text-gray-500 mt-1">
                             {comparison.strategyComparison.roundsComparison === 0
                               ? 'Same number of rounds'
                               : comparison.strategyComparison.roundsComparison > 0
@@ -555,11 +555,11 @@ export default function ComparisonDashboard({
                           </div>
                         </div>
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-[#F59E0B] mb-2">
+                          <div className="bloomberg-large-metric text-[#F59E0B] mb-2">
                             {Math.abs(comparison.priceComparison.efficiencyDifference).toFixed(0)}
                           </div>
-                          <div className="text-sm text-gray-600">Price/Round Difference</div>
-                          <div className="text-xs text-gray-500 mt-1">
+                          <div className="bloomberg-small-text text-gray-600">Price/Round Difference</div>
+                          <div className="bloomberg-section-label text-gray-500 mt-1">
                             {comparison.priceComparison.efficiencyDifference > 0
                               ? 'Session 1 more efficient'
                               : 'Session 2 more efficient'
@@ -567,11 +567,11 @@ export default function ComparisonDashboard({
                           </div>
                         </div>
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-[#10B981] mb-2">
+                          <div className="bloomberg-large-metric text-[#10B981] mb-2">
                             {comparison.outcomeComparison.bothSuccessful ? 'Both' : 'One'}
                           </div>
-                          <div className="text-sm text-gray-600">Successful Outcomes</div>
-                          <div className="text-xs text-gray-500 mt-1">
+                          <div className="bloomberg-small-text text-gray-600">Successful Outcomes</div>
+                          <div className="bloomberg-section-label text-gray-500 mt-1">
                             {comparison.outcomeComparison.bothSuccessful
                               ? 'Both reached agreement'
                               : 'Only one reached agreement'
@@ -586,23 +586,23 @@ export default function ComparisonDashboard({
 
               {selectedTab === 'timeline' && (
                 <div className="p-6">
-                  <h3 className="text-lg font-semibold mb-6">Timeline Comparison</h3>
+                  <h3 className="bloomberg-card-title mb-6">Timeline Comparison</h3>
 
                   <div className="space-y-8">
                     {/* Timeline visualization would go here */}
                     <div className="bg-white border border-gray-200 rounded-lg p-6">
-                      <h4 className="font-semibold mb-4">Negotiation Timeline</h4>
+                      <h4 className=" mb-4">Negotiation Timeline</h4>
                       <div className="grid md:grid-cols-2 gap-8">
                         <div>
                           <div className="font-medium text-gray-800 mb-3">{formatPersona(comparison.session1.persona)}</div>
                           <div className="space-y-3">
-                            <div className="flex justify-between text-sm">
+                            <div className="flex justify-between bloomberg-small-text">
                               <span className="text-gray-600">Start Time:</span>
                               <span className="font-medium">
                                 {new Date(comparison.session1.startTime).toLocaleString('en-AU')}
                               </span>
                             </div>
-                            <div className="flex justify-between text-sm">
+                            <div className="flex justify-between bloomberg-small-text">
                               <span className="text-gray-600">End Time:</span>
                               <span className="font-medium">
                                 {comparison.session1.endTime
@@ -611,13 +611,13 @@ export default function ComparisonDashboard({
                                 }
                               </span>
                             </div>
-                            <div className="flex justify-between text-sm">
+                            <div className="flex justify-between bloomberg-small-text">
                               <span className="text-gray-600">Total Duration:</span>
                               <span className="font-medium">
                                 {formatDuration(comparison.session1.metrics.duration)}
                               </span>
                             </div>
-                            <div className="flex justify-between text-sm">
+                            <div className="flex justify-between bloomberg-small-text">
                               <span className="text-gray-600">Messages Exchanged:</span>
                               <span className="font-medium">
                                 {comparison.session1.messages.length}
@@ -629,13 +629,13 @@ export default function ComparisonDashboard({
                         <div>
                           <div className="font-medium text-gray-800 mb-3">{formatPersona(comparison.session2.persona)}</div>
                           <div className="space-y-3">
-                            <div className="flex justify-between text-sm">
+                            <div className="flex justify-between bloomberg-small-text">
                               <span className="text-gray-600">Start Time:</span>
                               <span className="font-medium">
                                 {new Date(comparison.session2.startTime).toLocaleString('en-AU')}
                               </span>
                             </div>
-                            <div className="flex justify-between text-sm">
+                            <div className="flex justify-between bloomberg-small-text">
                               <span className="text-gray-600">End Time:</span>
                               <span className="font-medium">
                                 {comparison.session2.endTime
@@ -644,13 +644,13 @@ export default function ComparisonDashboard({
                                 }
                               </span>
                             </div>
-                            <div className="flex justify-between text-sm">
+                            <div className="flex justify-between bloomberg-small-text">
                               <span className="text-gray-600">Total Duration:</span>
                               <span className="font-medium">
                                 {formatDuration(comparison.session2.metrics.duration)}
                               </span>
                             </div>
-                            <div className="flex justify-between text-sm">
+                            <div className="flex justify-between bloomberg-small-text">
                               <span className="text-gray-600">Messages Exchanged:</span>
                               <span className="font-medium">
                                 {comparison.session2.messages.length}
@@ -663,23 +663,23 @@ export default function ComparisonDashboard({
 
                     {/* Pace Analysis */}
                     <div className="bg-white border border-gray-200 rounded-lg p-6">
-                      <h4 className="font-semibold mb-4">Negotiation Pace Analysis</h4>
+                      <h4 className=" mb-4">Negotiation Pace Analysis</h4>
                       <div className="grid md:grid-cols-2 gap-6">
                         <div>
-                          <div className="text-sm text-gray-600 mb-2">Average Time per Round</div>
-                          <div className="text-2xl font-bold text-[#1B2A4A]">
+                          <div className="bloomberg-small-text text-gray-600 mb-2">Average Time per Round</div>
+                          <div className="bloomberg-large-metric text-[#1B2A4A]">
                             {(comparison.session1.metrics.duration / comparison.session1.metrics.totalRounds).toFixed(1)}m
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="bloomberg-small-text text-gray-500">
                             {formatPersona(comparison.session1.persona)}
                           </div>
                         </div>
                         <div>
-                          <div className="text-sm text-gray-600 mb-2">Average Time per Round</div>
-                          <div className="text-2xl font-bold text-[#0EA5E9]">
+                          <div className="bloomberg-small-text text-gray-600 mb-2">Average Time per Round</div>
+                          <div className="bloomberg-large-metric text-[#0EA5E9]">
                             {(comparison.session2.metrics.duration / comparison.session2.metrics.totalRounds).toFixed(1)}m
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="bloomberg-small-text text-gray-500">
                             {formatPersona(comparison.session2.persona)}
                           </div>
                         </div>

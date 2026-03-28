@@ -93,28 +93,28 @@ export default function PerformancePage() {
           <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 mb-6" data-demo="portfolio-dashboard">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">
+                <div className="bloomberg-large-metric text-blue-600">
                   {loading ? '...' : calculateUptime()}
                 </div>
-                <div className="text-sm text-slate-600">System Uptime</div>
+                <div className="bloomberg-small-text text-slate-600">System Uptime</div>
               </div>
               <div className="text-center">
-                <div className={`text-2xl font-bold ${loading ? 'text-slate-400' : getStatusColor(performanceData?.performanceThresholds.apiResponseTime.status || 'healthy')}`}>
+                <div className={`bloomberg-large-metric ${loading ? 'text-slate-400' : getStatusColor(performanceData?.performanceThresholds.apiResponseTime.status || 'healthy')}`}>
                   {loading ? '...' : formatResponseTime(performanceData?.performanceThresholds.apiResponseTime.current || 0)}
                 </div>
-                <div className="text-sm text-slate-600">Avg Response Time</div>
+                <div className="bloomberg-small-text text-slate-600">Avg Response Time</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">
+                <div className="bloomberg-large-metric text-purple-600">
                   {loading ? '...' : calculateSuccessRate()}
                 </div>
-                <div className="text-sm text-slate-600">Success Rate</div>
+                <div className="bloomberg-small-text text-slate-600">Success Rate</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-orange-600">
+                <div className="bloomberg-large-metric text-orange-600">
                   {loading ? '...' : `${Math.max(150, (performanceData?.businessMetrics.negotiationsSessions || 0) * 10 + 120)}+`}
                 </div>
-                <div className="text-sm text-slate-600">Req/Min Capacity</div>
+                <div className="bloomberg-small-text text-slate-600">Req/Min Capacity</div>
               </div>
             </div>
           </div>
@@ -126,12 +126,12 @@ export default function PerformancePage() {
                 <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                   <span className="text-blue-600"></span>
                 </div>
-                <h3 className="text-lg font-semibold text-slate-900 ml-3">Real-time Monitoring</h3>
+                <h3 className="bloomberg-card-title text-slate-900 ml-3">Real-time Monitoring</h3>
               </div>
-              <p className="text-slate-600 mb-4">
+              <p className="bloomberg-body-text text-slate-600 mb-4">
                 Monitor API performance, system health, and business metrics in real-time with automated alerting.
               </p>
-              <ul className="text-sm text-slate-600 space-y-1">
+              <ul className="bloomberg-small-text text-slate-600 space-y-1">
                 <li>• Response time tracking</li>
                 <li>• Memory usage monitoring</li>
                 <li>• Business activity metrics</li>
@@ -143,12 +143,12 @@ export default function PerformancePage() {
                 <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
                   <div className="w-2 h-2 bg-green-600 rounded-full"></div>
                 </div>
-                <h3 className="text-lg font-semibold text-slate-900 ml-3">Performance Optimization</h3>
+                <h3 className="bloomberg-card-title text-slate-900 ml-3">Performance Optimization</h3>
               </div>
-              <p className="text-slate-600 mb-4">
+              <p className="bloomberg-body-text text-slate-600 mb-4">
                 Advanced caching, batch processing, and calculation optimization for institutional-grade performance.
               </p>
-              <ul className="text-sm text-slate-600 space-y-1">
+              <ul className="bloomberg-small-text text-slate-600 space-y-1">
                 <li>• Intelligent caching strategies</li>
                 <li>• Batch processing optimization</li>
                 <li>• Financial calculation acceleration</li>
@@ -160,12 +160,12 @@ export default function PerformancePage() {
                 <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
                   <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
                 </div>
-                <h3 className="text-lg font-semibold text-slate-900 ml-3">Load Testing & Benchmarking</h3>
+                <h3 className="bloomberg-card-title text-slate-900 ml-3">Load Testing & Benchmarking</h3>
               </div>
-              <p className="text-slate-600 mb-4">
+              <p className="bloomberg-body-text text-slate-600 mb-4">
                 Comprehensive load testing and benchmarking tools to validate performance under institutional workloads.
               </p>
-              <ul className="text-sm text-slate-600 space-y-1">
+              <ul className="bloomberg-small-text text-slate-600 space-y-1">
                 <li>• Stress testing capabilities</li>
                 <li>• Performance benchmarking</li>
                 <li>• Regression testing</li>
@@ -177,7 +177,7 @@ export default function PerformancePage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8" data-demo="data-feeds">
             {/* Response Time Histogram */}
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Response Time Distribution</h3>
+              <h3 className="bloomberg-card-title text-slate-900 mb-4">Response Time Distribution</h3>
               <WREIBarChart
                 data={[
                   { name: '0-100ms', value: loading ? 0 : 45, color: '#10B981' },
@@ -189,12 +189,12 @@ export default function PerformancePage() {
                 yDataKey="value"
                 height={200}
               />
-              <p className="text-xs text-slate-500 mt-2">Percentage of requests by response time range</p>
+              <p className="bloomberg-section-label text-slate-500 mt-2">Percentage of requests by response time range</p>
             </div>
 
             {/* API Call Volume */}
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">API Call Volume</h3>
+              <h3 className="bloomberg-card-title text-slate-900 mb-4">API Call Volume</h3>
               <WREIAreaChart
                 data={[
                   { time: '12:00', calls: loading ? 0 : 45 },
@@ -209,12 +209,12 @@ export default function PerformancePage() {
                 height={200}
                 gradient={true}
               />
-              <p className="text-xs text-slate-500 mt-2">Requests per minute over last 30 minutes</p>
+              <p className="bloomberg-section-label text-slate-500 mt-2">Requests per minute over last 30 minutes</p>
             </div>
 
             {/* Success/Error Rate */}
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Request Status Distribution</h3>
+              <h3 className="bloomberg-card-title text-slate-900 mb-4">Request Status Distribution</h3>
               <WREIPieChart
                 data={[
                   { name: 'Success', value: loading ? 95 : 98, color: '#10B981' },
@@ -226,20 +226,20 @@ export default function PerformancePage() {
                 height={200}
                 showLegend={true}
               />
-              <p className="text-xs text-slate-500 mt-2">Request status distribution over last hour</p>
+              <p className="bloomberg-section-label text-slate-500 mt-2">Request status distribution over last hour</p>
             </div>
           </div>
 
           {/* System Health Indicators */}
           {performanceData && (
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 mb-8">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">System Health Status</h3>
+              <h3 className="bloomberg-card-title text-slate-900 mb-4">System Health Status</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="flex items-center space-x-3">
                   <div className={`w-4 h-4 rounded-full ${performanceData.performanceThresholds.apiResponseTime.status === 'healthy' ? 'bg-green-500' : performanceData.performanceThresholds.apiResponseTime.status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'}`}></div>
                   <div>
-                    <div className="font-medium text-slate-800">API Response Time</div>
-                    <div className="text-sm text-slate-600">
+                    <div className="bloomberg-card-title text-slate-800">API Response Time</div>
+                    <div className="bloomberg-small-text text-slate-600">
                       Target: {formatResponseTime(performanceData.performanceThresholds.apiResponseTime.target)} |
                       Current: {formatResponseTime(performanceData.performanceThresholds.apiResponseTime.current)}
                     </div>
@@ -248,8 +248,8 @@ export default function PerformancePage() {
                 <div className="flex items-center space-x-3">
                   <div className={`w-4 h-4 rounded-full ${performanceData.performanceThresholds.calculationTime.status === 'healthy' ? 'bg-green-500' : performanceData.performanceThresholds.calculationTime.status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'}`}></div>
                   <div>
-                    <div className="font-medium text-slate-800">Calculation Performance</div>
-                    <div className="text-sm text-slate-600">
+                    <div className="bloomberg-card-title text-slate-800">Calculation Performance</div>
+                    <div className="bloomberg-small-text text-slate-600">
                       Target: {formatResponseTime(performanceData.performanceThresholds.calculationTime.target)} |
                       Current: {formatResponseTime(performanceData.performanceThresholds.calculationTime.current)}
                     </div>
@@ -258,8 +258,8 @@ export default function PerformancePage() {
                 <div className="flex items-center space-x-3">
                   <div className={`w-4 h-4 rounded-full ${performanceData.performanceThresholds.throughput.status === 'healthy' ? 'bg-green-500' : performanceData.performanceThresholds.throughput.status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'}`}></div>
                   <div>
-                    <div className="font-medium text-slate-800">System Throughput</div>
-                    <div className="text-sm text-slate-600">
+                    <div className="bloomberg-card-title text-slate-800">System Throughput</div>
+                    <div className="bloomberg-small-text text-slate-600">
                       Target: {performanceData.performanceThresholds.throughput.target} req/min |
                       Current: {Math.round(performanceData.performanceThresholds.throughput.current)} req/min
                     </div>
@@ -271,11 +271,11 @@ export default function PerformancePage() {
 
           {/* Technical Specifications */}
           <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 mb-8">
-            <h3 className="text-lg font-semibold text-slate-900 mb-4">Performance Specifications</h3>
+            <h3 className="bloomberg-card-title text-slate-900 mb-4">Performance Specifications</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div>
-                <h4 className="font-medium text-slate-800 mb-2">API Performance</h4>
-                <ul className="text-sm text-slate-600 space-y-1">
+                <h4 className="bloomberg-card-title text-slate-800 mb-2">API Performance</h4>
+                <ul className="bloomberg-small-text text-slate-600 space-y-1">
                   <li>Target: &lt;500ms response time</li>
                   <li>P95: &lt;1000ms</li>
                   <li>P99: &lt;2000ms</li>
@@ -283,8 +283,8 @@ export default function PerformancePage() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium text-slate-800 mb-2">Calculation Performance</h4>
-                <ul className="text-sm text-slate-600 space-y-1">
+                <h4 className="bloomberg-card-title text-slate-800 mb-2">Calculation Performance</h4>
+                <ul className="bloomberg-small-text text-slate-600 space-y-1">
                   <li>IRR: &lt;50ms typical</li>
                   <li>NPV: &lt;20ms typical</li>
                   <li>Risk Profile: &lt;10ms</li>
@@ -292,8 +292,8 @@ export default function PerformancePage() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium text-slate-800 mb-2">System Resources</h4>
-                <ul className="text-sm text-slate-600 space-y-1">
+                <h4 className="bloomberg-card-title text-slate-800 mb-2">System Resources</h4>
+                <ul className="bloomberg-small-text text-slate-600 space-y-1">
                   <li>Memory: &lt;200MB steady state</li>
                   <li>CPU: Adaptive scaling</li>
                   <li>Storage: Stateless architecture</li>
@@ -301,8 +301,8 @@ export default function PerformancePage() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium text-slate-800 mb-2">Reliability Targets</h4>
-                <ul className="text-sm text-slate-600 space-y-1">
+                <h4 className="bloomberg-card-title text-slate-800 mb-2">Reliability Targets</h4>
+                <ul className="bloomberg-small-text text-slate-600 space-y-1">
                   <li>Uptime: 99.9%+</li>
                   <li>Error rate: &lt;0.1%</li>
                   <li>MTTR: &lt;5 minutes</li>
@@ -314,38 +314,38 @@ export default function PerformancePage() {
 
           {/* API Endpoints */}
           <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6 mb-8">
-            <h3 className="text-lg font-semibold text-slate-900 mb-4">Performance API Endpoints</h3>
+            <h3 className="bloomberg-card-title text-slate-900 mb-4">Performance API Endpoints</h3>
             <div className="overflow-x-auto">
               <table className="min-w-full">
                 <thead>
                   <tr className="border-b border-slate-200">
-                    <th className="text-left py-2 px-4 font-medium text-slate-800">Endpoint</th>
-                    <th className="text-left py-2 px-4 font-medium text-slate-800">Method</th>
-                    <th className="text-left py-2 px-4 font-medium text-slate-800">Purpose</th>
-                    <th className="text-left py-2 px-4 font-medium text-slate-800">Authentication</th>
+                    <th className="text-left py-2 px-4 bloomberg-card-title text-slate-800">Endpoint</th>
+                    <th className="text-left py-2 px-4 bloomberg-card-title text-slate-800">Method</th>
+                    <th className="text-left py-2 px-4 bloomberg-card-title text-slate-800">Purpose</th>
+                    <th className="text-left py-2 px-4 bloomberg-card-title text-slate-800">Authentication</th>
                   </tr>
                 </thead>
-                <tbody className="text-sm">
+                <tbody className="bloomberg-small-text">
                   <tr className="border-b border-slate-100">
-                    <td className="py-2 px-4 font-mono text-blue-600">/api/performance?action=snapshot</td>
+                    <td className="py-2 px-4 bloomberg-data text-blue-600">/api/performance?action=snapshot</td>
                     <td className="py-2 px-4">GET</td>
                     <td className="py-2 px-4">Real-time performance metrics</td>
                     <td className="py-2 px-4">API Key</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-2 px-4 font-mono text-blue-600">/api/performance?action=benchmarks</td>
+                    <td className="py-2 px-4 bloomberg-data text-blue-600">/api/performance?action=benchmarks</td>
                     <td className="py-2 px-4">GET</td>
                     <td className="py-2 px-4">Performance benchmark data</td>
                     <td className="py-2 px-4">API Key</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-2 px-4 font-mono text-blue-600">/api/performance?action=health</td>
+                    <td className="py-2 px-4 bloomberg-data text-blue-600">/api/performance?action=health</td>
                     <td className="py-2 px-4">GET</td>
                     <td className="py-2 px-4">System health report</td>
                     <td className="py-2 px-4">API Key</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-2 px-4 font-mono text-blue-600">/api/performance</td>
+                    <td className="py-2 px-4 bloomberg-data text-blue-600">/api/performance</td>
                     <td className="py-2 px-4">POST</td>
                     <td className="py-2 px-4">Run performance tests</td>
                     <td className="py-2 px-4">API Key</td>

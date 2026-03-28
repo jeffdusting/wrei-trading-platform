@@ -504,7 +504,7 @@ const TradingSimulationEngine: React.FC<TradingSimulationEngineProps> = ({
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Multi-Participant Trading Simulation</h1>
+            <h1 className="bloomberg-page-heading text-gray-900">Multi-Participant Trading Simulation</h1>
             <p className="text-gray-600 mt-1">
               Live NSW ESC trading simulation with AI-powered negotiation
             </p>
@@ -552,40 +552,40 @@ const TradingSimulationEngine: React.FC<TradingSimulationEngineProps> = ({
         {/* Market Overview */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
           <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600">A${currentPrice.toFixed(2)}</div>
-            <div className="text-sm text-gray-600">Current Price</div>
+            <div className="bloomberg-large-metric text-blue-600">A${currentPrice.toFixed(2)}</div>
+            <div className="bloomberg-small-text text-gray-600">Current Price</div>
             <div className="flex items-center justify-center gap-1 mt-1">
               {currentPrice > 47.80 ? (
                 <ArrowTrendingUpIcon className="w-4 h-4 text-green-500" />
               ) : (
                 <ArrowTrendingDownIcon className="w-4 h-4 text-red-500" />
               )}
-              <span className={`text-sm ${currentPrice > 47.80 ? 'text-green-600' : 'text-red-600'}`}>
+              <span className={`bloomberg-small-text ${currentPrice > 47.80 ? 'text-green-600' : 'text-red-600'}`}>
                 {((currentPrice - 47.80) / 47.80 * 100).toFixed(1)}%
               </span>
             </div>
           </div>
 
           <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">{totalVolume.toLocaleString()}</div>
-            <div className="text-sm text-gray-600">Volume Traded</div>
+            <div className="bloomberg-large-metric text-green-600">{totalVolume.toLocaleString()}</div>
+            <div className="bloomberg-small-text text-gray-600">Volume Traded</div>
           </div>
 
           <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-            <div className="text-2xl font-bold text-purple-600">{activeTrades.length}</div>
-            <div className="text-sm text-gray-600">Active Trades</div>
+            <div className="bloomberg-large-metric text-purple-600">{activeTrades.length}</div>
+            <div className="bloomberg-small-text text-gray-600">Active Trades</div>
           </div>
 
           <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-            <div className="text-2xl font-bold text-orange-600">{participants.length}</div>
-            <div className="text-sm text-gray-600">Participants</div>
+            <div className="bloomberg-large-metric text-orange-600">{participants.length}</div>
+            <div className="bloomberg-small-text text-gray-600">Participants</div>
           </div>
 
           <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-            <div className="text-2xl font-bold text-gray-600">
+            <div className="bloomberg-large-metric text-gray-600">
               {Math.floor(currentTime / 60)}:{(currentTime % 60).toString().padStart(2, '0')}
             </div>
-            <div className="text-sm text-gray-600">Simulation Time</div>
+            <div className="bloomberg-small-text text-gray-600">Simulation Time</div>
           </div>
         </div>
       </div>
@@ -596,20 +596,20 @@ const TradingSimulationEngine: React.FC<TradingSimulationEngineProps> = ({
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center gap-2 mb-4">
             <UserGroupIcon className="w-5 h-5 text-gray-600" />
-            <h3 className="font-semibold text-gray-900">Market Participants</h3>
+            <h3 className=" text-gray-900">Market Participants</h3>
           </div>
           <div className="space-y-3 max-h-96 overflow-y-auto">
             {participants.map((participant) => (
               <div key={participant.id} className="border border-gray-200 rounded-lg p-3">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${getParticipantColor(participant.type)}`}>
+                    <span className={`px-2 py-1 bloomberg-section-label font-medium rounded-full ${getParticipantColor(participant.type)}`}>
                       {participant.type}
                     </span>
-                    <span className="font-medium text-gray-900 text-sm">{participant.name}</span>
+                    <span className="font-medium text-gray-900 bloomberg-small-text">{participant.name}</span>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
+                <div className="grid grid-cols-2 gap-2 bloomberg-section-label text-gray-600">
                   <div>
                     <span className="font-medium">Volume:</span> {participant.current_position.volume_held}t
                   </div>
@@ -632,14 +632,14 @@ const TradingSimulationEngine: React.FC<TradingSimulationEngineProps> = ({
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center gap-2 mb-4">
             <BoltIcon className="w-5 h-5 text-gray-600" />
-            <h3 className="font-semibold text-gray-900">Active Trades</h3>
+            <h3 className=" text-gray-900">Active Trades</h3>
           </div>
           <div className="space-y-3 max-h-96 overflow-y-auto">
             {activeTrades.length === 0 ? (
               <div className="text-center text-gray-500 py-8">
                 <BoltIcon className="w-12 h-12 mx-auto mb-2 text-gray-300" />
                 <p>No active trades</p>
-                <p className="text-sm">Start simulation to see live trading</p>
+                <p className="bloomberg-small-text">Start simulation to see live trading</p>
               </div>
             ) : (
               activeTrades.map((trade) => (
@@ -647,15 +647,15 @@ const TradingSimulationEngine: React.FC<TradingSimulationEngineProps> = ({
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <ArrowRightIcon className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm font-medium text-gray-900">
+                      <span className="bloomberg-small-text font-medium text-gray-900">
                         {trade.volume}t @ A${trade.price.toFixed(2)}
                       </span>
                     </div>
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${getTradeStatusColor(trade.status)}`}>
+                    <span className={`px-2 py-1 bloomberg-section-label font-medium rounded-full ${getTradeStatusColor(trade.status)}`}>
                       {trade.status}
                     </span>
                   </div>
-                  <div className="text-xs text-gray-600 space-y-1">
+                  <div className="bloomberg-section-label text-gray-600 space-y-1">
                     <div><span className="font-medium">Buyer:</span> {trade.buyer}</div>
                     <div><span className="font-medium">Seller:</span> {trade.seller}</div>
                     <div><span className="font-medium">Round:</span> {trade.negotiationRound}/5</div>
@@ -680,7 +680,7 @@ const TradingSimulationEngine: React.FC<TradingSimulationEngineProps> = ({
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center gap-2 mb-4">
             <ChartBarIcon className="w-5 h-5 text-gray-600" />
-            <h3 className="font-semibold text-gray-900">Price Movement</h3>
+            <h3 className=" text-gray-900">Price Movement</h3>
           </div>
           <div className="h-48 flex items-end justify-between space-x-1">
             {priceHistory.slice(-20).map((point, index) => {
@@ -695,7 +695,7 @@ const TradingSimulationEngine: React.FC<TradingSimulationEngineProps> = ({
               );
             })}
           </div>
-          <div className="flex justify-between text-xs text-gray-500 mt-2">
+          <div className="flex justify-between bloomberg-section-label text-gray-500 mt-2">
             <span>A$45</span>
             <span>Current: A${currentPrice.toFixed(2)}</span>
             <span>A$52</span>
@@ -706,7 +706,7 @@ const TradingSimulationEngine: React.FC<TradingSimulationEngineProps> = ({
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center gap-2 mb-4">
             <ClockIcon className="w-5 h-5 text-gray-600" />
-            <h3 className="font-semibold text-gray-900">Market Updates</h3>
+            <h3 className=" text-gray-900">Market Updates</h3>
           </div>
           <div className="space-y-3 max-h-48 overflow-y-auto">
             {marketUpdates.length === 0 ? (
@@ -721,8 +721,8 @@ const TradingSimulationEngine: React.FC<TradingSimulationEngineProps> = ({
                     update.impact === 'negative' ? 'bg-red-500' : 'bg-gray-400'
                   }`} />
                   <div className="flex-1">
-                    <p className="text-sm text-gray-900">{update.details}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="bloomberg-small-text text-gray-900">{update.details}</p>
+                    <p className="bloomberg-section-label text-gray-500">
                       {update.timestamp.toLocaleTimeString()}
                     </p>
                   </div>

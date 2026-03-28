@@ -11,18 +11,18 @@ import { allEndpoints, getTotalActionCount } from '@/lib/api-documentation'
 function QuickStartGuide() {
   return (
     <div className="bg-white rounded-xl border border-slate-200 p-6" data-testid="quick-start-guide">
-      <h2 className="text-lg font-bold text-[#1B2A4A] mb-4">Quick Start Guide</h2>
+      <h2 className="bloomberg-card-title text-[#1B2A4A] mb-4">Quick Start Guide</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Step 1 */}
         <div className="space-y-2">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-[#0EA5E9] text-white rounded-full flex items-center justify-center text-sm font-bold">
+            <div className="w-8 h-8 bg-[#0EA5E9] text-white rounded-full flex items-center justify-center bloomberg-small-text">
               1
             </div>
-            <h3 className="font-semibold text-[#1B2A4A]">Get Your API Key</h3>
+            <h3 className="bloomberg-card-title text-[#1B2A4A]">Get Your API Key</h3>
           </div>
-          <p className="text-sm text-slate-600 pl-10">
+          <p className="bloomberg-small-text text-slate-600 pl-10">
             Request an API key through the institutional onboarding portal. In development mode,
             authentication is bypassed automatically.
           </p>
@@ -31,13 +31,13 @@ function QuickStartGuide() {
         {/* Step 2 */}
         <div className="space-y-2">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-[#0EA5E9] text-white rounded-full flex items-center justify-center text-sm font-bold">
+            <div className="w-8 h-8 bg-[#0EA5E9] text-white rounded-full flex items-center justify-center bloomberg-small-text">
               2
             </div>
-            <h3 className="font-semibold text-[#1B2A4A]">Make Your First Request</h3>
+            <h3 className="bloomberg-card-title text-[#1B2A4A]">Make Your First Request</h3>
           </div>
-          <p className="text-sm text-slate-600 pl-10">
-            Include your API key in the <code className="bg-slate-100 px-1 py-0.5 rounded text-xs">X-WREI-API-Key</code> header.
+          <p className="bloomberg-small-text text-slate-600 pl-10">
+            Include your API key in the <code className="bg-slate-100 px-1 py-0.5 rounded bloomberg-section-label">X-WREI-API-Key</code> header.
             Use the API Explorer below to test endpoints interactively.
           </p>
         </div>
@@ -45,16 +45,16 @@ function QuickStartGuide() {
         {/* Step 3 */}
         <div className="space-y-2">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-[#0EA5E9] text-white rounded-full flex items-center justify-center text-sm font-bold">
+            <div className="w-8 h-8 bg-[#0EA5E9] text-white rounded-full flex items-center justify-center bloomberg-small-text">
               3
             </div>
-            <h3 className="font-semibold text-[#1B2A4A]">Integrate</h3>
+            <h3 className="bloomberg-card-title text-[#1B2A4A]">Integrate</h3>
           </div>
-          <p className="text-sm text-slate-600 pl-10">
+          <p className="bloomberg-small-text text-slate-600 pl-10">
             Use the code examples provided for each endpoint. All responses follow a consistent JSON
-            envelope with <code className="bg-slate-100 px-1 py-0.5 rounded text-xs">success</code>,{' '}
-            <code className="bg-slate-100 px-1 py-0.5 rounded text-xs">data</code>, and{' '}
-            <code className="bg-slate-100 px-1 py-0.5 rounded text-xs">metadata</code> fields.
+            envelope with <code className="bg-slate-100 px-1 py-0.5 rounded bloomberg-section-label">success</code>,{' '}
+            <code className="bg-slate-100 px-1 py-0.5 rounded bloomberg-section-label">data</code>, and{' '}
+            <code className="bg-slate-100 px-1 py-0.5 rounded bloomberg-section-label">metadata</code> fields.
           </p>
         </div>
       </div>
@@ -85,9 +85,9 @@ function ApiOverview() {
           key={stat.label}
           className="bg-white rounded-xl border border-slate-200 p-4 text-center"
         >
-          <div className="text-2xl font-bold text-[#0EA5E9]">{stat.value}</div>
-          <div className="text-sm font-medium text-[#1B2A4A]">{stat.label}</div>
-          <div className="text-xs text-slate-400">{stat.description}</div>
+          <div className="bloomberg-large-metric text-[#0EA5E9]">{stat.value}</div>
+          <div className="bloomberg-small-text bloomberg-card-title text-[#1B2A4A]">{stat.label}</div>
+          <div className="bloomberg-section-label text-slate-400">{stat.description}</div>
         </div>
       ))}
     </div>
@@ -112,7 +112,7 @@ function AuthenticationGuide() {
           <svg className="w-5 h-5 text-[#0EA5E9]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
           </svg>
-          <span className="font-semibold text-[#1B2A4A]">Authentication Guide</span>
+          <span className="bloomberg-card-title text-[#1B2A4A]">Authentication Guide</span>
         </div>
         <svg
           className={`w-5 h-5 text-slate-400 transition-transform ${showGuide ? 'rotate-180' : ''}`}
@@ -127,13 +127,13 @@ function AuthenticationGuide() {
       {showGuide && (
         <div className="px-4 pb-4 space-y-4 border-t border-slate-100 pt-4">
           <div>
-            <h4 className="text-sm font-semibold text-slate-700 mb-2">API Key Authentication</h4>
-            <p className="text-sm text-slate-600 mb-3">
+            <h4 className="bloomberg-small-text bloomberg-card-title text-slate-700 mb-2">API Key Authentication</h4>
+            <p className="bloomberg-small-text text-slate-600 mb-3">
               Most WREI API endpoints require authentication via the{' '}
-              <code className="bg-slate-100 px-1.5 py-0.5 rounded text-xs font-mono">X-WREI-API-Key</code>{' '}
+              <code className="bg-slate-100 px-1.5 py-0.5 rounded bloomberg-section-label bloomberg-data">X-WREI-API-Key</code>{' '}
               header. API keys are provisioned during institutional onboarding.
             </p>
-            <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-sm font-mono overflow-x-auto">
+            <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg bloomberg-small-text bloomberg-data overflow-x-auto">
 {`# Include your API key in every request
 curl -H "X-WREI-API-Key: your_api_key_here" \\
      https://wrei-trading-platform.vercel.app/api/market-data?action=carbon_pricing`}
@@ -141,29 +141,29 @@ curl -H "X-WREI-API-Key: your_api_key_here" \\
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold text-slate-700 mb-2">Development Mode</h4>
-            <p className="text-sm text-slate-600">
-              When the <code className="bg-slate-100 px-1.5 py-0.5 rounded text-xs font-mono">WREI_API_KEY</code>{' '}
+            <h4 className="bloomberg-small-text bloomberg-card-title text-slate-700 mb-2">Development Mode</h4>
+            <p className="bloomberg-small-text text-slate-600">
+              When the <code className="bg-slate-100 px-1.5 py-0.5 rounded bloomberg-section-label bloomberg-data">WREI_API_KEY</code>{' '}
               environment variable is not set (development/testing), authentication is automatically bypassed.
               This allows you to explore the API without credentials during local development.
             </p>
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold text-slate-700 mb-2">Rate Limiting</h4>
-            <p className="text-sm text-slate-600">
+            <h4 className="bloomberg-small-text bloomberg-card-title text-slate-700 mb-2">Rate Limiting</h4>
+            <p className="bloomberg-small-text text-slate-600">
               All endpoints enforce per-key rate limits. When exceeded, a{' '}
-              <code className="bg-slate-100 px-1.5 py-0.5 rounded text-xs font-mono">429</code>{' '}
+              <code className="bg-slate-100 px-1.5 py-0.5 rounded bloomberg-section-label bloomberg-data">429</code>{' '}
               status is returned. Rate limits reset after the specified time window (typically 60 seconds).
             </p>
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold text-slate-700 mb-2">Response Format</h4>
-            <p className="text-sm text-slate-600 mb-2">
+            <h4 className="bloomberg-small-text bloomberg-card-title text-slate-700 mb-2">Response Format</h4>
+            <p className="bloomberg-small-text text-slate-600 mb-2">
               All API responses follow a consistent JSON envelope:
             </p>
-            <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-sm font-mono overflow-x-auto">
+            <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg bloomberg-small-text bloomberg-data overflow-x-auto">
 {`{
   "success": true,
   "data": { ... },
@@ -189,23 +189,23 @@ curl -H "X-WREI-API-Key: your_api_key_here" \\
 function InfrastructureOverview() {
   return (
     <div className="bg-gradient-to-r from-[#1B2A4A] to-slate-800 rounded-xl p-6 text-white" data-testid="infrastructure-overview">
-      <h3 className="text-lg font-bold mb-3">Platform Infrastructure</h3>
+      <h3 className="bloomberg-card-title mb-3">Platform Infrastructure</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white/10 rounded-lg p-3">
-          <div className="text-sm font-semibold text-sky-300">Settlement</div>
-          <div className="text-xs text-slate-300 mt-1">Zoniqx zConnect - T+0 atomic, non-custodial, cross-chain</div>
+          <div className="bloomberg-small-text bloomberg-card-title text-sky-300">Settlement</div>
+          <div className="bloomberg-section-label text-slate-300 mt-1">Zoniqx zConnect - T+0 atomic, non-custodial, cross-chain</div>
         </div>
         <div className="bg-white/10 rounded-lg p-3">
-          <div className="text-sm font-semibold text-sky-300">Token Standard</div>
-          <div className="text-xs text-slate-300 mt-1">Zoniqx zProtocol (DyCIST / ERC-7518) - CertiK audited</div>
+          <div className="bloomberg-small-text bloomberg-card-title text-sky-300">Token Standard</div>
+          <div className="bloomberg-section-label text-slate-300 mt-1">Zoniqx zProtocol (DyCIST / ERC-7518) - CertiK audited</div>
         </div>
         <div className="bg-white/10 rounded-lg p-3">
-          <div className="text-sm font-semibold text-sky-300">Compliance</div>
-          <div className="text-xs text-slate-300 mt-1">Zoniqx zCompliance - AI-powered, 20+ jurisdictions</div>
+          <div className="bloomberg-small-text bloomberg-card-title text-sky-300">Compliance</div>
+          <div className="bloomberg-section-label text-slate-300 mt-1">Zoniqx zCompliance - AI-powered, 20+ jurisdictions</div>
         </div>
         <div className="bg-white/10 rounded-lg p-3">
-          <div className="text-sm font-semibold text-sky-300">Identity</div>
-          <div className="text-xs text-slate-300 mt-1">Zoniqx zIdentity - KYC/KYB with jurisdiction-based access</div>
+          <div className="bloomberg-small-text bloomberg-card-title text-sky-300">Identity</div>
+          <div className="bloomberg-section-label text-slate-300 mt-1">Zoniqx zIdentity - KYC/KYB with jurisdiction-based access</div>
         </div>
       </div>
     </div>
@@ -258,8 +258,8 @@ export default function DeveloperPortal() {
         {/* API Explorer */}
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
           <div className="bg-slate-50 border-b border-slate-200 px-6 py-4">
-            <h2 className="text-lg font-bold text-[#1B2A4A]">API Explorer</h2>
-            <p className="text-sm text-slate-500">
+            <h2 className="bloomberg-card-title text-[#1B2A4A]">API Explorer</h2>
+            <p className="bloomberg-small-text text-slate-500">
               Browse endpoints, view documentation, and make live test requests
             </p>
           </div>

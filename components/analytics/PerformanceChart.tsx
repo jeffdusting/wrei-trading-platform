@@ -31,15 +31,15 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({
 }) => {
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <h3 className="bloomberg-card-title text-gray-900 mb-4">
         Performance Chart ({selectedAudience} - {timeframe})
       </h3>
       <div style={{ height: height }} className="flex items-center justify-center bg-gray-50 rounded">
         <div className="text-center text-gray-500">
-          <div className="text-lg font-medium">Performance Visualization</div>
-          <div className="text-sm mt-2">Component 3 chart implementation in progress...</div>
+          <div className="bloomberg-card-title font-medium">Performance Visualization</div>
+          <div className="bloomberg-small-text mt-2">Component 3 chart implementation in progress...</div>
           {benchmarks && (
-            <div className="mt-4 text-xs space-y-1">
+            <div className="mt-4 bloomberg-section-label space-y-1">
               <div>Market Return: {(benchmarks.market_return * 100).toFixed(1)}%</div>
               <div>Peer Average: {(benchmarks.peer_average * 100).toFixed(1)}%</div>
               <div>Risk-Free Rate: {(benchmarks.risk_free_rate * 100).toFixed(1)}%</div>

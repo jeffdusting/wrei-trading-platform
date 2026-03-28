@@ -132,15 +132,15 @@ export const AudienceSelector: React.FC<AudienceSelectorProps> = ({
     <div className={`max-w-7xl mx-auto ${className}`} data-demo="audience-selector">
       {/* Header */}
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <h1 className="text-4xl  text-gray-900 mb-4">
           NSW ESC Trading Platform Demonstration
         </h1>
-        <p className="text-xl text-gray-600 mb-2">
+        <p className="bloomberg-metric-value text-gray-600 mb-2">
           Select your stakeholder type for a tailored demonstration experience
         </p>
-        <div className="flex items-center justify-center space-x-2 text-sm text-gray-500">
+        <div className="flex items-center justify-center space-x-2 bloomberg-small-text text-gray-500">
           <span>Powered by</span>
-          <span className="font-semibold text-blue-600">Northmore Gordon</span>
+          <span className=" text-blue-600">Northmore Gordon</span>
           <span>•</span>
           <span>AFSL 246896</span>
           <span>•</span>
@@ -181,10 +181,10 @@ export const AudienceSelector: React.FC<AudienceSelectorProps> = ({
                   <option.icon className="w-6 h-6" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-1">
+                  <h3 className="bloomberg-metric-value text-gray-900 mb-1">
                     {option.title}
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="bloomberg-small-text text-gray-600">
                     {option.subtitle}
                   </p>
                 </div>
@@ -197,12 +197,12 @@ export const AudienceSelector: React.FC<AudienceSelectorProps> = ({
 
               {/* Value Proposition */}
               <div className="mb-6">
-                <h4 className="font-semibold text-gray-900 mb-2">
+                <h4 className=" text-gray-900 mb-2">
                   {option.valueProp.headline}
                 </h4>
                 <ul className="space-y-1">
                   {option.valueProp.benefits.map((benefit, index) => (
-                    <li key={index} className="text-sm text-gray-600 flex items-start">
+                    <li key={index} className="bloomberg-small-text text-gray-600 flex items-start">
                       <span className="text-green-500 mr-2 mt-0.5">•</span>
                       {benefit}
                     </li>
@@ -244,13 +244,13 @@ export const AudienceSelector: React.FC<AudienceSelectorProps> = ({
 
       {/* Additional Information */}
       <div className="bg-gray-50 rounded-xl p-8">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+        <h2 className="bloomberg-large-metric text-gray-900 mb-4">
           About This Demonstration
         </h2>
         <div className="grid md:grid-cols-2 gap-8">
           <div>
-            <h3 className="font-semibold text-gray-900 mb-2">NSW ESC Market Context</h3>
-            <ul className="text-gray-700 space-y-1 text-sm">
+            <h3 className=" text-gray-900 mb-2">NSW ESC Market Context</h3>
+            <ul className="text-gray-700 space-y-1 bloomberg-small-text">
               <li>• A$200M+ annual trading volume</li>
               <li>• 850+ active market participants</li>
               <li>• Real-time AEMO pricing integration (A$47.80 spot)</li>
@@ -258,8 +258,8 @@ export const AudienceSelector: React.FC<AudienceSelectorProps> = ({
             </ul>
           </div>
           <div>
-            <h3 className="font-semibold text-gray-900 mb-2">Platform Capabilities</h3>
-            <ul className="text-gray-700 space-y-1 text-sm">
+            <h3 className=" text-gray-900 mb-2">Platform Capabilities</h3>
+            <ul className="text-gray-700 space-y-1 bloomberg-small-text">
               <li>• AI-powered negotiation with Claude integration</li>
               <li>• T+0 atomic settlement via Zoniqx zProtocol</li>
               <li>• Institutional-grade compliance automation</li>

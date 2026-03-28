@@ -99,7 +99,7 @@ const WREIPieChart: React.FC<WREIPieChartProps> = ({
   return (
     <div className="bg-white rounded-lg border border-slate-200 p-4">
       {title && (
-        <h3 className="text-lg font-semibold text-[#1E293B] mb-4">{title}</h3>
+        <h3 className="bloomberg-card-title text-[#1E293B] mb-4">{title}</h3>
       )}
       <ResponsiveContainer width="100%" height={height}>
         <PieChart>

@@ -216,7 +216,7 @@ export const InstitutionalIdentityForm: React.FC<InstitutionalIdentityFormProps>
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">
+        <h2 className="bloomberg-large-metric text-slate-900 mb-2">
           Institutional Identity
         </h2>
         <p className="text-slate-600">
@@ -235,8 +235,8 @@ export const InstitutionalIdentityForm: React.FC<InstitutionalIdentityFormProps>
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">Please correct the following errors:</h3>
-                <div className="mt-2 text-sm text-red-700">
+                <h3 className="bloomberg-small-text font-medium text-red-800">Please correct the following errors:</h3>
+                <div className="mt-2 bloomberg-small-text text-red-700">
                   <ul className="list-disc list-inside space-y-1">
                     {errors.map((error, index) => (
                       <li key={index}>{error}</li>
@@ -250,7 +250,7 @@ export const InstitutionalIdentityForm: React.FC<InstitutionalIdentityFormProps>
 
         {/* Entity Name */}
         <div>
-          <label htmlFor="entityName" className="block text-sm font-medium text-slate-700 mb-2">
+          <label htmlFor="entityName" className="block bloomberg-small-text font-medium text-slate-700 mb-2">
             Entity Name *
           </label>
           <input
@@ -265,13 +265,13 @@ export const InstitutionalIdentityForm: React.FC<InstitutionalIdentityFormProps>
             placeholder="e.g., Green Infrastructure Fund LP"
           />
           {getFieldError('entityName') && (
-            <p className="mt-1 text-sm text-red-600">{getFieldError('entityName')}</p>
+            <p className="mt-1 bloomberg-small-text text-red-600">{getFieldError('entityName')}</p>
           )}
         </div>
 
         {/* Persona Type Selection */}
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">
+          <label className="block bloomberg-small-text font-medium text-slate-700 mb-2">
             Investor Type *
           </label>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -294,7 +294,7 @@ export const InstitutionalIdentityForm: React.FC<InstitutionalIdentityFormProps>
                   className="absolute top-4 right-4"
                 />
                 <h4 className="font-medium text-slate-900 mb-1">{persona.label}</h4>
-                <p className="text-sm text-slate-600">{persona.description}</p>
+                <p className="bloomberg-small-text text-slate-600">{persona.description}</p>
               </div>
             ))}
           </div>
@@ -302,7 +302,7 @@ export const InstitutionalIdentityForm: React.FC<InstitutionalIdentityFormProps>
 
         {/* Jurisdiction */}
         <div>
-          <label htmlFor="jurisdiction" className="block text-sm font-medium text-slate-700 mb-2">
+          <label htmlFor="jurisdiction" className="block bloomberg-small-text font-medium text-slate-700 mb-2">
             Primary Jurisdiction *
           </label>
           <select
@@ -318,13 +318,13 @@ export const InstitutionalIdentityForm: React.FC<InstitutionalIdentityFormProps>
             ))}
           </select>
           {getFieldWarning('jurisdiction') && (
-            <p className="mt-1 text-sm text-amber-600">{getFieldWarning('jurisdiction')}</p>
+            <p className="mt-1 bloomberg-small-text text-amber-600">{getFieldWarning('jurisdiction')}</p>
           )}
         </div>
 
         {/* AUM */}
         <div>
-          <label htmlFor="aum" className="block text-sm font-medium text-slate-700 mb-2">
+          <label htmlFor="aum" className="block bloomberg-small-text font-medium text-slate-700 mb-2">
             Assets Under Management (AUM) *
           </label>
           <div className="relative">
@@ -343,20 +343,20 @@ export const InstitutionalIdentityForm: React.FC<InstitutionalIdentityFormProps>
               min="0"
             />
           </div>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 bloomberg-small-text text-slate-500">
             Current AUM: {formatAUM(formData.aum)}
           </p>
           {getFieldError('aum') && (
-            <p className="mt-1 text-sm text-red-600">{getFieldError('aum')}</p>
+            <p className="mt-1 bloomberg-small-text text-red-600">{getFieldError('aum')}</p>
           )}
           {getFieldWarning('aum') && (
-            <p className="mt-1 text-sm text-amber-600">{getFieldWarning('aum')}</p>
+            <p className="mt-1 bloomberg-small-text text-amber-600">{getFieldWarning('aum')}</p>
           )}
         </div>
 
         {/* Established Year */}
         <div>
-          <label htmlFor="establishedYear" className="block text-sm font-medium text-slate-700 mb-2">
+          <label htmlFor="establishedYear" className="block bloomberg-small-text font-medium text-slate-700 mb-2">
             Year Established *
           </label>
           <input
@@ -372,14 +372,14 @@ export const InstitutionalIdentityForm: React.FC<InstitutionalIdentityFormProps>
             max={new Date().getFullYear()}
           />
           {getFieldError('establishedYear') && (
-            <p className="mt-1 text-sm text-red-600">{getFieldError('establishedYear')}</p>
+            <p className="mt-1 bloomberg-small-text text-red-600">{getFieldError('establishedYear')}</p>
           )}
         </div>
 
         {/* Primary Contact Information */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label htmlFor="primaryContactName" className="block text-sm font-medium text-slate-700 mb-2">
+            <label htmlFor="primaryContactName" className="block bloomberg-small-text font-medium text-slate-700 mb-2">
               Primary Contact Name *
             </label>
             <input
@@ -394,12 +394,12 @@ export const InstitutionalIdentityForm: React.FC<InstitutionalIdentityFormProps>
               placeholder="John Smith"
             />
             {getFieldError('primaryContactName') && (
-              <p className="mt-1 text-sm text-red-600">{getFieldError('primaryContactName')}</p>
+              <p className="mt-1 bloomberg-small-text text-red-600">{getFieldError('primaryContactName')}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="primaryContactRole" className="block text-sm font-medium text-slate-700 mb-2">
+            <label htmlFor="primaryContactRole" className="block bloomberg-small-text font-medium text-slate-700 mb-2">
               Primary Contact Role *
             </label>
             <select
@@ -417,14 +417,14 @@ export const InstitutionalIdentityForm: React.FC<InstitutionalIdentityFormProps>
               ))}
             </select>
             {getFieldError('primaryContactRole') && (
-              <p className="mt-1 text-sm text-red-600">{getFieldError('primaryContactRole')}</p>
+              <p className="mt-1 bloomberg-small-text text-red-600">{getFieldError('primaryContactRole')}</p>
             )}
           </div>
         </div>
 
         {/* Regulatory License (Optional) */}
         <div>
-          <label htmlFor="regulatoryLicense" className="block text-sm font-medium text-slate-700 mb-2">
+          <label htmlFor="regulatoryLicense" className="block bloomberg-small-text font-medium text-slate-700 mb-2">
             Regulatory License Number (Optional)
           </label>
           <input
@@ -435,7 +435,7 @@ export const InstitutionalIdentityForm: React.FC<InstitutionalIdentityFormProps>
             className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
             placeholder="e.g., AFSL 123456"
           />
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 bloomberg-small-text text-slate-500">
             AFSL, AFS Representative, or equivalent regulatory authorization
           </p>
         </div>
@@ -449,11 +449,11 @@ export const InstitutionalIdentityForm: React.FC<InstitutionalIdentityFormProps>
               onChange={(e) => handleFieldChange('isTaxExempt', e.target.checked)}
               className="mr-2 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
             />
-            <span className="text-sm font-medium text-slate-700">
+            <span className="bloomberg-small-text font-medium text-slate-700">
               Tax-exempt entity (e.g., superannuation fund, government entity)
             </span>
           </label>
-          <p className="mt-1 text-sm text-slate-500 ml-6">
+          <p className="mt-1 bloomberg-small-text text-slate-500 ml-6">
             Check if your entity has tax-exempt status for investment income
           </p>
         </div>

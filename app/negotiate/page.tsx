@@ -727,8 +727,8 @@ export default function NegotiatePage() {
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-lg font-semibold">Institutional Profile Configured</h3>
-                <p className="text-green-100 text-sm">{preConfigMessage}</p>
+                <h3 className="bloomberg-card-title">Institutional Profile Configured</h3>
+                <p className="text-green-100 bloomberg-small-text">{preConfigMessage}</p>
               </div>
             </div>
           </div>
@@ -740,7 +740,7 @@ export default function NegotiatePage() {
         <div className="bg-gradient-to-r from-slate-800 to-blue-900 rounded-xl p-6 mb-6 text-white">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold mb-2">
+              <h2 className="bloomberg-large-metric mb-2">
 WREI Investment Platform • Phase 6.2 Professional Interface
               </h2>
               <p className="text-blue-100">
@@ -853,7 +853,7 @@ Professional Interface
 
             {/* WREI Token Type Selector */}
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-              <h3 className="text-lg font-semibold text-[#1E293B] mb-4">Select WREI Investment Product</h3>
+              <h3 className="bloomberg-card-title text-[#1E293B] mb-4">Select WREI Investment Product</h3>
 
               <div className="space-y-4">
                 <label className="flex items-start space-x-3 cursor-pointer p-3 rounded-lg border border-transparent hover:border-[#0EA5E9] hover:bg-blue-50 transition-colors">
@@ -866,12 +866,12 @@ Professional Interface
                     className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2 mt-1"
                   />
                   <div className="flex-1">
-                    <div className="font-semibold text-[#1E293B] border-l-4 border-green-500 pl-3">WREI Carbon Credit Tokens</div>
-                    <div className="text-base font-medium text-green-600 mt-1">A${WREI_TOKEN_CONFIG.CARBON_CREDITS.ANCHOR_PRICE}/tonne</div>
-                    <div className="text-sm text-[#64748B] mt-1">
+                    <div className=" text-[#1E293B] border-l-4 border-green-500 pl-3">WREI Carbon Credit Tokens</div>
+                    <div className="bloomberg-body-text font-medium text-green-600 mt-1">A${WREI_TOKEN_CONFIG.CARBON_CREDITS.ANCHOR_PRICE}/tonne</div>
+                    <div className="bloomberg-small-text text-[#64748B] mt-1">
                       Native digital carbon credits • Triple-standard verification • 3.12M-13.1M supply projection
                     </div>
-                    <div className="text-xs text-[#64748B] mt-2">
+                    <div className="bloomberg-section-label text-[#64748B] mt-2">
                       <span className="font-medium">Base Case:</span> A${Math.round(WREI_TOKEN_CONFIG.CARBON_CREDITS.BASE_CASE.TOTAL_REVENUE / 1_000_000)}M revenue •
                       <span className="font-medium"> Expansion:</span> A${Math.round(WREI_TOKEN_CONFIG.CARBON_CREDITS.EXPANSION_CASE.TOTAL_REVENUE / 1_000_000)}M revenue
                     </div>
@@ -888,12 +888,12 @@ Professional Interface
                     className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2 mt-1"
                   />
                   <div className="flex-1">
-                    <div className="font-semibold text-[#1E293B] border-l-4 border-blue-500 pl-3">WREI Asset Co Tokens</div>
-                    <div className="text-base font-medium text-blue-600 mt-1">{(WREI_TOKEN_CONFIG.ASSET_CO.STEADY_STATE.EQUITY_YIELD * 100).toFixed(1)}% Infrastructure Yield</div>
-                    <div className="text-sm text-[#64748B] mt-1">
+                    <div className=" text-[#1E293B] border-l-4 border-blue-500 pl-3">WREI Asset Co Tokens</div>
+                    <div className="bloomberg-body-text font-medium text-blue-600 mt-1">{(WREI_TOKEN_CONFIG.ASSET_CO.STEADY_STATE.EQUITY_YIELD * 100).toFixed(1)}% Infrastructure Yield</div>
+                    <div className="bloomberg-small-text text-[#64748B] mt-1">
                       Fractional vessel fleet ownership • Predictable lease income • A${Math.round(WREI_TOKEN_CONFIG.ASSET_CO.TOKEN_EQUITY / 1_000_000)}M equity cap
                     </div>
-                    <div className="text-xs text-[#64748B] mt-2">
+                    <div className="bloomberg-section-label text-[#64748B] mt-2">
                       <span className="font-medium">Fleet:</span> {WREI_TOKEN_CONFIG.ASSET_CO.FLEET.VESSEL_COUNT} vessels + {WREI_TOKEN_CONFIG.ASSET_CO.FLEET.DEEP_POWER_UNITS} Deep Power •
                       <span className="font-medium"> Cash Flow:</span> A${Math.round(WREI_TOKEN_CONFIG.ASSET_CO.STEADY_STATE.NET_CASH_FLOW / 1_000_000)}M annually
                     </div>
@@ -910,12 +910,12 @@ Professional Interface
                     className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2 mt-1"
                   />
                   <div className="flex-1">
-                    <div className="font-semibold text-[#1E293B] border-l-4 border-purple-500 pl-3">WREI Dual Token Portfolio</div>
-                    <div className="text-base font-medium text-purple-600 mt-1">Diversified Strategy</div>
-                    <div className="text-sm text-[#64748B] mt-1">
+                    <div className=" text-[#1E293B] border-l-4 border-purple-500 pl-3">WREI Dual Token Portfolio</div>
+                    <div className="bloomberg-body-text font-medium text-purple-600 mt-1">Diversified Strategy</div>
+                    <div className="bloomberg-small-text text-[#64748B] mt-1">
                       Carbon Credits + Asset Co • Risk diversification • Cross-collateralization opportunities
                     </div>
-                    <div className="text-xs text-[#64748B] mt-2">
+                    <div className="bloomberg-section-label text-[#64748B] mt-2">
                       <span className="font-medium">Yield Stability:</span> Infrastructure income + carbon upside •
                       <span className="font-medium"> DeFi Ready:</span> Use Asset Co as collateral
                     </div>
@@ -924,7 +924,7 @@ Professional Interface
               </div>
 
               {negotiationStarted && (
-                <div className="mt-4 p-3 bg-gray-100 rounded-lg text-sm text-gray-600">
+                <div className="mt-4 p-3 bg-gray-100 rounded-lg bloomberg-small-text text-gray-600">
                   Investment product locked
                 </div>
               )}
@@ -932,7 +932,7 @@ Professional Interface
 
             {/* Persona Selector */}
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6" data-demo="persona-selector">
-              <h3 className="text-lg font-semibold text-[#1E293B] mb-4">Select Buyer Persona</h3>
+              <h3 className="bloomberg-card-title text-[#1E293B] mb-4">Select Buyer Persona</h3>
 
               <div className="space-y-3">
                 <label className="flex items-center space-x-3 cursor-pointer">
@@ -946,7 +946,7 @@ Professional Interface
                   />
                   <div className="flex-1">
                     <div className="font-medium text-[#1E293B]">Free Play</div>
-                    <div className="text-sm text-[#64748B]">Negotiate naturally</div>
+                    <div className="bloomberg-small-text text-[#64748B]">Negotiate naturally</div>
                   </div>
                 </label>
 
@@ -962,8 +962,8 @@ Professional Interface
                     />
                     <div className="flex-1">
                       <div className="font-medium text-[#1E293B]">{persona.name}</div>
-                      <div className="text-sm text-[#64748B]">{persona.title}</div>
-                      <div className="text-xs text-[#64748B]">{persona.organisation}</div>
+                      <div className="bloomberg-small-text text-[#64748B]">{persona.title}</div>
+                      <div className="bloomberg-section-label text-[#64748B]">{persona.organisation}</div>
                     </div>
                   </label>
                 ))}
@@ -972,11 +972,11 @@ Professional Interface
               {negotiationStarted && (
                 <div className="mt-4 p-3 bg-gray-100 rounded-lg">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Persona locked</span>
+                    <span className="bloomberg-small-text text-gray-600">Persona locked</span>
                     <button
                       onClick={handleResetNegotiation}
                       disabled={isLoading}
-                      className="text-xs text-[#0EA5E9] hover:text-[#0284C7] font-medium disabled:opacity-50"
+                      className="bloomberg-section-label text-[#0EA5E9] hover:text-[#0284C7] font-medium disabled:opacity-50"
                     >
                       Start New
                     </button>
@@ -987,9 +987,9 @@ Professional Interface
               {/* Persona Briefing */}
               {selectedPersonaData && (
                 <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                  <div className="font-semibold text-amber-800 mb-2">YOUR ROLE</div>
-                  <p className="text-sm text-amber-700 mb-3">{selectedPersonaData.briefing}</p>
-                  <div className="grid grid-cols-3 gap-2 text-xs">
+                  <div className=" text-amber-800 mb-2">YOUR ROLE</div>
+                  <p className="bloomberg-small-text text-amber-700 mb-3">{selectedPersonaData.briefing}</p>
+                  <div className="grid grid-cols-3 gap-2 bloomberg-section-label">
                     <div>
                       <div className="font-medium text-amber-800">Budget</div>
                       <div className="text-amber-700">{selectedPersonaData.budgetRange}</div>
@@ -1010,21 +1010,21 @@ Professional Interface
             {/* Dashboard */}
             {negotiationState && (
               <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6" data-demo="pricing-analysis">
-                <h3 className="text-lg font-semibold text-[#1E293B] mb-4">Negotiation Dashboard</h3>
+                <h3 className="bloomberg-card-title text-[#1E293B] mb-4">Negotiation Dashboard</h3>
 
                 {/* Round & Phase */}
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm font-medium text-[#1E293B]">
+                  <span className="bloomberg-small-text font-medium text-[#1E293B]">
                     Round {negotiationState.round}
                   </span>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${phaseColors[negotiationState.phase]}`}>
+                  <span className={`px-2 py-1 rounded-full bloomberg-section-label font-medium ${phaseColors[negotiationState.phase]}`}>
                     {negotiationState.phase.charAt(0).toUpperCase() + negotiationState.phase.slice(1)}
                   </span>
                 </div>
 
                 {/* Price Tracker */}
                 <div className="mb-4">
-                  <div className="flex justify-between text-sm mb-2">
+                  <div className="flex justify-between bloomberg-small-text mb-2">
                     <span className="text-[#64748B]">Agent&apos;s offer:</span>
                     <span className="font-medium text-[#1E293B]">
                       {(() => {
@@ -1041,7 +1041,7 @@ Professional Interface
                       })()}
                     </span>
                   </div>
-                  <div className="flex justify-between text-sm mb-3">
+                  <div className="flex justify-between bloomberg-small-text mb-3">
                     <span className="text-[#64748B]">Your anchor:</span>
                     <span className="font-medium text-[#1E293B]">
                       {negotiationState.buyerProfile.priceAnchor ? (
@@ -1064,7 +1064,7 @@ Professional Interface
                       style={{ width: `${getPriceRangePercent()}%` }}
                     ></div>
                   </div>
-                  <div className="flex justify-between text-xs text-[#64748B]">
+                  <div className="flex justify-between bloomberg-section-label text-[#64748B]">
                     <span>
                       {(() => {
                         const tokenType = negotiationState.wreiTokenType || 'carbon_credits';
@@ -1094,7 +1094,7 @@ Professional Interface
 
                 {/* Concession Tracker */}
                 <div className="mb-4">
-                  <div className="text-sm text-[#64748B] mb-1">
+                  <div className="bloomberg-small-text text-[#64748B] mb-1">
                     Agent has adjusted {getConcessionPercent()}% from opening {
                       negotiationState.wreiTokenType === 'asset_co' ? 'yield' : 'price'
                     }
@@ -1104,9 +1104,9 @@ Professional Interface
                 {/* Market Intelligence Context (Phase 5.1) */}
                 <div className="mb-4 p-3 bg-gradient-to-r from-blue-50 to-slate-50 rounded-lg border border-blue-200">
                   <div className="flex items-center mb-3">
-                    <h4 className="text-sm font-semibold text-[#1E293B]">Market Intelligence</h4>
+                    <h4 className="bloomberg-small-text  text-[#1E293B]">Market Intelligence</h4>
                   </div>
-                  <div className="text-xs text-[#64748B] space-y-2">
+                  <div className="bloomberg-section-label text-[#64748B] space-y-2">
                     {negotiationState.wreiTokenType === 'carbon_credits' && (
                       <div>
                         <div className="font-medium text-[#1E293B] mb-1">Carbon Market Context:</div>
@@ -1132,7 +1132,7 @@ Professional Interface
                       </div>
                     )}
                     <div className="pt-1 border-t border-blue-200">
-                      <span className="text-blue-600 text-xs">💡 Market data updated real-time</span>
+                      <span className="text-blue-600 bloomberg-section-label">💡 Market data updated real-time</span>
                     </div>
                   </div>
                 </div>
@@ -1140,15 +1140,15 @@ Professional Interface
                 {/* Classification & Emotion */}
                 {negotiationState.messages.length > 0 && (
                   <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between bloomberg-small-text">
                       <span className="text-[#64748B]">Your approach:</span>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${classificationColors[currentClassification]}`}>
+                      <span className={`px-2 py-1 rounded-full bloomberg-section-label font-medium ${classificationColors[currentClassification]}`}>
                         {currentClassification.replace('_', ' ')}
                       </span>
                     </div>
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between bloomberg-small-text">
                       <span className="text-[#64748B]">Your tone:</span>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${emotionalColors[currentEmotion]}`}>
+                      <span className={`px-2 py-1 rounded-full bloomberg-section-label font-medium ${emotionalColors[currentEmotion]}`}>
                         {currentEmotion}
                       </span>
                     </div>
@@ -1156,7 +1156,7 @@ Professional Interface
                     {/* Warmth & Dominance */}
                     <div className="grid grid-cols-2 gap-4 mt-3">
                       <div>
-                        <div className="flex justify-between text-xs mb-1">
+                        <div className="flex justify-between bloomberg-section-label mb-1">
                           <span className="text-[#64748B]">Warmth</span>
                           <span className="text-[#1E293B]">{negotiationState.buyerProfile.detectedWarmth}/10</span>
                         </div>
@@ -1168,7 +1168,7 @@ Professional Interface
                         </div>
                       </div>
                       <div>
-                        <div className="flex justify-between text-xs mb-1">
+                        <div className="flex justify-between bloomberg-section-label mb-1">
                           <span className="text-[#64748B]">Dominance</span>
                           <span className="text-[#1E293B]">{negotiationState.buyerProfile.detectedDominance}/10</span>
                         </div>
@@ -1190,8 +1190,8 @@ Professional Interface
                     threatLevel === 'medium' ? 'bg-amber-50 text-amber-700' :
                     'bg-yellow-50 text-yellow-700'
                   }`}>
-                    <span className="text-sm">⚠</span>
-                    <span className="text-xs font-medium">
+                    <span className="bloomberg-small-text">⚠</span>
+                    <span className="bloomberg-section-label font-medium">
                       Unusual negotiation pattern detected
                     </span>
                   </div>
@@ -1202,7 +1202,7 @@ Professional Interface
             {/* Token Metadata Panel */}
             {negotiationState?.tokenMetadata && (
               <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-                <h3 className="text-lg font-semibold text-[#1E293B] mb-4 flex items-center">
+                <h3 className="bloomberg-card-title text-[#1E293B] mb-4 flex items-center">
                   <span className="bg-[#0EA5E9] w-2 h-2 rounded-full mr-2"></span>
                   Token Metadata & Transparency
                 </h3>
@@ -1210,11 +1210,11 @@ Professional Interface
                 {/* Provenance Section */}
                 {negotiationState.tokenMetadata.immutableProvenance && (
                   <div className="mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                    <h4 className="text-sm font-medium text-[#1E293B] mb-2">🔗 Immutable Provenance</h4>
-                    <div className="text-xs text-[#64748B] space-y-1">
+                    <h4 className="bloomberg-small-text font-medium text-[#1E293B] mb-2">🔗 Immutable Provenance</h4>
+                    <div className="bloomberg-section-label text-[#64748B] space-y-1">
                       <div className="flex justify-between">
                         <span>Provenance ID:</span>
-                        <span className="font-mono text-[#0EA5E9]">
+                        <span className="bloomberg-data text-[#0EA5E9]">
                           {negotiationState.tokenMetadata.provenanceId?.slice(0, 12)}...
                         </span>
                       </div>
@@ -1232,7 +1232,7 @@ Professional Interface
                     <div className="mt-3 pt-3 border-t border-slate-200">
                       <button
                         onClick={() => setShowBlockchainProvenance(!showBlockchainProvenance)}
-                        className="w-full bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
+                        className="w-full bg-blue-600 text-white px-3 py-2 rounded-lg bloomberg-small-text font-medium hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
                       >
                         <span>🔍</span>
                         <span>{showBlockchainProvenance ? 'Hide' : 'View'} Blockchain Verification</span>
@@ -1244,11 +1244,11 @@ Professional Interface
                 {/* Operational Data Section */}
                 {negotiationState.tokenMetadata.operationalData && (
                   <div className="mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                    <h4 className="text-sm font-medium text-[#1E293B] mb-2">⚙️ Real-time Operations</h4>
-                    <div className="text-xs text-[#64748B] space-y-1">
+                    <h4 className="bloomberg-small-text font-medium text-[#1E293B] mb-2">⚙️ Real-time Operations</h4>
+                    <div className="bloomberg-section-label text-[#64748B] space-y-1">
                       <div className="flex justify-between">
                         <span>Vessel ID:</span>
-                        <span className="font-mono text-[#0EA5E9]">
+                        <span className="bloomberg-data text-[#0EA5E9]">
                           {negotiationState.tokenMetadata.operationalData.vesselId}
                         </span>
                       </div>
@@ -1278,7 +1278,7 @@ Professional Interface
                 {showBlockchainProvenance && (
                   <div className="mb-6 space-y-4">
                     <div className="p-4 bg-white rounded-lg border border-slate-200 shadow-sm">
-                      <h4 className="text-sm font-semibold text-slate-800 mb-3 flex items-center space-x-2">
+                      <h4 className="bloomberg-small-text  text-slate-800 mb-3 flex items-center space-x-2">
                         <span>🔗</span>
                         <span>Blockchain Provenance Chain</span>
                       </h4>
@@ -1290,7 +1290,7 @@ Professional Interface
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                       <div className="p-4 bg-white rounded-lg border border-slate-200 shadow-sm">
-                        <h4 className="text-sm font-semibold text-slate-800 mb-3 flex items-center space-x-2">
+                        <h4 className="bloomberg-small-text  text-slate-800 mb-3 flex items-center space-x-2">
                           <span>🔍</span>
                           <span>Merkle Tree Verification</span>
                         </h4>
@@ -1300,7 +1300,7 @@ Professional Interface
                       </div>
 
                       <div className="p-4 bg-white rounded-lg border border-slate-200 shadow-sm">
-                        <h4 className="text-sm font-semibold text-slate-800 mb-3 flex items-center space-x-2">
+                        <h4 className="bloomberg-small-text  text-slate-800 mb-3 flex items-center space-x-2">
                           <span>🚤</span>
                           <span>Vessel Provenance Data</span>
                         </h4>
@@ -1323,8 +1323,8 @@ Professional Interface
                 {/* Environmental Impact Section */}
                 {negotiationState.tokenMetadata.environmentalImpact && (
                   <div className="mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                    <h4 className="text-sm font-medium text-[#1E293B] mb-2">Environmental Impact</h4>
-                    <div className="text-xs text-[#64748B] space-y-1">
+                    <h4 className="bloomberg-small-text font-medium text-[#1E293B] mb-2">Environmental Impact</h4>
+                    <div className="bloomberg-section-label text-[#64748B] space-y-1">
                       <div className="flex justify-between">
                         <span>Total CO₂ Reduced:</span>
                         <span className="text-[#10B981] font-medium">
@@ -1356,8 +1356,8 @@ Professional Interface
                 {/* Lease Payment Data (Asset Co only) */}
                 {negotiationState.wreiTokenType === 'asset_co' && negotiationState.tokenMetadata.leasePaymentData && (
                   <div className="mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                    <h4 className="text-sm font-medium text-[#1E293B] mb-2">💰 Asset Co Token & Lease Data</h4>
-                    <div className="text-xs text-[#64748B] space-y-1">
+                    <h4 className="bloomberg-small-text font-medium text-[#1E293B] mb-2">💰 Asset Co Token & Lease Data</h4>
+                    <div className="bloomberg-section-label text-[#64748B] space-y-1">
                       <div className="flex justify-between">
                         <span>Token Price:</span>
                         <span className="text-[#0EA5E9] font-medium">
@@ -1393,7 +1393,7 @@ Professional Interface
                       </div>
                       <div className="flex justify-between">
                         <span>Smart Contract:</span>
-                        <span className="font-mono text-[#0EA5E9] text-xs">
+                        <span className="bloomberg-data text-[#0EA5E9] bloomberg-section-label">
                           {(negotiationState.tokenMetadata.leasePaymentData as any).smartContractAddress?.slice(0, 10) || '0x1234567890'}...
                         </span>
                       </div>
@@ -1410,8 +1410,8 @@ Professional Interface
                 {/* Quality Metrics */}
                 {negotiationState.tokenMetadata.qualityMetrics && (
                   <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-                    <h4 className="text-sm font-medium text-[#1E293B] mb-2">Data Quality Metrics</h4>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
+                    <h4 className="bloomberg-small-text font-medium text-[#1E293B] mb-2">Data Quality Metrics</h4>
+                    <div className="grid grid-cols-2 gap-2 bloomberg-section-label">
                       <div className="flex justify-between">
                         <span className="text-[#64748B]">Completeness:</span>
                         <span className="text-[#10B981] font-medium">
@@ -1440,7 +1440,7 @@ Professional Interface
 
                     {/* Overall Score Bar */}
                     <div className="mt-3">
-                      <div className="flex justify-between text-xs mb-1">
+                      <div className="flex justify-between bloomberg-section-label mb-1">
                         <span className="text-[#64748B]">Overall Quality Score</span>
                         <span className="text-[#1E293B] font-medium">
                           {(((negotiationState.tokenMetadata.qualityMetrics.completeness +
@@ -1478,7 +1478,7 @@ Professional Interface
                     {isInitializing ? (
                       <>
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0EA5E9] mx-auto mb-4"></div>
-                        <h3 className="text-xl font-semibold text-[#1E293B] mb-2">
+                        <h3 className="bloomberg-metric-value text-[#1E293B] mb-2">
                           Connecting to WREI Platform...
                         </h3>
                         <p className="text-[#64748B]">
@@ -1487,7 +1487,7 @@ Professional Interface
                       </>
                     ) : (
                       <>
-                        <h3 className="text-xl font-semibold text-[#1E293B] mb-4">
+                        <h3 className="bloomberg-metric-value text-[#1E293B] mb-4">
                           Ready to Begin Negotiation
                         </h3>
                         <p className="text-[#64748B] mb-6">
@@ -1512,7 +1512,7 @@ Professional Interface
                             ? 'bg-[#E2E8F0] text-[#1E293B]'
                             : 'bg-[#0EA5E9] text-white'
                         }`}>
-                          <div className="text-sm md:text-base whitespace-pre-wrap prose prose-sm max-w-none"
+                          <div className="bloomberg-small-text md:bloomberg-body-text whitespace-pre-wrap prose prose-sm max-w-none"
                                dangerouslySetInnerHTML={{
                                  __html: message.content
                                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -1522,7 +1522,7 @@ Professional Interface
                                    .replace(/\n/g, '<br>')
                                }}
                           />
-                          <div className={`text-xs mt-2 ${
+                          <div className={`bloomberg-section-label mt-2 ${
                             message.role === 'buyer' ? 'text-[#64748B]' : 'text-blue-100'
                           }`}>
                             {new Date(message.timestamp).toLocaleTimeString()}
@@ -1549,7 +1549,7 @@ Professional Interface
 
               {/* Error Display */}
               {error && (
-                <div className="mx-6 mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                <div className="mx-6 mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 bloomberg-small-text">
                   <div className="flex items-center justify-between">
                     <span>{error}</span>
                     <div className="flex space-x-2 ml-3">
@@ -1580,14 +1580,14 @@ Professional Interface
                     <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
                       <div className="flex justify-between items-start">
                         <div>
-                          <div className="font-semibold">Negotiation Complete — Terms Agreed</div>
-                          <div className="text-sm mt-1">
+                          <div className="">Negotiation Complete — Terms Agreed</div>
+                          <div className="bloomberg-small-text mt-1">
                             Final price: ${negotiationState.currentOfferPrice}/t
                           </div>
                         </div>
                         <button
                           onClick={handleResetNegotiation}
-                          className="bg-green-700 text-white px-3 py-1 rounded text-sm font-medium hover:bg-green-800 transition-colors"
+                          className="bg-green-700 text-white px-3 py-1 rounded bloomberg-small-text font-medium hover:bg-green-800 transition-colors"
                         >
                           Start New Negotiation
                         </button>
@@ -1598,14 +1598,14 @@ Professional Interface
                     <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800">
                       <div className="flex justify-between items-start">
                         <div>
-                          <div className="font-semibold">Negotiation Paused — Follow-up Scheduled</div>
-                          <div className="text-sm mt-1">
+                          <div className="">Negotiation Paused — Follow-up Scheduled</div>
+                          <div className="bloomberg-small-text mt-1">
                             Thank you for your interest. We&apos;ll follow up with additional options.
                           </div>
                         </div>
                         <button
                           onClick={handleResetNegotiation}
-                          className="bg-amber-700 text-white px-3 py-1 rounded text-sm font-medium hover:bg-amber-800 transition-colors"
+                          className="bg-amber-700 text-white px-3 py-1 rounded bloomberg-small-text font-medium hover:bg-amber-800 transition-colors"
                         >
                           Start New Negotiation
                         </button>
@@ -1616,14 +1616,14 @@ Professional Interface
                     <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-800">
                       <div className="flex justify-between items-start">
                         <div>
-                          <div className="font-semibold">Connecting with Water Roads Team</div>
-                          <div className="text-sm mt-1">
+                          <div className="">Connecting with Water Roads Team</div>
+                          <div className="bloomberg-small-text mt-1">
                             Contact: trading@waterroads.com.au | +61 3 8456 7890
                           </div>
                         </div>
                         <button
                           onClick={handleResetNegotiation}
-                          className="bg-blue-700 text-white px-3 py-1 rounded text-sm font-medium hover:bg-blue-800 transition-colors"
+                          className="bg-blue-700 text-white px-3 py-1 rounded bloomberg-small-text font-medium hover:bg-blue-800 transition-colors"
                         >
                           Start New Negotiation
                         </button>
@@ -1647,13 +1647,13 @@ Professional Interface
               {/* Analytics Panel */}
               {negotiationState?.negotiationComplete && (
                 <div className="mx-6 mb-4 bg-slate-50 rounded-lg border border-slate-200 p-6">
-                  <h3 className="text-lg font-semibold text-[#1E293B] mb-6">Negotiation Analytics</h3>
+                  <h3 className="bloomberg-card-title text-[#1E293B] mb-6">Negotiation Analytics</h3>
 
                   {/* Summary Card */}
                   <div className="grid md:grid-cols-4 gap-4 mb-6">
                     <div className="bg-white rounded-lg p-4 border border-slate-200">
-                      <div className="text-xs font-medium text-[#64748B] mb-1">OUTCOME</div>
-                      <div className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                      <div className="bloomberg-section-label font-medium text-[#64748B] mb-1">OUTCOME</div>
+                      <div className={`inline-flex px-2 py-1 rounded-full bloomberg-section-label font-medium ${
                         negotiationState.outcome === 'agreed' ? 'bg-green-100 text-green-800' :
                         negotiationState.outcome === 'deferred' ? 'bg-amber-100 text-amber-800' :
                         'bg-blue-100 text-blue-800'
@@ -1662,12 +1662,12 @@ Professional Interface
                       </div>
                     </div>
                     <div className="bg-white rounded-lg p-4 border border-slate-200">
-                      <div className="text-xs font-medium text-[#64748B] mb-1">ROUNDS</div>
-                      <div className="text-xl font-bold text-[#1E293B]">{negotiationState.round}</div>
+                      <div className="bloomberg-section-label font-medium text-[#64748B] mb-1">ROUNDS</div>
+                      <div className="bloomberg-metric-value text-[#1E293B]">{negotiationState.round}</div>
                     </div>
                     <div className="bg-white rounded-lg p-4 border border-slate-200">
-                      <div className="text-xs font-medium text-[#64748B] mb-1">FINAL TERMS</div>
-                      <div className="text-xl font-bold text-[#1E293B]">
+                      <div className="bloomberg-section-label font-medium text-[#64748B] mb-1">FINAL TERMS</div>
+                      <div className="bloomberg-metric-value text-[#1E293B]">
                         {(() => {
                           const tokenType = negotiationState.wreiTokenType || 'carbon_credits';
                           if (tokenType === 'asset_co') {
@@ -1680,22 +1680,22 @@ Professional Interface
                         })()}
                       </div>
                       {negotiationState.outcome === 'agreed' && (
-                        <div className="text-xs text-[#64748B] mt-1">
+                        <div className="bloomberg-section-label text-[#64748B] mt-1">
                           {Math.round(((negotiationState.anchorPrice - negotiationState.currentOfferPrice) / negotiationState.anchorPrice) * 100)}%
                           {negotiationState.wreiTokenType === 'asset_co' ? ' yield reduction' : ' discount'}
                         </div>
                       )}
                     </div>
                     <div className="bg-white rounded-lg p-4 border border-slate-200">
-                      <div className="text-xs font-medium text-[#64748B] mb-1">DURATION</div>
-                      <div className="text-xl font-bold text-[#1E293B]">{negotiationState.round * 2}min</div>
-                      <div className="text-xs text-[#64748B] mt-1">est.</div>
+                      <div className="bloomberg-section-label font-medium text-[#64748B] mb-1">DURATION</div>
+                      <div className="bloomberg-metric-value text-[#1E293B]">{negotiationState.round * 2}min</div>
+                      <div className="bloomberg-section-label text-[#64748B] mt-1">est.</div>
                     </div>
                   </div>
 
                   {/* Argument Distribution Chart */}
                   <div className="mb-6">
-                    <h4 className="text-sm font-semibold text-[#1E293B] mb-3">Argument Distribution</h4>
+                    <h4 className="bloomberg-small-text  text-[#1E293B] mb-3">Argument Distribution</h4>
                     <div className="bg-white rounded-lg p-4 border border-slate-200">
                       {(() => {
                         const argCounts = negotiationState.argumentHistory.reduce((acc, arg) => {
@@ -1708,7 +1708,7 @@ Professional Interface
                           <div className="space-y-2">
                             {Object.entries(argCounts).map(([arg, count]) => (
                               <div key={arg} className="flex items-center">
-                                <div className="w-24 text-xs text-[#64748B] mr-3">
+                                <div className="w-24 bloomberg-section-label text-[#64748B] mr-3">
                                   {arg.replace('_', ' ')}
                                 </div>
                                 <div className="flex-1 relative">
@@ -1717,7 +1717,7 @@ Professional Interface
                                     style={{ width: `${(count / maxCount) * 100}%` }}
                                   ></div>
                                 </div>
-                                <div className="w-8 text-xs text-[#64748B] text-right ml-2">{count}</div>
+                                <div className="w-8 bloomberg-section-label text-[#64748B] text-right ml-2">{count}</div>
                               </div>
                             ))}
                           </div>
@@ -1728,7 +1728,7 @@ Professional Interface
 
                   {/* Price Movement Timeline */}
                   <div className="mb-6">
-                    <h4 className="text-sm font-semibold text-[#1E293B] mb-3">Price Movement</h4>
+                    <h4 className="bloomberg-small-text  text-[#1E293B] mb-3">Price Movement</h4>
                     <div className="bg-white rounded-lg p-4 border border-slate-200">
                       {(() => {
                         const pricePoints = negotiationState.messages
@@ -1747,15 +1747,15 @@ Professional Interface
                         return (
                           <div className="relative h-32">
                             {/* Y-axis labels */}
-                            <div className="absolute left-0 top-0 text-xs text-[#64748B]">${maxPrice}</div>
-                            <div className="absolute left-0 bottom-0 text-xs text-[#64748B]">${minPrice}</div>
+                            <div className="absolute left-0 top-0 bloomberg-section-label text-[#64748B]">${maxPrice}</div>
+                            <div className="absolute left-0 bottom-0 bloomberg-section-label text-[#64748B]">${minPrice}</div>
 
                             {/* Anchor price line */}
                             <div
                               className="absolute left-12 right-4 border-t border-dashed border-[#0EA5E9] opacity-50"
                               style={{ top: '0px' }}
                             ></div>
-                            <div className="absolute right-4 -top-4 text-xs text-[#0EA5E9]">Anchor (${NEGOTIATION_CONFIG.ANCHOR_PRICE})</div>
+                            <div className="absolute right-4 -top-4 bloomberg-section-label text-[#0EA5E9]">Anchor (${NEGOTIATION_CONFIG.ANCHOR_PRICE})</div>
 
                             {/* Price line */}
                             <svg className="absolute left-12 top-0 w-full h-full" style={{ width: 'calc(100% - 3rem)' }}>
@@ -1788,7 +1788,7 @@ Professional Interface
                             </svg>
 
                             {/* X-axis labels */}
-                            <div className="absolute bottom-0 left-12 right-4 flex justify-between text-xs text-[#64748B]">
+                            <div className="absolute bottom-0 left-12 right-4 flex justify-between bloomberg-section-label text-[#64748B]">
                               {pricePoints.map((_, index) => (
                                 <span key={index}>R{index + 1}</span>
                               ))}
@@ -1801,7 +1801,7 @@ Professional Interface
 
                   {/* Emotional State Timeline */}
                   <div className="mb-6">
-                    <h4 className="text-sm font-semibold text-[#1E293B] mb-3">Emotional Journey</h4>
+                    <h4 className="bloomberg-small-text  text-[#1E293B] mb-3">Emotional Journey</h4>
                     <div className="bg-white rounded-lg p-4 border border-slate-200">
                       <div className="flex space-x-1">
                         {negotiationState.messages
@@ -1812,11 +1812,11 @@ Professional Interface
                                 className={`h-6 rounded ${emotionalColors[msg.emotionalState || 'neutral']}`}
                                 title={`Round ${index + 1}: ${msg.emotionalState || 'neutral'}`}
                               ></div>
-                              <div className="text-xs text-center text-[#64748B] mt-1">{index + 1}</div>
+                              <div className="bloomberg-section-label text-center text-[#64748B] mt-1">{index + 1}</div>
                             </div>
                           ))}
                       </div>
-                      <div className="flex flex-wrap gap-2 mt-3 text-xs">
+                      <div className="flex flex-wrap gap-2 mt-3 bloomberg-section-label">
                         {Object.entries(emotionalColors).map(([emotion, colorClass]) => (
                           <div key={emotion} className="flex items-center">
                             <div className={`w-3 h-3 rounded mr-1 ${colorClass}`}></div>
@@ -1830,12 +1830,12 @@ Professional Interface
                   {/* Post-Negotiation Feedback (Free Play mode only) */}
                   {negotiationState.buyerProfile.persona === 'freeplay' && (
                     <div className="bg-white rounded-lg p-4 border border-slate-200">
-                      <h4 className="text-sm font-semibold text-[#1E293B] mb-3">Feedback</h4>
+                      <h4 className="bloomberg-small-text  text-[#1E293B] mb-3">Feedback</h4>
                       <div className="mb-3">
-                        <label className="block text-xs font-medium text-[#64748B] mb-1">
+                        <label className="block bloomberg-section-label font-medium text-[#64748B] mb-1">
                           Who were you playing as?
                         </label>
-                        <select className="w-full p-2 border border-slate-300 rounded text-sm">
+                        <select className="w-full p-2 border border-slate-300 rounded bloomberg-small-text">
                           <option>Corporate Compliance Officer</option>
                           <option>ESG Fund Portfolio Manager</option>
                           <option>Carbon Trading Desk Analyst</option>
@@ -1844,7 +1844,7 @@ Professional Interface
                           <option>None of these / custom buyer</option>
                         </select>
                       </div>
-                      <div className="text-xs text-[#64748B]">
+                      <div className="bloomberg-section-label text-[#64748B]">
                         The agent classified you as: <span className="font-medium">
                           {(() => {
                             if (negotiationState.argumentHistory.length === 0) return 'General approach';
@@ -1868,17 +1868,17 @@ Professional Interface
                   {/* Dashboard Header with Tab Navigation */}
                   <div className="flex items-center justify-between mb-6">
                     <div>
-                      <h3 className="text-xl font-bold text-gray-800">
+                      <h3 className="bloomberg-metric-value text-gray-800">
 Institutional Investment Dashboard
                       </h3>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="bloomberg-small-text text-gray-600 mt-1">
                         Professional analytics for {selectedPersona.replace('_', ' ')} • WREI Tokenization Platform
                       </p>
                     </div>
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={() => setActiveAnalyticsTab('standard')}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                        className={`px-4 py-2 rounded-lg bloomberg-small-text font-medium transition-all ${
                           activeAnalyticsTab === 'standard'
                             ? 'bg-blue-500 text-white shadow-md'
                             : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300'
@@ -1888,7 +1888,7 @@ Standard Analytics
                       </button>
                       <button
                         onClick={() => setActiveAnalyticsTab('institutional')}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                        className={`px-4 py-2 rounded-lg bloomberg-small-text font-medium transition-all ${
                           activeAnalyticsTab === 'institutional'
                             ? 'bg-blue-500 text-white shadow-md'
                             : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300'
@@ -1898,7 +1898,7 @@ Institutional View
                       </button>
                       <button
                         onClick={() => setActiveAnalyticsTab('history')}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                        className={`px-4 py-2 rounded-lg bloomberg-small-text font-medium transition-all ${
                           activeAnalyticsTab === 'history'
                             ? 'bg-blue-500 text-white shadow-md'
                             : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300'
@@ -1906,7 +1906,7 @@ Institutional View
                       >
                         📚 History & Replay
                         {negotiationSessions.length > 0 && (
-                          <span className="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                          <span className="ml-2 bg-red-500 text-white bloomberg-section-label px-2 py-1 rounded-full">
                             {negotiationSessions.length}
                           </span>
                         )}
@@ -1976,21 +1976,21 @@ Institutional View
                       {negotiationSessions.length === 0 ? (
                         <div className="text-center py-12 text-gray-600">
                           <div className="text-6xl mb-4">📚</div>
-                          <p className="text-lg font-medium mb-2">No Negotiation History Yet</p>
-                          <p className="text-sm text-gray-500">
+                          <p className="bloomberg-card-title font-medium mb-2">No Negotiation History Yet</p>
+                          <p className="bloomberg-small-text text-gray-500">
                             Complete your first negotiation to see replay and comparison features
                           </p>
                         </div>
                       ) : (
                         <div className="space-y-6">
                           <div className="flex items-center justify-between">
-                            <h3 className="text-lg font-semibold text-gray-800">
+                            <h3 className="bloomberg-card-title text-gray-800">
                               Recent Negotiation Sessions ({negotiationSessions.length})
                             </h3>
                             {negotiationSessions.length >= 2 && (
                               <button
                                 onClick={() => setShowComparisonDashboard(true)}
-                                className="px-4 py-2 bg-[#0EA5E9] text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium"
+                                className="px-4 py-2 bg-[#0EA5E9] text-white rounded-lg hover:bg-blue-600 transition-colors bloomberg-small-text font-medium"
                               >
                                 🔄 Compare Sessions
                               </button>
@@ -2023,7 +2023,7 @@ Institutional View
                                         <div className="font-medium text-gray-800 capitalize">
                                           {session.persona.replace('_', ' ')}
                                         </div>
-                                        <div className="text-xs text-gray-500">
+                                        <div className="bloomberg-section-label text-gray-500">
                                           {new Date(session.startTime).toLocaleDateString('en-AU', {
                                             year: 'numeric',
                                             month: 'short',
@@ -2036,28 +2036,28 @@ Institutional View
                                     </div>
                                   </div>
 
-                                  <div className="flex items-center space-x-4 text-sm">
+                                  <div className="flex items-center space-x-4 bloomberg-small-text">
                                     <div className="text-center">
                                       <div className="text-gray-600">Final Price</div>
-                                      <div className="font-bold text-[#10B981]">
+                                      <div className=" text-[#10B981]">
                                         A${session.metrics.finalPrice.toLocaleString()}
                                       </div>
                                     </div>
                                     <div className="text-center">
                                       <div className="text-gray-600">Rounds</div>
-                                      <div className="font-bold text-gray-800">
+                                      <div className=" text-gray-800">
                                         {session.metrics.totalRounds}
                                       </div>
                                     </div>
                                     <div className="text-center">
                                       <div className="text-gray-600">Duration</div>
-                                      <div className="font-bold text-gray-800">
+                                      <div className=" text-gray-800">
                                         {session.metrics.duration.toFixed(1)}m
                                       </div>
                                     </div>
                                     <div className="text-center">
                                       <div className="text-gray-600">Outcome</div>
-                                      <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                      <div className={`px-2 py-1 rounded-full bloomberg-section-label font-medium ${
                                         session.metrics.outcomeSuccess
                                           ? 'bg-green-100 text-green-800'
                                           : session.outcome === 'deferred'
@@ -2071,7 +2071,7 @@ Institutional View
                                 </div>
 
                                 <div className="flex items-center justify-between">
-                                  <div className="flex items-center space-x-4 text-xs text-gray-600">
+                                  <div className="flex items-center space-x-4 bloomberg-section-label text-gray-600">
                                     <span>Concessions: {session.metrics.totalConcessionPercentage.toFixed(1)}%</span>
                                     <span>Arguments: {Object.values(session.metrics.argumentTypes).reduce((a, b) => a + b, 0)}</span>
                                     <span>Messages: {session.messages.length}</span>
@@ -2079,7 +2079,7 @@ Institutional View
 
                                   <button
                                     onClick={() => handleViewReplay(session)}
-                                    className="px-3 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors text-sm font-medium"
+                                    className="px-3 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors bloomberg-small-text font-medium"
                                   >
                                     🎬 View Replay
                                   </button>
@@ -2090,7 +2090,7 @@ Institutional View
 
                           {negotiationSessions.length > 10 && (
                             <div className="text-center">
-                              <p className="text-sm text-gray-500">
+                              <p className="bloomberg-small-text text-gray-500">
                                 Showing latest 10 sessions. Total: {negotiationSessions.length} sessions.
                               </p>
                             </div>
@@ -2101,8 +2101,8 @@ Institutional View
                   ) : (
                     <div className="bg-white rounded-xl p-4">
                       <div className="text-center py-8 text-gray-600">
-                        <p className="text-lg font-medium mb-2">Standard Analytics View</p>
-                        <p className="text-sm">
+                        <p className="bloomberg-card-title font-medium mb-2">Standard Analytics View</p>
+                        <p className="bloomberg-small-text">
                           Switch to Institutional View above for professional investment analytics
                         </p>
                       </div>
@@ -2110,7 +2110,7 @@ Institutional View
                   )}
 
                   {/* Professional Footer */}
-                  <div className="mt-6 pt-4 border-t border-gray-200 flex justify-between items-center text-sm text-gray-500">
+                  <div className="mt-6 pt-4 border-t border-gray-200 flex justify-between items-center bloomberg-small-text text-gray-500">
                     <div>
                       Phase 6.1: Professional UI/UX Enhancement •
                       Integrated with Phases 1-5 Foundation •
@@ -2160,26 +2160,26 @@ Institutional View
                       <button
                         onClick={handleEndNegotiation}
                         disabled={isLoading}
-                        className="text-[#64748B] hover:text-[#1E293B] text-sm font-medium disabled:opacity-50"
+                        className="text-[#64748B] hover:text-[#1E293B] bloomberg-small-text font-medium disabled:opacity-50"
                       >
                         End Negotiation
                       </button>
                       <button
                         onClick={handleRequestHuman}
                         disabled={isLoading}
-                        className="text-[#F59E0B] hover:text-[#D97706] text-sm font-medium disabled:opacity-50"
+                        className="text-[#F59E0B] hover:text-[#D97706] bloomberg-small-text font-medium disabled:opacity-50"
                       >
                         Request Human Representative
                       </button>
                       <button
                         onClick={handleResetNegotiation}
                         disabled={isLoading}
-                        className="text-[#0EA5E9] hover:text-[#0284C7] text-sm font-medium disabled:opacity-50"
+                        className="text-[#0EA5E9] hover:text-[#0284C7] bloomberg-small-text font-medium disabled:opacity-50"
                       >
                         Start New Negotiation
                       </button>
                     </div>
-                    <div className="text-xs text-[#64748B]">
+                    <div className="bloomberg-section-label text-[#64748B]">
                       {inputMessage.length} characters
                     </div>
                   </div>
@@ -2191,7 +2191,7 @@ Institutional View
 
         {/* Bottom Status Bar */}
         {negotiationState && (
-          <div className="mt-4 flex justify-between items-center text-sm text-[#64748B]">
+          <div className="mt-4 flex justify-between items-center bloomberg-small-text text-[#64748B]">
             <div>
               Round {negotiationState.round} | Phase: {negotiationState.phase}
             </div>

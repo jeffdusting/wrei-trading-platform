@@ -48,11 +48,11 @@ export default function NavigationShell({ children }: { children: React.ReactNod
             <div className="flex items-center flex-shrink-0">
               <Link href="/" className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-[#0EA5E9] rounded-lg flex items-center justify-center flex-shrink-0">
-                  <span className="text-white font-bold text-sm">WR</span>
+                  <span className="text-white  bloomberg-small-text">WR</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-white font-semibold text-lg whitespace-nowrap">Water Roads</span>
-                  <span className="text-slate-300 text-xs whitespace-nowrap">WREI Carbon Platform</span>
+                  <span className="text-white  bloomberg-card-title whitespace-nowrap">Water Roads</span>
+                  <span className="text-slate-300 bloomberg-section-label whitespace-nowrap">WREI Carbon Platform</span>
                 </div>
               </Link>
             </div>
@@ -65,7 +65,7 @@ export default function NavigationShell({ children }: { children: React.ReactNod
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-colors duration-200 whitespace-nowrap ${
+                    className={`px-2 xl:px-3 py-2 rounded-md bloomberg-section-label xl:bloomberg-small-text font-medium transition-colors duration-200 whitespace-nowrap ${
                       isActive(item.href)
                         ? 'bg-[#0EA5E9] text-white'
                         : 'text-slate-300 hover:text-white hover:bg-slate-700'
@@ -111,7 +111,7 @@ export default function NavigationShell({ children }: { children: React.ReactNod
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
+                    className={`block px-3 py-2 rounded-md bloomberg-body-text font-medium transition-colors duration-200 ${
                       isActive(item.href)
                         ? 'bg-[#0EA5E9] text-white'
                         : 'text-slate-300 hover:text-white hover:bg-slate-700'
@@ -120,7 +120,7 @@ export default function NavigationShell({ children }: { children: React.ReactNod
                   >
                     <div>
                       <div>{item.label}</div>
-                      <div className="text-sm text-slate-400">{item.description}</div>
+                      <div className="bloomberg-small-text text-slate-400">{item.description}</div>
                     </div>
                   </Link>
                 ))}
@@ -148,10 +148,10 @@ export default function NavigationShell({ children }: { children: React.ReactNod
       <footer className="bg-[#1B2A4A] text-slate-300 py-8">
         <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <p className="text-sm">
+            <p className="bloomberg-small-text">
               &copy; 2026 Water Roads. WREI Platform powered by Claude AI.
             </p>
-            <p className="text-xs mt-2 text-slate-400">
+            <p className="bloomberg-section-label mt-2 text-slate-400">
               Institutional-grade carbon credit tokenisation and trading platform
             </p>
           </div>

@@ -180,43 +180,43 @@ const DashboardOverview: React.FC<{
       <div className="lg:col-span-2 space-y-6">
         <div className="bg-white rounded-xl shadow-lg p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-2xl font-bold text-gray-800">Portfolio Overview</h3>
+            <h3 className="bloomberg-card-title text-gray-800">Portfolio Overview</h3>
             <div className="flex items-center space-x-2">
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <span className="text-sm text-gray-600">Live Data</span>
+              <span className="bloomberg-small-text text-gray-600">Live Data</span>
             </div>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <div className="bg-blue-50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-blue-600">
+              <div className="bloomberg-large-metric text-blue-600">
                 A${(portfolio.totalPortfolioValue / 1_000_000).toFixed(1)}M
               </div>
-              <div className="text-sm text-blue-700">Total Value</div>
+              <div className="bloomberg-small-text text-blue-700">Total Value</div>
             </div>
             <div className="bg-green-50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-green-600">
+              <div className="bloomberg-large-metric text-green-600">
                 {((portfolio.totalYieldGenerated / portfolio.totalPortfolioValue) * 100).toFixed(1)}%
               </div>
-              <div className="text-sm text-green-700">Current Yield</div>
+              <div className="bloomberg-small-text text-green-700">Current Yield</div>
             </div>
             <div className="bg-purple-50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-purple-600">
+              <div className="bloomberg-large-metric text-purple-600">
                 +{(portfolio.diversificationBenefits / portfolio.totalPortfolioValue * 100).toFixed(1)}%
               </div>
-              <div className="text-sm text-purple-700">Diversification</div>
+              <div className="bloomberg-small-text text-purple-700">Diversification</div>
             </div>
             <div className="bg-amber-50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-amber-600">
+              <div className="bloomberg-large-metric text-amber-600">
                 {riskProfile.volatility.toFixed(1)}%
               </div>
-              <div className="text-sm text-amber-700">Portfolio Risk</div>
+              <div className="bloomberg-small-text text-amber-700">Portfolio Risk</div>
             </div>
           </div>
 
           {/* Portfolio Allocation Chart */}
           <div className="mb-6">
-            <h4 className="text-lg font-semibold text-gray-800 mb-4">Portfolio Allocation</h4>
+            <h4 className="bloomberg-card-title text-gray-800 mb-4">Portfolio Allocation</h4>
             <div className="h-80">
               <WREIPieChart
                 data={[
@@ -256,26 +256,26 @@ const DashboardOverview: React.FC<{
 
           {/* Token Holdings */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-gray-800 mb-3">Token Holdings</h4>
+            <h4 className="bloomberg-card-title text-gray-800 mb-3">Token Holdings</h4>
 
             {/* Carbon Credits */}
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">CC</span>
+                  <span className="text-white bloomberg-small-text">CC</span>
                 </div>
                 <div>
                   <div className="font-medium text-gray-800">Carbon Credits</div>
-                  <div className="text-sm text-gray-600">
+                  <div className="bloomberg-small-text text-gray-600">
                     {portfolio.carbonCredits.quantity.toLocaleString()} credits @ A$150/tonne
                   </div>
                 </div>
               </div>
               <div className="text-right">
-                <div className="font-semibold text-gray-800">
+                <div className="bloomberg-card-title text-gray-800">
                   A${(portfolio.carbonCredits.currentValue / 1_000_000).toFixed(2)}M
                 </div>
-                <div className="text-sm text-green-600">
+                <div className="bloomberg-small-text text-green-600">
                   +{((portfolio.carbonCredits.unrealizedGains / portfolio.carbonCredits.bookValue) * 100).toFixed(1)}%
                 </div>
               </div>
@@ -285,20 +285,20 @@ const DashboardOverview: React.FC<{
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">AC</span>
+                  <span className="text-white bloomberg-small-text">AC</span>
                 </div>
                 <div>
                   <div className="font-medium text-gray-800">Asset Co Tokens</div>
-                  <div className="text-sm text-gray-600">
+                  <div className="bloomberg-small-text text-gray-600">
                     {portfolio.assetCoTokens.quantity.toLocaleString()} units @ 28.3% yield
                   </div>
                 </div>
               </div>
               <div className="text-right">
-                <div className="font-semibold text-gray-800">
+                <div className="bloomberg-card-title text-gray-800">
                   A${(portfolio.assetCoTokens.currentValue / 1_000_000).toFixed(2)}M
                 </div>
-                <div className="text-sm text-green-600">
+                <div className="bloomberg-small-text text-green-600">
                   +{((portfolio.assetCoTokens.unrealizedGains / portfolio.assetCoTokens.bookValue) * 100).toFixed(1)}%
                 </div>
               </div>
@@ -308,20 +308,20 @@ const DashboardOverview: React.FC<{
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">DP</span>
+                  <span className="text-white bloomberg-small-text">DP</span>
                 </div>
                 <div>
                   <div className="font-medium text-gray-800">Dual Portfolio</div>
-                  <div className="text-sm text-gray-600">
+                  <div className="bloomberg-small-text text-gray-600">
                     {portfolio.dualPortfolio.quantity.toLocaleString()} units @ 18.5% blended yield
                   </div>
                 </div>
               </div>
               <div className="text-right">
-                <div className="font-semibold text-gray-800">
+                <div className="bloomberg-card-title text-gray-800">
                   A${(portfolio.dualPortfolio.currentValue / 1_000_000).toFixed(2)}M
                 </div>
-                <div className="text-sm text-green-600">
+                <div className="bloomberg-small-text text-green-600">
                   +{((portfolio.dualPortfolio.unrealizedGains / portfolio.dualPortfolio.bookValue) * 100).toFixed(1)}%
                 </div>
               </div>
@@ -334,27 +334,27 @@ const DashboardOverview: React.FC<{
       <div className="space-y-6">
         {/* Market Intelligence */}
         <div className="bg-white rounded-xl shadow-lg p-6">
-          <h3 className="text-lg font-bold text-gray-800 mb-4">Market Intelligence</h3>
+          <h3 className="bloomberg-card-title text-gray-800 mb-4">Market Intelligence</h3>
 
           <div className="space-y-4">
             <div className="bg-blue-50 rounded-lg p-4">
-              <div className="text-sm text-blue-700 font-medium mb-1">RWA Market</div>
-              <div className="text-2xl font-bold text-blue-600">A${marketData.tokenizedRWAMarket.totalValue / 1_000_000_000}B</div>
-              <div className="text-sm text-blue-600">
+              <div className="bloomberg-small-text text-blue-700 font-medium mb-1">RWA Market</div>
+              <div className="bloomberg-large-metric text-blue-600">A${marketData.tokenizedRWAMarket.totalValue / 1_000_000_000}B</div>
+              <div className="bloomberg-small-text text-blue-600">
                 +{((marketData.tokenizedRWAMarket.growthRate - 1) * 100).toFixed(0)}% growth (15 months)
               </div>
             </div>
 
             <div className="bg-green-50 rounded-lg p-4">
-              <div className="text-sm text-green-700 font-medium mb-1">Carbon Market 2030</div>
-              <div className="text-2xl font-bold text-green-600">A${marketData.carbonMarket.projected2030 / 1_000_000_000}B</div>
-              <div className="text-sm text-green-600">26% CAGR projection</div>
+              <div className="bloomberg-small-text text-green-700 font-medium mb-1">Carbon Market 2030</div>
+              <div className="bloomberg-large-metric text-green-600">A${marketData.carbonMarket.projected2030 / 1_000_000_000}B</div>
+              <div className="bloomberg-small-text text-green-600">26% CAGR projection</div>
             </div>
 
             <div className="bg-purple-50 rounded-lg p-4">
-              <div className="text-sm text-purple-700 font-medium mb-1">WREI Premium</div>
-              <div className="text-2xl font-bold text-purple-600">+23%</div>
-              <div className="text-sm text-purple-600">vs USYC/BUIDL benchmarks</div>
+              <div className="bloomberg-small-text text-purple-700 font-medium mb-1">WREI Premium</div>
+              <div className="bloomberg-large-metric text-purple-600">+23%</div>
+              <div className="bloomberg-small-text text-purple-600">vs USYC/BUIDL benchmarks</div>
             </div>
           </div>
 
@@ -362,19 +362,19 @@ const DashboardOverview: React.FC<{
           <div className="mt-6">
             <h4 className="font-medium text-gray-800 mb-3">Competitive Advantages</h4>
             <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between bloomberg-small-text">
                 <span className="text-gray-600">Native Digital Credits</span>
                 <span className="text-green-600 font-medium">✓ T+0 Settlement</span>
               </div>
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between bloomberg-small-text">
                 <span className="text-gray-600">Asset-Backed Yield</span>
                 <span className="text-green-600 font-medium">✓ Real Economics</span>
               </div>
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between bloomberg-small-text">
                 <span className="text-gray-600">Cross-Collateral</span>
                 <span className="text-green-600 font-medium">✓ 90% LTV</span>
               </div>
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between bloomberg-small-text">
                 <span className="text-gray-600">Regulatory Clarity</span>
                 <span className="text-green-600 font-medium">✓ Australian AFSL</span>
               </div>
@@ -384,13 +384,13 @@ const DashboardOverview: React.FC<{
 
         {/* Risk Assessment */}
         <div className="bg-white rounded-xl shadow-lg p-6">
-          <h3 className="text-lg font-bold text-gray-800 mb-4">Risk Assessment</h3>
+          <h3 className="bloomberg-card-title text-gray-800 mb-4">Risk Assessment</h3>
 
           <div className="space-y-4">
             <div>
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm text-gray-600">Portfolio Volatility</span>
-                <span className="text-sm font-medium">{riskProfile.volatility.toFixed(1)}%</span>
+                <span className="bloomberg-small-text text-gray-600">Portfolio Volatility</span>
+                <span className="bloomberg-small-text font-medium">{riskProfile.volatility.toFixed(1)}%</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
@@ -402,8 +402,8 @@ const DashboardOverview: React.FC<{
 
             <div>
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm text-gray-600">Sharpe Ratio</span>
-                <span className="text-sm font-medium">{riskProfile.sharpeRatio.toFixed(2)}</span>
+                <span className="bloomberg-small-text text-gray-600">Sharpe Ratio</span>
+                <span className="bloomberg-small-text font-medium">{riskProfile.sharpeRatio.toFixed(2)}</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
@@ -415,8 +415,8 @@ const DashboardOverview: React.FC<{
 
             <div>
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm text-gray-600">Regulatory Risk</span>
-                <span className="text-sm font-medium text-green-600">Low</span>
+                <span className="bloomberg-small-text text-gray-600">Regulatory Risk</span>
+                <span className="bloomberg-small-text font-medium text-green-600">Low</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div className="bg-green-500 h-2 rounded-full w-1/4"></div>
@@ -425,8 +425,8 @@ const DashboardOverview: React.FC<{
 
             <div>
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm text-gray-600">Liquidity Risk</span>
-                <span className="text-sm font-medium text-amber-600">Medium</span>
+                <span className="bloomberg-small-text text-gray-600">Liquidity Risk</span>
+                <span className="bloomberg-small-text font-medium text-amber-600">Medium</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div className="bg-amber-500 h-2 rounded-full w-1/2"></div>
@@ -435,10 +435,10 @@ const DashboardOverview: React.FC<{
           </div>
 
           <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-            <div className="text-sm text-gray-600">
+            <div className="bloomberg-small-text text-gray-600">
               <strong className="text-gray-800">Risk Grade:</strong> {riskProfile.riskGrade}
             </div>
-            <div className="text-xs text-gray-500 mt-1">
+            <div className="bloomberg-section-label text-gray-500 mt-1">
               Composite score based on volatility, regulatory, liquidity, and operational factors
             </div>
           </div>
@@ -459,7 +459,7 @@ const YieldMechanismSelector: React.FC<{
 }> = ({ currentMechanism, onMechanismChange, tokenType }) => {
   return (
     <div className="bg-white rounded-xl shadow-lg p-6">
-      <h3 className="text-lg font-bold text-gray-800 mb-4">Yield Mechanism Selection</h3>
+      <h3 className="bloomberg-card-title text-gray-800 mb-4">Yield Mechanism Selection</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Revenue Share */}
@@ -473,15 +473,15 @@ const YieldMechanismSelector: React.FC<{
         >
           <div className="flex items-center space-x-3 mb-3">
             <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-sm">RS</span>
+              <span className="text-white bloomberg-small-text">RS</span>
             </div>
             <div>
               <div className="font-medium text-gray-800">Revenue Share</div>
-              <div className="text-sm text-gray-600">Quarterly distributions</div>
+              <div className="bloomberg-small-text text-gray-600">Quarterly distributions</div>
             </div>
           </div>
 
-          <div className="space-y-2 text-sm">
+          <div className="space-y-2 bloomberg-small-text">
             <div className="flex justify-between">
               <span className="text-gray-600">Carbon Credits:</span>
               <span className="font-medium">8.0% annual</span>
@@ -494,7 +494,7 @@ const YieldMechanismSelector: React.FC<{
               <span className="text-gray-600">Dual Portfolio:</span>
               <span className="font-medium">18.5% blended</span>
             </div>
-            <div className="mt-3 p-2 bg-blue-100 rounded text-xs text-blue-700">
+            <div className="mt-3 p-2 bg-blue-100 rounded bloomberg-section-label text-blue-700">
               <strong>Tax:</strong> Income treatment, franking credits eligible
             </div>
           </div>
@@ -511,15 +511,15 @@ const YieldMechanismSelector: React.FC<{
         >
           <div className="flex items-center space-x-3 mb-3">
             <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-sm">NA</span>
+              <span className="text-white bloomberg-small-text">NA</span>
             </div>
             <div>
               <div className="font-medium text-gray-800">NAV-Accruing</div>
-              <div className="text-sm text-gray-600">Token value appreciation</div>
+              <div className="bloomberg-small-text text-gray-600">Token value appreciation</div>
             </div>
           </div>
 
-          <div className="space-y-2 text-sm">
+          <div className="space-y-2 bloomberg-small-text">
             <div className="flex justify-between">
               <span className="text-gray-600">Carbon Credits:</span>
               <span className="font-medium">12.0% appreciation</span>
@@ -532,7 +532,7 @@ const YieldMechanismSelector: React.FC<{
               <span className="text-gray-600">Dual Portfolio:</span>
               <span className="font-medium">18.5% compounded</span>
             </div>
-            <div className="mt-3 p-2 bg-green-100 rounded text-xs text-green-700">
+            <div className="mt-3 p-2 bg-green-100 rounded bloomberg-section-label text-green-700">
               <strong>Tax:</strong> CGT treatment, 50% discount after 12 months
             </div>
           </div>
@@ -542,7 +542,7 @@ const YieldMechanismSelector: React.FC<{
       {/* Mechanism Comparison */}
       <div className="mt-6 p-4 bg-gray-50 rounded-lg">
         <h4 className="font-medium text-gray-800 mb-3">5-Year Projection (A$1M Investment)</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bloomberg-small-text">
           <div>
             <div className="font-medium text-blue-600 mb-2">Revenue Share</div>
             <div className="space-y-1">
@@ -597,12 +597,12 @@ const CrossCollateralizationTracker: React.FC<{
   return (
     <div className="bg-white rounded-xl shadow-lg p-6">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-bold text-gray-800">Cross-Collateralization Position</h3>
+        <h3 className="bloomberg-card-title text-gray-800">Cross-Collateralization Position</h3>
         <div className="flex items-center space-x-2">
           <div className={`w-3 h-3 rounded-full ${
             utilizationPercentage < 60 ? 'bg-green-500' : utilizationPercentage < 80 ? 'bg-yellow-500' : 'bg-red-500'
           }`}></div>
-          <span className="text-sm text-gray-600">
+          <span className="bloomberg-small-text text-gray-600">
             {utilizationPercentage < 60 ? 'Safe' : utilizationPercentage < 80 ? 'Moderate' : 'High Risk'}
           </span>
         </div>
@@ -611,36 +611,36 @@ const CrossCollateralizationTracker: React.FC<{
       {/* Collateral Summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-blue-50 rounded-lg p-4 text-center">
-          <div className="text-xl font-bold text-blue-600">
+          <div className="bloomberg-metric-value text-blue-600">
             A${(collateralPosition.assetValue / 1_000_000).toFixed(1)}M
           </div>
-          <div className="text-sm text-blue-700">Collateral Value</div>
+          <div className="bloomberg-small-text text-blue-700">Collateral Value</div>
         </div>
         <div className="bg-purple-50 rounded-lg p-4 text-center">
-          <div className="text-xl font-bold text-purple-600">
+          <div className="bloomberg-metric-value text-purple-600">
             {(collateralPosition.ltvRatio * 100).toFixed(0)}%
           </div>
-          <div className="text-sm text-purple-700">Max LTV</div>
+          <div className="bloomberg-small-text text-purple-700">Max LTV</div>
         </div>
         <div className="bg-amber-50 rounded-lg p-4 text-center">
-          <div className="text-xl font-bold text-amber-600">
+          <div className="bloomberg-metric-value text-amber-600">
             A${(collateralPosition.borrowedAmount / 1_000_000).toFixed(1)}M
           </div>
-          <div className="text-sm text-amber-700">Borrowed</div>
+          <div className="bloomberg-small-text text-amber-700">Borrowed</div>
         </div>
         <div className="bg-green-50 rounded-lg p-4 text-center">
-          <div className="text-xl font-bold text-green-600">
+          <div className="bloomberg-metric-value text-green-600">
             A${((collateralPosition.borrowingCapacity - collateralPosition.borrowedAmount) / 1_000_000).toFixed(1)}M
           </div>
-          <div className="text-sm text-green-700">Available</div>
+          <div className="bloomberg-small-text text-green-700">Available</div>
         </div>
       </div>
 
       {/* Utilization Progress */}
       <div className="mb-6">
         <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-medium text-gray-700">Borrowing Utilization</span>
-          <span className="text-sm font-medium">{utilizationPercentage.toFixed(1)}%</span>
+          <span className="bloomberg-small-text font-medium text-gray-700">Borrowing Utilization</span>
+          <span className="bloomberg-small-text font-medium">{utilizationPercentage.toFixed(1)}%</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-3">
           <div
@@ -650,7 +650,7 @@ const CrossCollateralizationTracker: React.FC<{
             style={{ width: `${Math.min(utilizationPercentage, 100)}%` }}
           ></div>
         </div>
-        <div className="flex justify-between text-xs text-gray-500 mt-1">
+        <div className="flex justify-between bloomberg-section-label text-gray-500 mt-1">
           <span>Safe (0-60%)</span>
           <span>Moderate (60-80%)</span>
           <span>High Risk (80%+)</span>
@@ -666,18 +666,18 @@ const CrossCollateralizationTracker: React.FC<{
           <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-xs">CC</span>
+                <span className="text-white bloomberg-section-label">CC</span>
               </div>
               <div>
-                <div className="text-sm font-medium text-gray-800">Carbon Credits</div>
-                <div className="text-xs text-gray-600">LTV: 75% | Haircut: 10%</div>
+                <div className="bloomberg-small-text font-medium text-gray-800">Carbon Credits</div>
+                <div className="bloomberg-section-label text-gray-600">LTV: 75% | Haircut: 10%</div>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-sm font-medium text-gray-800">
+              <div className="bloomberg-small-text font-medium text-gray-800">
                 A${(portfolio.carbonCredits.currentValue / 1_000_000).toFixed(2)}M
               </div>
-              <div className="text-xs text-gray-600">
+              <div className="bloomberg-section-label text-gray-600">
                 Borrowing: A${(portfolio.carbonCredits.currentValue * 0.75 / 1_000_000).toFixed(2)}M
               </div>
             </div>
@@ -687,18 +687,18 @@ const CrossCollateralizationTracker: React.FC<{
           <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-xs">AC</span>
+                <span className="text-white bloomberg-section-label">AC</span>
               </div>
               <div>
-                <div className="text-sm font-medium text-gray-800">Asset Co Tokens</div>
-                <div className="text-xs text-gray-600">LTV: 80% | Haircut: 5%</div>
+                <div className="bloomberg-small-text font-medium text-gray-800">Asset Co Tokens</div>
+                <div className="bloomberg-section-label text-gray-600">LTV: 80% | Haircut: 5%</div>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-sm font-medium text-gray-800">
+              <div className="bloomberg-small-text font-medium text-gray-800">
                 A${(portfolio.assetCoTokens.currentValue / 1_000_000).toFixed(2)}M
               </div>
-              <div className="text-xs text-gray-600">
+              <div className="bloomberg-section-label text-gray-600">
                 Borrowing: A${(portfolio.assetCoTokens.currentValue * 0.8 / 1_000_000).toFixed(2)}M
               </div>
             </div>
@@ -708,18 +708,18 @@ const CrossCollateralizationTracker: React.FC<{
           <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-xs">DP</span>
+                <span className="text-white bloomberg-section-label">DP</span>
               </div>
               <div>
-                <div className="text-sm font-medium text-gray-800">Dual Portfolio</div>
-                <div className="text-xs text-gray-600">LTV: 90% | Haircut: 3%</div>
+                <div className="bloomberg-small-text font-medium text-gray-800">Dual Portfolio</div>
+                <div className="bloomberg-section-label text-gray-600">LTV: 90% | Haircut: 3%</div>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-sm font-medium text-gray-800">
+              <div className="bloomberg-small-text font-medium text-gray-800">
                 A${(portfolio.dualPortfolio.currentValue / 1_000_000).toFixed(2)}M
               </div>
-              <div className="text-xs text-gray-600">
+              <div className="bloomberg-section-label text-gray-600">
                 Borrowing: A${(portfolio.dualPortfolio.currentValue * 0.9 / 1_000_000).toFixed(2)}M
               </div>
             </div>
@@ -730,7 +730,7 @@ const CrossCollateralizationTracker: React.FC<{
       {/* Risk Monitoring */}
       <div className="mt-6 p-4 bg-gray-50 rounded-lg">
         <h4 className="font-medium text-gray-800 mb-3">Risk Monitoring</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bloomberg-small-text">
           <div>
             <div className="flex justify-between mb-2">
               <span className="text-gray-600">Margin Call Level:</span>
@@ -953,7 +953,7 @@ const InstitutionalDashboard: React.FC<DashboardProps> = ({
         <div className="space-y-6">
           <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="mb-6">
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">ESG Impact & Compliance Dashboard</h3>
+              <h3 className="bloomberg-large-metric text-gray-800 mb-2">ESG Impact & Compliance Dashboard</h3>
               <p className="text-gray-600">
                 Comprehensive ESG impact measurement for your institutional WREI portfolio.
                 Track sustainability outcomes, compliance status, and impact ROI.
@@ -986,7 +986,7 @@ const InstitutionalDashboard: React.FC<DashboardProps> = ({
         <div className="space-y-6">
           <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="mb-6">
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">Blockchain Provenance Verification</h3>
+              <h3 className="bloomberg-large-metric text-gray-800 mb-2">Blockchain Provenance Verification</h3>
               <p className="text-gray-600">
                 Complete blockchain audit trail for your carbon credit assets with cryptographic verification
                 and vessel telemetry data for institutional compliance requirements.
@@ -1004,7 +1004,7 @@ const InstitutionalDashboard: React.FC<DashboardProps> = ({
             {/* Grid layout for Merkle Tree and Vessel Data */}
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
               <div className="bg-slate-50 rounded-lg p-4">
-                <h4 className="text-lg font-semibold text-slate-800 mb-4 flex items-center space-x-2">
+                <h4 className="bloomberg-card-title text-slate-800 mb-4 flex items-center space-x-2">
                   <span>🔍</span>
                   <span>Cryptographic Verification</span>
                 </h4>
@@ -1015,7 +1015,7 @@ const InstitutionalDashboard: React.FC<DashboardProps> = ({
               </div>
 
               <div className="bg-slate-50 rounded-lg p-4">
-                <h4 className="text-lg font-semibold text-slate-800 mb-4 flex items-center space-x-2">
+                <h4 className="bloomberg-card-title text-slate-800 mb-4 flex items-center space-x-2">
                   <span>🚤</span>
                   <span>Asset Origin & Telemetry</span>
                 </h4>
@@ -1033,21 +1033,21 @@ const InstitutionalDashboard: React.FC<DashboardProps> = ({
 
             {/* Institutional Compliance Summary */}
             <div className="mt-8 bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-lg p-4">
-              <h4 className="text-sm font-semibold text-slate-800 mb-2 flex items-center space-x-2">
+              <h4 className="bloomberg-small-text bloomberg-card-title text-slate-800 mb-2 flex items-center space-x-2">
                 <span>📋</span>
                 <span>Compliance Summary</span>
               </h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bloomberg-small-text">
                 <div className="text-center">
-                  <div className="text-lg font-bold text-green-600">100%</div>
+                  <div className="bloomberg-card-title text-green-600">100%</div>
                   <div className="text-slate-600">Chain Integrity</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-lg font-bold text-blue-600">dMRV</div>
+                  <div className="bloomberg-card-title text-blue-600">dMRV</div>
                   <div className="text-slate-600">Digital Verification</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-lg font-bold text-purple-600">VCS + CORSIA</div>
+                  <div className="bloomberg-card-title text-purple-600">VCS + CORSIA</div>
                   <div className="text-slate-600">Standard Compliance</div>
                 </div>
               </div>
@@ -1065,7 +1065,7 @@ const InstitutionalDashboard: React.FC<DashboardProps> = ({
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="bloomberg-page-heading text-gray-900">
                 WREI Institutional Dashboard
               </h1>
               <p className="mt-2 text-gray-600">
@@ -1076,16 +1076,16 @@ const InstitutionalDashboard: React.FC<DashboardProps> = ({
             </div>
             <div className="flex items-center space-x-4">
               <div className="bg-white rounded-lg px-4 py-2 shadow">
-                <div className="text-sm text-gray-600">Total Return</div>
-                <div className="text-xl font-bold text-green-600">
+                <div className="bloomberg-small-text text-gray-600">Total Return</div>
+                <div className="bloomberg-metric-value text-green-600">
                   +{((portfolio.totalYieldGenerated +
                     (portfolio.carbonCredits.unrealizedGains + portfolio.assetCoTokens.unrealizedGains + portfolio.dualPortfolio.unrealizedGains)) /
                     portfolio.totalPortfolioValue * 100).toFixed(1)}%
                 </div>
               </div>
               <div className="bg-white rounded-lg px-4 py-2 shadow">
-                <div className="text-sm text-gray-600">Benchmark</div>
-                <div className="text-xl font-bold text-blue-600">+23%</div>
+                <div className="bloomberg-small-text text-gray-600">Benchmark</div>
+                <div className="bloomberg-metric-value text-blue-600">+23%</div>
               </div>
               <button
                 onClick={() => setShowExportModal(true)}
@@ -1095,7 +1095,7 @@ const InstitutionalDashboard: React.FC<DashboardProps> = ({
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
-                <span className="text-sm font-medium">Export</span>
+                <span className="bloomberg-small-text font-medium">Export</span>
               </button>
             </div>
           </div>
@@ -1108,7 +1108,7 @@ const InstitutionalDashboard: React.FC<DashboardProps> = ({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                className={`py-4 px-1 border-b-2 font-medium bloomberg-small-text whitespace-nowrap ${
                   activeTab === tab.id
                     ? 'border-blue-500 text-blue-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -1134,7 +1134,7 @@ const InstitutionalDashboard: React.FC<DashboardProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="mt-12 text-center text-sm text-gray-500">
+        <div className="mt-12 text-center bloomberg-small-text text-gray-500">
           <p>
             WREI Institutional Dashboard • Real-time data • Last updated: {new Date().toLocaleString('en-AU')}
           </p>
