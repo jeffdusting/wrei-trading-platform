@@ -1,30 +1,30 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import NavigationShell from '@/components/navigation/NavigationShell'
+import BloombergShell from '@/components/navigation/BloombergShell'
 import { SimpleDemoProvider } from '@/components/demo/SimpleDemoProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'WREI Trading Platform | Water Roads',
-  description: 'WREI carbon credit trading platform demonstration. Experience institutional-grade carbon credit trading with real-time blockchain verification and AI-powered negotiation.',
-  keywords: 'carbon credits, blockchain, verification, trading, WREI, Water Roads, sustainability, ESG, dMRV',
-  authors: [{ name: 'Water Roads Pty Ltd' }],
-  creator: 'Water Roads Pty Ltd',
-  publisher: 'Water Roads Pty Ltd',
+  title: 'WREI Platform | Bloomberg Terminal Interface',
+  description: 'WREI carbon credit trading platform with institutional Bloomberg Terminal interface. Experience professional-grade carbon credit trading with real-time verification and AI-powered negotiation.',
+  keywords: 'carbon credits, bloomberg terminal, institutional trading, verification, WREI, sustainability, ESG, dMRV',
+  authors: [{ name: 'WREI Platform' }],
+  creator: 'WREI Platform',
+  publisher: 'WREI Platform',
   metadataBase: new URL('https://wrei-trading-platform.vercel.app'),
   openGraph: {
-    title: 'WREI Trading Platform | Water Roads',
-    description: 'Experience institutional-grade carbon credit trading with real-time blockchain verification',
+    title: 'WREI Platform | Bloomberg Terminal Interface',
+    description: 'Experience institutional-grade carbon credit trading with Bloomberg Terminal interface',
     type: 'website',
     locale: 'en_AU',
-    siteName: 'WREI Trading Platform',
+    siteName: 'WREI Platform',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'WREI Trading Platform | Water Roads',
-    description: 'Experience institutional-grade carbon credit trading with real-time blockchain verification',
+    title: 'WREI Platform | Bloomberg Terminal Interface',
+    description: 'Experience institutional-grade carbon credit trading with Bloomberg Terminal interface',
   },
   robots: {
     index: true,
@@ -46,7 +46,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <SimpleDemoProvider>
-          <NavigationShell>{children}</NavigationShell>
+          <BloombergShell>{children}</BloombergShell>
         </SimpleDemoProvider>
       </body>
     </html>

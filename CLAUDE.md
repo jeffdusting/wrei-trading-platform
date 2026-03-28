@@ -2,11 +2,12 @@
 
 ## What This Project Is
 
-A Next.js 14 (App Router) application that demonstrates Water Roads' WREI carbon credit trading platform. An AI negotiation agent (powered by Claude API) negotiates the sale of WREI-verified carbon credits with human buyers. Deployed on Vercel free tier.
+A Next.js 14 (App Router) application that demonstrates the WREI carbon credit trading platform with Bloomberg Terminal interface. An AI negotiation agent (powered by Claude API) negotiates the sale of WREI-verified carbon credits with human buyers through an institutional-grade Bloomberg Terminal-style interface. Deployed on Vercel free tier.
 
 ## Technology Stack
 
 - **Framework:** Next.js 14 with App Router, TypeScript, Tailwind CSS
+- **UI Design:** Bloomberg Terminal interface with institutional design tokens
 - **AI Engine:** Anthropic Claude API (@anthropic-ai/sdk) — Sonnet 4 for dev, Opus 4.6 for production
 - **Deployment:** Vercel (free hobby plan)
 - **State:** React useState/useReducer + Zustand for demo mode (no database, no localStorage)
@@ -15,9 +16,14 @@ A Next.js 14 (App Router) application that demonstrates Water Roads' WREI carbon
 
 ```
 /app
-  /page.tsx                    — Landing page (Water Roads branding)
+  /page.tsx                    — Landing page (WREI Platform branding)
   /negotiate/page.tsx          — Main negotiation interface (client component)
   /api/negotiate/route.ts      — Server-side API route (Claude API calls, defence layers)
+/components
+  /navigation/BloombergShell.tsx — Bloomberg Terminal-style shell wrapper
+  /professional/               — Bloomberg Terminal UI components
+/design-system
+  /tokens/professional-tokens.ts — Bloomberg Terminal design tokens
 /lib
   /types.ts                    — All TypeScript type definitions
   /personas.ts                 — 5 buyer persona definitions
@@ -35,11 +41,13 @@ A Next.js 14 (App Router) application that demonstrates Water Roads' WREI carbon
    - Output filtering strips internal reasoning before delivery to client
    - Input sanitisation removes injection attempts before sending to Claude API
 3. **No localStorage, no sessionStorage** — all state in React useState/useReducer + Zustand for demo mode
-4. **Single-file approach** — CSS in Tailwind classes, no separate CSS files
-5. **Australian spelling** throughout all user-facing text (e.g., "organised", "recognised", "colour")
+4. **Bloomberg Terminal Design Patterns** — institutional-grade interface with professional design tokens
+5. **Single-file approach** — CSS in Tailwind classes, no separate CSS files
+6. **Australian spelling** throughout all user-facing text (e.g., "organised", "recognised", "colour")
 
 ## Colour Scheme
 
+### WREI Light Theme (Primary)
 - Primary dark: `#1B2A4A` (navy)
 - Primary accent: `#0EA5E9` (teal/sky blue)
 - Success: `#10B981` (green)
@@ -49,6 +57,46 @@ A Next.js 14 (App Router) application that demonstrates Water Roads' WREI carbon
 - Card background: `#FFFFFF`
 - Text primary: `#1E293B`
 - Text secondary: `#64748B`
+
+### Bloomberg Terminal Professional Colors
+- Bloomberg orange: `#FF6B1A` (signature accent)
+- Terminal black: `#0A0A0B` (dark mode primary)
+- Terminal grey: `#1A1A1B` (dark mode secondary)
+- Market bullish: `#00C896` (profit green)
+- Market bearish: `#FF4757` (loss red)
+- Market neutral: `#6B7280` (neutral grey)
+
+**Note:** The platform uses WREI light theme colors as primary, with Bloomberg professional colors for accent and data visualization elements.
+
+## Bloomberg Terminal Design Guidelines
+
+### Typography
+- **Interface Font:** Inter (bloomberg-interface) — Clean, professional sans-serif for UI elements
+- **Financial Font:** SF Mono (bloomberg-financial) — Monospace for financial data consistency
+- **Font Sizes:** 11px (xs), 12px (sm), 14px (md), 16px (lg), 18px (xl) with tight line heights
+- **Data Density:** Bloomberg Terminal prioritizes information density over whitespace
+
+### Layout Structure
+- **Top Bar:** 40px system status bar with WREI branding and real-time clock
+- **Market Ticker:** Integrated scrolling ticker with live market data
+- **Navigation Bar:** 48px horizontal navigation with terminal-style tabs (6 consolidated items)
+- **Command Bar:** 36px footer with command prompt styling and compliance info
+- **Borders:** 0.5px terminal-style borders for professional data panel separation
+
+### Navigation Consolidation (6 Items)
+1. **Trading** → `/negotiate` (AI Carbon Credit Trading)
+2. **Analytics** → `/calculator` (Investment Calculator & Analysis)
+3. **Market** → `/performance` (Market Data & Monitoring)
+4. **Portfolio** → `/scenario` (Scenario Analysis)
+5. **Compliance** → `/compliance` (Regulatory Oversight)
+6. **System** → `/developer` (Developer Access & Institutional Portal)
+
+### Bloomberg Patterns
+- Terminal-style icons with 3-letter codes (TRD, ANA, MKT, PRT, CMP, SYS)
+- Data-dense layouts with minimal padding
+- Consistent use of professional design tokens from `/design-system/tokens/professional-tokens.ts`
+- Real-time status indicators and market data integration
+- Command prompt footer with "wrei@platform:~$" styling
 
 ## Negotiation Parameters
 
