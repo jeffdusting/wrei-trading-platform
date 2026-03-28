@@ -1,19 +1,17 @@
 /**
  * WREI Trading Platform - Executive Dashboard
  *
- * Step 1.2 + 1.4: Multi-Audience Interface System - Executive Interface
- * High-level KPIs, ROI metrics, strategic business insights, and enhanced analytics for C-suite stakeholders
+ * Stage 2 Component 4: Executive Interface (Simplified)
+ * MIGRATED: Now uses simplified demo data instead of complex ESC market context
  *
- * Date: March 25, 2026
- * Updated: Enhanced with Step 1.4 Analytics Integration
+ * Date: March 28, 2026
  */
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useDemoMode } from '@/lib/demo-mode/demo-state-manager';
-import { getNorthmoreGordonValueProp, getCurrentESCMarketContext } from '@/lib/demo-mode/esc-market-context';
-import { NSW_ESC_CONFIG } from '@/lib/negotiation-config';
+import React, { useState } from 'react';
+import { useSimpleDemoStore } from '@/lib/demo-mode/simple-demo-state';
+import { useAnalytics } from '../analytics/useAnalytics';
 import {
   ArrowTrendingUpIcon,
   CurrencyDollarIcon,
@@ -29,8 +27,7 @@ import { PresentationChartBarIcon } from '@heroicons/react/24/outline';
 import {
   AnalyticsDashboard,
   RealTimeMetricsWidget,
-  PerformanceChart,
-  useAnalytics
+  PerformanceChart
 } from '../analytics';
 
 interface KPICardProps {
@@ -87,15 +84,10 @@ export const ExecutiveDashboard: React.FC = () => {
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [activeScenarioId, setActiveScenarioId] = useState<string | null>(null);
 
-  const demoMode = useDemoMode();
-  const escData = demoMode.getESCDemoData();
-  const northmoreContext = demoMode.getNorthmoreGordonContext();
-  const valueProps = getNorthmoreGordonValueProp('executive');
-  const currentMarket = getCurrentESCMarketContext();
+  const { isActive: isDemoActive, demoData } = useSimpleDemoStore();
 
   // Step 1.4: Enhanced Analytics Integration
   const analytics = useAnalytics({
-    audience: 'executive',
     autoRefresh: true,
     refreshInterval: 5000
   });
@@ -104,18 +96,15 @@ export const ExecutiveDashboard: React.FC = () => {
   const sessionId = React.useMemo(() => `exec-session-${Date.now()}`, []);
 
   // Handle analytics export
-  const handleAnalyticsExport = (format: 'pdf' | 'excel' | 'powerpoint') => {
-    const data = analytics.exportData('json');
+  const handleAnalyticsExport = (format: 'pdf' | 'excel') => {
+    const data = analytics.analytics;
     console.log(`Exporting executive analytics in ${format} format:`, data);
 
-    // Track interaction
-    demoMode.trackInteraction({
-      type: 'click',
-      data: {
-        action: 'analytics_export',
-        format: format,
-        audience: 'executive'
-      }
+    // Track interaction (simplified)
+    console.log('User exported analytics:', {
+      action: 'analytics_export',
+      format: format,
+      audience: 'executive'
     });
   };
 
@@ -262,16 +251,14 @@ export const ExecutiveDashboard: React.FC = () => {
         <div className="space-y-6" data-demo="executive-enhanced-analytics">
           {/* Analytics Dashboard */}
           <AnalyticsDashboard
-            selectedAudience="executive"
             sessionId={sessionId}
-            onExport={handleAnalyticsExport}
+            onExport={(format) => handleAnalyticsExport(format)}
           />
 
           {/* Performance Charts */}
           <div className="grid lg:grid-cols-2 gap-6">
             <PerformanceChart
-              benchmarks={analytics.benchmarks}
-              selectedAudience="executive"
+              data={analytics.analytics?.marketData}
               timeframe="1m"
               height={300}
             />

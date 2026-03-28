@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { MarketTicker } from '../market'
-import { SimpleDemoToggle } from '../demo/SimpleDemoToggle'
+import SimpleDemoToggle from '../demo/SimpleDemoToggle'
 import { useSimpleDemoMode } from '../demo/SimpleDemoProvider'
 
 interface NavigationItem {

@@ -4,27 +4,15 @@
  * WREI Trading Platform - AI Demo Orchestrator Component
  *
  * Stage 2: Component 1 - AI Demo Orchestration Engine
- * React interface component for intelligent demo flow management
+ * React interface component for simplified demo scenario management
+ * MIGRATED: Now uses simplified demo data instead of complex tour system
  *
- * Date: March 26, 2026
+ * Date: March 28, 2026
  */
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { DemoOrchestrationEngine } from '@/lib/ai-orchestration/DemoOrchestrationEngine';
-import {
-  OrchestrationState,
-  OrchestrationPhase,
-  AudienceAnalysis,
-  ContextAssessment,
-  OrchestrationDecision,
-  OrchestrationAction,
-  EngagementLevel,
-  KnowledgeLevel,
-  DemoObjective,
-  OrchestrationEvent
-} from './types';
-import { AudienceType } from '../audience';
-import { ScenarioType } from '../scenarios/types';
+import { useSimpleDemoStore, SimpleDemoDataSet } from '@/lib/demo-mode/simple-demo-state';
+import { getDemoDataForSet, DemoDataSet } from '@/lib/demo-mode/demo-data-simple';
 
 // UI Components
 import {
@@ -40,330 +28,216 @@ import {
   ArrowPathIcon
 } from '@heroicons/react/24/outline';
 
-interface DemoOrchestratorProps {
-  // Integration with existing audience system
-  currentAudience?: AudienceType;
-  onAudienceChange?: (audience: AudienceType) => void;
+// Simplified types for demo orchestration
+type ScenarioPhase = 'initialization' | 'data_loading' | 'execution' | 'completion';
+type EngagementLevel = 'low' | 'medium' | 'high' | 'very_high';
 
-  // Integration with scenario system
-  availableScenarios?: ScenarioType[];
-  onScenarioChange?: (scenario: ScenarioType) => void;
+interface SimplifiedOrchestrationEvent {
+  id: string;
+  timestamp: Date;
+  type: 'scenario_started' | 'data_loaded' | 'scenario_changed' | 'session_completed';
+  data: any;
+}
+
+interface DemoOrchestratorProps {
+  // Simplified demo system integration
+  currentDataSet?: SimpleDemoDataSet;
+  onDataSetChange?: (dataSet: SimpleDemoDataSet) => void;
 
   // Demo session management
   sessionId?: string;
   autoStart?: boolean;
 
-  // Configuration overrides
-  maxDuration?: number;
-  adaptationEnabled?: boolean;
-
   // Event callbacks
-  onOrchestrationEvent?: (event: OrchestrationEvent) => void;
-  onStateChange?: (state: OrchestrationState) => void;
-  onDecisionMade?: (decision: OrchestrationDecision) => void;
+  onEvent?: (event: SimplifiedOrchestrationEvent) => void;
+  onScenarioData?: (data: DemoDataSet) => void;
 }
 
 export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
-  currentAudience,
-  onAudienceChange,
-  availableScenarios,
-  onScenarioChange,
+  currentDataSet,
+  onDataSetChange,
   sessionId,
   autoStart = false,
-  maxDuration = 30,
-  adaptationEnabled = true,
-  onOrchestrationEvent,
-  onStateChange,
-  onDecisionMade
+  onEvent,
+  onScenarioData
 }) => {
-  // Core orchestration state
-  const [orchestrationState, setOrchestrationState] = useState<OrchestrationState | null>(null);
-  const [isActive, setIsActive] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const [currentDecision, setCurrentDecision] = useState<OrchestrationDecision | null>(null);
-  const [recentEvents, setRecentEvents] = useState<OrchestrationEvent[]>([]);
+  // Simplified demo state using Zustand store
+  const { isActive: demoActive, selectedDataSet, demoData, activateDemo, deactivateDemo } = useSimpleDemoStore();
+
+  // Component state
+  const [currentPhase, setCurrentPhase] = useState<ScenarioPhase>('initialization');
+  const [engagementLevel, setEngagementLevel] = useState<EngagementLevel>('medium');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [recentEvents, setRecentEvents] = useState<SimplifiedOrchestrationEvent[]>([]);
+  const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
+  const [completionPercentage, setCompletionPercentage] = useState(0);
 
   // UI state
   const [showAdvancedControls, setShowAdvancedControls] = useState(false);
-  const [showAnalytics, setShowAnalytics] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
 
-  // Refs for engine and intervals
-  const engineRef = useRef<DemoOrchestrationEngine | null>(null);
-  const orchestrationIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const eventListenerRef = useRef<((event: OrchestrationEvent) => void) | null>(null);
-
-  // Refs for latest state values (avoids stale closures in setInterval callbacks)
-  const isActiveRef = useRef(false);
-  const isPausedRef = useRef(false);
-
-  // Keep refs in sync with state
-  useEffect(() => { isActiveRef.current = isActive; }, [isActive]);
-  useEffect(() => { isPausedRef.current = isPaused; }, [isPaused]);
-
-  // Initialize orchestration engine
-  useEffect(() => {
-    if (!engineRef.current) {
-      engineRef.current = DemoOrchestrationEngine.getInstance();
-    }
-  }, []);
+  // Refs for intervals
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Auto-start if enabled
   useEffect(() => {
-    if (autoStart && !isActive && currentAudience) {
-      handleStartOrchestration();
+    if (autoStart && !demoActive && currentDataSet) {
+      handleStartScenario();
     }
-  }, [autoStart, currentAudience]);
+  }, [autoStart, demoActive, currentDataSet]);
 
-  // Event listener setup
+  // Monitor demo state changes
   useEffect(() => {
-    const handleEvent = (event: OrchestrationEvent) => {
-      setRecentEvents(prev => [event, ...prev.slice(0, 9)]);
-      onOrchestrationEvent?.(event);
+    if (demoActive && demoData) {
+      onScenarioData?.(demoData);
+      setCurrentPhase('execution');
+    } else {
+      setCurrentPhase('initialization');
+      setCompletionPercentage(0);
+    }
+  }, [demoActive, demoData, onScenarioData]);
 
-      // Handle specific event types
-      switch (event.type) {
-        case 'audience_analyzed':
-          if (event.data.detectedType !== currentAudience) {
-            onAudienceChange?.(event.data.detectedType);
-          }
-          break;
-        case 'scenario_selected':
-          onScenarioChange?.(event.data.scenarioType);
-          break;
-        case 'adaptation_triggered':
-          setCurrentDecision(event.data.decision);
-          break;
+  // Handle data set changes
+  useEffect(() => {
+    if (currentDataSet && currentDataSet !== selectedDataSet) {
+      if (demoActive) {
+        // Switch to new data set
+        activateDemo(currentDataSet);
+        emitEvent('scenario_changed', { newDataSet: currentDataSet, oldDataSet: selectedDataSet });
       }
+    }
+  }, [currentDataSet, selectedDataSet, demoActive, activateDemo]);
+
+  // Event emission helper
+  const emitEvent = useCallback((type: SimplifiedOrchestrationEvent['type'], data: any) => {
+    const event: SimplifiedOrchestrationEvent = {
+      id: `event-${Date.now()}`,
+      timestamp: new Date(),
+      type,
+      data
     };
 
-    eventListenerRef.current = handleEvent;
-    return () => {
-      eventListenerRef.current = null;
-    };
-  }, [currentAudience, onOrchestrationEvent, onAudienceChange, onScenarioChange]);
+    setRecentEvents(prev => [event, ...prev.slice(0, 9)]);
+    onEvent?.(event);
+  }, [onEvent]);
 
-  // Refs for callbacks (avoids stale closures in setInterval)
-  const onStateChangeRef = useRef(onStateChange);
-  const onDecisionMadeRef = useRef(onDecisionMade);
-  useEffect(() => { onStateChangeRef.current = onStateChange; }, [onStateChange]);
-  useEffect(() => { onDecisionMadeRef.current = onDecisionMade; }, [onDecisionMade]);
+  // Progress tracking
+  const updateProgress = useCallback(() => {
+    if (!sessionStartTime || !demoActive) return;
 
-  // Main orchestration loop
-  const runOrchestrationLoop = useCallback(async () => {
-    if (!engineRef.current || !isActiveRef.current || isPausedRef.current) return;
+    const elapsed = Date.now() - sessionStartTime.getTime();
+    const estimatedDuration = 30 * 1000; // 30 seconds for demo
+    const progress = Math.min(100, Math.round((elapsed / estimatedDuration) * 100));
 
-    setIsProcessing(true);
+    setCompletionPercentage(progress);
 
-    try {
-      const currentState = await engineRef.current.getCurrentState();
-      if (!currentState) return;
-
-      setOrchestrationState(currentState);
-      onStateChangeRef.current?.(currentState);
-
-      // Generate and execute decisions
-      const decision = await engineRef.current.generateOrchestrationDecisionForActiveSession();
-      if (decision) {
-        setCurrentDecision(decision);
-        onDecisionMadeRef.current?.(decision);
-
-        // Execute the decision
-        await executeOrchestrationAction(decision.decision.action);
-
-        // Emit orchestration event
-        const event: OrchestrationEvent = {
-          id: `event-${Date.now()}`,
-          timestamp: new Date(),
-          sessionId: currentState.sessionId,
-          type: 'adaptation_triggered',
-          data: { decision }
-        };
-
-        eventListenerRef.current?.(event);
+    if (progress >= 100) {
+      setCurrentPhase('completion');
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
       }
-    } catch (error) {
-      console.error('Orchestration loop error:', error);
-
-      const errorEvent: OrchestrationEvent = {
-        id: `error-${Date.now()}`,
-        timestamp: new Date(),
-        sessionId: orchestrationState?.sessionId || 'unknown',
-        type: 'error_occurred',
-        data: { error: error instanceof Error ? error.message : 'Unknown error' }
-      };
-
-      eventListenerRef.current?.(errorEvent);
-    } finally {
-      setIsProcessing(false);
     }
-  }, [orchestrationState?.sessionId]);
+  }, [sessionStartTime, demoActive]);
 
-  // Execute orchestration actions
-  const executeOrchestrationAction = async (action: OrchestrationAction) => {
-    switch (action.type) {
-      case 'continue':
-        // Continue current flow - no action needed
-        break;
+  // Start demo scenario
+  const handleStartScenario = async () => {
+    const targetDataSet = currentDataSet || 'institutional';
 
-      case 'adapt_scenario':
-        onScenarioChange?.(action.newScenario);
-        break;
-
-      case 'adjust_pace':
-        // Pace adjustment would be handled by parent components
-        break;
-
-      case 'change_focus':
-        // Focus change would trigger UI updates
-        break;
-
-      case 'provide_context':
-        // Context provision would update information displays
-        break;
-
-      case 'escalate_engagement':
-        // Engagement escalation would trigger interactive elements
-        break;
-
-      case 'prepare_exit':
-        // Exit preparation would prepare conclusion
-        break;
-    }
-  };
-
-  // Start orchestration session
-  const handleStartOrchestration = async () => {
-    if (!engineRef.current || !currentAudience) {
-      console.error('Cannot start orchestration: missing engine or audience');
+    if (!targetDataSet) {
+      console.error('Cannot start scenario: missing data set');
       return;
     }
 
     setIsProcessing(true);
+    setCurrentPhase('data_loading');
 
     try {
-      const config = {
+      // Activate the selected demo data set
+      activateDemo(targetDataSet);
+
+      // Set session start time and begin progress tracking
+      const startTime = new Date();
+      setSessionStartTime(startTime);
+      setCompletionPercentage(0);
+
+      // Start progress interval
+      progressIntervalRef.current = setInterval(updateProgress, 1000);
+
+      // Emit start event
+      emitEvent('scenario_started', {
         sessionId: sessionId || `session-${Date.now()}`,
-        audienceAnalysis: await engineRef.current.analyzeAudience(sessionId || `session-${Date.now()}`, {
-          type: currentAudience,
-          timestamp: new Date(),
-          engagementLevel: 'medium' as EngagementLevel,
-          knowledgeLevel: 'intermediate' as KnowledgeLevel,
-          objectives: ['education' as DemoObjective]
-        }),
-        contextAssessment: await engineRef.current.assessContext(sessionId || `session-${Date.now()}`, {
-          timeAvailable: maxDuration,
-          environment: 'desktop',
-          objectives: ['education' as DemoObjective]
-        }),
-        parameters: {
-          maxDuration,
-          adaptationEnabled,
-          fallbackScenarios: availableScenarios || [],
-          exitCriteria: []
-        },
-        aiConfig: {
-          adaptationSensitivity: 0.7,
-          contextualPrompting: true,
-          realTimeOptimization: true,
-          learningMode: true
-        }
-      };
+        dataSet: targetDataSet,
+        startTime
+      });
 
-      const initialState = await engineRef.current.startOrchestration(config);
-      setOrchestrationState(initialState);
-      setIsActive(true);
-      setIsPaused(false);
+      // Move to execution phase after loading
+      setTimeout(() => {
+        setCurrentPhase('execution');
+        emitEvent('data_loaded', { dataSet: targetDataSet });
+      }, 1000);
 
-      // Update refs immediately (before interval fires) to avoid stale closure issues
-      isActiveRef.current = true;
-      isPausedRef.current = false;
-
-      // Start orchestration loop
-      orchestrationIntervalRef.current = setInterval(runOrchestrationLoop, 5000); // Run every 5 seconds
-
-      const startEvent: OrchestrationEvent = {
-        id: `start-${Date.now()}`,
-        timestamp: new Date(),
-        sessionId: initialState.sessionId,
-        type: 'session_started',
-        data: { config }
-      };
-
-      eventListenerRef.current?.(startEvent);
     } catch (error) {
-      console.error('Failed to start orchestration:', error);
+      console.error('Failed to start scenario:', error);
+      setCurrentPhase('initialization');
     } finally {
       setIsProcessing(false);
     }
   };
 
-  // Pause orchestration
-  const handlePauseOrchestration = () => {
-    const newPaused = !isPaused;
-    setIsPaused(newPaused);
-    isPausedRef.current = newPaused;
+  // Change data set (simplified version of scenario change)
+  const handleChangeDataSet = (newDataSet: SimpleDemoDataSet) => {
+    if (newDataSet === selectedDataSet) return;
 
-    if (orchestrationIntervalRef.current && isPaused) {
-      clearInterval(orchestrationIntervalRef.current);
-      orchestrationIntervalRef.current = null;
-    } else if (!isPaused) {
-      orchestrationIntervalRef.current = setInterval(runOrchestrationLoop, 5000);
+    setIsProcessing(true);
+
+    try {
+      activateDemo(newDataSet);
+      onDataSetChange?.(newDataSet);
+
+      emitEvent('scenario_changed', {
+        newDataSet,
+        oldDataSet: selectedDataSet,
+        timestamp: new Date()
+      });
+    } finally {
+      setIsProcessing(false);
     }
   };
 
-  // Stop orchestration
-  const handleStopOrchestration = async () => {
-    if (orchestrationIntervalRef.current) {
-      clearInterval(orchestrationIntervalRef.current);
-      orchestrationIntervalRef.current = null;
+  // Stop demo scenario
+  const handleStopScenario = async () => {
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current);
+      progressIntervalRef.current = null;
     }
 
-    setIsActive(false);
-    setIsPaused(false);
-    isActiveRef.current = false;
-    isPausedRef.current = false;
-    setCurrentDecision(null);
+    deactivateDemo();
+    setCurrentPhase('initialization');
+    setCompletionPercentage(0);
+    setSessionStartTime(null);
 
-    if (engineRef.current && orchestrationState) {
-      try {
-        await engineRef.current.completeSession(orchestrationState.sessionId);
-
-        const endEvent: OrchestrationEvent = {
-          id: `end-${Date.now()}`,
-          timestamp: new Date(),
-          sessionId: orchestrationState.sessionId,
-          type: 'session_completed',
-          data: { result: 'manual_stop' }
-        };
-
-        eventListenerRef.current?.(endEvent);
-      } catch (error) {
-        console.error('Error completing session:', error);
-      }
-    }
-
-    setOrchestrationState(null);
+    emitEvent('session_completed', {
+      sessionId: sessionId || `session-${Date.now()}`,
+      endTime: new Date(),
+      result: 'manual_stop'
+    });
   };
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (orchestrationIntervalRef.current) {
-        clearInterval(orchestrationIntervalRef.current);
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
       }
     };
   }, []);
 
   // Helper functions for UI
-  const getPhaseIcon = (phase: OrchestrationPhase) => {
+  const getPhaseIcon = (phase: ScenarioPhase) => {
     switch (phase) {
       case 'initialization': return <CogIcon className="w-5 h-5" />;
-      case 'audience_analysis': return <UserGroupIcon className="w-5 h-5" />;
-      case 'context_assessment': return <ClockIcon className="w-5 h-5" />;
-      case 'scenario_selection': return <ChartBarIcon className="w-5 h-5" />;
+      case 'data_loading': return <ArrowPathIcon className="w-5 h-5 animate-spin" />;
       case 'execution': return <PlayCircleIcon className="w-5 h-5" />;
-      case 'adaptation': return <ArrowPathIcon className="w-5 h-5" />;
       case 'completion': return <CheckCircleIcon className="w-5 h-5" />;
     }
   };
@@ -377,11 +251,11 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
     }
   };
 
-  const getRiskColor = (risk: 'low' | 'medium' | 'high') => {
-    switch (risk) {
-      case 'low': return 'text-green-600 bg-green-50';
-      case 'medium': return 'text-amber-600 bg-amber-50';
-      case 'high': return 'text-red-600 bg-red-50';
+  const getDataSetDisplayName = (dataSet: SimpleDemoDataSet) => {
+    switch (dataSet) {
+      case 'institutional': return 'ESG Fund Manager';
+      case 'retail': return 'Sustainability Director';
+      case 'compliance': return 'Government Procurement';
     }
   };
 
@@ -395,39 +269,44 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
               <CogIcon className="w-6 h-6 text-blue-600" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">Demo Orchestration Engine</h2>
-              <p className="text-sm text-gray-500">AI-powered demo flow management</p>
+              <h2 className="text-lg font-semibold text-gray-900">Demo Scenario Manager</h2>
+              <p className="text-sm text-gray-500">Simplified demo orchestration with AI insights</p>
             </div>
           </div>
 
           <div className="flex items-center space-x-2">
             {/* Control buttons */}
-            {!isActive ? (
+            {!demoActive ? (
               <button
-                onClick={handleStartOrchestration}
-                disabled={!currentAudience || isProcessing}
+                onClick={handleStartScenario}
+                disabled={!currentDataSet || isProcessing}
                 className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <PlayCircleIcon className="w-5 h-5" />
-                <span>Start</span>
+                <span>Start Scenario</span>
               </button>
             ) : (
-              <>
-                <button
-                  onClick={handlePauseOrchestration}
-                  className="flex items-center space-x-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
-                >
-                  {isPaused ? <PlayCircleIcon className="w-5 h-5" /> : <PauseCircleIcon className="w-5 h-5" />}
-                  <span>{isPaused ? 'Resume' : 'Pause'}</span>
-                </button>
-                <button
-                  onClick={handleStopOrchestration}
-                  className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                >
-                  <StopCircleIcon className="w-5 h-5" />
-                  <span>Stop</span>
-                </button>
-              </>
+              <button
+                onClick={handleStopScenario}
+                className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                <StopCircleIcon className="w-5 h-5" />
+                <span>Stop</span>
+              </button>
+            )}
+
+            {/* Data set selector */}
+            {demoActive && selectedDataSet && (
+              <select
+                value={selectedDataSet}
+                onChange={(e) => handleChangeDataSet(e.target.value as SimpleDemoDataSet)}
+                disabled={isProcessing}
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm disabled:opacity-50"
+              >
+                <option value="institutional">ESG Fund Manager</option>
+                <option value="retail">Sustainability Director</option>
+                <option value="compliance">Government Procurement</option>
+              </select>
             )}
 
             <button
@@ -441,34 +320,32 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
       </div>
 
       {/* Status Display */}
-      {orchestrationState && (
+      {demoActive && (
         <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Current Phase */}
             <div className="flex items-center space-x-2">
-              {getPhaseIcon(orchestrationState.currentPhase)}
+              {getPhaseIcon(currentPhase)}
               <div>
                 <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Phase</p>
                 <p className="text-sm font-semibold text-gray-900">
-                  {orchestrationState.currentPhase.replace('_', ' ')}
+                  {currentPhase.replace('_', ' ')}
                 </p>
               </div>
             </div>
 
-            {/* Engagement Level */}
-            {orchestrationState.config.audienceAnalysis && (
-              <div className="flex items-center space-x-2">
-                <div className={`px-2 py-1 rounded-full text-xs font-medium ${getEngagementColor(orchestrationState.config.audienceAnalysis.engagementLevel)}`}>
-                  {orchestrationState.config.audienceAnalysis.engagementLevel}
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Engagement</p>
-                  <p className="text-sm font-semibold text-gray-900">
-                    {orchestrationState.performance.engagementTrend}
-                  </p>
-                </div>
+            {/* Data Set */}
+            <div className="flex items-center space-x-2">
+              <div className="px-2 py-1 bg-blue-100 rounded-full text-xs font-medium text-blue-700">
+                {selectedDataSet || 'None'}
               </div>
-            )}
+              <div>
+                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Scenario</p>
+                <p className="text-sm font-semibold text-gray-900">
+                  {selectedDataSet ? getDataSetDisplayName(selectedDataSet) : 'Not selected'}
+                </p>
+              </div>
+            </div>
 
             {/* Progress */}
             <div>
@@ -477,24 +354,24 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
                 <div className="flex-1 bg-gray-200 rounded-full h-2">
                   <div
                     className="bg-blue-600 h-2 rounded-full transition-all duration-500"
-                    style={{ width: `${orchestrationState.status.completionPercentage}%` }}
+                    style={{ width: `${completionPercentage}%` }}
                   />
                 </div>
                 <span className="text-sm font-semibold text-gray-900">
-                  {orchestrationState.status.completionPercentage}%
+                  {completionPercentage}%
                 </span>
               </div>
             </div>
 
-            {/* Risk Level */}
+            {/* Engagement Level */}
             <div className="flex items-center space-x-2">
-              <div className={`px-2 py-1 rounded-full text-xs font-medium ${getRiskColor(orchestrationState.performance.riskLevel)}`}>
-                {orchestrationState.performance.riskLevel}
+              <div className={`px-2 py-1 rounded-full text-xs font-medium ${getEngagementColor(engagementLevel)}`}>
+                {engagementLevel}
               </div>
               <div>
-                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Risk</p>
+                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Engagement</p>
                 <p className="text-sm font-semibold text-gray-900">
-                  {orchestrationState.performance.adaptationCount} adaptations
+                  Simulated
                 </p>
               </div>
             </div>
@@ -502,26 +379,26 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
         </div>
       )}
 
-      {/* Current Decision Display */}
-      {currentDecision && (
+      {/* Current Scenario Data Display */}
+      {demoData && (
         <div className="px-6 py-4 bg-blue-50 border-b border-blue-200">
           <div className="flex items-start space-x-3">
             <div className="p-1 bg-blue-100 rounded-lg">
-              <ArrowPathIcon className="w-5 h-5 text-blue-600" />
+              <UserGroupIcon className="w-5 h-5 text-blue-600" />
             </div>
             <div className="flex-1">
               <h4 className="text-sm font-semibold text-blue-900 mb-1">
-                Orchestration Decision: {currentDecision.decision.action.type}
+                Active Scenario: {demoData.persona.name} ({demoData.persona.title})
               </h4>
               <p className="text-sm text-blue-700 mb-2">
-                {currentDecision.decision.reasoning[0]}
+                Organisation: {demoData.persona.organisation}
               </p>
               <div className="flex items-center justify-between">
                 <span className="text-xs text-blue-600">
-                  Confidence: {Math.round(currentDecision.decision.confidence * 100)}%
+                  Base Price: ${demoData.marketData.basePrice}/tonne
                 </span>
                 <span className="text-xs text-blue-600">
-                  Expected improvement: +{Math.round(currentDecision.expectedOutcome.engagementImprovement)}%
+                  Target: {Math.round(demoData.portfolioMetrics.targetAllocation / 1000)}k allocation
                 </span>
               </div>
             </div>
@@ -574,13 +451,13 @@ export const DemoOrchestrator: React.FC<DemoOrchestratorProps> = ({
         </div>
       )}
 
-      {/* No audience warning */}
-      {!currentAudience && (
+      {/* No data set warning */}
+      {!currentDataSet && !demoActive && (
         <div className="px-6 py-4 bg-amber-50 border-l-4 border-amber-400">
           <div className="flex items-center space-x-2">
             <ExclamationTriangleIcon className="w-5 h-5 text-amber-600" />
             <p className="text-sm text-amber-700">
-              Please select an audience type to begin orchestration
+              Please select a data set to begin scenario orchestration
             </p>
           </div>
         </div>

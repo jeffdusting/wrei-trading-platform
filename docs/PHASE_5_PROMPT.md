@@ -8,6 +8,45 @@
 
 ---
 
+## CONTEXT FOR FRESH SESSIONS
+
+### What Should Be Complete Before Starting Phase 5
+1. **Phases 1-3**: Simplified demo system operational in application
+2. **Phase 4**: Complex demo infrastructure removed (99% code reduction achieved)
+3. **Current State**: Tests likely broken, documentation outdated
+
+### Pre-Assessment Commands
+```bash
+# Check current test status
+npm test
+
+# Review what was deleted in Phase 4
+git log --oneline -10
+
+# Verify simplified system still works
+npm run dev
+```
+
+### Task Management Context
+```bash
+# Verify Phase 4 completed
+TaskList  # Should show Task #4 as completed
+
+# Start Phase 5
+TaskUpdate taskId="5" status="in_progress"
+
+# When done
+TaskUpdate taskId="5" status="completed"
+```
+
+### Expected Broken Components After Phase 4
+Based on actual implementation, these files likely need test updates:
+- Tests importing removed complex demo components
+- Tests mocking complex `useDemoMode` hook (now should use `useSimpleDemoStore`)
+- Integration tests expecting tour/presentation functionality
+
+---
+
 ## Context & Objective
 
 **Problem**: Test suite broken by demo infrastructure removal; documentation outdated

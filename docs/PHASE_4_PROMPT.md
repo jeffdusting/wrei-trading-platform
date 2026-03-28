@@ -8,6 +8,42 @@
 
 ---
 
+## CONTEXT FOR FRESH SESSIONS
+
+### What Should Be Complete Before Starting Phase 4
+1. **Phase 1**: Simplified infrastructure built and working
+2. **Phase 2**: All Stage 2 AI components migrated to use `useSimpleDemoStore`
+3. **Phase 3**: Core application (layout.tsx, NavigationShell.tsx) switched to simplified system
+
+### Critical Pre-Flight Check
+Before removing any files, verify the application works with simplified demo system:
+```bash
+# Verify application runs without errors
+npm run dev
+
+# Check for any remaining complex demo imports
+grep -r "useDemoMode\|DemoDataProvider\|getESCDemoData" app/ components/
+# Should return minimal/no results if Phase 3 completed properly
+```
+
+### Task Management Context
+```bash
+# Verify Phase 3 completed
+TaskList  # Should show Task #3 as completed
+
+# Mark Phase 4 in progress
+TaskUpdate taskId="4" status="in_progress"
+```
+
+### Emergency Rollback Plan
+Keep git commit ready before starting deletions:
+```bash
+git add .
+git commit -m "🚨 CHECKPOINT: Before Phase 4 deletions - simplified system active"
+```
+
+---
+
 ## Context & Objective
 
 **Problem**: 25,400+ lines of complex demo infrastructure still exist

@@ -1,16 +1,17 @@
 'use client';
 
 /**
- * WREI Trading Platform - Dynamic Scenario Generator Component
+ * WREI Trading Platform - Simplified Scenario Generator Component
  *
- * Stage 2: Component 2 - Dynamic Scenario Generation Interface
- * React component for AI-powered scenario generation and configuration
+ * Stage 2: Component 2 - Simplified Scenario Generation Interface
+ * MIGRATED: Now uses simplified demo data instead of complex AI scenario generation
  *
- * Date: March 26, 2026
+ * Date: March 28, 2026
  */
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { DynamicScenarioEngine } from '@/lib/ai-scenario-generation/DynamicScenarioEngine';
+import React, { useState } from 'react';
+import { useSimpleDemoStore, SimpleDemoDataSet } from '@/lib/demo-mode/simple-demo-state';
+import { getDemoDataForSet } from '@/lib/demo-mode/demo-data-simple';
 import {
   GeneratedScenario,
   ScenarioGenerationConfig,

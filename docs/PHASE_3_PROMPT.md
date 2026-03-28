@@ -8,6 +8,46 @@
 
 ---
 
+## CONTEXT FOR FRESH SESSIONS
+
+### What Should Exist Before Starting Phase 3
+1. **Simplified Infrastructure** (Phase 1):
+   - `lib/demo-mode/simple-demo-state.ts` - Zustand store
+   - `lib/demo-mode/demo-data-simple.ts` - 3 data sets (institutional, retail, compliance)
+   - `components/demo/SimpleDemoToggle.tsx` - Basic toggle
+
+2. **Migrated Stage 2 Components** (Phase 2):
+   - `components/orchestration/DemoOrchestrator.tsx` - Uses `useSimpleDemoStore`
+   - `components/analytics/` components - Migrated to simplified data
+   - `components/audience/` components - Migrated to simplified data
+   - `components/generation/ScenarioGenerator.tsx` - Migrated to simplified data
+
+3. **Current State**: Application still uses complex demo system in layout/navigation
+
+### Verification Before Starting
+```bash
+# Verify simplified infrastructure exists
+ls lib/demo-mode/simple-demo-state.ts
+ls lib/demo-mode/demo-data-simple.ts
+
+# Verify Stage 2 components migrated (should import useSimpleDemoStore)
+grep -l "useSimpleDemoStore" components/orchestration/*.tsx
+```
+
+### Task Management
+```bash
+# Check current task status
+TaskList
+
+# Mark Task #3 as in progress when starting
+TaskUpdate taskId="3" status="in_progress"
+
+# Mark Task #3 as completed when done
+TaskUpdate taskId="3" status="completed"
+```
+
+---
+
 ## Context & Objective
 
 **Problem**: Application still uses complex demo system in core integration points
