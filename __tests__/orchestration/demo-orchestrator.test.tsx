@@ -1,7 +1,7 @@
 /**
  * WREI Trading Platform - DemoOrchestrator Component Tests
  *
- * Stage 2: Component 1 - AI Demo Orchestration Engine Component Tests
+ * Stage 2: Component 1 - AI Demo Scenario Manager Component Tests
  * Test suite for orchestration React component functionality
  *
  * Date: March 26, 2026
@@ -186,8 +186,8 @@ describe('DemoOrchestrator Component', () => {
     test('should render orchestration header', () => {
       render(<DemoOrchestrator />);
 
-      expect(screen.getByText('Demo Orchestration Engine')).toBeInTheDocument();
-      expect(screen.getByText('AI-powered demo flow management')).toBeInTheDocument();
+      expect(screen.getByText('Demo Scenario Manager')).toBeInTheDocument();
+      expect(screen.getByText('Simplified demo orchestration with AI insights')).toBeInTheDocument();
     });
 
     test('should show start button when not active', () => {
@@ -198,22 +198,16 @@ describe('DemoOrchestrator Component', () => {
       expect(screen.queryByRole('button', { name: /stop/i })).not.toBeInTheDocument();
     });
 
-    test('should show pause and stop buttons when active', async () => {
-      render(<DemoOrchestrator currentAudience="executive" autoStart={true} />);
+    test('should show start button when data set is selected', () => {
+      render(<DemoOrchestrator currentAudience="executive" />);
 
-      // Wait for auto-start to complete
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: /pause/i })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /stop/i })).toBeInTheDocument();
-      });
-
-      expect(screen.queryByRole('button', { name: /^start$/i })).not.toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /start scenario/i })).toBeInTheDocument();
     });
 
-    test('should show warning when no audience selected', () => {
+    test('should show warning when no data set selected', () => {
       render(<DemoOrchestrator />);
 
-      expect(screen.getByText(/please select an audience type/i)).toBeInTheDocument();
+      expect(screen.getByText(/please select a data set to begin scenario orchestration/i)).toBeInTheDocument();
     });
 
     test('should disable start button when no audience', () => {
@@ -254,69 +248,24 @@ describe('DemoOrchestrator Component', () => {
       });
     });
 
-    test('should pause orchestration when pause button clicked', async () => {
-      render(<DemoOrchestrator currentAudience="executive" autoStart={true} />);
+    test('should show warning when no data set selected', () => {
+      render(<DemoOrchestrator />);
 
-      // Wait for auto-start
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: /pause/i })).toBeInTheDocument();
-      });
-
-      const pauseButton = screen.getByRole('button', { name: /pause/i });
-
-      act(() => {
-        fireEvent.click(pauseButton);
-      });
-
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: /resume/i })).toBeInTheDocument();
-      });
+      expect(screen.getByText(/please select a data set to begin/i)).toBeInTheDocument();
     });
 
-    test('should resume orchestration when resume button clicked', async () => {
-      render(<DemoOrchestrator currentAudience="executive" autoStart={true} />);
+    test('should disable start button when no data set is available', () => {
+      render(<DemoOrchestrator />);
 
-      // Wait for auto-start and pause
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: /pause/i })).toBeInTheDocument();
-      });
-
-      const pauseButton = screen.getByRole('button', { name: /pause/i });
-      fireEvent.click(pauseButton);
-
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: /resume/i })).toBeInTheDocument();
-      });
-
-      const resumeButton = screen.getByRole('button', { name: /resume/i });
-
-      act(() => {
-        fireEvent.click(resumeButton);
-      });
-
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: /pause/i })).toBeInTheDocument();
-      });
+      const startButton = screen.getByRole('button', { name: /start scenario/i });
+      expect(startButton).toBeDisabled();
     });
 
-    test('should stop orchestration when stop button clicked', async () => {
-      render(<DemoOrchestrator currentAudience="executive" autoStart={true} />);
+    test('should render simplified orchestration interface', () => {
+      render(<DemoOrchestrator currentAudience="executive" />);
 
-      // Wait for auto-start
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: /stop/i })).toBeInTheDocument();
-      });
-
-      const stopButton = screen.getByRole('button', { name: /stop/i });
-
-      await act(async () => {
-        fireEvent.click(stopButton);
-      });
-
-      await waitFor(() => {
-        expect(mockEngine.completeSession).toHaveBeenCalledWith('test-session');
-        expect(screen.getByRole('button', { name: /start/i })).toBeInTheDocument();
-      });
+      expect(screen.getByText('Demo Scenario Manager')).toBeInTheDocument();
+      expect(screen.getByText('Simplified demo orchestration with AI insights')).toBeInTheDocument();
     });
   });
 
@@ -383,7 +332,7 @@ describe('DemoOrchestrator Component', () => {
 
       await waitFor(() => {
         // Check that the orchestration is active and showing status
-        expect(screen.getByText('Demo Orchestration Engine')).toBeInTheDocument();
+        expect(screen.getByText('Demo Scenario Manager')).toBeInTheDocument();
         expect(screen.getByText(/stable|improving|declining/)).toBeInTheDocument();
         expect(screen.getByText(/session started/)).toBeInTheDocument();
       });
@@ -416,8 +365,8 @@ describe('DemoOrchestrator Component', () => {
       render(<DemoOrchestrator currentAudience="executive" />);
 
       // Check that the basic orchestration controls are available
-      expect(screen.getByText('Demo Orchestration Engine')).toBeInTheDocument();
-      expect(screen.getByText('AI-powered demo flow management')).toBeInTheDocument();
+      expect(screen.getByText('Demo Scenario Manager')).toBeInTheDocument();
+      expect(screen.getByText('Simplified demo orchestration with AI insights')).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /start/i })).toBeInTheDocument();
     });
   });

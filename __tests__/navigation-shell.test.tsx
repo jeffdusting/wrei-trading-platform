@@ -8,6 +8,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { usePathname } from 'next/navigation';
 import NavigationShell from '@/components/navigation/NavigationShell';
+import { SimpleDemoProvider } from '@/components/demo/SimpleDemoProvider';
 
 // Mock Next.js navigation
 jest.mock('next/navigation', () => ({
@@ -36,7 +37,11 @@ describe('NavigationShell Component', () => {
   });
 
   test('renders all navigation links correctly', () => {
-    render(<NavigationShell>{mockChildren}</NavigationShell>);
+    render(
+      <SimpleDemoProvider>
+        <NavigationShell>{mockChildren}</NavigationShell>
+      </SimpleDemoProvider>
+    );
 
     // Check all navigation links are present
     expect(screen.getByRole('link', { name: /home/i })).toBeInTheDocument();
@@ -48,7 +53,11 @@ describe('NavigationShell Component', () => {
   });
 
   test('displays Water Roads branding correctly', () => {
-    render(<NavigationShell>{mockChildren}</NavigationShell>);
+    render(
+      <SimpleDemoProvider>
+        <NavigationShell>{mockChildren}</NavigationShell>
+      </SimpleDemoProvider>
+    );
 
     // Check branding elements
     expect(screen.getByText('Water Roads')).toBeInTheDocument();
@@ -57,7 +66,11 @@ describe('NavigationShell Component', () => {
 
   test('highlights active route correctly', () => {
     mockUsePathname.mockReturnValue('/negotiate');
-    render(<NavigationShell>{mockChildren}</NavigationShell>);
+    render(
+      <SimpleDemoProvider>
+        <NavigationShell>{mockChildren}</NavigationShell>
+      </SimpleDemoProvider>
+    );
 
     const negotiateLink = screen.getByRole('link', { name: /negotiate/i });
     expect(negotiateLink).toHaveClass('bg-[#0EA5E9]', 'text-white');
@@ -65,7 +78,11 @@ describe('NavigationShell Component', () => {
 
   test('home route active state works correctly', () => {
     mockUsePathname.mockReturnValue('/');
-    render(<NavigationShell>{mockChildren}</NavigationShell>);
+    render(
+      <SimpleDemoProvider>
+        <NavigationShell>{mockChildren}</NavigationShell>
+      </SimpleDemoProvider>
+    );
 
     const homeLink = screen.getByRole('link', { name: /home/i });
     expect(homeLink).toHaveClass('bg-[#0EA5E9]', 'text-white');
@@ -73,14 +90,22 @@ describe('NavigationShell Component', () => {
 
   test('nested routes highlight parent correctly', () => {
     mockUsePathname.mockReturnValue('/institutional/portal');
-    render(<NavigationShell>{mockChildren}</NavigationShell>);
+    render(
+      <SimpleDemoProvider>
+        <NavigationShell>{mockChildren}</NavigationShell>
+      </SimpleDemoProvider>
+    );
 
     const institutionalLink = screen.getByRole('link', { name: /institutional/i });
     expect(institutionalLink).toHaveClass('bg-[#0EA5E9]', 'text-white');
   });
 
   test('mobile menu toggle works correctly', async () => {
-    render(<NavigationShell>{mockChildren}</NavigationShell>);
+    render(
+      <SimpleDemoProvider>
+        <NavigationShell>{mockChildren}</NavigationShell>
+      </SimpleDemoProvider>
+    );
 
     // Mobile menu should be hidden initially
     expect(screen.queryByText('AI Carbon Credit Trading')).not.toBeInTheDocument();
@@ -105,7 +130,11 @@ describe('NavigationShell Component', () => {
   });
 
   test('mobile menu closes when link is clicked', async () => {
-    render(<NavigationShell>{mockChildren}</NavigationShell>);
+    render(
+      <SimpleDemoProvider>
+        <NavigationShell>{mockChildren}</NavigationShell>
+      </SimpleDemoProvider>
+    );
 
     // Open mobile menu
     const menuButton = screen.getByRole('button', { name: /toggle mobile menu/i });
@@ -127,14 +156,22 @@ describe('NavigationShell Component', () => {
   });
 
   test('children content is rendered correctly', () => {
-    render(<NavigationShell>{mockChildren}</NavigationShell>);
+    render(
+      <SimpleDemoProvider>
+        <NavigationShell>{mockChildren}</NavigationShell>
+      </SimpleDemoProvider>
+    );
 
     expect(screen.getByTestId('mock-children')).toBeInTheDocument();
     expect(screen.getByText('Test Content')).toBeInTheDocument();
   });
 
   test('footer content is present', () => {
-    render(<NavigationShell>{mockChildren}</NavigationShell>);
+    render(
+      <SimpleDemoProvider>
+        <NavigationShell>{mockChildren}</NavigationShell>
+      </SimpleDemoProvider>
+    );
 
     expect(screen.getByText(/© 2026 Water Roads/)).toBeInTheDocument();
     expect(screen.getByText(/WREI Platform powered by Claude AI/)).toBeInTheDocument();
@@ -142,7 +179,11 @@ describe('NavigationShell Component', () => {
   });
 
   test('navigation links have correct hrefs', () => {
-    render(<NavigationShell>{mockChildren}</NavigationShell>);
+    render(
+      <SimpleDemoProvider>
+        <NavigationShell>{mockChildren}</NavigationShell>
+      </SimpleDemoProvider>
+    );
 
     expect(screen.getByRole('link', { name: /home/i })).toHaveAttribute('href', '/');
     expect(screen.getByRole('link', { name: /negotiate/i })).toHaveAttribute('href', '/negotiate');
@@ -153,7 +194,11 @@ describe('NavigationShell Component', () => {
   });
 
   test('all routes are accessible via navigation', () => {
-    render(<NavigationShell>{mockChildren}</NavigationShell>);
+    render(
+      <SimpleDemoProvider>
+        <NavigationShell>{mockChildren}</NavigationShell>
+      </SimpleDemoProvider>
+    );
 
     const expectedRoutes = ['/', '/negotiate', '/institutional/portal', '/compliance', '/scenario', '/performance'];
     const links = screen.getAllByRole('link');

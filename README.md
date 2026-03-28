@@ -15,16 +15,18 @@ A Next.js 14 application demonstrating Water Roads' WREI carbon credit trading p
 - **Australian English**: Localised language throughout the platform
 
 ### **Stage 2: AI-Enhanced Platform (March 2026)**
-- **🎯 AI Demo Orchestration**: Intelligent tour management with contextual guidance
+- **🎯 AI Demo Orchestration**: Simplified scenario manager with AI insights
 - **🧠 Dynamic Scenario Generation**: AI-powered market simulation and stress testing
 - **📊 Intelligent Analytics Dashboard**: Predictive insights with machine learning
-- **🎨 Adaptive Presentation Layer**: Audience-specific content optimization
 - **👥 Multi-Audience System**: Executive, Technical, and Compliance interfaces
+
+~~**Removed in Phase 5 Simplification:**~~
+~~🎨 Adaptive Presentation Layer: Audience-specific content optimization~~
 
 ### Advanced Capabilities
 - **Investment Calculator**: Sophisticated financial modelling with scenario comparison
 - **Compliance Dashboard**: Real-time regulatory compliance monitoring
-- **Demo Mode**: Guided tours with pre-populated data and contextual overlays
+- **Demo Mode**: Simple trading simulation with realistic dummy data
 - **Developer Portal**: API Explorer with comprehensive documentation
 - **Scenario Simulation**: Market stress testing and portfolio optimization
 - **Performance Monitoring**: Real-time system health and analytics
@@ -114,13 +116,15 @@ npm start
 /components
   /analytics/                       # Analytics dashboards and charts
   /audience/                       # **Stage 2:** Multi-audience system
-  /orchestration/                  # **Stage 2:** Demo orchestration
+  /orchestration/                  # **Stage 2:** Simplified demo orchestration
   /generation/                     # **Stage 2:** Scenario generation
-  /presentation/                   # **Stage 2:** Adaptive presentation
   /institutional/                  # Institutional onboarding components
   /negotiation/                    # Negotiation-specific UI components
   /charts/                         # Recharts-based visualization components
-  /demo/                          # Demo mode and tour overlays
+  /demo/                          # Simple demo mode components
+
+~~**Removed:**~~
+~~presentation/                   # Stage 2: Adaptive presentation~~
   /professional/                  # Professional-grade UI components
 /lib
   /types.ts                       # TypeScript type definitions
@@ -129,7 +133,7 @@ npm start
   /defence.ts                     # Security layers and validation
   /analytics-utils.ts             # Analytics utility functions
   /ai-scenario-generation/        # **Stage 2:** AI scenario engine
-  /demo-mode/                     # Demo state management (Zustand)
+  /demo-mode/                     # Simple demo state management (Zustand)
   /config/                        # **Stage 2:** Configuration modules
   /services/                      # **Stage 2:** Service layer
 /hooks

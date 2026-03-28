@@ -1,7 +1,8 @@
 # WREI Trading Platform -- API Reference and Integration Guide
 
-**Document Version:** 2.0
-**Date:** 2026-03-27
+**Document Version:** 2.1
+**Date:** 2026-03-28
+**Update:** Phase 5 - Removed presentation API endpoints
 
 ---
 
@@ -453,63 +454,11 @@ AI-powered scenario generation for market simulations and stress testing.
 
 ---
 
-### 4.3 Adaptive Presentation API
+~~### 4.3 Removed: Adaptive Presentation API~~
 
-**Endpoint:** `POST /api/presentation/adapt`
+~~**Endpoint:** `POST /api/presentation/adapt`~~
 
-AI-driven content adaptation for audience-specific presentations.
-
-**Request Body:**
-```json
-{
-  "audience": "executive",
-  "content": {
-    "type": "market_analysis",
-    "data": {
-      "metrics": ["roi", "risk_assessment", "market_position"],
-      "timeframe": "quarterly",
-      "detailLevel": "high_level"
-    }
-  },
-  "presentationContext": {
-    "format": "board_presentation",
-    "duration": 15,
-    "interactivityLevel": "medium"
-  }
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "adaptedContent": {
-      "title": "Q2 2026 Carbon Trading Performance - Executive Summary",
-      "sections": [
-        {
-          "title": "Key Performance Indicators",
-          "content": "Portfolio generated 18.3% ROI with controlled risk exposure...",
-          "visualizations": ["executive_dashboard", "roi_trend_chart"],
-          "talkingPoints": [
-            "Strong outperformance vs benchmark",
-            "Risk metrics within acceptable parameters"
-          ]
-        }
-      ],
-      "recommendations": [
-        "Continue current strategy with minor portfolio rebalancing",
-        "Consider increasing allocation to verified credits by 10%"
-      ]
-    },
-    "aiOptimizations": {
-      "contentAdjustments": "Simplified technical jargon for executive audience",
-      "visualDesign": "Emphasised high-level metrics with clear ROI focus",
-      "narrativeFlow": "Structured for 15-minute executive attention span"
-    }
-  }
-}
-```
+~~AI-driven content adaptation for audience-specific presentations was removed in Phase 4 demo simplification.~~
 
 ---
 

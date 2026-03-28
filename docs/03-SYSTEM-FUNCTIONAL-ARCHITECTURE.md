@@ -1,7 +1,8 @@
 # WREI Trading Platform -- System Functional Architecture
 
-**Document Version:** 2.0
-**Date:** 2026-03-27
+**Document Version:** 2.1
+**Date:** 2026-03-28
+**Update:** Phase 5 - Simplified demo system architecture
 
 ---
 
@@ -16,7 +17,7 @@
 | `/institutional/portal` | `app/institutional/portal/page.tsx` | Client | 6-step institutional onboarding wizard |
 | `/calculator` | `app/calculator/page.tsx` | Client | Investment calculator with scenario comparison |
 | `/compliance` | `app/compliance/page.tsx` | Client | Regulatory compliance map and status dashboard |
-| `/demo` | `app/demo/page.tsx` | Client | Demo mode landing with tour selection |
+| `/demo` | `app/demo/page.tsx` | Client | Demo mode landing with data set selection |
 | `/developer` | `app/developer/page.tsx` | Client | API Explorer, Quick Start Guide, documentation |
 | `/scenario` | `app/scenario/page.tsx` | Client | Scenario simulation selector and engine |
 | `/simulate` | `app/simulate/page.tsx` | Client | Alternative simulation entry point |
@@ -30,7 +31,6 @@
 | `/api/analytics` | `app/api/analytics/route.ts` | POST | Financial calculation engine |
 | `/api/analytics/predict` | `app/api/analytics/predict/route.ts` | POST | **Stage 2:** Intelligent predictive analytics |
 | `/api/scenarios/generate` | `app/api/scenarios/generate/route.ts` | POST | **Stage 2:** Dynamic scenario generation |
-| `/api/presentation/adapt` | `app/api/presentation/adapt/route.ts` | POST | **Stage 2:** Adaptive presentation layer |
 | `/api/compliance` | `app/api/compliance/route.ts` | GET, POST | Compliance reporting and assessment |
 | `/api/market-data` | `app/api/market-data/route.ts` | GET | Market data feeds and intelligence |
 | `/api/metadata` | `app/api/metadata/route.ts` | GET | Token metadata queries |
@@ -43,7 +43,7 @@
 ### Root Layout (`app/layout.tsx`)
 ```
 RootLayout
-  -> DemoDataProvider (demo mode context injection)
+  -> SimpleDemoProvider (simplified demo mode context injection)
     -> NavigationShell (persistent navigation, market ticker, demo controls)
       -> {children} (page content)
 ```
@@ -190,10 +190,13 @@ All charts use Recharts with Australian currency formatting and the WREI colour 
 
 | Component | Purpose |
 |-----------|---------|
-| `DemoDataProvider` | Context provider for demo data injection |
-| `DemoControlBar` | Tour navigation controls |
+| `SimpleDemoProvider` | Simple context provider for demo data injection |
+| `SimpleDemoToggle` | Basic demo mode activation toggle |
 | `DemoModeToggle` | Demo mode activation button |
-| `TourOverlay` | Step-by-step tour overlay with highlights |
+
+~~### Removed Components~~
+~~| `DemoControlBar` | Tour navigation controls |~~
+~~| `TourOverlay` | Step-by-step tour overlay with highlights |~~
 
 ### Professional Components (`components/professional/`)
 
@@ -248,17 +251,15 @@ All charts use Recharts with Australian currency formatting and the WREI colour 
 #### Orchestration System (`components/orchestration/`)
 | Component | Purpose |
 |-----------|---------|
-| `DemoOrchestrator` | **Stage 2 Component 1:** AI-powered demo orchestration engine with intelligent tour management |
+| `DemoOrchestrator` | **Stage 2 Component 1:** Simplified demo scenario manager with AI insights |
 
 #### Scenario Generation (`components/generation/`)
 | Component | Purpose |
 |-----------|---------|
 | `ScenarioGenerator` | **Stage 2 Component 2:** Dynamic scenario generation with AI-powered content creation |
 
-#### Presentation Layer (`components/presentation/`)
-| Component | Purpose |
-|-----------|---------|
-| `AdaptivePresentationDashboard` | **Stage 2 Component 4:** Adaptive presentation layer with audience-specific content |
+~~#### Removed: Presentation Layer (`components/presentation/`)~~
+~~| `AdaptivePresentationDashboard` | **Stage 2 Component 4:** Adaptive presentation layer with audience-specific content |~~
 
 #### Multi-Audience System (`components/audience/`)
 | Component | Purpose |
@@ -363,12 +364,15 @@ GET /api/market-data?action=<action>
 - **Each Onboarding Step:** Internal `useState` for form fields and validation
 
 ### Global State (Zustand)
-- **Demo Mode State Manager:** Zustand store for demo mode, including:
-  - `isActive`, `currentTour`, `tourStep`
-  - `presentationMode` (guided, self-service, investor-briefing)
-  - `prePopulatedData` (injected demo datasets)
-  - `progress` (completed steps, interactions, session metrics)
-  - Actions: `activateDemo()`, `deactivateDemo()`, `startTour()`, `nextStep()`, `previousStep()`, etc.
+- **Simple Demo State Manager:** Zustand store for simplified demo mode, including:
+  - `isActive`, `selectedDataSet`, `demoData`
+  - Data sets: `institutional`, `retail`, `compliance`
+  - Actions: `activateDemo()`, `deactivateDemo()`, `getDemoData()`
+
+~~### Removed: Complex Demo Features~~
+~~- Tour system with step navigation~~
+~~- Presentation modes and scripting~~
+~~- Complex progress tracking~~
 
 ### Server-Side State
 - **In-Memory Rate Limiting:** `Map<string, {count, resetTime}>` per API key

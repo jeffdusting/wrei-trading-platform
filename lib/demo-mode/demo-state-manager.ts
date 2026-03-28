@@ -62,3 +62,28 @@ export const isSimpleDemoActive = () => {
 export const getSimpleDemoData = () => {
   return useSimpleDemoStore.getState().demoData;
 };
+
+// Compatibility export for components that haven't been updated yet
+export const useDemoMode = () => {
+  const store = useSimpleDemoStore();
+  return {
+    isActive: store.isActive,
+    selectedDataSet: store.selectedDataSet,
+    demoData: store.demoData,
+    activateDemo: store.activateDemo,
+    deactivateDemo: store.deactivateDemo,
+    getDemoData: store.getDemoData,
+    // Stub functions for removed functionality
+    currentTour: null,
+    showTourOverlay: false,
+    loadESCMarketContext: () => {},
+    configureNorthmoreGordonBranding: () => {},
+    trackInteraction: () => {},
+    startTour: () => {},
+    endTour: () => {},
+    nextStep: () => {},
+    skipStep: () => {},
+    getESCDemoData: () => ({}),
+    getNorthmoreGordonContext: () => ({})
+  };
+};
