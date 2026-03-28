@@ -95,7 +95,7 @@ export default function DemoModeToggle({ className = '', compact = false }: Demo
 
       {/* Dropdown */}
       {dropdownOpen && (
-        <div className="absolute top-full right-0 mt-2 w-72 bg-white border border-gray-200 rounded-lg shadow-xl z-[60]">
+        <div className="absolute top-full right-0 mt-2 w-72 bg-white border border-gray-200 rounded-lg shadow-xl z-[100]">
           <div className="p-3">
             <h3 className="font-semibold text-gray-900 mb-2 text-sm">Choose Demo Experience</h3>
 
@@ -190,7 +190,7 @@ export function DemoPresentationStatus() {
   const progress = ((tourStep + 1) / tour.steps.length) * 100;
 
   return (
-    <div className="fixed top-4 right-4 bg-black/80 text-white rounded-lg px-4 py-2 z-[60]">
+    <div className="fixed top-4 right-4 bg-black/80 text-white rounded-lg px-4 py-2 z-[100]">
       <div className="flex items-center gap-3">
         <div className="text-sm font-medium">Investor Briefing</div>
         <div className="w-24 bg-white/20 rounded-full h-1">
