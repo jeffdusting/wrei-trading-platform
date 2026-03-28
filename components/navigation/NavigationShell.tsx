@@ -4,10 +4,8 @@ import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { MarketTicker } from '../market'
-import DemoModeToggle, { DemoPresentationStatus, DemoDataIndicator } from '../demo/DemoModeToggle'
-import DemoControlBar from '../demo/DemoControlBar'
-import TourOverlay from '../demo/TourOverlay'
-import { useDemoMode } from '@/lib/demo-mode/demo-state-manager'
+import { SimpleDemoToggle } from '../demo/SimpleDemoToggle'
+import { useSimpleDemoMode } from '../demo/SimpleDemoProvider'
 
 interface NavigationItem {
   label: string
@@ -30,7 +28,7 @@ const navigationItems: NavigationItem[] = [
 export default function NavigationShell({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
-  const { isActive: isDemoActive, currentTour } = useDemoMode()
+  const { isActive: isDemoActive } = useSimpleDemoMode()
 
   const isActive = (href: string) => {
     if (href === '/') {
@@ -79,16 +77,16 @@ export default function NavigationShell({ children }: { children: React.ReactNod
                 ))}
               </div>
 
-              {/* Demo Mode Toggle Button (activation only -- controls move to bar below) */}
+              {/* Demo Mode Toggle Button */}
               <div className="border-l border-slate-600 pl-2 xl:pl-4 flex-shrink-0">
-                <DemoModeToggle compact />
+                <SimpleDemoToggle />
               </div>
             </div>
 
             {/* Mobile menu button */}
             <div className="lg:hidden flex items-center gap-2">
               {/* Mobile demo toggle */}
-              <DemoModeToggle compact />
+              <SimpleDemoToggle />
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="text-slate-300 hover:text-white focus:outline-none focus:text-white p-2"
@@ -132,14 +130,12 @@ export default function NavigationShell({ children }: { children: React.ReactNod
         </div>
       </nav>
 
-      {/* Demo Control Bar -- separate row when tour is active */}
-      {isDemoActive && <DemoControlBar />}
 
       {/* Market Ticker */}
       <MarketTicker
         updateInterval={5000}
         showDetails={true}
-        className={`sticky ${isDemoActive ? 'top-[104px]' : 'top-16'} z-40`}
+        className="sticky top-16 z-40"
       />
 
       {/* Page Content */}
@@ -147,10 +143,6 @@ export default function NavigationShell({ children }: { children: React.ReactNod
         {children}
       </main>
 
-      {/* Demo Mode Overlays and Indicators */}
-      <TourOverlay />
-      <DemoPresentationStatus />
-      <DemoDataIndicator />
 
       {/* Footer */}
       <footer className="bg-[#1B2A4A] text-slate-300 py-8">
