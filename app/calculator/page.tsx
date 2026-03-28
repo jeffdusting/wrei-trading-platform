@@ -10,47 +10,56 @@ export default function CalculatorPage() {
   const [activeTab, setActiveTab] = useState<TabKey>('calculator')
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-slate-50">
       {/* Page Header */}
-      <div className="bg-[#1B2A4A] text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-2xl font-bold">WREI Investment Calculator</h1>
-          <p className="text-slate-300 mt-1">
-            Model returns across carbon credit and infrastructure-backed token investments
-          </p>
+      <div className="bg-white border-b border-slate-200 px-6 py-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="bloomberg-page-heading text-slate-800">Investment Calculator</h1>
+              <p className="bloomberg-body-text text-slate-600 mt-1">
+                Model returns across carbon credit and infrastructure-backed token investments
+              </p>
+            </div>
+            <div className="bloomberg-section-label">
+              CAL
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Tab Navigation */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-        <div className="flex border-b border-slate-200">
-          <button
-            onClick={() => setActiveTab('calculator')}
-            className={`py-3 px-6 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'calculator'
-                ? 'border-[#0EA5E9] text-[#0EA5E9]'
-                : 'border-transparent text-[#64748B] hover:text-[#1E293B]'
-            }`}
-            data-testid="tab-calculator"
-          >
-            Investment Calculator
-          </button>
-          <button
-            onClick={() => setActiveTab('compare')}
-            className={`py-3 px-6 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'compare'
-                ? 'border-[#0EA5E9] text-[#0EA5E9]'
-                : 'border-transparent text-[#64748B] hover:text-[#1E293B]'
-            }`}
-            data-testid="tab-compare"
-          >
-            Scenario Comparison
-          </button>
+      <div className="bg-white border-b border-slate-200 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex space-x-1">
+            <button
+              onClick={() => setActiveTab('calculator')}
+              className={`px-4 py-2 bloomberg-nav-item transition-all duration-200 border-b-2 ${
+                activeTab === 'calculator'
+                  ? 'border-blue-500 text-blue-600 bg-blue-50'
+                  : 'border-transparent text-slate-600 hover:text-slate-800 hover:bg-slate-50'
+              }`}
+              data-testid="tab-calculator"
+            >
+              Investment Calculator
+            </button>
+            <button
+              onClick={() => setActiveTab('compare')}
+              className={`px-4 py-2 bloomberg-nav-item transition-all duration-200 border-b-2 ${
+                activeTab === 'compare'
+                  ? 'border-blue-500 text-blue-600 bg-blue-50'
+                  : 'border-transparent text-slate-600 hover:text-slate-800 hover:bg-slate-50'
+              }`}
+              data-testid="tab-compare"
+            >
+              Scenario Comparison
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Tab Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto px-6 py-8">
         {activeTab === 'calculator' && <InvestmentCalculator />}
         {activeTab === 'compare' && <ScenarioCompare />}
       </div>

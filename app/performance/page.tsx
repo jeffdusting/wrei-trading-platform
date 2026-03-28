@@ -63,20 +63,25 @@ export default function PerformancePage() {
   };
 
   return (
-    <div className="bg-slate-50" data-demo="performance-dashboard">
+    <div className="min-h-screen bg-slate-50" data-demo="performance-dashboard">
       {/* Page Header */}
-      <div className="bg-white border-b border-slate-200 px-6 py-6" data-demo="analytics-suite">
+      <div className="bg-white border-b border-slate-200 px-6 py-4" data-demo="analytics-suite">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">WREI Performance Center</h1>
-              <p className="text-slate-600 mt-1">Real-time performance monitoring and system health</p>
+              <h1 className="bloomberg-page-heading text-slate-800">Performance Center</h1>
+              <p className="bloomberg-body-text text-slate-600 mt-1">Real-time performance monitoring and system health</p>
             </div>
-            <div className="flex items-center space-x-2">
-              <div className={`w-3 h-3 rounded-full ${loading ? 'bg-yellow-400' : 'bg-green-500'}`}></div>
-              <span className="text-sm text-slate-600">
-                {loading ? 'Loading...' : 'Live Data'}
-              </span>
+            <div className="flex items-center gap-4">
+              <div className="bloomberg-section-label">
+                PRF
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className={`w-3 h-3 rounded-full ${loading ? 'bg-yellow-400' : 'bg-green-500'}`}></div>
+                <span className="bloomberg-small-text text-slate-600">
+                  {loading ? 'Loading...' : 'Live Data'}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -136,7 +141,7 @@ export default function PerformancePage() {
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
               <div className="flex items-center mb-4">
                 <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                  <span className="text-green-600">⚡</span>
+                  <div className="w-2 h-2 bg-green-600 rounded-full"></div>
                 </div>
                 <h3 className="text-lg font-semibold text-slate-900 ml-3">Performance Optimization</h3>
               </div>
@@ -153,7 +158,7 @@ export default function PerformancePage() {
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
               <div className="flex items-center mb-4">
                 <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <span className="text-purple-600">🧪</span>
+                  <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
                 </div>
                 <h3 className="text-lg font-semibold text-slate-900 ml-3">Load Testing & Benchmarking</h3>
               </div>
@@ -352,20 +357,20 @@ export default function PerformancePage() {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-4">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
-               Open Performance Dashboard
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded bloomberg-body-text font-medium transition-colors">
+              Open Performance Dashboard
             </button>
-            <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
-              🧪 Run Benchmark Tests
+            <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded bloomberg-body-text font-medium transition-colors">
+              Run Benchmark Tests
             </button>
-            <button className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
-              ⚡ View Optimization Reports
+            <button className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded bloomberg-body-text font-medium transition-colors">
+              View Optimization Reports
             </button>
             <a
               href="/negotiate"
-              className="bg-slate-600 hover:bg-slate-700 text-white px-6 py-3 rounded-lg font-medium transition-colors inline-block"
+              className="bg-slate-600 hover:bg-slate-700 text-white px-6 py-3 rounded bloomberg-body-text font-medium transition-colors inline-block"
             >
-              ← Back to Trading Platform
+              Back to Trading Platform
             </a>
           </div>
         </div>

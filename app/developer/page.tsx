@@ -219,24 +219,30 @@ function InfrastructureOverview() {
 export default function DeveloperPortal() {
   return (
     <div className="min-h-screen bg-slate-50" data-demo="developer-resources">
-      {/* Hero Header */}
-      <div className="bg-gradient-to-r from-[#1B2A4A] via-slate-800 to-[#1B2A4A] text-white py-12" data-demo="api-explorer">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center space-x-3 mb-2">
-            <svg className="w-8 h-8 text-[#0EA5E9]" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
-            </svg>
-            <h1 className="text-3xl font-bold">Developer Portal</h1>
+      {/* Page Header */}
+      <div className="bg-white border-b border-slate-200 px-6 py-4" data-demo="api-explorer">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <svg className="w-8 h-8 text-blue-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+              </svg>
+              <div>
+                <h1 className="bloomberg-page-heading text-slate-800">Developer Portal</h1>
+                <p className="bloomberg-body-text text-slate-600 mt-1">
+                  Explore, test, and integrate with the WREI Carbon Credit Trading Platform APIs
+                </p>
+              </div>
+            </div>
+            <div className="bloomberg-section-label">
+              DEV
+            </div>
           </div>
-          <p className="text-slate-300 text-lg max-w-2xl">
-            Explore, test, and integrate with the WREI Carbon Credit Trading Platform APIs.
-            Interactive documentation with live request testing and code examples.
-          </p>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
         {/* Overview stats */}
         <ApiOverview />
 

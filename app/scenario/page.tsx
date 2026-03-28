@@ -52,15 +52,30 @@ export default function ScenarioPage() {
 
   return (
     <AccessibilityWrapper compliance="WCAG2.1-AA">
-      <div style={{
-        minHeight: '100vh',
-        backgroundColor: '#0A0A0B',
-        padding: '2rem',
-        fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, sans-serif'
-      }}>
-        <main id="main-content" tabIndex={-1}>
-          <ScenarioSelector onSelectScenario={handleScenarioSelect} />
-        </main>
+      <div className="min-h-screen bg-slate-50">
+        {/* Page Header */}
+        <div className="bg-white border-b border-slate-200 px-6 py-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="bloomberg-page-heading text-slate-800">Portfolio Scenarios</h1>
+                <p className="bloomberg-body-text text-slate-600 mt-1">
+                  Advanced scenario modelling and investment analysis
+                </p>
+              </div>
+              <div className="bloomberg-section-label">
+                PRT
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          <main id="main-content" tabIndex={-1}>
+            <ScenarioSelector onSelectScenario={handleScenarioSelect} />
+          </main>
+        </div>
       </div>
     </AccessibilityWrapper>
   );

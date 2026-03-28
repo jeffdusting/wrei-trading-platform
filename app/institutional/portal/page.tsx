@@ -31,22 +31,60 @@ export default function InstitutionalPortalPage() {
 
   if (onboardingComplete && completedOnboardingState) {
     return (
-      <div data-demo="portfolio-config">
-        <PipelineTransition
-          onboardingState={completedOnboardingState}
-          onContinueToNegotiation={handleContinueToNegotiation}
-          onExit={handleExit}
-        />
+      <div className="min-h-screen bg-slate-50" data-demo="portfolio-config">
+        {/* Page Header */}
+        <div className="bg-white border-b border-slate-200 px-6 py-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="bloomberg-page-heading text-slate-800">Institutional Portal</h1>
+                <p className="bloomberg-body-text text-slate-600 mt-1">
+                  Onboarding complete - Pipeline transition
+                </p>
+              </div>
+              <div className="bloomberg-section-label">
+                INS
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          <PipelineTransition
+            onboardingState={completedOnboardingState}
+            onContinueToNegotiation={handleContinueToNegotiation}
+            onExit={handleExit}
+          />
+        </div>
       </div>
     );
   }
 
   return (
-    <div data-demo="onboarding-start">
-      <InstitutionalOnboardingWizard
-        onComplete={handleOnboardingComplete}
-        onExit={handleExit}
-      />
+    <div className="min-h-screen bg-slate-50" data-demo="onboarding-start">
+      {/* Page Header */}
+      <div className="bg-white border-b border-slate-200 px-6 py-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="bloomberg-page-heading text-slate-800">Institutional Portal</h1>
+              <p className="bloomberg-body-text text-slate-600 mt-1">
+                Institutional client onboarding and compliance verification
+              </p>
+            </div>
+            <div className="bloomberg-section-label">
+              INS
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <InstitutionalOnboardingWizard
+          onComplete={handleOnboardingComplete}
+          onExit={handleExit}
+        />
+      </div>
     </div>
   );
 }
