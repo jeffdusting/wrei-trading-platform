@@ -17,8 +17,8 @@ interface NavigationItem {
 
 // Consolidated navigation from 9 to 6 items as per Bloomberg Terminal layout
 const navigationItems: NavigationItem[] = [
-  { label: 'Trade', href: '/', description: 'Home dashboard with three-panel layout', icon: 'TRD' },
-  { label: 'Negotiate', href: '/negotiate', description: 'AI negotiation interface', icon: 'NEG' },
+  { label: 'Dashboard', href: '/', description: 'Home dashboard with three-panel layout', icon: 'DSH' },
+  { label: 'Trading', href: '/trade', description: 'AI carbon credit trading interface', icon: 'TRD' },
   { label: 'Analyse', href: '/analyse', description: 'Investment calculator + market scenarios (tabbed)', icon: 'ANA' },
   { label: 'Institutional', href: '/institutional/portal', description: 'Onboarding portal', icon: 'INS' },
   { label: 'Compliance', href: '/compliance', description: 'Regulatory compliance', icon: 'CMP' },
