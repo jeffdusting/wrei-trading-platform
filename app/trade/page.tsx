@@ -49,7 +49,7 @@ interface APIResponse {
 const phaseColors = {
   opening: 'bg-blue-100 text-blue-800',
   elicitation: 'bg-amber-100 text-amber-800',
-  negotiation: 'bg-green-100 text-green-800',
+  trading: 'bg-green-100 text-green-800',
   closure: 'bg-purple-100 text-purple-800',
   escalation: 'bg-red-100 text-red-800'
 };
@@ -74,7 +74,7 @@ const emotionalColors = {
   pressured: 'bg-orange-100 text-orange-700'
 };
 
-export default function NegotiatePage() {
+export default function TradePage() {
   const [selectedPersona, setSelectedPersona] = useState<PersonaType | 'freeplay'>('freeplay');
   const [selectedCreditType, setSelectedCreditType] = useState<CreditType>('carbon');
   const [selectedWREITokenType, setSelectedWREITokenType] = useState<WREITokenType>('carbon_credits');
@@ -210,7 +210,7 @@ export default function NegotiatePage() {
       setPreConfigApplied(true);
 
       // Clean up URL parameters after applying pre-configuration
-      window.history.replaceState({}, '', '/negotiate');
+      window.history.replaceState({}, '', '/trade');
     }
   }, [preConfigApplied, selectedWREITokenType, selectedCreditType]);
 
@@ -263,7 +263,7 @@ export default function NegotiatePage() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
-      const response = await fetch('/api/negotiate', {
+      const response = await fetch('/api/trade', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -325,7 +325,7 @@ export default function NegotiatePage() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
-      const response = await fetch('/api/negotiate', {
+      const response = await fetch('/api/trade', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -400,11 +400,11 @@ export default function NegotiatePage() {
 
     setIsLoading(true);
     try {
-      const response = await fetch('/api/negotiate', {
+      const response = await fetch('/api/trade', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          message: 'I would like to end this negotiation for now.',
+          message: 'I would like to end this trade for now.',
           state: negotiationState,
           isOpening: false
         })
@@ -421,7 +421,7 @@ export default function NegotiatePage() {
         saveCompletedNegotiation(finalState);
       }
     } catch (err) {
-      setError('Failed to end negotiation properly.');
+      setError('Failed to end trade properly.');
     } finally {
       setIsLoading(false);
     }
@@ -432,7 +432,7 @@ export default function NegotiatePage() {
 
     setIsLoading(true);
     try {
-      const response = await fetch('/api/negotiate', {
+      const response = await fetch('/api/trade', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1468,11 +1468,11 @@ Professional Interface
           </div>
 
           {/* Right Panel - Chat Interface */}
-          <div className="lg:w-2/3 flex flex-col order-1 lg:order-2" data-demo="negotiation-interface">
-            <div className="bg-white rounded-lg shadow-sm border border-slate-200 flex-1 flex flex-col min-h-[60vh] lg:min-h-0" role="main" aria-label="Carbon credit negotiation chat" data-demo="negotiation-chat">
+          <div className="lg:w-2/3 flex flex-col order-1 lg:order-2" data-demo="trading-interface">
+            <div className="bg-white rounded-lg shadow-sm border border-slate-200 flex-1 flex flex-col min-h-[60vh] lg:min-h-0" role="main" aria-label="Carbon credit trading chat" data-demo="trading-chat">
 
               {/* Messages Area */}
-              <div className="flex-1 p-6 overflow-y-auto space-y-4" role="log" aria-live="polite" aria-label="Negotiation messages">
+              <div className="flex-1 p-6 overflow-y-auto space-y-4" role="log" aria-live="polite" aria-label="Trading messages">
                 {!negotiationStarted ? (
                   <div className="text-center py-12">
                     {isInitializing ? (
@@ -1498,7 +1498,7 @@ Professional Interface
                           disabled={isLoading}
                           className="bg-[#0EA5E9] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#0284C7] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
-                          {isLoading ? 'Starting...' : 'Start Negotiation'}
+                          {isLoading ? 'Starting...' : 'Start Trading'}
                         </button>
                       </>
                     )}
@@ -2132,10 +2132,10 @@ Institutional View
                       value={inputMessage}
                       onChange={(e) => setInputMessage(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      placeholder={isLoading ? "Analysing..." : "Type your negotiation message..."}
+                      placeholder={isLoading ? "Analysing..." : "Type your trading message..."}
                       disabled={isLoading}
                       rows={2}
-                      aria-label="Type your negotiation message"
+                      aria-label="Type your trading message"
                       aria-describedby="input-help"
                       className="flex-1 p-3 border border-slate-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-[#0EA5E9] focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                     />

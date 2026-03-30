@@ -150,7 +150,7 @@ export const ExecutiveDashboard: React.FC = () => {
       current: 47.80,
       improved: 58.43,
       savings: 'A$2.1M annual',
-      description: 'AI-powered negotiation vs manual trading'
+      description: 'AI-powered trading vs manual trading'
     },
     {
       category: 'Compliance Costs',
@@ -333,7 +333,7 @@ export const ExecutiveDashboard: React.FC = () => {
                     </li>
                     <li className="flex items-start space-x-2">
                       <span className="text-purple-500 mt-1">•</span>
-                      <span>AI-powered negotiation</span>
+                      <span>AI-powered trading</span>
                     </li>
                   </ul>
                 </div>
@@ -449,7 +449,7 @@ export const ExecutiveDashboard: React.FC = () => {
           <div className="bg-white rounded-lg p-4">
             <h4 className=" text-green-700 mb-2">Immediate Opportunities</h4>
             <ul className="bloomberg-small-text text-gray-700 space-y-1">
-              <li>• Expand AI negotiation to additional ESC categories</li>
+              <li>• Expand AI trading to additional ESC categories</li>
               <li>• Leverage real-time AEMO data for predictive pricing</li>
               <li>• Automate remaining manual compliance processes</li>
             </ul>
@@ -479,7 +479,7 @@ export const ExecutiveDashboard: React.FC = () => {
         <div className="space-y-3">
           {[
             { priority: 'High', task: 'Finalize Q2 ESC portfolio expansion strategy', due: '2 days', owner: 'Investment Committee' },
-            { priority: 'High', task: 'Review AI negotiation performance metrics', due: '1 week', owner: 'Trading Desk' },
+            { priority: 'High', task: 'Review AI trading performance metrics', due: '1 week', owner: 'Trading Desk' },
             { priority: 'Medium', task: 'Assess new Clean Energy Regulator guidelines', due: '2 weeks', owner: 'Compliance Team' },
             { priority: 'Medium', task: 'Evaluate additional Zoniqx integration opportunities', due: '3 weeks', owner: 'Technology Team' }
           ].map((item, index) => (

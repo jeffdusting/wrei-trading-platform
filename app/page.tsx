@@ -11,7 +11,7 @@ function useMarketData() {
     forwardRemoval: PRICING_INDEX.FORWARD_REMOVAL_REFERENCE,
     dmrvPremium: PRICING_INDEX.DMRV_PREMIUM_BENCHMARK,
     totalCredits: 2847329,
-    activeNegotiations: 23,
+    activeTrades: 23,
     settlementTime: 180
   })
 
@@ -20,7 +20,7 @@ function useMarketData() {
       setData(prev => ({
         ...prev,
         vcmSpot: prev.vcmSpot + (Math.random() - 0.5) * 0.1,
-        activeNegotiations: Math.floor(Math.random() * 15) + 15,
+        activeTrades: Math.floor(Math.random() * 15) + 15,
         settlementTime: Math.floor(Math.random() * 50) + 150
       }))
     }, 3000)
@@ -125,10 +125,10 @@ export default function TradeDashboard() {
 
               <div className="space-y-2">
                 <Link
-                  href="/negotiate"
+                  href="/trade"
                   className="block w-full bg-blue-600 text-white px-4 py-2 rounded bloomberg-body-text hover:bg-blue-700 text-center"
                 >
-                  Begin Negotiation
+                  Begin Trading
                 </Link>
 
                 <Link
@@ -188,7 +188,7 @@ export default function TradeDashboard() {
                     </div>
 
                     <div className="bg-white p-6 rounded border border-slate-200 text-center">
-                      <div className="bloomberg-large-metric text-blue-600">{marketData.activeNegotiations}</div>
+                      <div className="bloomberg-large-metric text-blue-600">{marketData.activeTrades}</div>
                       <div className="bloomberg-section-label mt-2">ACTIVE NEGOTIATIONS</div>
                     </div>
 
@@ -338,7 +338,7 @@ export default function TradeDashboard() {
 
               <div className="space-y-3">
                 {[
-                  { action: 'Negotiation Started', entity: 'ESG Fund', time: '2 min ago' },
+                  { action: 'Trade Started', entity: 'ESG Fund', time: '2 min ago' },
                   { action: 'Credit Verified', entity: 'Batch #2847', time: '5 min ago' },
                   { action: 'Settlement Complete', entity: 'A$125K', time: '12 min ago' }
                 ].map((item, index) => (

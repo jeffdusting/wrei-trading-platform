@@ -1,7 +1,7 @@
 /**
  * Real-Time Coaching Panel Component
  *
- * Provides contextual coaching suggestions and guidance during negotiations
+ * Provides contextual coaching suggestions and guidance during trading
  * Integrates with NegotiationCoachingEngine to deliver tactical recommendations
  * A2: Real-Time Coaching Panel Enhancement
  */
@@ -41,7 +41,7 @@ const CoachingPanel: React.FC<CoachingPanelProps> = ({
   const [expandedSuggestion, setExpandedSuggestion] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
 
-  // Update coaching when negotiation state changes
+  // Update coaching when trading state changes
   useEffect(() => {
     if (isVisible) {
       try {
@@ -55,16 +55,16 @@ const CoachingPanel: React.FC<CoachingPanelProps> = ({
             id: 'fallback-tip',
             category: 'information_gathering',
             priority: 'medium',
-            title: 'Continue Negotiation',
-            content: 'Consider your negotiation objectives and current position.',
+            title: 'Continue Trading',
+            content: 'Consider your trading objectives and current position.',
             rationale: 'General guidance when coaching is unavailable',
             difficulty: 'beginner',
             actionable: true,
-            expectedImpact: 'Maintain negotiation focus',
+            expectedImpact: 'Maintain trading focus',
             riskLevel: 'low'
           },
           prioritizedSuggestions: [],
-          phaseGuidance: 'Continue with your negotiation strategy.',
+          phaseGuidance: 'Continue with your trading strategy.',
           warningFlags: [],
           nextBestActions: ['Consider your current position and objectives']
         });
