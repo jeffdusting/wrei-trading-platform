@@ -78,11 +78,11 @@ export default function TradePage() {
   const [selectedPersona, setSelectedPersona] = useState<PersonaType | 'freeplay'>('freeplay');
   const [selectedCreditType, setSelectedCreditType] = useState<CreditType>('carbon');
   const [selectedWREITokenType, setSelectedWREITokenType] = useState<WREITokenType>('carbon_credits');
-  const [negotiationState, setNegotiationState] = useState<NegotiationState | null>(null);
+  const [tradingState, setTradingState] = useState<NegotiationState | null>(null);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [negotiationStarted, setNegotiationStarted] = useState(false);
+  const [tradingStarted, setTradingStarted] = useState(false);
   const [currentClassification, setCurrentClassification] = useState<ArgumentClassification>('general');
   const [currentEmotion, setCurrentEmotion] = useState<EmotionalState>('neutral');
   const [threatLevel, setThreatLevel] = useState<'none' | 'low' | 'medium' | 'high'>('none');
@@ -90,13 +90,13 @@ export default function TradePage() {
   const [lastFailedMessage, setLastFailedMessage] = useState<string | null>(null);
   const [activeAnalyticsTab, setActiveAnalyticsTab] = useState<'standard' | 'institutional' | 'history'>('standard');
 
-  // A1: Negotiation Replay & Comparison State
-  const [negotiationSessions, setNegotiationSessions] = useState<NegotiationSession[]>([]);
+  // A1: Trading Replay & Comparison State
+  const [tradingSessions, setTradingSessions] = useState<NegotiationSession[]>([]);
   const [selectedSession, setSelectedSession] = useState<NegotiationSession | null>(null);
   const [showReplayViewer, setShowReplayViewer] = useState(false);
   const [showComparisonDashboard, setShowComparisonDashboard] = useState(false);
   const [sessionComparison, setSessionComparison] = useState<SessionComparison | null>(null);
-  const [negotiationStartTime, setNegotiationStartTime] = useState<string | null>(null);
+  const [tradingStartTime, setTradingStartTime] = useState<string | null>(null);
 
   // Phase 6.2: Professional Interface Mode
   const [interfaceMode, setInterfaceMode] = useState<'standard' | 'professional'>('standard');
@@ -110,14 +110,14 @@ export default function TradePage() {
   const [showStrategyPanel, setShowStrategyPanel] = useState(false);
 
   // A4: Outcome Scoring & Benchmarking
-  const [negotiationScorecard, setNegotiationScorecard] = useState<NegotiationScorecard | null>(null);
+  const [tradingScorecard, setTradingScorecard] = useState<NegotiationScorecard | null>(null);
   const [showScorecard, setShowScorecard] = useState(false);
 
   // A2: Real-Time Coaching Panel
   const [showCoachingPanel, setShowCoachingPanel] = useState(false);
   const [showBlockchainProvenance, setShowBlockchainProvenance] = useState(false);
 
-  // B4: Onboarding-to-Negotiation Pipeline - Pre-configuration State
+  // B4: Onboarding-to-Trading Pipeline - Pre-configuration State
   const [isPreConfigured, setIsPreConfigured] = useState(false);
   const [preConfigData, setPreConfigData] = useState<NegotiationPreConfig | null>(null);
   const [preConfigMessage, setPreConfigMessage] = useState<string>('');
@@ -145,9 +145,9 @@ export default function TradePage() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [negotiationState?.messages]);
+  }, [tradingState?.messages]);
 
-  // A1: Load existing negotiation sessions on mount
+  // A1: Load existing trading sessions on mount
   useEffect(() => {
     refreshSessionsList();
   }, []);
@@ -183,7 +183,7 @@ export default function TradePage() {
         setPreConfigMessage(welcomeMsg);
       }
 
-      // Initialize negotiation state with pre-configuration
+      // Initialize trading state with pre-configuration
       const initialState = getInitialWREIState(mappedPersona, selectedWREITokenType, selectedCreditType);
 
       // Apply institutional constraint adjustments if we have classification
@@ -200,7 +200,7 @@ export default function TradePage() {
           baseConstraints
         );
 
-        // Store adjusted constraints for use during negotiation
+        // Store adjusted constraints for use during trading
         // Note: The actual constraint application happens in the API route
         // This is just for UI display and reference
         console.log('Applied institutional constraints:', adjustedConstraints);
@@ -228,15 +228,15 @@ export default function TradePage() {
   };
 
   const handlePersonaChange = (persona: PersonaType | 'freeplay') => {
-    if (!negotiationStarted) {
+    if (!tradingStarted) {
       setSelectedPersona(persona);
-      // Use WREI token system for new negotiations
+      // Use WREI token system for new trading
       setNegotiationState(getInitialWREIState(persona, selectedWREITokenType, selectedCreditType));
     }
   };
 
   const handleCreditTypeChange = (creditType: CreditType) => {
-    if (!negotiationStarted) {
+    if (!tradingStarted) {
       setSelectedCreditType(creditType);
       // Update legacy credit type but keep WREI token as primary
       setNegotiationState(getInitialWREIState(selectedPersona, selectedWREITokenType, creditType));
@@ -244,14 +244,14 @@ export default function TradePage() {
   };
 
   const handleWREITokenTypeChange = (tokenType: WREITokenType) => {
-    if (!negotiationStarted) {
+    if (!tradingStarted) {
       setSelectedWREITokenType(tokenType);
       setNegotiationState(getInitialWREIState(selectedPersona, tokenType, selectedCreditType));
     }
   };
 
-  const handleStartNegotiation = async () => {
-    if (!negotiationState) {
+  const handleStartTrading = async () => {
+    if (!tradingState) {
       setNegotiationState(getInitialWREIState(selectedPersona, selectedWREITokenType, selectedCreditType));
     }
 
@@ -268,7 +268,7 @@ export default function TradePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: '',
-          state: negotiationState || getInitialWREIState(selectedPersona, selectedWREITokenType, selectedCreditType),
+          state: tradingState || getInitialWREIState(selectedPersona, selectedWREITokenType, selectedCreditType),
           isOpening: true
         }),
         signal: controller.signal
@@ -312,7 +312,7 @@ export default function TradePage() {
 
   const handleSendMessage = async (retryMessage?: string) => {
     const messageToSend = retryMessage || inputMessage.trim();
-    if (!messageToSend || !negotiationState || isLoading) return;
+    if (!messageToSend || !tradingState || isLoading) return;
 
     if (!retryMessage) {
       setInputMessage('');
@@ -330,7 +330,7 @@ export default function TradePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: messageToSend,
-          state: negotiationState,
+          state: tradingState,
           isOpening: false
         }),
         signal: controller.signal
@@ -353,11 +353,11 @@ export default function TradePage() {
         setCurrentEmotion(data.emotionalState);
         setThreatLevel(data.threatLevel);
 
-        // Save to history if negotiation just completed
-        if (data.state.negotiationComplete && negotiationStartTime) {
-          saveCompletedNegotiation(data.state);
+        // Save to history if trading just completed
+        if (data.state.negotiationComplete && tradingStartTime) {
+          saveCompletedTrading(data.state);
 
-          // Calculate and display negotiation scorecard
+          // Calculate and display trading scorecard
           if (selectedPersona !== 'freeplay') {
             // Estimate duration (roughly 2 minutes per round)
             const durationMinutes = data.state.round * 2;
@@ -387,16 +387,16 @@ export default function TradePage() {
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      if (!negotiationStarted) {
-        handleStartNegotiation();
+      if (!tradingStarted) {
+        handleStartTrading();
       } else {
         handleSendMessage();
       }
     }
   };
 
-  const handleEndNegotiation = async () => {
-    if (!negotiationState || isLoading) return;
+  const handleEndTrading = async () => {
+    if (!tradingState || isLoading) return;
 
     setIsLoading(true);
     try {
@@ -405,7 +405,7 @@ export default function TradePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: 'I would like to end this trade for now.',
-          state: negotiationState,
+          state: tradingState,
           isOpening: false
         })
       });
@@ -418,7 +418,7 @@ export default function TradePage() {
           outcome: 'deferred' as const
         };
         setNegotiationState(finalState);
-        saveCompletedNegotiation(finalState);
+        saveCompletedTrading(finalState);
       }
     } catch (err) {
       setError('Failed to end trade properly.');
@@ -428,7 +428,7 @@ export default function TradePage() {
   };
 
   const handleRequestHuman = async () => {
-    if (!negotiationState || isLoading) return;
+    if (!tradingState || isLoading) return;
 
     setIsLoading(true);
     try {
@@ -437,7 +437,7 @@ export default function TradePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: 'I would like to speak with a human representative.',
-          state: negotiationState,
+          state: tradingState,
           isOpening: false
         })
       });
@@ -450,7 +450,7 @@ export default function TradePage() {
           outcome: 'escalated' as const
         };
         setNegotiationState(finalState);
-        saveCompletedNegotiation(finalState);
+        saveCompletedTrading(finalState);
       }
     } catch (err) {
       setError('Failed to request human representative.');
@@ -459,7 +459,7 @@ export default function TradePage() {
     }
   };
 
-  const handleResetNegotiation = () => {
+  const handleResetTrading = () => {
     // Reset all state to start fresh
     setNegotiationStarted(false);
     setNegotiationState(null);
@@ -478,13 +478,13 @@ export default function TradePage() {
     // Note: selectedPersona and selectedCreditType can be changed again after reset
   };
 
-  // A1: Negotiation History Management
-  const saveCompletedNegotiation = (finalState: NegotiationState) => {
-    if (!negotiationStartTime) return;
+  // A1: Trading History Management
+  const saveCompletedTrading = (finalState: NegotiationState) => {
+    if (!tradingStartTime) return;
 
     const sessionId = addNegotiationSession({
       persona: selectedPersona,
-      startTime: negotiationStartTime,
+      startTime: tradingStartTime,
       endTime: new Date().toISOString(),
       messages: finalState.messages,
       finalState,
@@ -673,16 +673,16 @@ export default function TradePage() {
   const selectedPersonaData = selectedPersona !== 'freeplay' ? getPersonaById(selectedPersona) : null;
 
   const getPriceRangePercent = () => {
-    if (!negotiationState) return 50;
+    if (!tradingState) return 50;
 
-    const tokenType = negotiationState.wreiTokenType || 'carbon_credits';
+    const tokenType = tradingState.wreiTokenType || 'carbon_credits';
 
     if (tokenType === 'asset_co') {
       // For Asset Co tokens, show yield range (20% to 30%)
       const minYield = 20;
       const maxYield = 30;
       const range = maxYield - minYield;
-      const position = negotiationState.currentOfferPrice - minYield;
+      const position = tradingState.currentOfferPrice - minYield;
       return Math.max(0, Math.min(100, (position / range) * 100));
     } else if (tokenType === 'dual_portfolio') {
       // For dual portfolio, show balanced position
@@ -692,32 +692,32 @@ export default function TradePage() {
       const basePrice = WREI_TOKEN_CONFIG.CARBON_CREDITS.BASE_PRICE;
       const anchorPrice = WREI_TOKEN_CONFIG.CARBON_CREDITS.ANCHOR_PRICE;
       const range = anchorPrice - basePrice;
-      const position = negotiationState.currentOfferPrice - basePrice;
+      const position = tradingState.currentOfferPrice - basePrice;
       return Math.max(0, Math.min(100, (position / range) * 100));
     }
   };
 
   const getConcessionPercent = () => {
-    if (!negotiationState) return 0;
-    const tokenType = negotiationState.wreiTokenType || 'carbon_credits';
+    if (!tradingState) return 0;
+    const tokenType = tradingState.wreiTokenType || 'carbon_credits';
 
     if (tokenType === 'asset_co') {
       // For Asset Co, calculate based on yield concession from anchor yield
       const anchorYield = WREI_TOKEN_CONFIG.ASSET_CO.STEADY_STATE.EQUITY_YIELD * 100;
-      return Math.round((negotiationState.totalConcessionGiven / anchorYield) * 100);
+      return Math.round((tradingState.totalConcessionGiven / anchorYield) * 100);
     } else if (tokenType === 'dual_portfolio') {
       // For dual portfolio, show blended concession
-      return Math.round((negotiationState.totalConcessionGiven / negotiationState.anchorPrice) * 100);
+      return Math.round((tradingState.totalConcessionGiven / tradingState.anchorPrice) * 100);
     } else {
       // For carbon credits, use WREI anchor price
-      return Math.round((negotiationState.totalConcessionGiven / WREI_TOKEN_CONFIG.CARBON_CREDITS.ANCHOR_PRICE) * 100);
+      return Math.round((tradingState.totalConcessionGiven / WREI_TOKEN_CONFIG.CARBON_CREDITS.ANCHOR_PRICE) * 100);
     }
   };
 
   return (
     <div className="bg-[#F8FAFC]">
       {/* B4: Pre-configuration Banner */}
-      {isPreConfigured && preConfigMessage && !negotiationStarted && (
+      {isPreConfigured && preConfigMessage && !tradingStarted && (
         <div className="max-w-7xl mx-auto p-4">
           <div className="bg-gradient-to-r from-green-600 to-emerald-700 rounded-xl p-4 mb-4 text-white">
             <div className="flex items-center">
@@ -862,7 +862,7 @@ Professional Interface
                     value="carbon_credits"
                     checked={selectedWREITokenType === 'carbon_credits'}
                     onChange={(e) => handleWREITokenTypeChange(e.target.value as WREITokenType)}
-                    disabled={negotiationStarted}
+                    disabled={tradingStarted}
                     className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2 mt-1"
                   />
                   <div className="flex-1">
@@ -884,7 +884,7 @@ Professional Interface
                     value="asset_co"
                     checked={selectedWREITokenType === 'asset_co'}
                     onChange={(e) => handleWREITokenTypeChange(e.target.value as WREITokenType)}
-                    disabled={negotiationStarted}
+                    disabled={tradingStarted}
                     className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2 mt-1"
                   />
                   <div className="flex-1">
@@ -906,7 +906,7 @@ Professional Interface
                     value="dual_portfolio"
                     checked={selectedWREITokenType === 'dual_portfolio'}
                     onChange={(e) => handleWREITokenTypeChange(e.target.value as WREITokenType)}
-                    disabled={negotiationStarted}
+                    disabled={tradingStarted}
                     className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2 mt-1"
                   />
                   <div className="flex-1">
@@ -923,7 +923,7 @@ Professional Interface
                 </label>
               </div>
 
-              {negotiationStarted && (
+              {tradingStarted && (
                 <div className="mt-4 p-3 bg-gray-100 rounded-lg bloomberg-small-text text-gray-600">
                   Investment product locked
                 </div>
@@ -941,7 +941,7 @@ Professional Interface
                     value="freeplay"
                     checked={selectedPersona === 'freeplay'}
                     onChange={(e) => handlePersonaChange(e.target.value as 'freeplay')}
-                    disabled={negotiationStarted}
+                    disabled={tradingStarted}
                     className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2"
                   />
                   <div className="flex-1">
@@ -957,7 +957,7 @@ Professional Interface
                       value={persona.id}
                       checked={selectedPersona === persona.id}
                       onChange={(e) => handlePersonaChange(e.target.value as PersonaType)}
-                      disabled={negotiationStarted}
+                      disabled={tradingStarted}
                       className="text-[#0EA5E9] focus:ring-[#0EA5E9] focus:ring-offset-2"
                     />
                     <div className="flex-1">
@@ -969,12 +969,12 @@ Professional Interface
                 ))}
               </div>
 
-              {negotiationStarted && (
+              {tradingStarted && (
                 <div className="mt-4 p-3 bg-gray-100 rounded-lg">
                   <div className="flex justify-between items-center">
                     <span className="bloomberg-small-text text-gray-600">Persona locked</span>
                     <button
-                      onClick={handleResetNegotiation}
+                      onClick={handleResetTrading}
                       disabled={isLoading}
                       className="bloomberg-section-label text-[#0EA5E9] hover:text-[#0284C7] font-medium disabled:opacity-50"
                     >
@@ -1008,17 +1008,17 @@ Professional Interface
             </div>
 
             {/* Dashboard */}
-            {negotiationState && (
+            {tradingState && (
               <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6" data-demo="pricing-analysis">
                 <h3 className="bloomberg-card-title text-[#1E293B] mb-4">Negotiation Dashboard</h3>
 
                 {/* Round & Phase */}
                 <div className="flex items-center justify-between mb-4">
                   <span className="bloomberg-small-text font-medium text-[#1E293B]">
-                    Round {negotiationState.round}
+                    Round {tradingState.round}
                   </span>
-                  <span className={`px-2 py-1 rounded-full bloomberg-section-label font-medium ${phaseColors[negotiationState.phase]}`}>
-                    {negotiationState.phase.charAt(0).toUpperCase() + negotiationState.phase.slice(1)}
+                  <span className={`px-2 py-1 rounded-full bloomberg-section-label font-medium ${phaseColors[tradingState.phase]}`}>
+                    {tradingState.phase.charAt(0).toUpperCase() + tradingState.phase.slice(1)}
                   </span>
                 </div>
 
@@ -1028,15 +1028,15 @@ Professional Interface
                     <span className="text-[#64748B]">Agent&apos;s offer:</span>
                     <span className="font-medium text-[#1E293B]">
                       {(() => {
-                        const tokenType = negotiationState.wreiTokenType || 'carbon_credits';
+                        const tokenType = tradingState.wreiTokenType || 'carbon_credits';
                         if (tokenType === 'asset_co') {
-                          return `${negotiationState.currentOfferPrice.toFixed(1)}% yield`;
+                          return `${tradingState.currentOfferPrice.toFixed(1)}% yield`;
                         } else if (tokenType === 'dual_portfolio') {
                           return 'Portfolio terms';
-                        } else if (negotiationState.creditType === 'esc') {
-                          return `AUD $${negotiationState.currentOfferPrice}/ESC`;
+                        } else if (tradingState.creditType === 'esc') {
+                          return `AUD $${tradingState.currentOfferPrice}/ESC`;
                         } else {
-                          return `A$${negotiationState.currentOfferPrice}/tonne`;
+                          return `A$${tradingState.currentOfferPrice}/tonne`;
                         }
                       })()}
                     </span>
@@ -1044,13 +1044,13 @@ Professional Interface
                   <div className="flex justify-between bloomberg-small-text mb-3">
                     <span className="text-[#64748B]">Your anchor:</span>
                     <span className="font-medium text-[#1E293B]">
-                      {negotiationState.buyerProfile.priceAnchor ? (
+                      {tradingState.buyerProfile.priceAnchor ? (
                         (() => {
-                          const tokenType = negotiationState.wreiTokenType || 'carbon_credits';
+                          const tokenType = tradingState.wreiTokenType || 'carbon_credits';
                           if (tokenType === 'asset_co') {
-                            return `${negotiationState.buyerProfile.priceAnchor}% yield`;
+                            return `${tradingState.buyerProfile.priceAnchor}% yield`;
                           } else {
-                            return `A$${negotiationState.buyerProfile.priceAnchor}/${negotiationState.creditType === 'esc' ? 'ESC' : 't'}`;
+                            return `A$${tradingState.buyerProfile.priceAnchor}/${tradingState.creditType === 'esc' ? 'ESC' : 't'}`;
                           }
                         })()
                       ) : '—'}
@@ -1067,7 +1067,7 @@ Professional Interface
                   <div className="flex justify-between bloomberg-section-label text-[#64748B]">
                     <span>
                       {(() => {
-                        const tokenType = negotiationState.wreiTokenType || 'carbon_credits';
+                        const tokenType = tradingState.wreiTokenType || 'carbon_credits';
                         if (tokenType === 'asset_co') {
                           return '20% yield';
                         } else if (tokenType === 'dual_portfolio') {
@@ -1079,7 +1079,7 @@ Professional Interface
                     </span>
                     <span>
                       {(() => {
-                        const tokenType = negotiationState.wreiTokenType || 'carbon_credits';
+                        const tokenType = tradingState.wreiTokenType || 'carbon_credits';
                         if (tokenType === 'asset_co') {
                           return '30% yield';
                         } else if (tokenType === 'dual_portfolio') {
@@ -1096,7 +1096,7 @@ Professional Interface
                 <div className="mb-4">
                   <div className="bloomberg-small-text text-[#64748B] mb-1">
                     Agent has adjusted {getConcessionPercent()}% from opening {
-                      negotiationState.wreiTokenType === 'asset_co' ? 'yield' : 'price'
+                      tradingState.wreiTokenType === 'asset_co' ? 'yield' : 'price'
                     }
                   </div>
                 </div>
@@ -1107,7 +1107,7 @@ Professional Interface
                     <h4 className="bloomberg-small-text  text-[#1E293B]">Market Intelligence</h4>
                   </div>
                   <div className="bloomberg-section-label text-[#64748B] space-y-2">
-                    {negotiationState.wreiTokenType === 'carbon_credits' && (
+                    {tradingState.wreiTokenType === 'carbon_credits' && (
                       <div>
                         <div className="font-medium text-[#1E293B] mb-1">Carbon Market Context:</div>
                         <div>• A$155B projected market by 2030 (26% CAGR)</div>
@@ -1115,7 +1115,7 @@ Professional Interface
                         <div>• Triple-standard verification vs. Kinexys trading-only</div>
                       </div>
                     )}
-                    {negotiationState.wreiTokenType === 'asset_co' && (
+                    {tradingState.wreiTokenType === 'asset_co' && (
                       <div>
                         <div className="font-medium text-[#1E293B] mb-1">Infrastructure Market Context:</div>
                         <div>• 28.3% yield vs. Infrastructure REITs 8-12%</div>
@@ -1123,7 +1123,7 @@ Professional Interface
                         <div>• Tokenized liquidity vs. traditional 7-10 year lock-ups</div>
                       </div>
                     )}
-                    {negotiationState.wreiTokenType === 'dual_portfolio' && (
+                    {tradingState.wreiTokenType === 'dual_portfolio' && (
                       <div>
                         <div className="font-medium text-[#1E293B] mb-1">Dual Market Strategy:</div>
                         <div>• A$19B RWA + A$155B carbon market exposure</div>
@@ -1138,7 +1138,7 @@ Professional Interface
                 </div>
 
                 {/* Classification & Emotion */}
-                {negotiationState.messages.length > 0 && (
+                {tradingState.messages.length > 0 && (
                   <div className="space-y-2">
                     <div className="flex justify-between bloomberg-small-text">
                       <span className="text-[#64748B]">Your approach:</span>
@@ -1158,24 +1158,24 @@ Professional Interface
                       <div>
                         <div className="flex justify-between bloomberg-section-label mb-1">
                           <span className="text-[#64748B]">Warmth</span>
-                          <span className="text-[#1E293B]">{negotiationState.buyerProfile.detectedWarmth}/10</span>
+                          <span className="text-[#1E293B]">{tradingState.buyerProfile.detectedWarmth}/10</span>
                         </div>
                         <div className="h-1 bg-gray-200 rounded">
                           <div
                             className="h-1 bg-green-500 rounded transition-all duration-500"
-                            style={{ width: `${negotiationState.buyerProfile.detectedWarmth * 10}%` }}
+                            style={{ width: `${tradingState.buyerProfile.detectedWarmth * 10}%` }}
                           ></div>
                         </div>
                       </div>
                       <div>
                         <div className="flex justify-between bloomberg-section-label mb-1">
                           <span className="text-[#64748B]">Dominance</span>
-                          <span className="text-[#1E293B]">{negotiationState.buyerProfile.detectedDominance}/10</span>
+                          <span className="text-[#1E293B]">{tradingState.buyerProfile.detectedDominance}/10</span>
                         </div>
                         <div className="h-1 bg-gray-200 rounded">
                           <div
                             className="h-1 bg-blue-500 rounded transition-all duration-500"
-                            style={{ width: `${negotiationState.buyerProfile.detectedDominance * 10}%` }}
+                            style={{ width: `${tradingState.buyerProfile.detectedDominance * 10}%` }}
                           ></div>
                         </div>
                       </div>
@@ -1200,7 +1200,7 @@ Professional Interface
             )}
 
             {/* Token Metadata Panel */}
-            {negotiationState?.tokenMetadata && (
+            {tradingState?.tokenMetadata && (
               <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
                 <h3 className="bloomberg-card-title text-[#1E293B] mb-4 flex items-center">
                   <span className="bg-[#0EA5E9] w-2 h-2 rounded-full mr-2"></span>
@@ -1208,20 +1208,20 @@ Professional Interface
                 </h3>
 
                 {/* Provenance Section */}
-                {negotiationState.tokenMetadata.immutableProvenance && (
+                {tradingState.tokenMetadata.immutableProvenance && (
                   <div className="mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
                     <h4 className="bloomberg-small-text font-medium text-[#1E293B] mb-2">🔗 Immutable Provenance</h4>
                     <div className="bloomberg-section-label text-[#64748B] space-y-1">
                       <div className="flex justify-between">
                         <span>Provenance ID:</span>
                         <span className="bloomberg-data text-[#0EA5E9]">
-                          {negotiationState.tokenMetadata.provenanceId?.slice(0, 12)}...
+                          {tradingState.tokenMetadata.provenanceId?.slice(0, 12)}...
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Chain Steps:</span>
                         <span className="text-[#10B981] font-medium">
-                          {negotiationState.tokenMetadata.immutableProvenance.provenanceChain?.length || 0} verified
+                          {tradingState.tokenMetadata.immutableProvenance.provenanceChain?.length || 0} verified
                         </span>
                       </div>
                       <div className="flex justify-between">
@@ -1242,32 +1242,32 @@ Professional Interface
                 )}
 
                 {/* Operational Data Section */}
-                {negotiationState.tokenMetadata.operationalData && (
+                {tradingState.tokenMetadata.operationalData && (
                   <div className="mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
                     <h4 className="bloomberg-small-text font-medium text-[#1E293B] mb-2">⚙️ Real-time Operations</h4>
                     <div className="bloomberg-section-label text-[#64748B] space-y-1">
                       <div className="flex justify-between">
                         <span>Vessel ID:</span>
                         <span className="bloomberg-data text-[#0EA5E9]">
-                          {negotiationState.tokenMetadata.operationalData.vesselId}
+                          {tradingState.tokenMetadata.operationalData.vesselId}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Efficiency:</span>
                         <span className="text-[#10B981] font-medium">
-                          {negotiationState.tokenMetadata.operationalData.efficiency.toFixed(1)}%
+                          {tradingState.tokenMetadata.operationalData.efficiency.toFixed(1)}%
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Carbon Generated:</span>
                         <span className="text-[#0EA5E9] font-medium">
-                          {negotiationState.tokenMetadata.operationalData.carbonGeneration.toFixed(1)} tonnes
+                          {tradingState.tokenMetadata.operationalData.carbonGeneration.toFixed(1)} tonnes
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Last Update:</span>
                         <span className="text-[#64748B]">
-                          {new Date(negotiationState.tokenMetadata.operationalData.lastTelemetryUpdate).toLocaleTimeString()}
+                          {new Date(tradingState.tokenMetadata.operationalData.lastTelemetryUpdate).toLocaleTimeString()}
                         </span>
                       </div>
                     </div>
@@ -1321,32 +1321,32 @@ Professional Interface
                 )}
 
                 {/* Environmental Impact Section */}
-                {negotiationState.tokenMetadata.environmentalImpact && (
+                {tradingState.tokenMetadata.environmentalImpact && (
                   <div className="mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
                     <h4 className="bloomberg-small-text font-medium text-[#1E293B] mb-2">Environmental Impact</h4>
                     <div className="bloomberg-section-label text-[#64748B] space-y-1">
                       <div className="flex justify-between">
                         <span>Total CO₂ Reduced:</span>
                         <span className="text-[#10B981] font-medium">
-                          {negotiationState.tokenMetadata.environmentalImpact.totalCO2Reduced.toFixed(1)} tonnes
+                          {tradingState.tokenMetadata.environmentalImpact.totalCO2Reduced.toFixed(1)} tonnes
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Modal Shift Benefit:</span>
                         <span className="text-[#0EA5E9] font-medium">
-                          {negotiationState.tokenMetadata.environmentalImpact.modalShiftBenefit.toFixed(1)}%
+                          {tradingState.tokenMetadata.environmentalImpact.modalShiftBenefit.toFixed(1)}%
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Sustainability Score:</span>
                         <span className="text-[#10B981] font-medium">
-                          {negotiationState.tokenMetadata.environmentalImpact.sustainabilityScore}/100
+                          {tradingState.tokenMetadata.environmentalImpact.sustainabilityScore}/100
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Verification:</span>
-                        <span className={negotiationState.tokenMetadata.environmentalImpact.verified ? 'text-[#10B981]' : 'text-[#EF4444]'}>
-                          {negotiationState.tokenMetadata.environmentalImpact.verified ? '✓ Verified' : '⚠ Pending'}
+                        <span className={tradingState.tokenMetadata.environmentalImpact.verified ? 'text-[#10B981]' : 'text-[#EF4444]'}>
+                          {tradingState.tokenMetadata.environmentalImpact.verified ? '✓ Verified' : '⚠ Pending'}
                         </span>
                       </div>
                     </div>
@@ -1354,15 +1354,15 @@ Professional Interface
                 )}
 
                 {/* Lease Payment Data (Asset Co only) */}
-                {negotiationState.wreiTokenType === 'asset_co' && negotiationState.tokenMetadata.leasePaymentData && (
+                {tradingState.wreiTokenType === 'asset_co' && tradingState.tokenMetadata.leasePaymentData && (
                   <div className="mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
                     <h4 className="bloomberg-small-text font-medium text-[#1E293B] mb-2">💰 Asset Co Token & Lease Data</h4>
                     <div className="bloomberg-section-label text-[#64748B] space-y-1">
                       <div className="flex justify-between">
                         <span>Token Price:</span>
                         <span className="text-[#0EA5E9] font-medium">
-                          {(negotiationState.tokenMetadata.leasePaymentData as any).tokenPrice ?
-                            `A$${(negotiationState.tokenMetadata.leasePaymentData as any).tokenPrice.toLocaleString()}` :
+                          {(tradingState.tokenMetadata.leasePaymentData as any).tokenPrice ?
+                            `A$${(tradingState.tokenMetadata.leasePaymentData as any).tokenPrice.toLocaleString()}` :
                             'A$1,000/token'
                           }
                         </span>
@@ -1370,37 +1370,37 @@ Professional Interface
                       <div className="flex justify-between">
                         <span>Expected Annual Income:</span>
                         <span className="text-[#0EA5E9] font-medium">
-                          A${negotiationState.tokenMetadata.leasePaymentData.expectedAnnualIncome.toLocaleString()}
+                          A${tradingState.tokenMetadata.leasePaymentData.expectedAnnualIncome.toLocaleString()}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Yield Performance:</span>
                         <span className="text-[#10B981] font-medium">
-                          {(negotiationState.tokenMetadata.leasePaymentData.yieldPerformance * 100).toFixed(1)}%
+                          {(tradingState.tokenMetadata.leasePaymentData.yieldPerformance * 100).toFixed(1)}%
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Income Consistency:</span>
                         <span className="text-[#10B981] font-medium">
-                          {(negotiationState.tokenMetadata.leasePaymentData.incomeConsistency * 100).toFixed(1)}%
+                          {(tradingState.tokenMetadata.leasePaymentData.incomeConsistency * 100).toFixed(1)}%
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Dividend Mechanism:</span>
                         <span className="text-[#64748B]">
-                          {(negotiationState.tokenMetadata.leasePaymentData as any).dividendMechanism?.replace('_', ' ') || 'Quarterly'}
+                          {(tradingState.tokenMetadata.leasePaymentData as any).dividendMechanism?.replace('_', ' ') || 'Quarterly'}
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Smart Contract:</span>
                         <span className="bloomberg-data text-[#0EA5E9] bloomberg-section-label">
-                          {(negotiationState.tokenMetadata.leasePaymentData as any).smartContractAddress?.slice(0, 10) || '0x1234567890'}...
+                          {(tradingState.tokenMetadata.leasePaymentData as any).smartContractAddress?.slice(0, 10) || '0x1234567890'}...
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Last Verified:</span>
                         <span className="text-[#64748B]">
-                          {new Date(negotiationState.tokenMetadata.leasePaymentData.lastPaymentVerified).toLocaleDateString()}
+                          {new Date(tradingState.tokenMetadata.leasePaymentData.lastPaymentVerified).toLocaleDateString()}
                         </span>
                       </div>
                     </div>
@@ -1408,32 +1408,32 @@ Professional Interface
                 )}
 
                 {/* Quality Metrics */}
-                {negotiationState.tokenMetadata.qualityMetrics && (
+                {tradingState.tokenMetadata.qualityMetrics && (
                   <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
                     <h4 className="bloomberg-small-text font-medium text-[#1E293B] mb-2">Data Quality Metrics</h4>
                     <div className="grid grid-cols-2 gap-2 bloomberg-section-label">
                       <div className="flex justify-between">
                         <span className="text-[#64748B]">Completeness:</span>
                         <span className="text-[#10B981] font-medium">
-                          {(negotiationState.tokenMetadata.qualityMetrics.completeness * 100).toFixed(1)}%
+                          {(tradingState.tokenMetadata.qualityMetrics.completeness * 100).toFixed(1)}%
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-[#64748B]">Accuracy:</span>
                         <span className="text-[#10B981] font-medium">
-                          {(negotiationState.tokenMetadata.qualityMetrics.accuracy * 100).toFixed(1)}%
+                          {(tradingState.tokenMetadata.qualityMetrics.accuracy * 100).toFixed(1)}%
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-[#64748B]">Freshness:</span>
                         <span className="text-[#0EA5E9] font-medium">
-                          {(negotiationState.tokenMetadata.qualityMetrics.dataFreshness * 100).toFixed(1)}%
+                          {(tradingState.tokenMetadata.qualityMetrics.dataFreshness * 100).toFixed(1)}%
                         </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-[#64748B]">Integrity:</span>
                         <span className="text-[#10B981] font-medium">
-                          {(negotiationState.tokenMetadata.qualityMetrics.integrityScore * 100).toFixed(1)}%
+                          {(tradingState.tokenMetadata.qualityMetrics.integrityScore * 100).toFixed(1)}%
                         </span>
                       </div>
                     </div>
@@ -1443,20 +1443,20 @@ Professional Interface
                       <div className="flex justify-between bloomberg-section-label mb-1">
                         <span className="text-[#64748B]">Overall Quality Score</span>
                         <span className="text-[#1E293B] font-medium">
-                          {(((negotiationState.tokenMetadata.qualityMetrics.completeness +
-                             negotiationState.tokenMetadata.qualityMetrics.accuracy +
-                             negotiationState.tokenMetadata.qualityMetrics.dataFreshness +
-                             negotiationState.tokenMetadata.qualityMetrics.integrityScore) / 4) * 100).toFixed(1)}%
+                          {(((tradingState.tokenMetadata.qualityMetrics.completeness +
+                             tradingState.tokenMetadata.qualityMetrics.accuracy +
+                             tradingState.tokenMetadata.qualityMetrics.dataFreshness +
+                             tradingState.tokenMetadata.qualityMetrics.integrityScore) / 4) * 100).toFixed(1)}%
                         </span>
                       </div>
                       <div className="h-2 bg-gray-200 rounded-full">
                         <div
                           className="h-2 bg-gradient-to-r from-[#0EA5E9] to-[#10B981] rounded-full transition-all duration-500"
                           style={{
-                            width: `${((negotiationState.tokenMetadata.qualityMetrics.completeness +
-                                       negotiationState.tokenMetadata.qualityMetrics.accuracy +
-                                       negotiationState.tokenMetadata.qualityMetrics.dataFreshness +
-                                       negotiationState.tokenMetadata.qualityMetrics.integrityScore) / 4) * 100}%`
+                            width: `${((tradingState.tokenMetadata.qualityMetrics.completeness +
+                                       tradingState.tokenMetadata.qualityMetrics.accuracy +
+                                       tradingState.tokenMetadata.qualityMetrics.dataFreshness +
+                                       tradingState.tokenMetadata.qualityMetrics.integrityScore) / 4) * 100}%`
                           }}
                         ></div>
                       </div>
@@ -1473,7 +1473,7 @@ Professional Interface
 
               {/* Messages Area */}
               <div className="flex-1 p-6 overflow-y-auto space-y-4" role="log" aria-live="polite" aria-label="Trading messages">
-                {!negotiationStarted ? (
+                {!tradingStarted ? (
                   <div className="text-center py-12">
                     {isInitializing ? (
                       <>
@@ -1494,7 +1494,7 @@ Professional Interface
                           Click &quot;Start Negotiation&quot; to begin your WREI carbon credit negotiation session.
                         </p>
                         <button
-                          onClick={handleStartNegotiation}
+                          onClick={handleStartTrading}
                           disabled={isLoading}
                           className="bg-[#0EA5E9] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#0284C7] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
@@ -1505,7 +1505,7 @@ Professional Interface
                   </div>
                 ) : (
                   <>
-                    {negotiationState?.messages.map((message, index) => (
+                    {tradingState?.messages.map((message, index) => (
                       <div key={index} className={`flex ${message.role === 'buyer' ? 'justify-end' : 'justify-start'}`}>
                         <div className={`max-w-[80%] rounded-lg p-4 ${
                           message.role === 'buyer'
@@ -1574,19 +1574,19 @@ Professional Interface
               )}
 
               {/* Completion States */}
-              {negotiationState?.negotiationComplete && (
+              {tradingState?.negotiationComplete && (
                 <div className="mx-6 mb-4">
-                  {negotiationState.outcome === 'agreed' && (
+                  {tradingState.outcome === 'agreed' && (
                     <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
                       <div className="flex justify-between items-start">
                         <div>
                           <div className="">Negotiation Complete — Terms Agreed</div>
                           <div className="bloomberg-small-text mt-1">
-                            Final price: ${negotiationState.currentOfferPrice}/t
+                            Final price: ${tradingState.currentOfferPrice}/t
                           </div>
                         </div>
                         <button
-                          onClick={handleResetNegotiation}
+                          onClick={handleResetTrading}
                           className="bg-green-700 text-white px-3 py-1 rounded bloomberg-small-text font-medium hover:bg-green-800 transition-colors"
                         >
                           Start New Negotiation
@@ -1594,7 +1594,7 @@ Professional Interface
                       </div>
                     </div>
                   )}
-                  {negotiationState.outcome === 'deferred' && (
+                  {tradingState.outcome === 'deferred' && (
                     <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800">
                       <div className="flex justify-between items-start">
                         <div>
@@ -1604,7 +1604,7 @@ Professional Interface
                           </div>
                         </div>
                         <button
-                          onClick={handleResetNegotiation}
+                          onClick={handleResetTrading}
                           className="bg-amber-700 text-white px-3 py-1 rounded bloomberg-small-text font-medium hover:bg-amber-800 transition-colors"
                         >
                           Start New Negotiation
@@ -1612,7 +1612,7 @@ Professional Interface
                       </div>
                     </div>
                   )}
-                  {negotiationState.outcome === 'escalated' && (
+                  {tradingState.outcome === 'escalated' && (
                     <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-800">
                       <div className="flex justify-between items-start">
                         <div>
@@ -1622,7 +1622,7 @@ Professional Interface
                           </div>
                         </div>
                         <button
-                          onClick={handleResetNegotiation}
+                          onClick={handleResetTrading}
                           className="bg-blue-700 text-white px-3 py-1 rounded bloomberg-small-text font-medium hover:bg-blue-800 transition-colors"
                         >
                           Start New Negotiation
@@ -1633,11 +1633,11 @@ Professional Interface
                 </div>
               )}
 
-              {/* A4: Negotiation Scorecard */}
-              {showScorecard && negotiationScorecard && selectedPersona !== 'freeplay' && (
+              {/* A4: Trading Scorecard */}
+              {showScorecard && tradingScorecard && selectedPersona !== 'freeplay' && (
                 <div className="mx-6 mb-4">
                   <Scorecard
-                    scorecard={negotiationScorecard}
+                    scorecard={tradingScorecard}
                     persona={selectedPersona as PersonaType}
                     onClose={() => setShowScorecard(false)}
                   />
@@ -1645,7 +1645,7 @@ Professional Interface
               )}
 
               {/* Analytics Panel */}
-              {negotiationState?.negotiationComplete && (
+              {tradingState?.negotiationComplete && (
                 <div className="mx-6 mb-4 bg-slate-50 rounded-lg border border-slate-200 p-6">
                   <h3 className="bloomberg-card-title text-[#1E293B] mb-6">Negotiation Analytics</h3>
 
@@ -1654,41 +1654,41 @@ Professional Interface
                     <div className="bg-white rounded-lg p-4 border border-slate-200">
                       <div className="bloomberg-section-label font-medium text-[#64748B] mb-1">OUTCOME</div>
                       <div className={`inline-flex px-2 py-1 rounded-full bloomberg-section-label font-medium ${
-                        negotiationState.outcome === 'agreed' ? 'bg-green-100 text-green-800' :
-                        negotiationState.outcome === 'deferred' ? 'bg-amber-100 text-amber-800' :
+                        tradingState.outcome === 'agreed' ? 'bg-green-100 text-green-800' :
+                        tradingState.outcome === 'deferred' ? 'bg-amber-100 text-amber-800' :
                         'bg-blue-100 text-blue-800'
                       }`}>
-                        {negotiationState.outcome ? negotiationState.outcome.charAt(0).toUpperCase() + negotiationState.outcome.slice(1) : 'In Progress'}
+                        {tradingState.outcome ? tradingState.outcome.charAt(0).toUpperCase() + tradingState.outcome.slice(1) : 'In Progress'}
                       </div>
                     </div>
                     <div className="bg-white rounded-lg p-4 border border-slate-200">
                       <div className="bloomberg-section-label font-medium text-[#64748B] mb-1">ROUNDS</div>
-                      <div className="bloomberg-metric-value text-[#1E293B]">{negotiationState.round}</div>
+                      <div className="bloomberg-metric-value text-[#1E293B]">{tradingState.round}</div>
                     </div>
                     <div className="bg-white rounded-lg p-4 border border-slate-200">
                       <div className="bloomberg-section-label font-medium text-[#64748B] mb-1">FINAL TERMS</div>
                       <div className="bloomberg-metric-value text-[#1E293B]">
                         {(() => {
-                          const tokenType = negotiationState.wreiTokenType || 'carbon_credits';
+                          const tokenType = tradingState.wreiTokenType || 'carbon_credits';
                           if (tokenType === 'asset_co') {
-                            return `${negotiationState.currentOfferPrice.toFixed(1)}%`;
+                            return `${tradingState.currentOfferPrice.toFixed(1)}%`;
                           } else if (tokenType === 'dual_portfolio') {
                             return 'Portfolio';
                           } else {
-                            return `A$${negotiationState.currentOfferPrice}/t`;
+                            return `A$${tradingState.currentOfferPrice}/t`;
                           }
                         })()}
                       </div>
-                      {negotiationState.outcome === 'agreed' && (
+                      {tradingState.outcome === 'agreed' && (
                         <div className="bloomberg-section-label text-[#64748B] mt-1">
-                          {Math.round(((negotiationState.anchorPrice - negotiationState.currentOfferPrice) / negotiationState.anchorPrice) * 100)}%
-                          {negotiationState.wreiTokenType === 'asset_co' ? ' yield reduction' : ' discount'}
+                          {Math.round(((tradingState.anchorPrice - tradingState.currentOfferPrice) / tradingState.anchorPrice) * 100)}%
+                          {tradingState.wreiTokenType === 'asset_co' ? ' yield reduction' : ' discount'}
                         </div>
                       )}
                     </div>
                     <div className="bg-white rounded-lg p-4 border border-slate-200">
                       <div className="bloomberg-section-label font-medium text-[#64748B] mb-1">DURATION</div>
-                      <div className="bloomberg-metric-value text-[#1E293B]">{negotiationState.round * 2}min</div>
+                      <div className="bloomberg-metric-value text-[#1E293B]">{tradingState.round * 2}min</div>
                       <div className="bloomberg-section-label text-[#64748B] mt-1">est.</div>
                     </div>
                   </div>
@@ -1698,7 +1698,7 @@ Professional Interface
                     <h4 className="bloomberg-small-text  text-[#1E293B] mb-3">Argument Distribution</h4>
                     <div className="bg-white rounded-lg p-4 border border-slate-200">
                       {(() => {
-                        const argCounts = negotiationState.argumentHistory.reduce((acc, arg) => {
+                        const argCounts = tradingState.argumentHistory.reduce((acc, arg) => {
                           acc[arg] = (acc[arg] || 0) + 1;
                           return acc;
                         }, {} as Record<string, number>);
@@ -1731,11 +1731,11 @@ Professional Interface
                     <h4 className="bloomberg-small-text  text-[#1E293B] mb-3">Price Movement</h4>
                     <div className="bg-white rounded-lg p-4 border border-slate-200">
                       {(() => {
-                        const pricePoints = negotiationState.messages
+                        const pricePoints = tradingState.messages
                           .filter(msg => msg.role === 'agent')
                           .map((msg, index) => ({
                             round: index + 1,
-                            price: negotiationState.anchorPrice - (negotiationState.totalConcessionGiven * (index + 1) / negotiationState.messages.filter(m => m.role === 'agent').length)
+                            price: tradingState.anchorPrice - (tradingState.totalConcessionGiven * (index + 1) / tradingState.messages.filter(m => m.role === 'agent').length)
                           }));
 
                         if (pricePoints.length === 0) return null;
@@ -1804,7 +1804,7 @@ Professional Interface
                     <h4 className="bloomberg-small-text  text-[#1E293B] mb-3">Emotional Journey</h4>
                     <div className="bg-white rounded-lg p-4 border border-slate-200">
                       <div className="flex space-x-1">
-                        {negotiationState.messages
+                        {tradingState.messages
                           .filter(msg => msg.role === 'buyer')
                           .map((msg, index) => (
                             <div key={index} className="flex-1 min-w-0">
@@ -1827,8 +1827,8 @@ Professional Interface
                     </div>
                   </div>
 
-                  {/* Post-Negotiation Feedback (Free Play mode only) */}
-                  {negotiationState.buyerProfile.persona === 'freeplay' && (
+                  {/* Post-Trading Feedback (Free Play mode only) */}
+                  {tradingState.buyerProfile.persona === 'freeplay' && (
                     <div className="bg-white rounded-lg p-4 border border-slate-200">
                       <h4 className="bloomberg-small-text  text-[#1E293B] mb-3">Feedback</h4>
                       <div className="mb-3">
@@ -1847,8 +1847,8 @@ Professional Interface
                       <div className="bloomberg-section-label text-[#64748B]">
                         The agent classified you as: <span className="font-medium">
                           {(() => {
-                            if (negotiationState.argumentHistory.length === 0) return 'General approach';
-                            const argCounts = negotiationState.argumentHistory.reduce((acc, arg) => {
+                            if (tradingState.argumentHistory.length === 0) return 'General approach';
+                            const argCounts = tradingState.argumentHistory.reduce((acc, arg) => {
                               acc[arg] = (acc[arg] || 0) + 1;
                               return acc;
                             }, {} as Record<string, number>);
@@ -1863,7 +1863,7 @@ Professional Interface
               )}
 
               {/* Institutional Dashboard (Phase 6.1) - Appears for institutional personas */}
-              {negotiationState && isInstitutionalPersona(selectedPersona) && (
+              {tradingState && isInstitutionalPersona(selectedPersona) && (
                 <div className="mx-6 mb-4 bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl border border-slate-200 shadow-lg p-6">
                   {/* Dashboard Header with Tab Navigation */}
                   <div className="flex items-center justify-between mb-6">
@@ -1905,9 +1905,9 @@ Institutional View
                         }`}
                       >
                         📚 History & Replay
-                        {negotiationSessions.length > 0 && (
+                        {tradingSessions.length > 0 && (
                           <span className="ml-2 bg-red-500 text-white bloomberg-section-label px-2 py-1 rounded-full">
-                            {negotiationSessions.length}
+                            {tradingSessions.length}
                           </span>
                         )}
                       </button>
@@ -1958,8 +1958,8 @@ Institutional View
                           })()
                         }}
                         portfolioSize={(() => {
-                          // Calculate portfolio size based on negotiation context
-                          const basePrice = negotiationState.wreiTokenType === 'asset_co'
+                          // Calculate portfolio size based on trading context
+                          const basePrice = tradingState.wreiTokenType === 'asset_co'
                             ? 1_000 // Asset Co tokens
                             : 150; // Carbon credits A$150/tonne
                           return Math.max(10_000_000, 100000 * basePrice); // Default 100k units
@@ -1973,7 +1973,7 @@ Institutional View
                     </div>
                   ) : activeAnalyticsTab === 'history' ? (
                     <div className="bg-white rounded-xl p-4 min-h-[600px]">
-                      {negotiationSessions.length === 0 ? (
+                      {tradingSessions.length === 0 ? (
                         <div className="text-center py-12 text-gray-600">
                           <div className="text-6xl mb-4">📚</div>
                           <p className="bloomberg-card-title font-medium mb-2">No Negotiation History Yet</p>
@@ -1985,9 +1985,9 @@ Institutional View
                         <div className="space-y-6">
                           <div className="flex items-center justify-between">
                             <h3 className="bloomberg-card-title text-gray-800">
-                              Recent Negotiation Sessions ({negotiationSessions.length})
+                              Recent Negotiation Sessions ({tradingSessions.length})
                             </h3>
-                            {negotiationSessions.length >= 2 && (
+                            {tradingSessions.length >= 2 && (
                               <button
                                 onClick={() => setShowComparisonDashboard(true)}
                                 className="px-4 py-2 bg-[#0EA5E9] text-white rounded-lg hover:bg-blue-600 transition-colors bloomberg-small-text font-medium"
@@ -1998,7 +1998,7 @@ Institutional View
                           </div>
 
                           <div className="grid gap-4">
-                            {negotiationSessions.slice(0, 10).map((session) => (
+                            {tradingSessions.slice(0, 10).map((session) => (
                               <div
                                 key={session.id}
                                 className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow bg-white"
@@ -2088,10 +2088,10 @@ Institutional View
                             ))}
                           </div>
 
-                          {negotiationSessions.length > 10 && (
+                          {tradingSessions.length > 10 && (
                             <div className="text-center">
                               <p className="bloomberg-small-text text-gray-500">
-                                Showing latest 10 sessions. Total: {negotiationSessions.length} sessions.
+                                Showing latest 10 sessions. Total: {tradingSessions.length} sessions.
                               </p>
                             </div>
                           )}
@@ -2124,7 +2124,7 @@ Institutional View
               )}
 
               {/* Input Area */}
-              {negotiationStarted && !negotiationState?.negotiationComplete && (
+              {tradingStarted && !tradingState?.negotiationComplete && (
                 <div className="border-t border-slate-200 p-4">
                   <div className="flex space-x-3">
                     <textarea
@@ -2158,7 +2158,7 @@ Institutional View
                   <div className="flex justify-between items-center mt-2">
                     <div className="flex space-x-4">
                       <button
-                        onClick={handleEndNegotiation}
+                        onClick={handleEndTrading}
                         disabled={isLoading}
                         className="text-[#64748B] hover:text-[#1E293B] bloomberg-small-text font-medium disabled:opacity-50"
                       >
@@ -2172,7 +2172,7 @@ Institutional View
                         Request Human Representative
                       </button>
                       <button
-                        onClick={handleResetNegotiation}
+                        onClick={handleResetTrading}
                         disabled={isLoading}
                         className="text-[#0EA5E9] hover:text-[#0284C7] bloomberg-small-text font-medium disabled:opacity-50"
                       >
@@ -2190,10 +2190,10 @@ Institutional View
         </div>
 
         {/* Bottom Status Bar */}
-        {negotiationState && (
+        {tradingState && (
           <div className="mt-4 flex justify-between items-center bloomberg-small-text text-[#64748B]">
             <div>
-              Round {negotiationState.round} | Phase: {negotiationState.phase}
+              Round {tradingState.round} | Phase: {tradingState.phase}
             </div>
             <div>
               WREI Trading Platform | Water Roads Pty Ltd
@@ -2202,7 +2202,7 @@ Institutional View
         )}
 
         {/* AI Strategy Panel - Milestone 1.1 Enhancement */}
-        {isInstitutionalPersona(selectedPersona) && negotiationStarted && (
+        {isInstitutionalPersona(selectedPersona) && tradingStarted && (
           <div className={`fixed ${showStrategyPanel ? 'right-4 top-20 w-96' : 'bottom-4 right-4'} z-50 transition-all duration-300`}>
             <NegotiationStrategyPanel
               explanation={currentStrategyExplanation}
@@ -2213,9 +2213,9 @@ Institutional View
         )}
 
         {/* A2: Real-Time Coaching Panel */}
-        {negotiationStarted && negotiationState && (
+        {tradingStarted && tradingState && (
           <CoachingPanel
-            negotiationState={negotiationState}
+            tradingState={tradingState}
             isVisible={showCoachingPanel}
             onToggleVisibility={() => setShowCoachingPanel(!showCoachingPanel)}
             className={showStrategyPanel && isInstitutionalPersona(selectedPersona) ? 'right-[420px]' : ''}
@@ -2239,7 +2239,7 @@ Institutional View
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="w-11/12 h-5/6 max-w-7xl bg-white rounded-lg shadow-xl overflow-hidden">
               <ComparisonDashboard
-                sessions={negotiationSessions}
+                sessions={tradingSessions}
                 comparison={sessionComparison}
                 onSelectSessions={handleSessionComparison}
                 onClose={closeComparisonDashboard}
