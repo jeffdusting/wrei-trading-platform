@@ -1206,3 +1206,68 @@ Export buttons added to: TradeBlotter header (CSV), Compliance ESS tab (HTML sum
 Gate report: `GATE_REPORT_P4.md`
 Tag: `v1.0.0-investor-ready`
 Recommendation: **PROCEED — Investor-ready release**
+
+---
+
+## Session: R1 — Post-P4 Cleanup
+
+- **Date:** 2026-04-05
+- **Phase:** R1 (Cleanup)
+- **Branch:** main
+
+### Summary
+
+Archived dead code (45 source files, 12 test files), stale documentation (51 markdown files), wired the settlement orchestrator into the trade execution flow, and excluded `_archive/` from TypeScript compilation.
+
+---
+
+### Task R1.1 — Create Archive Structure
+
+Created `_archive/` with subdirectories: `components/`, `lib/`, `docs/`, `design-system/`, `hooks/`, `review/`, `__tests__/`.
+
+### Task R1.2 — Archive Dead Code Components (35 files)
+
+Moved 35 orphaned UI components to `_archive/components/`. Build verified clean after each batch of ~10 files.
+
+### Task R1.3 — Archive Dead Library Files (10 files) + Delete Legacy Page
+
+Moved 10 orphaned lib/hook/design-system files to `_archive/`. Deleted `app/page_original.tsx` (legacy landing page backup). Build verified clean.
+
+### Task R1.4 — Archive Stale Markdown (51 docs + 2 review)
+
+Moved 51 stale pre-WP6 markdown files to `_archive/docs/` and 2 files to `_archive/review/`. Removed duplicate `WP7_CC_Prompt_Package.md` from root (identical to `architecture/` copy).
+
+### Task R1.5 — Wire Settlement Orchestrator
+
+Wired `settleTradeForInstrument()` into `app/api/trades/route.ts` POST handler. After a trade is recorded, settlement is initiated via the orchestrator. Settlement failure is caught and logged — does not block trade confirmation. Settlement ID is returned in the trade response. Build verified clean.
+
+### Task R1.6 — Archive Test Files (12 files)
+
+12 test files that tested archived dead code were moved to `_archive/__tests__/`. These tests cannot execute without their archived source modules.
+
+### Task R1.7 — TypeScript Config Update
+
+Added `_archive` to `tsconfig.json` exclude list to prevent type-checking archived files.
+
+---
+
+### File Counts
+
+| Metric | Before | After |
+|--------|--------|-------|
+| Active source files (TS/TSX) | ~239 | 193 |
+| Active test suites | 80 | 68 |
+| Archived files (total) | 0 | 111 |
+| Root markdown files | ~60 | 12 |
+
+### Verification Results
+
+| Check | Result |
+|-------|--------|
+| `npm run build` | **PASS** — all pages compile |
+| `npx tsc --noEmit` | **PASS** — 0 errors |
+| `npm test -- --passWithNoTests` | **PASS** — 68 suites, 1598 passed, 3 skipped, 0 failed |
+
+Note: Test count decreased from 1888→1598 (290 tests) because 12 test files testing archived dead code were archived alongside their source modules. All active tests pass. Zero regressions.
+
+Tag: `v1.0.1-cleanup`

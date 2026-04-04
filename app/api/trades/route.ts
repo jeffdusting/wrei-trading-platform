@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logTradeEvent } from '@/lib/trading/compliance/audit-logger';
+import { settleTradeForInstrument } from '@/lib/trading/settlement/settlement-orchestrator';
+import type { CompletedTrade } from '@/lib/trading/settlement/types';
 
 // ---------------------------------------------------------------------------
 // GET /api/trades — list trades from Vercel Postgres
@@ -54,7 +56,31 @@ export async function POST(req: NextRequest) {
       buyerPersona: trade.buyer_persona,
     }).catch(() => {});
 
-    return NextResponse.json({ trade }, { status: 201 });
+    // Initiate settlement asynchronously — do not block trade confirmation
+    const completedTrade: CompletedTrade = {
+      tradeId: trade.id,
+      instrumentType: body.instrument_type ?? 'ESC',
+      instrumentId: body.instrument_id ?? trade.id,
+      quantity: trade.quantity,
+      pricePerUnit: trade.price_per_unit,
+      totalValue: trade.total_value,
+      currency: (trade.currency === 'USD' ? 'USD' : 'AUD') as 'AUD' | 'USD',
+      buyerId: body.buyer_persona ?? 'unknown',
+      sellerId: 'wrei-platform',
+      negotiationId: body.negotiation_id,
+      executedAt: new Date().toISOString(),
+    };
+
+    let settlementId: string | undefined;
+    try {
+      const settlement = await settleTradeForInstrument(completedTrade);
+      settlementId = settlement.settlementId;
+    } catch (err) {
+      // Settlement failure must not block trade confirmation
+      console.error('[settlement] Failed to initiate settlement for trade', trade.id, err);
+    }
+
+    return NextResponse.json({ trade, settlementId }, { status: 201 });
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to record trade' },
