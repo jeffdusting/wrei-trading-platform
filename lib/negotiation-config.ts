@@ -3,7 +3,7 @@ import { NegotiationState, PersonaType, CreditType, WREITokenType, InvestorClass
 // WREI Pricing Index — LIVE MARKET REFERENCES
 // In production, these are fed from real-time market data APIs:
 // - VCM spot prices from ClimateTrade, CBL Markets, Xpansiv
-// - NSW ESC prices from AEMO, ESC trading platforms, Clean Energy Regulator
+// - NSW ESC prices from Ecovantage, Northmore Gordon, CORE Markets (bilateral OTC market)
 // - Forward curves from institutional trading desks
 // Updated every 15 minutes during trading hours
 // Integrated with NSW ESC market context for demo scenarios
@@ -14,10 +14,10 @@ export const PRICING_INDEX = {
   FORWARD_REMOVAL_REFERENCE: 185,  // Forward removal contracts (2030 delivery)
   DMRV_PREMIUM_BENCHMARK: 1.78,   // 78% premium for dMRV vs manual verification
 
-  // NSW ESC Market References (AUD)
-  ESC_SPOT_REFERENCE: 47.80,      // Current NSW ESC spot price (AEMO trading data)
-  ESC_FORWARD_REFERENCE: 52.15,   // ESC forward curve (12-month)
-  ESC_VOLATILITY_RANGE: [38, 68], // ESC price range (12-month historical)
+  // NSW ESC Market References (AUD) — bilateral OTC market, no exchange
+  ESC_SPOT_REFERENCE: 23.00,      // Current NSW ESC spot price (broker publications, Apr 2026)
+  ESC_FORWARD_REFERENCE: 23.75,   // ESC forward curve (12-month)
+  ESC_VOLATILITY_RANGE: [18, 29.48], // ESC price range (floor to penalty rate ceiling)
 
   // Premium Benchmarks
   CCP_PREMIUM_LOW: 1.15,          // Corresponding adjustment premium range
@@ -25,7 +25,7 @@ export const PRICING_INDEX = {
   INSTITUTIONAL_PREMIUM: 1.12,     // Institutional infrastructure premium
 
   INDEX_TIMESTAMP: '2026-04-04T09:30:00Z', // Last market data update
-  DATA_SOURCES: ['Xpansiv CBL', 'AEMO', 'ClimateTrade', 'Sylvera', 'CER'] // Added Clean Energy Regulator
+  DATA_SOURCES: ['Xpansiv CBL', 'Ecovantage', 'Northmore Gordon', 'CORE Markets', 'Sylvera', 'CER']
 } as const;
 
 // NSW ESC Market Context (Integrated for realistic demo scenarios)
@@ -33,12 +33,12 @@ export const PRICING_INDEX = {
 export const NSW_ESC_CONFIG = {
   // Current Market Conditions (Live Integration)
   MARKET_CONDITIONS: {
-    SPOT_PRICE: PRICING_INDEX.ESC_SPOT_REFERENCE,           // A$47.80 current spot
-    FORWARD_PRICE: PRICING_INDEX.ESC_FORWARD_REFERENCE,     // A$52.15 forward curve
+    SPOT_PRICE: PRICING_INDEX.ESC_SPOT_REFERENCE,           // A$23.00 current spot
+    FORWARD_PRICE: PRICING_INDEX.ESC_FORWARD_REFERENCE,     // A$23.75 forward curve
     VOLATILITY_RANGE: PRICING_INDEX.ESC_VOLATILITY_RANGE,   // [A$38, A$68] range
     LAST_UPDATED: PRICING_INDEX.INDEX_TIMESTAMP,
-    DATA_SOURCES: ['AEMO', 'NSW ESC Registry', 'IPART', 'CER'],
-    TRADING_HOURS: 'AEMO Market Hours (9:00-17:00 AEST)',
+    DATA_SOURCES: ['Ecovantage', 'Northmore Gordon', 'CORE Markets', 'IPART'],
+    TRADING_HOURS: 'Business Hours (9:00-17:00 AEST) — bilateral OTC',
     SETTLEMENT_CYCLE: 'T+2 (Registry Transfer)',
     MINIMUM_TRADE_SIZE: 1_000, // ESCs
   },
@@ -110,10 +110,10 @@ export const NEGOTIATION_CONFIG = {
   PRICE_FLOOR: Math.round(LIVE_CARBON_BASE * 1.50 * 100) / 100,   // $22.80/tonne (50% premium floor)
 
   // NSW ESS/ESC Pricing (AUD per ESC) - Based on Live Market Data
-  ESC_MARKET_REFERENCE: LIVE_ESC_BASE,        // Current NSW ESC spot: AUD $47.80
+  ESC_MARKET_REFERENCE: LIVE_ESC_BASE,        // Current NSW ESC spot: AUD $23.00
   ESC_WREI_PREMIUM_MULTIPLIER: 1.15,          // Conservative 15% premium for ESCs
-  ESC_ANCHOR_PRICE: Math.round(LIVE_ESC_BASE * 1.15 * 100) / 100, // AUD $54.97/ESC
-  ESC_PRICE_FLOOR: Math.round(LIVE_ESC_BASE * 1.08 * 100) / 100,  // AUD $51.62/ESC (8% premium floor)
+  ESC_ANCHOR_PRICE: Math.round(LIVE_ESC_BASE * 1.15 * 100) / 100, // AUD $26.45/ESC
+  ESC_PRICE_FLOOR: Math.round(LIVE_ESC_BASE * 1.08 * 100) / 100,  // AUD $24.84/ESC (8% premium floor)
 
   // Common negotiation parameters
   MAX_CONCESSION_PER_ROUND: 0.05,  // 5%

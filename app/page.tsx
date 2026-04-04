@@ -38,7 +38,7 @@ interface DashboardMetrics {
   activeSessions: number
   certificatesTracked: number
   instruments: InstrumentTicker[]
-  registryStatus: { name: string; status: 'online' | 'degraded' | 'offline' }[]
+  registryStatus: { name: string; status: 'online' | 'degraded' | 'offline'; label: string }[]
 }
 
 function useDashboardData() {
@@ -48,10 +48,10 @@ function useDashboardData() {
     certificatesTracked: 2_847_329,
     instruments: BASE_INSTRUMENTS,
     registryStatus: [
-      { name: 'TESSA (NSW)', status: 'online' },
-      { name: 'CER Registry', status: 'online' },
-      { name: 'VEEC Registry', status: 'online' },
-      { name: 'Blockchain', status: 'online' },
+      { name: 'TESSA (NSW)', status: 'degraded', label: 'Manual — web portal' },
+      { name: 'CER CorTenX', status: 'offline', label: 'Simulated — API pending' },
+      { name: 'VEEC Registry', status: 'degraded', label: 'Manual — web portal' },
+      { name: 'Blockchain', status: 'offline', label: 'Simulated' },
     ],
   })
 
@@ -105,15 +105,15 @@ function MetricCard({ value, label, colour = 'text-slate-800' }: { value: string
   )
 }
 
-function RegistryIndicator({ name, status }: { name: string; status: 'online' | 'degraded' | 'offline' }) {
-  const dotColour = status === 'online' ? 'bg-green-500' : status === 'degraded' ? 'bg-amber-500' : 'bg-red-500'
-  const textColour = status === 'online' ? 'text-green-600' : status === 'degraded' ? 'text-amber-600' : 'text-red-600'
+function RegistryIndicator({ name, status, label }: { name: string; status: 'online' | 'degraded' | 'offline'; label: string }) {
+  const dotColour = status === 'online' ? 'bg-green-500' : status === 'degraded' ? 'bg-amber-500' : 'bg-gray-400'
+  const textColour = status === 'online' ? 'text-green-600' : status === 'degraded' ? 'text-amber-600' : 'text-slate-500'
   return (
     <div className="flex items-center justify-between">
       <span className="bloomberg-small-text text-slate-600">{name}</span>
       <div className="flex items-center gap-1.5">
         <div className={`w-1.5 h-1.5 rounded-full ${dotColour}`} />
-        <span className={`bloomberg-small-text ${textColour} capitalize`}>{status}</span>
+        <span className={`bloomberg-small-text ${textColour}`}>{label}</span>
       </div>
     </div>
   )
@@ -136,7 +136,7 @@ const PRODUCT_CARDS: ProductCard[] = [
   {
     title: 'ESC Trading',
     code: 'ESC',
-    description: 'Trade NSW Energy Savings Certificates with AI-powered negotiation. Live market data from AEMO and registry feeds.',
+    description: 'Trade NSW Energy Savings Certificates with AI-powered negotiation. Market data from broker publications and simulation.',
     metrics: [
       { label: 'Spot', value: `A$${BASE_INSTRUMENTS[0].spot.toFixed(2)}`, colour: 'text-green-600' },
       { label: 'Penalty Rate', value: 'A$29.48', colour: 'text-amber-600' },
@@ -263,7 +263,7 @@ export default function TradeDashboard() {
               <div className="bloomberg-section-label mb-3">REGISTRY STATUS</div>
               <div className="space-y-2">
                 {dashboard.registryStatus.map(reg => (
-                  <RegistryIndicator key={reg.name} name={reg.name} status={reg.status} />
+                  <RegistryIndicator key={reg.name} name={reg.name} status={reg.status} label={reg.label} />
                 ))}
               </div>
             </div>
@@ -548,7 +548,7 @@ export default function TradeDashboard() {
               <div className="bloomberg-section-label mb-3">RECENT ACTIVITY</div>
               <div className="space-y-3">
                 {[
-                  { action: 'ESC Trade Completed', entity: 'A$54.97 × 5,000', time: '2 min ago' },
+                  { action: 'ESC Trade Completed', entity: 'A$23.00 × 5,000', time: '2 min ago' },
                   { action: 'WREI-CC Verified', entity: 'Batch #2847', time: '5 min ago' },
                   { action: 'ACCU Settlement', entity: 'A$175K', time: '12 min ago' },
                   { action: 'WREI-ACO Minted', entity: 'Token #1042', time: '18 min ago' },

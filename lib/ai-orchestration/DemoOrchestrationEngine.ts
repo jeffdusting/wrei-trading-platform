@@ -31,7 +31,7 @@ import { ScenarioType } from '../../components/scenarios/types';
 // NSW ESC Market Constants for Orchestration Context
 const NSW_ESC_ORCHESTRATION_CONTEXT = {
   MARKET_SIZE: 200_000_000, // A$200M annual market
-  SPOT_PRICE: 47.80, // A$/tonne current AEMO pricing
+  SPOT_PRICE: 23.00, // A$/cert current spot (broker publications)
   PARTICIPANTS: 850, // Active market participants
   NORTHMORE_GORDON_SHARE: 0.12, // 12% market share
   AFSL_NUMBER: 246896,

@@ -27,10 +27,10 @@ const API_RATE_LIMITS = {
 const NSW_ESC_SCENARIO_CONTEXT = `
 NSW Energy Savings Scheme (ESS) Trading Platform - Scenario Generation Context:
 - Market Size: A$200M annual trading volume
-- Current Spot Price: A$47.80 per tonne (AEMO pricing)
+- Current Spot Price: A$23.00 per certificate (broker publications)
 - Major Participants: Energy Retailers, Large Energy Users, ACPs, Traders
 - Compliance Deadlines: March 31 and December 31
-- Market Volatility: 18% annualised, ranging A$35-65 historically
+- Market Volatility: 18% annualised, ranging A$18-29.48 (floor to penalty rate)
 - Average Trade Size: 1000 tonnes
 - Settlement: T+0 atomic settlement
 - Regulatory Updates: ESS Rule Changes, CER Updates, AFSL Changes
@@ -79,7 +79,7 @@ Complexity: ${config.complexity || 'moderate'}
 Duration: ${config.duration || '30 minutes'}
 
 Current Market Data:
-- Spot Price: A$${marketData?.currentPrice || '47.80'}
+- Spot Price: A$${marketData?.currentPrice || '23.00'}
 - Volume: ${marketData?.volume || '1,250,000'} tonnes
 - Volatility: ${marketData?.volatility || '18%'}
 
@@ -123,8 +123,8 @@ function generateFallbackScenario(operation: string): any {
         }
       ],
       marketConditions: {
-        startPrice: 47.80,
-        endPrice: 48.20,
+        startPrice: 23.00,
+        endPrice: 23.15,
         volatility: 0.15,
         volume: 125000,
         trend: 'stable'

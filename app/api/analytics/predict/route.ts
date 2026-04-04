@@ -36,7 +36,7 @@ const API_RATE_LIMITS = {
 const NSW_ESC_AI_CONTEXT = `
 NSW Energy Savings Scheme (ESS) Trading Platform Context:
 - Market Size: A$200M annual trading volume
-- Current Spot Price: A$47.80 per tonne
+- Current Spot Price: A$23.00 per certificate
 - Market Participants: 850+ active participants
 - Northmore Gordon Market Share: 12%
 - Regulatory Framework: Clean Energy Regulator (CER) oversight

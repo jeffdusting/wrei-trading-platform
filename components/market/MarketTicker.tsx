@@ -120,7 +120,10 @@ const MarketTicker: React.FC<MarketTickerProps> = ({
         <div className="absolute top-0 left-0 z-10 flex items-center space-x-2 bg-white/90 backdrop-blur-sm px-3 py-1">
           <div className={`w-2 h-2 rounded-full ${connectionDot}`} />
           <span className="bloomberg-section-label text-slate-500 font-medium">
-            LIVE MARKET DATA
+            MARKET DATA
+          </span>
+          <span className="bloomberg-section-label text-slate-400 font-normal">
+            Simulated
           </span>
         </div>
 

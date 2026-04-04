@@ -57,7 +57,7 @@ const BASE_TICKERS: Omit<TickerData, 'change' | 'changePercent' | 'timestamp'>[]
   {
     symbol: 'WREI-ESC',
     name: 'WREI ESC Credits',
-    price: 54.97,
+    price: 23.00,
     currency: 'AUD',
   },
   {

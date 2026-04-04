@@ -106,7 +106,7 @@ export const TechnicalInterface: React.FC = () => {
       value: '12s',
       target: '< 15s',
       status: 'excellent',
-      description: 'AEMO market data ingestion latency'
+      description: 'Market data ingestion latency'
     },
     {
       label: 'Throughput',
@@ -189,7 +189,7 @@ export const TechnicalInterface: React.FC = () => {
       status: 'healthy',
       cpu: 45,
       memory: 34,
-      description: 'AEMO real-time data ingestion and processing'
+      description: 'Broker feed data ingestion and processing'
     },
     {
       name: 'Compliance Engine',
@@ -285,7 +285,7 @@ export const TechnicalInterface: React.FC = () => {
                     </div>
                     <h4 className=" text-gray-900">Data Layer</h4>
                     <p className="bloomberg-small-text text-gray-600 mt-2">
-                      AEMO Market Data<br/>
+                      Broker Price Feeds<br/>
                       CER Registry Integration<br/>
                       PostgreSQL + Redis
                     </p>
@@ -547,12 +547,12 @@ export const TechnicalInterface: React.FC = () => {
                 <h4 className=" text-gray-900 mb-4">External Data Sources</h4>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <h5 className="font-medium text-gray-900 mb-2">AEMO Market Data</h5>
+                    <h5 className="font-medium text-gray-900 mb-2">Broker Price Feeds</h5>
                     <ul className="bloomberg-small-text text-gray-600 space-y-1">
-                      <li>• Real-time ESC spot pricing</li>
-                      <li>• Trading volume and liquidity data</li>
-                      <li>• Market participant information</li>
-                      <li>• Update frequency: 15-second intervals</li>
+                      <li>• ESC/VEEC/ACCU spot pricing (Ecovantage, NMG, CORE)</li>
+                      <li>• Weekly publication scraping + simulation</li>
+                      <li>• Market reference pricing</li>
+                      <li>• Fallback: simulation engine</li>
                     </ul>
                   </div>
                   <div>
@@ -599,7 +599,7 @@ export const TechnicalInterface: React.FC = () => {
                   <div>{`});`}</div>
                   <div></div>
                   <div><span className="text-blue-400">const</span> marketData = <span className="text-blue-400">await</span> response.json();</div>
-                  <div>console.log(marketData.esc_spot_price); <span className="text-gray-500">{`// 47.80`}</span></div>
+                  <div>console.log(marketData.esc_spot_price); <span className="text-gray-500">{`// 23.00`}</span></div>
                 </div>
               </div>
             </div>

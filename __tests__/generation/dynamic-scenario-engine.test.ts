@@ -115,7 +115,7 @@ describe('DynamicScenarioEngine', () => {
         marketConfig: {
           baseCondition: 'bull' as MarketCondition,
           volatilityRange: [0.1, 0.25],
-          priceRange: [35.0, 65.0],
+          priceRange: [18.0, 29.48],
           volumeRange: [50000, 500000],
           trendStrength: 0.7,
           noiseLevel: 0.3,
@@ -218,10 +218,10 @@ describe('DynamicScenarioEngine', () => {
       const market = scenario.marketConditions;
 
       // Price should be within NSW ESC historical range
-      expect(market.priceMovement.startPrice).toBeGreaterThanOrEqual(35.0);
-      expect(market.priceMovement.startPrice).toBeLessThanOrEqual(65.0);
-      expect(market.priceMovement.endPrice).toBeGreaterThanOrEqual(35.0);
-      expect(market.priceMovement.endPrice).toBeLessThanOrEqual(65.0);
+      expect(market.priceMovement.startPrice).toBeGreaterThanOrEqual(18.0);
+      expect(market.priceMovement.startPrice).toBeLessThanOrEqual(29.48);
+      expect(market.priceMovement.endPrice).toBeGreaterThanOrEqual(18.0);
+      expect(market.priceMovement.endPrice).toBeLessThanOrEqual(29.48);
 
       // Should have price trajectory
       expect(market.priceMovement.priceTrajectory).toBeDefined();
@@ -313,7 +313,7 @@ describe('DynamicScenarioEngine', () => {
         marketConfig: {
           baseCondition: 'bull' as MarketCondition,
           volatilityRange: [0.1, 0.25] as [number, number],
-          priceRange: [35.0, 65.0] as [number, number],
+          priceRange: [18.0, 29.48] as [number, number],
           volumeRange: [50000, 500000] as [number, number],
           trendStrength: 0.7,
           noiseLevel: 0.3,
@@ -338,7 +338,7 @@ describe('DynamicScenarioEngine', () => {
         marketConfig: {
           baseCondition: 'stable' as MarketCondition,
           volatilityRange: [0.05, 0.15] as [number, number],
-          priceRange: [35.0, 65.0] as [number, number],
+          priceRange: [18.0, 29.48] as [number, number],
           volumeRange: [50000, 500000] as [number, number],
           trendStrength: 0.3,
           noiseLevel: 0.1,
@@ -353,7 +353,7 @@ describe('DynamicScenarioEngine', () => {
         marketConfig: {
           baseCondition: 'volatile' as MarketCondition,
           volatilityRange: [0.25, 0.5] as [number, number],
-          priceRange: [35.0, 65.0] as [number, number],
+          priceRange: [18.0, 29.48] as [number, number],
           volumeRange: [50000, 500000] as [number, number],
           trendStrength: 0.5,
           noiseLevel: 0.4,
@@ -651,7 +651,7 @@ describe('DynamicScenarioEngine', () => {
       marketConfig: {
         baseCondition: 'stable' as MarketCondition,
         volatilityRange: [0.1, 0.25],
-        priceRange: [35.0, 65.0],
+        priceRange: [18.0, 29.48],
         volumeRange: [50000, 500000],
         trendStrength: 0.5,
         noiseLevel: 0.3,

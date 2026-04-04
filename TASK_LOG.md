@@ -1,5 +1,92 @@
 # WREI Trading Platform — Task Log
 
+## Session: D1.1–D1.5 — NMG Demo Update (Data Accuracy & Source Labels)
+
+- **Date:** 2026-04-05
+- **Phase:** D1 (continued)
+- **Branch:** main
+
+### Summary
+
+Updated platform for Northmore Gordon demo: corrected ESC pricing across all modules ($47.80→$23.00), added data source labels, fixed misleading AEMO and registry status references, and added `?brand=nmg` shortcut.
+
+---
+
+### Task D1.1 — NMG White-Label Configuration (Enhancement)
+
+**Result:** Complete
+
+| Change | File | Description |
+|--------|------|-------------|
+| Added `contactPhone` field | `lib/config/white-label.ts` | New optional phone field on `WhiteLabelConfig` interface |
+| NMG phone number | `lib/config/white-label.ts` | Added `1300 854 561` to NMG config |
+| Short slug aliases | `lib/config/white-label.ts` | Added `nmg` and `dm` aliases in `WHITE_LABEL_REGISTRY` |
+| `?brand=` parameter | `components/branding/WhiteLabelProvider.tsx` | Now reads both `?broker=` and `?brand=` URL parameters |
+
+**Usage:** `?brand=nmg` or `?broker=northmore-gordon` — both activate NMG branding.
+
+---
+
+### Task D1.2 — Data Source Labels
+
+**Result:** Complete — 3 components updated
+
+| Change | File | Description |
+|--------|------|-------------|
+| Ticker label | `components/market/MarketTicker.tsx` | Changed "LIVE MARKET DATA" → "MARKET DATA" + "Simulated" label |
+| Order book label | `components/trading/OrderBookPanel.tsx` | Added "Simulated" badge to header |
+| Compliance labels | `app/compliance/page.tsx` | Added "Source: IPART 2026" to penalty rate, targets, deadline; "Simulated" to spot price; "Derived" to breakeven |
+| ESS targets header | `app/compliance/page.tsx` | Added "Source: IPART 2026" to ESS Energy Savings Targets section header |
+
+---
+
+### Task D1.3 — Settlement Status Framing
+
+**Result:** Complete — landing page and compliance dashboard updated
+
+| Change | File | Description |
+|--------|------|-------------|
+| Registry status | `app/page.tsx` | Changed from misleading "online" to: TESSA "Manual — web portal", CER CorTenX "Simulated — API pending", VEEC "Manual — web portal", Blockchain "Simulated" |
+| Registry indicator | `app/page.tsx` | Updated `RegistryIndicator` to accept `label` prop; uses grey dots for simulated, amber for manual |
+| ESC description | `app/page.tsx` | Fixed "Live market data from AEMO" → "Market data from broker publications and simulation" |
+| Recent activity | `app/page.tsx` | Fixed ESC trade price from A$54.97 to A$23.00 |
+| Compliance panel | `app/compliance/page.tsx` | Added "Registry & Settlement Status" section with correct labels for all 4 adapters |
+
+---
+
+### Task D1.4 — ESC Price Accuracy (CRITICAL)
+
+**Result:** Complete — 16 source files + 7 test files updated
+
+**Root cause:** `PRICING_INDEX.ESC_SPOT_REFERENCE` was $47.80 (stale from an incorrect assumption that ESCs trade on AEMO). Actual ESC spot: ~A$22.75–23.10 (bilateral OTC via brokers). Multiple downstream constants and UI elements derived from this wrong value.
+
+| Change | Files | Description |
+|--------|-------|-------------|
+| PRICING_INDEX | `lib/negotiation-config.ts` | ESC_SPOT_REFERENCE: $47.80→$23.00, ESC_FORWARD: $52.15→$23.75, VOLATILITY_RANGE: [38,68]→[18,29.48] |
+| DATA_SOURCES | `lib/negotiation-config.ts` | Removed "AEMO" (ESCs don't trade on AEMO), added Ecovantage, Northmore Gordon, CORE Markets |
+| WREI-ESC ticker | `lib/ticker-data.ts` | Price from $54.97 to $23.00 |
+| AI engines | `components/analytics/AnalyticsEngine.ts`, `lib/ai-scenario-generation/DynamicScenarioEngine.ts`, `lib/ai-orchestration/DemoOrchestrationEngine.ts`, `lib/ai-analytics/IntelligentAnalyticsEngine.ts` | Updated CURRENT_SPOT_PRICE/SPOT_PRICE from $47.80 to $23.00; removed AEMO references |
+| API routes | `app/api/analytics/predict/route.ts`, `app/api/scenarios/generate/route.ts` | Fixed ESC spot price in AI prompt context |
+| Audience components | `components/audience/AudienceSelector.tsx`, `components/audience/ExecutiveDashboard.tsx`, `components/audience/TechnicalInterface.tsx` | Fixed hardcoded prices and replaced "AEMO" with "Broker Price Feeds" |
+| Fallback pricing | `lib/api-routes/live-market-data-handler.ts` | nswEscSpot fallback: $47.80→$23.00 |
+| Tests | 7 test files | Updated price expectations and data source assertions |
+
+**Key correction:** ESCs are traded bilaterally (OTC) between counterparties. There is no centralised exchange. AEMO operates the National Electricity Market, not the ESS. IPART administers the ESS. Price data comes from broker publications (Ecovantage, Northmore Gordon, CORE Markets).
+
+---
+
+### Task D1.5 — Verification
+
+**Result:** All passing
+
+```
+npx tsc --noEmit          ✓ (no errors)
+npm run build             ✓ (all pages compiled)
+npm test                  ✓ (68 suites, 1598 passed, 3 skipped)
+```
+
+---
+
 ## Session: D1 — Northmore Gordon Demo Preparation
 
 - **Date:** 2026-04-05

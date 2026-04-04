@@ -69,7 +69,7 @@ describe('TickerData', () => {
       const wreiEscTicker = tickers.find(t => t.symbol === 'WREI-ESC');
 
       expect(wreiCarbonTicker?.price).toBe(28.12); // 1.85x dMRV premium
-      expect(wreiEscTicker?.price).toBe(54.97); // 1.15x ESC premium
+      expect(wreiEscTicker?.price).toBe(23.00); // ESC spot price
     });
 
     test('initializes with zero changes', () => {

@@ -54,7 +54,7 @@ jest.mock('../../lib/demo-mode/simple-demo-state', () => ({
 }));
 
 (globalThis as any).getCurrentESCMarketContext = jest.fn(() => ({
-  SPOT_PRICE: 47.80,
+  SPOT_PRICE: 23.00,
   market_participants: {},
   firm_context: {}
 }));
@@ -69,8 +69,8 @@ jest.mock('../../lib/demo-mode/simple-demo-state', () => ({
 jest.mock('../../lib/negotiation-config', () => ({
   NSW_ESC_CONFIG: {
     MARKET_CONDITIONS: {
-      SPOT_PRICE: 47.80,
-      DATA_SOURCES: ['AEMO', 'CER']
+      SPOT_PRICE: 23.00,
+      DATA_SOURCES: ['Ecovantage', 'Northmore Gordon', 'CORE Markets', 'IPART']
     },
     FIRM_CONTEXT: {
       MARKET_SHARE: 0.12
@@ -314,7 +314,7 @@ describe('Multi-Audience System Integration', () => {
       fireEvent.click(integrationTab);
 
       expect(screen.getByTestId('technical-integration')).toBeInTheDocument();
-      expect(screen.getByText('AEMO Market Data')).toBeInTheDocument();
+      expect(screen.getByText('Broker Price Feeds')).toBeInTheDocument();
     });
   });
 
@@ -361,11 +361,11 @@ describe('Multi-Audience System Integration', () => {
     test('integrates NSW ESC market context across all interfaces', () => {
       // Test executive integration
       const { rerender } = render(<ExecutiveDashboard />);
-      expect(screen.getByText(/A\$47\.80/)).toBeInTheDocument();
+      expect(screen.getByText(/A\$23\.00/)).toBeInTheDocument();
 
       // Test technical integration
       rerender(<TechnicalInterface />);
-      expect(screen.getByText(/AEMO/)).toBeInTheDocument();
+      expect(screen.getByText(/Broker Price Feeds/)).toBeInTheDocument();
 
       // Test compliance integration
       rerender(<CompliancePanel />);

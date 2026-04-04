@@ -253,7 +253,7 @@ export const AudienceSelector: React.FC<AudienceSelectorProps> = ({
             <ul className="text-gray-700 space-y-1 bloomberg-small-text">
               <li>• A$200M+ annual trading volume</li>
               <li>• 850+ active market participants</li>
-              <li>• Real-time AEMO pricing integration (A$47.80 spot)</li>
+              <li>• Market pricing from broker publications (A$23.00 spot)</li>
               <li>• Clean Energy Regulator compliance framework</li>
             </ul>
           </div>

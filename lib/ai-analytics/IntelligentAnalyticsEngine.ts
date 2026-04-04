@@ -30,7 +30,7 @@ import { AnalyticsEngine } from '../../components/analytics/AnalyticsEngine';
 // NSW ESC Market Constants for Intelligent Analytics
 const NSW_ESC_ANALYTICS_CONTEXT = {
   MARKET_SIZE: 200_000_000, // A$200M annual market
-  CURRENT_SPOT_PRICE: 47.80, // A$/tonne current AEMO pricing
+  CURRENT_SPOT_PRICE: 23.00, // A$/cert current spot (broker publications)
   TOTAL_PARTICIPANTS: 850, // Active market participants
   NORTHMORE_GORDON_SHARE: 0.12, // 12% market share
   PRICE_VOLATILITY: 0.18, // 18% annualized volatility

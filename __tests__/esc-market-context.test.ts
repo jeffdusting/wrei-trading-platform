@@ -24,14 +24,14 @@ describe('Simplified Demo System Configuration', () => {
     });
 
     test('should have valid ESC spot reference', () => {
-      expect(PRICING_INDEX.ESC_SPOT_REFERENCE).toBe(47.80);
+      expect(PRICING_INDEX.ESC_SPOT_REFERENCE).toBe(23.00);
     });
   });
 
   describe('NSW ESC Configuration', () => {
     test('should have valid market conditions', () => {
-      expect(NSW_ESC_CONFIG.MARKET_CONDITIONS.SPOT_PRICE).toBe(47.80);
-      expect(NSW_ESC_CONFIG.MARKET_CONDITIONS.DATA_SOURCES).toContain('AEMO');
+      expect(NSW_ESC_CONFIG.MARKET_CONDITIONS.SPOT_PRICE).toBe(23.00);
+      expect(NSW_ESC_CONFIG.MARKET_CONDITIONS.DATA_SOURCES).toContain('Ecovantage');
     });
 
     test('should have compliance framework configuration', () => {

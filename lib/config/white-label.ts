@@ -21,6 +21,8 @@ export interface WhiteLabelConfig {
   primaryTextColour: string
   /** Contact email shown in command bar footer */
   contactEmail: string
+  /** Contact phone number shown in command bar footer */
+  contactPhone: string | null
   /** Footer compliance text override */
   footerText: string
   /** Whether to show "Powered by WREI" attribution */
@@ -36,6 +38,7 @@ export const DEFAULT_BRANDING: WhiteLabelConfig = {
   accentColour: '#0EA5E9',
   primaryTextColour: '#FFFFFF',
   contactEmail: 'platform@wrei.com.au',
+  contactPhone: null,
   footerText: '© 2026 WREI Platform | Institutional-grade carbon credit tokenisation',
   showAttribution: false,
 }
@@ -53,6 +56,7 @@ export const DEMAND_MANAGER_BRANDING: WhiteLabelConfig = {
   accentColour: '#2ECC71',
   primaryTextColour: '#FFFFFF',
   contactEmail: 'trading@demandmanager.com.au',
+  contactPhone: null,
   footerText: '© 2026 Demand Manager Pty Ltd | ESC Trading Platform',
   showAttribution: true,
 }
@@ -66,6 +70,7 @@ export const NORTHMORE_GORDON_BRANDING: WhiteLabelConfig = {
   accentColour: '#333333',
   primaryTextColour: '#FFFFFF',
   contactEmail: 'info@northmoregordon.com',
+  contactPhone: '1300 854 561',
   footerText: '© 2026 Northmore Gordon | Certificate Trading Platform',
   showAttribution: true,
 }
@@ -73,12 +78,15 @@ export const NORTHMORE_GORDON_BRANDING: WhiteLabelConfig = {
 /** Registry of available white-label configs keyed by broker slug */
 export const WHITE_LABEL_REGISTRY: Record<string, WhiteLabelConfig> = {
   'demand-manager': DEMAND_MANAGER_BRANDING,
+  'dm': DEMAND_MANAGER_BRANDING,
   'northmore-gordon': NORTHMORE_GORDON_BRANDING,
+  'nmg': NORTHMORE_GORDON_BRANDING,
 }
 
 /**
  * Resolve the active white-label config.
  * Checks NEXT_PUBLIC_WHITE_LABEL_BROKER env var, falls back to default WREI branding.
+ * Supports short slugs (e.g. 'nmg') and full slugs (e.g. 'northmore-gordon').
  */
 export function getWhiteLabelConfig(): WhiteLabelConfig {
   if (typeof window !== 'undefined') {

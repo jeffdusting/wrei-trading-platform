@@ -714,8 +714,8 @@ describe('IntelligentAnalyticsEngine', () => {
 
       // Check that prices are in reasonable Australian dollar range
       analytics.market_forecast.price_prediction.forEach(prediction => {
-        expect(prediction.predicted_price).toBeGreaterThan(30); // Above A$30/tonne
-        expect(prediction.predicted_price).toBeLessThan(100); // Below A$100/tonne
+        expect(prediction.predicted_price).toBeGreaterThan(15); // Above A$15/cert
+        expect(prediction.predicted_price).toBeLessThan(40); // Below A$40/cert (above penalty rate)
       });
 
       // Check compliance-specific insights for Australian regulations

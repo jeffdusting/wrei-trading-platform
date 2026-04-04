@@ -162,6 +162,7 @@ function OrderBookInner({ instrumentType, spotPrice, updateIntervalMs = 5000 }: 
         <div className="flex items-center gap-2">
           <span className="text-[#FF6B1A] font-bold">DEPTH</span>
           <span className="text-[#6B7280]">{instrumentType}</span>
+          <span className="text-[10px] text-[#6B7280] bg-[#2A2A2B] px-1.5 py-0.5 rounded">Simulated</span>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-[#6B7280]">

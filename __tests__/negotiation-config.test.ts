@@ -267,7 +267,7 @@ describe('Negotiation Config: Integration and Consistency', () => {
 
     // Data sources should include reputable market providers
     const dataSources = PRICING_INDEX.DATA_SOURCES;
-    expect(dataSources).toContain('AEMO'); // Official NSW ESC data
+    expect(dataSources).toContain('Ecovantage'); // ESC broker price data
     expect(dataSources.some(source => source.includes('Xpansiv') || source.includes('CBL'))).toBe(true); // VCM data
 
     // Configuration should reflect live pricing

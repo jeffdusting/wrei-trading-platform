@@ -122,7 +122,7 @@ export async function handleLiveMarketData(
         forwardRemovalReference: 185.00,
         wreiAnchorPrice: 28.12,
         wreiFloorPrice: 22.80,
-        nswEscSpot: 47.80,
+        nswEscSpot: 23.00,
         carbonIntensityIndex: 65,
         dataSource: 'fallback' as const,
         confidence: 50,

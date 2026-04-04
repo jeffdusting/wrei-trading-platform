@@ -196,7 +196,7 @@ describe('Landing Page', () => {
 
     expect(screen.getByText('REGISTRY STATUS')).toBeInTheDocument();
     expect(screen.getByText('TESSA (NSW)')).toBeInTheDocument();
-    expect(screen.getByText('CER Registry')).toBeInTheDocument();
+    expect(screen.getByText('CER CorTenX')).toBeInTheDocument();
     expect(screen.getByText('VEEC Registry')).toBeInTheDocument();
   });
 

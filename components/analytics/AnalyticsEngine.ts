@@ -23,7 +23,7 @@ import { AudienceType } from '../audience';
 
 // NSW ESC Market Constants
 const NSW_ESC_MARKET_CONSTANTS = {
-  CURRENT_SPOT_PRICE: 47.80, // A$/tonne (AEMO current pricing)
+  CURRENT_SPOT_PRICE: 23.00, // A$/cert (broker publications, Apr 2026)
   MARKET_SIZE: 200_000_000, // A$200M annual trading volume
   TOTAL_PARTICIPANTS: 850,
   NORTHMORE_GORDON_MARKET_SHARE: 0.12, // 12%

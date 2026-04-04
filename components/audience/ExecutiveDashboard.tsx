@@ -147,8 +147,8 @@ export const ExecutiveDashboard: React.FC = () => {
   const roiMetrics: ROIMetric[] = [
     {
       category: 'Trading Execution',
-      current: 47.80,
-      improved: 58.43,
+      current: 23.00,
+      improved: 26.45,
       savings: 'A$2.1M annual',
       description: 'AI-powered trading vs manual trading'
     },
@@ -199,9 +199,9 @@ export const ExecutiveDashboard: React.FC = () => {
             </div>
           </div>
           <div className="text-right">
-            <div className="bloomberg-large-metric">A$47.80</div>
+            <div className="bloomberg-large-metric">A$23.00</div>
             <div className="text-blue-200 bloomberg-small-text">Current ESC Spot Price</div>
-            <div className="text-blue-200 bloomberg-section-label">AEMO Live Data</div>
+            <div className="text-blue-200 bloomberg-section-label">Simulated — broker publications</div>
           </div>
         </div>
       </div>

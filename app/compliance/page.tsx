@@ -185,6 +185,29 @@ export default function CompliancePage() {
               </div>
             </section>
 
+            {/* Registry & Settlement Status */}
+            <section>
+              <h2 className="bloomberg-section-label text-slate-700 mb-3">Registry & Settlement Status</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {[
+                  { registry: 'TESSA (NSW — ESC/PRC)', status: 'Manual', detail: 'Web portal transfer (no API available)', dot: 'bg-amber-400' },
+                  { registry: 'CER CorTenX (ACCU)', status: 'Simulated', detail: 'API integration pending CER interoperability programme', dot: 'bg-gray-400' },
+                  { registry: 'ESC Victoria (VEEC)', status: 'Manual', detail: 'Web portal transfer (no API available)', dot: 'bg-amber-400' },
+                  { registry: 'Blockchain (WREI tokens)', status: 'Simulated', detail: 'No live deployment', dot: 'bg-gray-400' },
+                ].map(r => (
+                  <div key={r.registry} className="bg-white border border-slate-200 rounded-lg p-3">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className={`w-2 h-2 rounded-full ${r.dot}`} />
+                      <span className="text-xs font-semibold text-slate-800">{r.registry}</span>
+                    </div>
+                    <div className="text-[11px] text-slate-600">
+                      <span className="font-medium">{r.status}</span> — {r.detail}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
             {/* Existing compliance components */}
             <section aria-label="Regulatory compliance map">
               <RegulatoryMap />
@@ -226,28 +249,35 @@ export default function CompliancePage() {
                 <div className="bg-white border border-slate-200 rounded-lg p-3">
                   <div className="text-[10px] text-slate-500">Penalty Rate</div>
                   <div className="text-lg font-semibold text-red-600 font-mono">A$29.48</div>
-                  <div className="text-[10px] text-slate-400">Per ESC shortfall (IPART 2026)</div>
+                  <div className="text-[10px] text-slate-400">Per ESC shortfall</div>
+                  <div className="text-[9px] text-slate-300 mt-0.5">Source: IPART 2026</div>
                 </div>
                 <div className="bg-white border border-slate-200 rounded-lg p-3">
                   <div className="text-[10px] text-slate-500">Surrender Deadline</div>
                   <div className="text-sm font-semibold text-slate-800">28 Feb 2027</div>
                   <div className="text-[10px] text-slate-400">ESS Rule 2009 cl 11A</div>
+                  <div className="text-[9px] text-slate-300 mt-0.5">Source: IPART 2026</div>
                 </div>
                 <div className="bg-white border border-slate-200 rounded-lg p-3">
                   <div className="text-[10px] text-slate-500">ESC Spot Price</div>
                   <div className="text-lg font-semibold text-slate-800 font-mono">A$23.00</div>
                   <div className="text-[10px] text-emerald-600">Below penalty — buy signal</div>
+                  <div className="text-[9px] text-slate-300 mt-0.5">Simulated — based on market range</div>
                 </div>
                 <div className="bg-white border border-slate-200 rounded-lg p-3">
                   <div className="text-[10px] text-slate-500">Breakeven Discount</div>
                   <div className="text-lg font-semibold text-emerald-600 font-mono">22.0%</div>
                   <div className="text-[10px] text-slate-400">Spot vs penalty rate</div>
+                  <div className="text-[9px] text-slate-300 mt-0.5">Derived</div>
                 </div>
               </div>
 
               {/* ESS Energy Savings Targets */}
               <div className="bg-white border border-slate-200 rounded-lg p-4 mb-4">
-                <h3 className="text-xs font-semibold text-slate-700 mb-2">ESS Energy Savings Targets</h3>
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-xs font-semibold text-slate-700">ESS Energy Savings Targets</h3>
+                  <span className="text-[9px] text-slate-400">Source: IPART 2026</span>
+                </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-[11px]">
                   <div><span className="text-slate-400">2026 Target:</span> <span className="font-mono text-slate-800">8.5% of liable electricity</span></div>
                   <div><span className="text-slate-400">Scheme Period:</span> <span className="font-mono text-slate-800">2009 – 2050</span></div>

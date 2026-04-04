@@ -34,8 +34,8 @@ import { ScenarioType } from '../../components/scenarios/types';
 // NSW ESC Market Constants for Scenario Generation
 const NSW_ESC_GENERATION_CONTEXT = {
   MARKET_SIZE: 200_000_000, // A$200M annual market
-  CURRENT_SPOT_PRICE: 47.80, // A$/tonne current AEMO pricing
-  HISTORICAL_PRICE_RANGE: [35.0, 65.0], // [min, max] historical range
+  CURRENT_SPOT_PRICE: 23.00, // A$/cert current spot (broker publications)
+  HISTORICAL_PRICE_RANGE: [18.0, 29.48], // [min, max] floor to penalty rate
   TYPICAL_VOLATILITY: 0.18, // 18% annualized volatility
   AVERAGE_TRADE_SIZE: 1000, // tonnes
   MAJOR_PARTICIPANTS: ['Energy Retailers', 'Large Energy Users', 'ACPs', 'Traders'],

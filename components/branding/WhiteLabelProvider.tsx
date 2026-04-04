@@ -50,11 +50,11 @@ export const WhiteLabelProvider: FC<WhiteLabelProviderProps> = ({
 
   const [brokerSlug, setBrokerSlug] = useState<string | null>(initialBroker ?? envBroker)
 
-  // Sync broker from ?broker= URL parameter (enables live demo switching)
+  // Sync broker from ?broker= or ?brand= URL parameter (enables live demo switching)
   useEffect(() => {
-    const urlBroker = searchParams.get('broker')
+    const urlBroker = searchParams.get('broker') ?? searchParams.get('brand')
     if (urlBroker !== null) {
-      // ?broker= (empty) resets to default WREI branding
+      // ?broker= or ?brand= (empty) resets to default WREI branding
       setBrokerSlug(urlBroker || null)
     }
   }, [searchParams])

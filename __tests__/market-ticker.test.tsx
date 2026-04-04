@@ -29,7 +29,7 @@ jest.mock('../lib/ticker-data', () => {
     {
       symbol: 'WREI-ESC',
       name: 'WREI ESC Credits',
-      price: 54.97,
+      price: 23.00,
       change: -0.25,
       changePercent: -0.45,
       timestamp: new Date(),
@@ -82,7 +82,7 @@ describe('MarketTicker', () => {
     test('renders ticker component without errors', () => {
       render(<MarketTicker />);
 
-      expect(screen.getByText('LIVE MARKET DATA')).toBeInTheDocument();
+      expect(screen.getByText('MARKET DATA')).toBeInTheDocument();
     });
 
     test('displays all ticker symbols', () => {
@@ -97,7 +97,7 @@ describe('MarketTicker', () => {
       render(<MarketTicker />);
 
       expect(screen.getAllByText('$28.12')).toHaveLength(2); // USD (duplicated for scrolling)
-      expect(screen.getAllByText('A$54.97')).toHaveLength(2); // AUD
+      expect(screen.getAllByText('A$23.00')).toHaveLength(2); // AUD
       expect(screen.getAllByText('$8.45')).toHaveLength(2); // USD
     });
 
@@ -113,7 +113,7 @@ describe('MarketTicker', () => {
     test('shows connection status indicator', () => {
       render(<MarketTicker />);
 
-      const connectionIndicator = screen.getByText('LIVE MARKET DATA');
+      const connectionIndicator = screen.getByText('MARKET DATA');
       expect(connectionIndicator).toBeInTheDocument();
     });
   });

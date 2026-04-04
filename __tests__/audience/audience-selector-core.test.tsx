@@ -278,7 +278,7 @@ describe('Multi-Audience System Configuration', () => {
     expect(screen.getByText(/NSW ESC Trading Platform/)).toBeInTheDocument();
 
     // Market data should be consistent
-    expect(screen.getByText(/A\$47\.80 spot/)).toBeInTheDocument();
+    expect(screen.getByText(/A\$23\.00 spot/)).toBeInTheDocument();
 
     // Regulatory framework should be mentioned
     expect(screen.getAllByText(/Clean Energy Regulator/).length).toBeGreaterThan(0);
