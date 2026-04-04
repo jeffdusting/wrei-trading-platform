@@ -1640,3 +1640,76 @@ Reduced `page.tsx` to 133 lines — imports, hook calls, and a layout skeleton c
 | page.tsx ≤ 200 lines | **PASS** — 133 lines |
 
 Tag: `v1.0.2-decomposed`
+
+---
+
+## Session: P5-B — Client Management
+
+- **Date:** 2026-04-05
+- **Phase:** P5 (Production Auth — Client Management)
+- **Branch:** main
+
+### Summary
+
+Added client management system: clients/client_holdings/surrender_tracking database tables, client CRUD + holdings + compliance API routes (all auth-gated to admin/broker roles), and broker portfolio UI with three components (ClientList, ClientDetail, ClientComplianceOverview). Added "Clients" navigation item to BloombergShell. Driven by Northmore Gordon request: "Can I see my clients' certificate holdings?"
+
+---
+
+### Task P5.4 — Client Data Schema
+
+**Result:** Complete
+
+| Change | File | Description |
+|--------|------|-------------|
+| Added `clients` table | `lib/db/schema.ts` | Client registry scoped to organisation, entity types, compliance context |
+| Added `client_holdings` table | `lib/db/schema.ts` | Certificate holdings by instrument type, vintage, status |
+| Added `surrender_tracking` table | `lib/db/schema.ts` | Compliance surrender tracking with computed shortfall + penalty exposure |
+| Bumped SCHEMA_VERSION | `lib/db/schema.ts` | 2 → 3 |
+| Updated ALL_TABLES | `lib/db/schema.ts` | 11 → 14 tables with correct FK ordering |
+| Updated resetSchema | `lib/db/migrate.ts` | Added surrender_tracking, client_holdings, clients to drop list |
+| Updated test | `__tests__/db-connection.test.ts` | Table count 11 → 14, added expected table names, added clients module test |
+
+---
+
+### Task P5.5 — Client Management API
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `lib/db/queries/clients.ts` | 259 | Client CRUD, holdings CRUD, surrender status queries |
+| `app/api/clients/route.ts` | 77 | GET (list) + POST (create) — admin/broker only |
+| `app/api/clients/[id]/route.ts` | 75 | GET (detail + holdings + compliance) + PUT (update) |
+| `app/api/clients/[id]/holdings/route.ts` | 97 | GET (breakdown by instrument) + POST (record holding) |
+| `app/api/clients/[id]/compliance/route.ts` | 55 | GET (surrender tracking with summary) |
+
+All routes wrapped with `withAuth({ roles: ['admin', 'broker'] })`. All routes validate organisation scoping.
+
+---
+
+### Task P5.6 — Client Portfolio UI
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `components/broker/ClientList.tsx` | 206 | Client table with entity type filter, click-through to detail |
+| `components/broker/ClientDetail.tsx` | 294 | Client header + holdings table (grouped by instrument with subtotals) + compliance table |
+| `components/broker/ClientComplianceOverview.tsx` | 297 | All-clients compliance dashboard, sorted by penalty exposure, traffic lights |
+| `app/clients/page.tsx` | 39 | Layout page — list + compliance overview, or detail view |
+| `components/navigation/BloombergShell.tsx` | Modified | Added "Clients" nav item (CLT icon) |
+
+All components wrapped in Error Boundaries. All files ≤ 300 lines.
+
+---
+
+### Verification Results
+
+| Check | Result |
+|-------|--------|
+| `npx tsc --noEmit` | **PASS** — 0 errors |
+| `npm run build` | **PASS** — all pages compile, /clients at 4.3 kB |
+| `npm test -- --passWithNoTests` | **PASS** — 68 suites, 1598 passed, 3 skipped, 0 failed |
+| All files ≤ 300 lines | **PASS** |
+
+Tag: `v1.1.0-auth-clients`

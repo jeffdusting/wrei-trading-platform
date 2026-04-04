@@ -27,8 +27,8 @@ describe('Database Schema', () => {
     expect(SCHEMA_VERSION).toBeGreaterThan(0);
   });
 
-  it('defines all 11 required tables', () => {
-    expect(ALL_TABLES).toHaveLength(11);
+  it('defines all 14 required tables', () => {
+    expect(ALL_TABLES).toHaveLength(14);
   });
 
   it('each DDL statement is a non-empty string', () => {
@@ -49,6 +49,9 @@ describe('Database Schema', () => {
       'price_history',
       'audit_log',
       'feed_status',
+      'clients',
+      'client_holdings',
+      'surrender_tracking',
     ];
     for (const table of expectedTables) {
       expect(combined).toContain(table);
@@ -90,6 +93,17 @@ describe('Query modules', () => {
     expect(typeof pricing.getPriceHistory).toBe('function');
     expect(typeof pricing.getActivePricingConfig).toBe('function');
     expect(typeof pricing.upsertPricingConfig).toBe('function');
+  });
+
+  it('clients module exports CRUD functions', async () => {
+    const clients = await import('@/lib/db/queries/clients');
+    expect(typeof clients.createClient).toBe('function');
+    expect(typeof clients.getClientsByOrganisation).toBe('function');
+    expect(typeof clients.getClient).toBe('function');
+    expect(typeof clients.updateClient).toBe('function');
+    expect(typeof clients.getClientHoldings).toBe('function');
+    expect(typeof clients.createHolding).toBe('function');
+    expect(typeof clients.getClientSurrenderStatus).toBe('function');
   });
 });
 

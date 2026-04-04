@@ -12,7 +12,7 @@
  *   feed_status      — external data-feed health
  */
 
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
 
 export const CREATE_ORGANISATIONS = `
 CREATE TABLE IF NOT EXISTS organisations (
@@ -190,6 +190,63 @@ CREATE TABLE IF NOT EXISTS feed_status (
 );
 `;
 
+export const CREATE_CLIENTS = `
+CREATE TABLE IF NOT EXISTS clients (
+  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  organisation_id   UUID          NOT NULL REFERENCES organisations(id),
+  name              VARCHAR(255)  NOT NULL,
+  entity_type       VARCHAR(50)   NOT NULL
+                      CHECK (entity_type IN ('acp','obligated_entity','government','corporate','institutional')),
+  contact_email     VARCHAR(255),
+  contact_name      VARCHAR(255),
+  abn               VARCHAR(20),
+  ess_participant_id VARCHAR(100),
+  annual_esc_target  INTEGER,
+  annual_veec_target INTEGER,
+  safeguard_facility_id VARCHAR(100),
+  is_active         BOOLEAN       NOT NULL DEFAULT true,
+  metadata          JSONB         NOT NULL DEFAULT '{}',
+  created_at        TIMESTAMPTZ   NOT NULL DEFAULT now(),
+  updated_at        TIMESTAMPTZ   NOT NULL DEFAULT now()
+);
+`;
+
+export const CREATE_CLIENT_HOLDINGS = `
+CREATE TABLE IF NOT EXISTS client_holdings (
+  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  client_id         UUID          NOT NULL REFERENCES clients(id),
+  instrument_type   VARCHAR(20)   NOT NULL,
+  quantity          INTEGER       NOT NULL DEFAULT 0,
+  average_cost      DECIMAL(12,4),
+  total_cost        DECIMAL(14,2),
+  vintage           VARCHAR(10),
+  registry_reference VARCHAR(255),
+  status            VARCHAR(20)   NOT NULL DEFAULT 'held'
+                      CHECK (status IN ('held','pending_transfer','surrendered','retired')),
+  updated_at        TIMESTAMPTZ   NOT NULL DEFAULT now()
+);
+`;
+
+export const CREATE_SURRENDER_TRACKING = `
+CREATE TABLE IF NOT EXISTS surrender_tracking (
+  id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  client_id           UUID          NOT NULL REFERENCES clients(id),
+  compliance_year     VARCHAR(10)   NOT NULL,
+  scheme              VARCHAR(20)   NOT NULL,
+  target_quantity     INTEGER       NOT NULL,
+  surrendered_quantity INTEGER      NOT NULL DEFAULT 0,
+  shortfall           INTEGER       GENERATED ALWAYS AS (target_quantity - surrendered_quantity) STORED,
+  penalty_rate        DECIMAL(8,2),
+  penalty_exposure    DECIMAL(14,2) GENERATED ALWAYS AS (
+    GREATEST(0, target_quantity - surrendered_quantity) * penalty_rate
+  ) STORED,
+  surrender_deadline  DATE,
+  status              VARCHAR(20)   NOT NULL DEFAULT 'in_progress'
+                        CHECK (status IN ('in_progress','compliant','shortfall','penalty_paid')),
+  updated_at          TIMESTAMPTZ   NOT NULL DEFAULT now()
+);
+`;
+
 /** Ordered list of DDL statements — must run in this order due to FK deps. */
 export const ALL_TABLES = [
   CREATE_ORGANISATIONS,  // before users (users references organisations)
@@ -203,4 +260,7 @@ export const ALL_TABLES = [
   CREATE_PRICE_HISTORY,
   CREATE_AUDIT_LOG,
   CREATE_FEED_STATUS,
+  CREATE_CLIENTS,            // after organisations (clients references organisations)
+  CREATE_CLIENT_HOLDINGS,    // after clients (client_holdings references clients)
+  CREATE_SURRENDER_TRACKING, // after clients (surrender_tracking references clients)
 ] as const;
