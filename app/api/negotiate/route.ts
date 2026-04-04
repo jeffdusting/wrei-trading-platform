@@ -1,4 +1,3 @@
-import Anthropic from '@anthropic-ai/sdk';
 import { NextRequest } from 'next/server';
 import { NegotiationState, ClaudeResponse, ArgumentClassification, EmotionalState } from '@/lib/types';
 import { sanitiseInput, validateOutput, enforceConstraints, classifyThreatLevel } from '@/lib/defence';
@@ -20,10 +19,7 @@ import {
 } from '@/lib/committee-mode';
 import { logNegotiationEvent } from '@/lib/trading/compliance/audit-logger';
 import type { InstrumentType } from '@/lib/trading/instruments/types';
-
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+import { routeAIRequest } from '@/lib/ai/ai-service-router';
 
 export async function POST(request: NextRequest) {
   let state: NegotiationState | undefined;
@@ -71,15 +67,28 @@ export async function POST(request: NextRequest) {
     // Step 3: Build Message History
     const messageHistory = buildMessageHistory(state, sanitizedMessage, isOpening);
 
-    // Step 4: Claude API Call
-    const response = await client.messages.create({
-      model: 'claude-opus-4-6',
-      max_tokens: isCommitteeMode ? 2048 : 1024, // Committee mode needs more tokens for multiple perspectives
-      system: systemPrompt,
-      messages: messageHistory,
+    // Step 4: Claude API Call (via AI Service Router with guards)
+    const routerResult = await routeAIRequest({
+      capability: 'negotiation',
+      input: {
+        systemPrompt,
+        messages: messageHistory,
+      },
+      maxTokens: isCommitteeMode ? 2048 : 1024,
     });
 
-    const responseText = response.content[0]?.type === 'text' ? response.content[0].text : '';
+    if (!routerResult.ok) {
+      return Response.json({
+        agentMessage: routerResult.reason,
+        state: state || null,
+        classification: 'general' as ArgumentClassification,
+        emotionalState: 'neutral' as EmotionalState,
+        threatLevel: 'none' as const,
+        error: routerResult.guard,
+      }, { status: 429 });
+    }
+
+    const responseText = routerResult.response.output;
 
     // Step 5: Response Processing
     let claudeResponse: ClaudeResponse;

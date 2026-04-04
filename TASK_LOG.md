@@ -1,5 +1,71 @@
 # WREI Trading Platform — Task Log
 
+## Session: P7-A — AI Engine Guards
+
+- **Date:** 2026-04-05
+- **Phase:** P7 (AI Engine Guards)
+- **Branch:** main
+- **Tag:** v1.2.0-ai-guards
+
+### Summary
+
+Added AI engine guard infrastructure: cost guard (per-user/org daily token limits), rate limiter (sliding window per capability), timeout guard (per-capability timeouts with graceful fallbacks), system prompt templates with conciseness directive, and a unified AI service router. Wired both existing AI routes (negotiate, market-commentary) through the service router. Fixed pre-existing broken Anthropic SDK mock in negotiation route tests (module-level client creation executed before `jest.fn()` assignment; lazy client initialization in the service router resolved this).
+
+---
+
+### Task P7.1 — AI Guards
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `lib/ai/types.ts` | 62 | AICapability, AIRequest, AIResponse, AIGuardResult, MODEL_MAP, DEFAULT_MAX_TOKENS |
+| `lib/ai/guards/cost-guard.ts` | 110 | Per-user (50k/day) and per-org (500k/day) token budget enforcement, in-memory counters, admin bypass |
+| `lib/ai/guards/rate-limiter.ts` | 87 | Sliding window rate limiting per user per capability (10–50 calls/hour) |
+| `lib/ai/guards/timeout-guard.ts` | 68 | Per-capability timeouts (10–45s), graceful fallback messages on timeout |
+| `lib/ai/prompts/system-prompts.ts` | 112 | Conciseness directive (WP6 §3.5), per-capability system prompt templates |
+
+---
+
+### Task P7.2 — AI Service Router
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `lib/ai/ai-service-router.ts` | 154 | Single entry point for all AI calls; guard orchestration (rate→cost→timeout); model selection per capability (Opus 4 / Sonnet 4); conciseness directive injection; audit logging |
+
+**Guard execution order:** rate-limiter → cost-guard → timeout-guard (wraps Claude call)
+
+**Model selection (WP6 §3.5):**
+- Opus 4: negotiation, portfolio_advisory
+- Sonnet 4: market_intelligence, compliance_monitor, data_interpreter, report_generator, correspondence_draft
+
+---
+
+### Task P7.3 — Wire Service Router into Existing Routes
+
+**Result:** Complete
+
+| Route | Change | Description |
+|-------|--------|-------------|
+| `app/api/negotiate/route.ts` | Replaced direct Anthropic SDK call | Routes through `routeAIRequest({ capability: 'negotiation', ... })`; handles guard rejections with 429 |
+| `app/api/market-commentary/route.ts` | Replaced direct Anthropic SDK call | Routes through `routeAIRequest({ capability: 'market_intelligence', ... })`; falls back to cached commentary on guard rejection |
+| `__tests__/api-negotiate-route.test.ts` | Fixed 9 test assertions | Lazy client initialisation in service router fixed pre-existing broken SDK mock; updated assertions from error-path to success-path |
+
+---
+
+### Verification
+
+| Check | Result |
+|-------|--------|
+| `npm run build` | Clean |
+| `npx tsc --noEmit` | Zero errors |
+| `npm test -- --passWithNoTests` | 68 suites, 1599 passed, 3 skipped |
+| Module line counts | types: 62, cost-guard: 110, rate-limiter: 87, timeout-guard: 68, system-prompts: 112, service-router: 154 |
+
+---
+
 ## Session: P5-A — Authentication System
 
 - **Date:** 2026-04-05

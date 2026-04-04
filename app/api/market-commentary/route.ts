@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
 import { PRICING_INDEX, NEGOTIATION_CONFIG } from '@/lib/negotiation-config';
+import { routeAIRequest } from '@/lib/ai/ai-service-router';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,8 +27,6 @@ export async function GET() {
   }
 
   try {
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
     const marketData = {
       vcm_spot_usd: PRICING_INDEX.VCM_SPOT_REFERENCE,
       dmrv_spot_usd: PRICING_INDEX.DMRV_SPOT_REFERENCE,
@@ -44,25 +42,33 @@ export async function GET() {
       timestamp: PRICING_INDEX.INDEX_TIMESTAMP,
     };
 
-    const response = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 500,
-      system:
-        'You are a senior carbon markets analyst at WREI. Provide a concise market commentary (3-4 paragraphs, ~200 words total) covering:\n' +
-        '1. Current voluntary carbon market conditions (VCM spot: $X, dMRV premium: Y%)\n' +
-        '2. Australian environmental certificate market (ESC spot: A$X, forward: A$X)\n' +
-        '3. WREI platform positioning and pricing outlook\n' +
-        'Use Australian spelling. Be specific with numbers. Professional Bloomberg-style tone.',
-      messages: [
-        {
-          role: 'user',
-          content: `Generate market commentary based on the following live pricing data:\n\n${JSON.stringify(marketData, null, 2)}`,
-        },
-      ],
+    const systemPrompt =
+      'You are a senior carbon markets analyst at WREI. Provide a concise market commentary (3-4 paragraphs, ~200 words total) covering:\n' +
+      '1. Current voluntary carbon market conditions (VCM spot: $X, dMRV premium: Y%)\n' +
+      '2. Australian environmental certificate market (ESC spot: A$X, forward: A$X)\n' +
+      '3. WREI platform positioning and pricing outlook\n' +
+      'Use Australian spelling. Be specific with numbers. Professional Bloomberg-style tone.';
+
+    const routerResult = await routeAIRequest({
+      capability: 'market_intelligence',
+      input: {
+        systemPrompt,
+        messages: [
+          {
+            role: 'user',
+            content: `Generate market commentary based on the following live pricing data:\n\n${JSON.stringify(marketData, null, 2)}`,
+          },
+        ],
+      },
+      maxTokens: 500,
     });
 
-    const textBlock = response.content.find((b) => b.type === 'text');
-    const commentary = textBlock?.text ?? FALLBACK_COMMENTARY.commentary;
+    if (!routerResult.ok) {
+      console.warn(`Market commentary guard rejection: ${routerResult.reason}`);
+      return NextResponse.json(FALLBACK_COMMENTARY);
+    }
+
+    const commentary = routerResult.response.output || FALLBACK_COMMENTARY.commentary;
 
     return NextResponse.json({
       commentary,
