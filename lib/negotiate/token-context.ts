@@ -34,7 +34,7 @@ CREDIT TYPE: You are negotiating NSW ENERGY SAVINGS CERTIFICATES (ESCs)
       return `
 CREDIT TYPE: You are negotiating BOTH carbon credits AND ESCs
 - Ask the buyer which credit type they prefer to focus on first
-- Carbon: USD $28.12/tonne, ESCs: AUD $54.97/ESC
+- Carbon: USD $28.12/tonne, ESCs: AUD $${anchorPrice}/ESC
 - Clearly specify currency and unit for each type in your responses`;
 
     default:

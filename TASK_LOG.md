@@ -1,5 +1,115 @@
 # WREI Trading Platform — Task Log
 
+## Session: D1 — Northmore Gordon Demo Preparation
+
+- **Date:** 2026-04-05
+- **Phase:** D1
+- **Branch:** main
+
+### Summary
+
+Prepared the platform for a Northmore Gordon broker demonstration: added white-label configuration, fixed critical ESC pricing conflicts, verified trading flows, and created a structured demo script.
+
+---
+
+### Task D1.1 — Northmore Gordon White-Label Configuration
+
+**Result:** Complete
+
+| Change | File | Description |
+|--------|------|-------------|
+| Added NG branding | `lib/config/white-label.ts` | New `NORTHMORE_GORDON_BRANDING` config: brand green (#2D6A4F), accent grey (#333333), terminal code "NG", contact info, "Powered by WREI" attribution |
+| URL param switching | `components/branding/WhiteLabelProvider.tsx` | Added `useSearchParams()` hook to read `?broker=` URL parameter for live demo switching |
+| Suspense boundary | `app/layout.tsx` | Wrapped `WhiteLabelProvider` in `<Suspense>` (required by Next.js for `useSearchParams`) |
+
+**Usage:** Append `?broker=northmore-gordon` to any URL to activate NG branding. Remove or set `?broker=` to revert to WREI default.
+
+---
+
+### Task D1.2 — ESC Trading Flow Verification & Fixes
+
+**Result:** 3 critical issues found and fixed
+
+#### Issue 1: System prompt ESC price mismatch (CRITICAL)
+
+**Problem:** Hardcoded ESC pricing in `lib/negotiate/system-prompt.ts` (A$47.80 spot / A$54.97 anchor) conflicted with the actual pricing engine values (A$23.00 spot / A$23.00 anchor). The AI agent would propose A$54.97 for ESCs, which exceeds the penalty rate ceiling of A$29.48, causing negotiation failures.
+
+**Fix:** Made the `<knowledge>` block and `<negotiation_rules>` conditional on instrument type. For Australian certificates (ESC/VEEC/ACCU/LGC/STC/PRC), the system prompt now defers entirely to the instrument context builder (`lib/trading/negotiation/instrument-context.ts`), which dynamically pulls correct pricing from the pricing engine.
+
+| File | Change |
+|------|--------|
+| `lib/negotiate/system-prompt.ts` | Conditional `isAustralianCertificate` flag suppresses WREI-specific knowledge block and uses instrument-specific constraints |
+| `lib/negotiate/token-context.ts` | Fixed hardcoded A$54.97 in 'both' credit type case to use dynamic `anchorPrice` |
+
+#### Issue 2: Negotiation state pricing mismatch (CRITICAL)
+
+**Problem:** `getInitialWREIState()` always initialised negotiation state with WREI_CC pricing ($150 anchor / $120 floor / 5% concession / 20% total), even when ESC instrument was selected. The defence layer's `enforceConstraints()` would enforce these wrong limits.
+
+**Fix:** In `app/trade/_hooks/useTradeAPI.ts`, `handleStartTrading` now overrides the negotiation state's pricing parameters with instrument-specific values from `instrumentPricing` (resolved by the pricing engine) when an Australian certificate is selected.
+
+#### Issue 3: Defence layer price whitelist (MINOR)
+
+**Problem:** `lib/defence.ts` whitelisted A$47.80 as an allowed ESC market reference price in output validation. This value was stale.
+
+**Fix:** Updated to whitelist A$23.00 (current ESC spot reference).
+
+---
+
+### Task D1.3 — Bulk ESC Purchase Flow Verification
+
+**Result:** All requirements verified working
+
+- BulkNegotiationDashboard renders with ESC context
+- 5 simulated counterparties visible with realistic names, volumes, and pricing
+- All buyer controls functional (total volume, max price, min vintage, max per counterparty, deadline)
+- Execution progress display with animated progress bar and per-counterparty status cards
+- VWAP comparison to spot price calculated and colour-coded
+
+No fixes required.
+
+---
+
+### Task D1.4 — Broker Demo Script
+
+**Result:** Created `docs/user-guide/northmore-gordon-demo-script.md`
+
+Structured 20-minute demo covering:
+1. Introduction & white-label toggle (2 min)
+2. ESC market view & order book (3 min)
+3. AI negotiation demo with Mark Donovan persona (5 min)
+4. Bulk procurement demo — 500K ESCs (3 min)
+5. Compliance & audit trail (2 min)
+6. Settlement & registry workflow (2 min)
+7. White-label proposition (2 min)
+8. Discussion with prepared Q&A responses
+
+Includes pre-demo checklist and technical notes.
+
+---
+
+### Task D1.5 — Feed Health Indicators & ESC Price Accuracy
+
+**Result:** Verified working correctly
+
+- FeedHealthIndicator shows three states: Live (green), Cached (amber), Simulated (grey)
+- ESC simulation engine spot price: A$23.00 — matches WP1 market data (A$22.75-23.10 range)
+- Feed manager implements three-tier fallback: live → cached → simulated
+- Auto-refresh every 5 minutes with circuit breaker per adapter
+
+No fixes required.
+
+---
+
+### Verification Results
+
+| Check | Result |
+|-------|--------|
+| `npm run build` | **PASS** — all pages compile successfully |
+| `npx tsc --noEmit` | **PASS** — zero errors |
+| `npm test -- --passWithNoTests` | **1598 passed, 0 failed, 3 skipped** |
+
+---
+
 ## Session: P0-A — TypeScript Compilation & Route Deduplication
 
 - **Date:** 2026-04-04

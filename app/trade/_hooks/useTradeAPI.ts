@@ -57,10 +57,27 @@ export function useTradeAPI(
   };
 
   const handleStartTrading = async () => {
-    if (!state.tradingState) {
-      state.setTradingState(getInitialWREIState(state.selectedPersona, state.selectedWREITokenType, state.selectedCreditType));
+    let negotiationState = state.tradingState || getInitialWREIState(state.selectedPersona, state.selectedWREITokenType, state.selectedCreditType);
+
+    // For Australian certificate instruments (ESC, VEEC, ACCU, LGC, STC, PRC),
+    // override negotiation state pricing with instrument-specific values from
+    // the pricing engine. This ensures the defence layer enforces the correct
+    // floor/ceiling/concession limits for each certificate type.
+    const isAustralianCertificate = state.selectedInstrument && !state.selectedInstrument.startsWith('WREI');
+    if (isAustralianCertificate && state.instrumentPricing) {
+      const ip = state.instrumentPricing;
+      negotiationState = {
+        ...negotiationState,
+        anchorPrice: ip.anchorPrice,
+        currentOfferPrice: ip.anchorPrice,
+        priceFloor: ip.priceFloor,
+        maxConcessionPerRound: ip.maxConcessionPerRound,
+        maxTotalConcession: ip.maxTotalConcession,
+        minimumRoundsBeforeConcession: ip.minRoundsBeforeConcession,
+      };
     }
 
+    state.setTradingState(negotiationState);
     state.setIsLoading(true);
     state.setIsInitializing(true);
     state.setError(null);
@@ -74,7 +91,7 @@ export function useTradeAPI(
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: '',
-          state: state.tradingState || getInitialWREIState(state.selectedPersona, state.selectedWREITokenType, state.selectedCreditType),
+          state: negotiationState,
           isOpening: true,
           instrumentType: state.selectedInstrument,
         }),

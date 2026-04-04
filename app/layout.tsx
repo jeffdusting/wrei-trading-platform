@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
+import { Suspense } from 'react'
 import './globals.css'
 import BloombergShell from '@/components/navigation/BloombergShell'
 import { SimpleDemoProvider } from '@/components/demo/SimpleDemoProvider'
@@ -57,9 +58,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans`}>
         <SimpleDemoProvider>
-          <WhiteLabelProvider>
-            <BloombergShell>{children}</BloombergShell>
-          </WhiteLabelProvider>
+          <Suspense>
+            <WhiteLabelProvider>
+              <BloombergShell>{children}</BloombergShell>
+            </WhiteLabelProvider>
+          </Suspense>
         </SimpleDemoProvider>
       </body>
     </html>

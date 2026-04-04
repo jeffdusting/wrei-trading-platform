@@ -8,7 +8,8 @@
 // custom properties that BloombergShell and other components consume.
 // =============================================================================
 
-import { createContext, useContext, FC, ReactNode, useMemo, useState } from 'react'
+import { createContext, useContext, FC, ReactNode, useMemo, useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import {
   WhiteLabelConfig,
   DEFAULT_BRANDING,
@@ -42,11 +43,21 @@ export const WhiteLabelProvider: FC<WhiteLabelProviderProps> = ({
   children,
   initialBroker = null,
 }) => {
+  const searchParams = useSearchParams()
   const envBroker = typeof window !== 'undefined'
     ? process.env.NEXT_PUBLIC_WHITE_LABEL_BROKER ?? null
     : null
 
   const [brokerSlug, setBrokerSlug] = useState<string | null>(initialBroker ?? envBroker)
+
+  // Sync broker from ?broker= URL parameter (enables live demo switching)
+  useEffect(() => {
+    const urlBroker = searchParams.get('broker')
+    if (urlBroker !== null) {
+      // ?broker= (empty) resets to default WREI branding
+      setBrokerSlug(urlBroker || null)
+    }
+  }, [searchParams])
 
   const config = useMemo(() => {
     if (brokerSlug && WHITE_LABEL_REGISTRY[brokerSlug]) {

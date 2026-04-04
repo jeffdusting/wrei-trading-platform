@@ -57,9 +57,23 @@ export const DEMAND_MANAGER_BRANDING: WhiteLabelConfig = {
   showAttribution: true,
 }
 
+/** Northmore Gordon — Sydney ESC/VEEC/LGC/STC/ACCU broker */
+export const NORTHMORE_GORDON_BRANDING: WhiteLabelConfig = {
+  businessName: 'NORTHMORE GORDON',
+  terminalCode: 'NG',
+  logoUrl: null, // Placeholder — broker provides logo at onboarding
+  primaryColour: '#2D6A4F',
+  accentColour: '#333333',
+  primaryTextColour: '#FFFFFF',
+  contactEmail: 'info@northmoregordon.com',
+  footerText: '© 2026 Northmore Gordon | Certificate Trading Platform',
+  showAttribution: true,
+}
+
 /** Registry of available white-label configs keyed by broker slug */
 export const WHITE_LABEL_REGISTRY: Record<string, WhiteLabelConfig> = {
   'demand-manager': DEMAND_MANAGER_BRANDING,
+  'northmore-gordon': NORTHMORE_GORDON_BRANDING,
 }
 
 /**

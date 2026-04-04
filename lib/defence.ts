@@ -206,7 +206,7 @@ export function validateOutput(
       const priceStr = match[1];
       const price = parseFloat(priceStr);
       if (!isNaN(price) && price < state.priceFloor && price > 10 &&
-          price !== 15.20 && price !== 47.80) { // Allow current market base prices ($15.20 carbon, $47.80 ESC)
+          price !== 15.20 && price !== 23.00) { // Allow current market base prices ($15.20 carbon dMRV, $23.00 ESC spot)
         violations.push(`Price below floor disclosed: ${price}`);
         cleaned = cleaned.replace(match[0], match[0].replace(priceStr, '[redacted]'));
         safe = false;
