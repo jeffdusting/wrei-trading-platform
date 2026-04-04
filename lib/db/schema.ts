@@ -12,7 +12,49 @@
  *   feed_status      — external data-feed health
  */
 
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
+
+export const CREATE_ORGANISATIONS = `
+CREATE TABLE IF NOT EXISTS organisations (
+  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name              VARCHAR(255)  NOT NULL,
+  type              VARCHAR(50)   NOT NULL DEFAULT 'broker'
+                      CHECK (type IN ('broker','acp','obligated_entity','institutional','platform')),
+  white_label_config JSONB,
+  is_active         BOOLEAN       NOT NULL DEFAULT true,
+  created_at        TIMESTAMPTZ   NOT NULL DEFAULT now(),
+  updated_at        TIMESTAMPTZ   NOT NULL DEFAULT now()
+);
+`;
+
+export const CREATE_USERS = `
+CREATE TABLE IF NOT EXISTS users (
+  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email             VARCHAR(255)  UNIQUE NOT NULL,
+  password_hash     VARCHAR(255)  NOT NULL,
+  name              VARCHAR(255)  NOT NULL,
+  role              VARCHAR(50)   NOT NULL DEFAULT 'trader'
+                      CHECK (role IN ('admin','broker','trader','compliance','readonly')),
+  organisation_id   UUID          REFERENCES organisations(id),
+  organisation_name VARCHAR(255),
+  api_key           VARCHAR(64)   UNIQUE,
+  api_key_created_at TIMESTAMPTZ,
+  is_active         BOOLEAN       NOT NULL DEFAULT true,
+  last_login        TIMESTAMPTZ,
+  created_at        TIMESTAMPTZ   NOT NULL DEFAULT now(),
+  updated_at        TIMESTAMPTZ   NOT NULL DEFAULT now()
+);
+`;
+
+export const CREATE_SESSIONS = `
+CREATE TABLE IF NOT EXISTS sessions (
+  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id           UUID          NOT NULL REFERENCES users(id),
+  token             VARCHAR(255)  UNIQUE NOT NULL,
+  expires_at        TIMESTAMPTZ   NOT NULL,
+  created_at        TIMESTAMPTZ   NOT NULL DEFAULT now()
+);
+`;
 
 export const CREATE_INSTRUMENTS = `
 CREATE TABLE IF NOT EXISTS instruments (
@@ -150,6 +192,9 @@ CREATE TABLE IF NOT EXISTS feed_status (
 
 /** Ordered list of DDL statements — must run in this order due to FK deps. */
 export const ALL_TABLES = [
+  CREATE_ORGANISATIONS,  // before users (users references organisations)
+  CREATE_USERS,          // before sessions (sessions references users)
+  CREATE_SESSIONS,
   CREATE_INSTRUMENTS,
   CREATE_NEGOTIATIONS,   // before trades (trades references negotiations)
   CREATE_TRADES,

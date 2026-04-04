@@ -1,5 +1,97 @@
 # WREI Trading Platform — Task Log
 
+## Session: P5-A — Authentication System
+
+- **Date:** 2026-04-05
+- **Phase:** P5 (Production Auth)
+- **Branch:** main
+
+### Summary
+
+Added authentication infrastructure: users/sessions/organisations database tables, auth middleware (session tokens + API keys), and four auth API routes (register, login, logout, me). No existing routes were modified — auth middleware is available but not yet applied to existing endpoints.
+
+---
+
+### Task P5.1 — Auth Schema Tables
+
+**Result:** Complete
+
+| Change | File | Description |
+|--------|------|-------------|
+| Added `organisations` table | `lib/db/schema.ts` | Organisation registry with type, white-label config |
+| Added `users` table | `lib/db/schema.ts` | User accounts with role, org, API key, password hash |
+| Added `sessions` table | `lib/db/schema.ts` | Session tokens with 24h expiry |
+| Bumped SCHEMA_VERSION | `lib/db/schema.ts` | 1 → 2 |
+| Updated ALL_TABLES | `lib/db/schema.ts` | 8 → 11 tables with correct FK ordering |
+| Updated resetSchema | `lib/db/migrate.ts` | Added sessions, users, organisations to drop list |
+| Updated test | `__tests__/db-connection.test.ts` | Table count assertion 8 → 11 |
+
+**Migration:** Ran successfully — all 11 tables created in Neon Postgres.
+
+---
+
+### Task P5.2 — Auth Middleware Layer
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `lib/auth/types.ts` | 37 | AuthUser, AuthSession, UserRole, AuthResult, AuthOptions types |
+| `lib/auth/password.ts` | 18 | hashPassword/verifyPassword using bcryptjs (12 salt rounds) |
+| `lib/auth/session.ts` | 49 | createSession/validateSession/deleteSession — 24h TTL, UUID tokens |
+| `lib/auth/api-key.ts` | 42 | generateApiKey/validateApiKey — `wrei_` prefix, 64-char hex keys |
+| `lib/auth/middleware.ts` | 105 | withAuth wrapper — Bearer token → API key fallback, role checking, 503 on DB failure |
+| `lib/auth/index.ts` | 16 | Barrel export |
+
+**Auth flow:** Bearer session token (priority) → X-API-Key header → 401. Optional mode passes null user. Role-based access via `options.roles`.
+
+---
+
+### Task P5.3 — Auth API Routes
+
+**Result:** Complete
+
+| Route | Method | File | Description |
+|-------|--------|------|-------------|
+| `/api/auth/register` | POST | `app/api/auth/register/route.ts` | Create user, hash password, generate API key |
+| `/api/auth/login` | POST | `app/api/auth/login/route.ts` | Verify credentials, create session, return token |
+| `/api/auth/logout` | POST | `app/api/auth/logout/route.ts` | Delete session by Bearer token |
+| `/api/auth/me` | GET | `app/api/auth/me/route.ts` | Return current user via session or API key |
+
+### Curl Test Commands
+
+```bash
+# 1. Register
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@wrei.com","password":"testpass123","name":"Test User","role":"trader"}'
+
+# 2. Login (save token)
+TOKEN=$(curl -s -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@wrei.com","password":"testpass123"}' | jq -r '.token')
+
+# 3. Get current user
+curl http://localhost:3000/api/auth/me \
+  -H "Authorization: Bearer $TOKEN"
+
+# 4. Get current user via API key
+curl http://localhost:3000/api/auth/me \
+  -H "X-API-Key: <api-key-from-register-response>"
+
+# 5. Logout
+curl -X POST http://localhost:3000/api/auth/logout \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+### Verification
+
+- `npx tsc --noEmit` — passes (0 errors)
+- `npm run build` — passes (4 new λ routes: login, logout, me, register)
+- `npm test` — 68 suites, 1598 passed, 3 skipped, 0 failed
+
+---
+
 ## Session: D1.1–D1.5 — NMG Demo Update (Data Accuracy & Source Labels)
 
 - **Date:** 2026-04-05

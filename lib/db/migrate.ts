@@ -100,6 +100,9 @@ export async function resetSchema(): Promise<void> {
     'trades',
     'negotiations',
     'instruments',
+    'sessions',
+    'users',
+    'organisations',
     '_migrations',
   ];
   for (const t of tables) {

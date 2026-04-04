@@ -27,8 +27,8 @@ describe('Database Schema', () => {
     expect(SCHEMA_VERSION).toBeGreaterThan(0);
   });
 
-  it('defines all 8 required tables', () => {
-    expect(ALL_TABLES).toHaveLength(8);
+  it('defines all 11 required tables', () => {
+    expect(ALL_TABLES).toHaveLength(11);
   });
 
   it('each DDL statement is a non-empty string', () => {
