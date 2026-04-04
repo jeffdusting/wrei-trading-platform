@@ -1,4 +1,5 @@
 import { PersonaDefinition, PersonaType } from './types';
+import { ESC_PERSONA_DEFINITIONS } from './trading/personas/esc-personas';
 
 export const PERSONA_DEFINITIONS: PersonaDefinition[] = [
   {
@@ -167,10 +168,16 @@ export const PERSONA_DEFINITIONS: PersonaDefinition[] = [
   },
 ];
 
+// Merge ESC-specific personas into the main definitions array
+export const ALL_PERSONA_DEFINITIONS: PersonaDefinition[] = [
+  ...PERSONA_DEFINITIONS,
+  ...ESC_PERSONA_DEFINITIONS,
+];
+
 export function getPersonaById(id: PersonaType): PersonaDefinition | undefined {
-  return PERSONA_DEFINITIONS.find(persona => persona.id === id);
+  return ALL_PERSONA_DEFINITIONS.find(persona => persona.id === id);
 }
 
 export function getAllPersonas(): PersonaDefinition[] {
-  return PERSONA_DEFINITIONS;
+  return ALL_PERSONA_DEFINITIONS;
 }

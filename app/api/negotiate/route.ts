@@ -29,11 +29,12 @@ export async function POST(request: NextRequest) {
   try {
     // Step 1: Input Processing
     const body = await request.json();
-    const { message, state: requestState, isOpening, committee: committeeConfig } = body as {
+    const { message, state: requestState, isOpening, committee: committeeConfig, instrumentType } = body as {
       message: string;
       state: NegotiationState;
       isOpening: boolean;
       committee?: CommitteeConfig;
+      instrumentType?: string;
     };
     state = requestState;
 
@@ -58,7 +59,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Step 2: System Prompt Construction
-    let systemPrompt = buildSystemPrompt(state);
+    let systemPrompt = buildSystemPrompt(state, instrumentType as import('@/lib/trading/instruments/types').InstrumentType | undefined);
 
     // Step 2a: Append committee mode instructions if active
     if (isCommitteeMode && committeeConfig) {

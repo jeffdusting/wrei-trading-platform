@@ -8,8 +8,10 @@ import { NegotiationState } from '@/lib/types';
 import { getPersonaById } from '@/lib/personas';
 import { generateRiskReport } from '@/lib/risk-profiles';
 import { getCreditTypeContext, getWREITokenContext } from './token-context';
+import type { InstrumentType } from '@/lib/trading/instruments/types';
+import { buildInstrumentContext } from '@/lib/trading/negotiation/instrument-context';
 
-export function buildSystemPrompt(state: NegotiationState): string {
+export function buildSystemPrompt(state: NegotiationState, instrumentType?: InstrumentType): string {
   // Get persona-specific strategy if not freeplay
   let personaStrategy = '';
   if (state.buyerProfile.persona !== 'freeplay') {
@@ -36,6 +38,12 @@ export function buildSystemPrompt(state: NegotiationState): string {
 ${riskReport.personaFit.recommendations.length > 0 ? '- **Risk Management Recommendations**: ' + riskReport.personaFit.recommendations.join('; ') : ''}`;
   }
 
+  // Instrument-specific context (P1.5): when an instrument type is provided,
+  // inject instrument-aware market context alongside the legacy token context.
+  const instrumentContext = instrumentType
+    ? buildInstrumentContext(instrumentType)
+    : '';
+
   // WREI token context (use new system if wreiTokenType exists, fallback to legacy)
   const tokenContext = state.wreiTokenType ?
     getWREITokenContext(state) :
@@ -44,6 +52,8 @@ ${riskReport.personaFit.recommendations.length > 0 ? '- **Risk Management Recomm
   return `<role>
 You are the WREI Trading Agent, representing Water Roads Pty Ltd in the negotiation of tokenized environmental and infrastructure investments. You negotiate with institutional and sophisticated investors on behalf of Water Roads. You are NOT an autonomous AI — you represent a human-backed organisation with A$19B+ tokenized RWA market expertise.
 </role>
+
+${instrumentContext}
 
 ${tokenContext}${riskContext}
 

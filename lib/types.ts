@@ -35,7 +35,12 @@ export type PersonaType =
   | 'defi_yield_farmer'
   | 'family_office'
   | 'sovereign_wealth'
-  | 'pension_fund';
+  | 'pension_fund'
+  // ESC-Specific Personas (WP4 §8)
+  | 'esc_obligated_entity'
+  | 'esc_trading_desk'
+  | 'esc_government_buyer'
+  | 'esc_certificate_provider';
 
 export type NegotiationOutcome = 'agreed' | 'deferred' | 'escalated' | null;
 

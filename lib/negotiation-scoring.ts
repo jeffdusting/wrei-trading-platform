@@ -203,6 +203,59 @@ const PERSONA_BENCHMARKS: Record<PersonaType | 'freeplay', PersonaBenchmark> = {
       concessionTriggers: ['satisfied', 'pressured']
     }
   },
+  // ESC-Specific personas
+  esc_obligated_entity: {
+    expectedPriceAchievement: 50,
+    expectedRounds: 5,
+    expectedStrategyDiversity: 2,
+    expectedSuccessRate: 65,
+    difficultyMultiplier: 1.3,
+    strongestArguments: ['price_challenge', 'time_pressure'],
+    emotionalProfile: {
+      startingEmotion: 'neutral',
+      volatility: 0.5,
+      concessionTriggers: ['pressured', 'frustrated']
+    }
+  },
+  esc_trading_desk: {
+    expectedPriceAchievement: 40,
+    expectedRounds: 4,
+    expectedStrategyDiversity: 2,
+    expectedSuccessRate: 55,
+    difficultyMultiplier: 1.5,
+    strongestArguments: ['price_challenge', 'time_pressure'],
+    emotionalProfile: {
+      startingEmotion: 'sceptical',
+      volatility: 0.6,
+      concessionTriggers: ['frustrated', 'pressured']
+    }
+  },
+  esc_government_buyer: {
+    expectedPriceAchievement: 68,
+    expectedRounds: 8,
+    expectedStrategyDiversity: 3,
+    expectedSuccessRate: 78,
+    difficultyMultiplier: 1.1,
+    strongestArguments: ['authority_constraint', 'information_request', 'fairness_appeal'],
+    emotionalProfile: {
+      startingEmotion: 'neutral',
+      volatility: 0.2,
+      concessionTriggers: ['satisfied', 'pressured']
+    }
+  },
+  esc_certificate_provider: {
+    expectedPriceAchievement: 55,
+    expectedRounds: 6,
+    expectedStrategyDiversity: 3,
+    expectedSuccessRate: 70,
+    difficultyMultiplier: 1.2,
+    strongestArguments: ['price_challenge', 'time_pressure', 'information_request'],
+    emotionalProfile: {
+      startingEmotion: 'neutral',
+      volatility: 0.4,
+      concessionTriggers: ['pressured', 'satisfied']
+    }
+  },
   freeplay: {
     expectedPriceAchievement: 65, // Average expectation
     expectedRounds: 6,

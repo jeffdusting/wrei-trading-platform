@@ -34,6 +34,11 @@ import {
   generatePersonalisedWelcome,
   type NegotiationPreConfig
 } from '@/lib/onboarding-pipeline';
+import InstrumentSwitcher from '@/components/trading/InstrumentSwitcher';
+import OrderBookPanel from '@/components/trading/OrderBookPanel';
+import TradeBlotter, { type BlotterTrade } from '@/components/trading/TradeBlotter';
+import type { InstrumentType } from '@/lib/trading/instruments/types';
+import type { ResolvedPricing } from '@/lib/trading/instruments/pricing-engine';
 
 interface APIResponse {
   agentMessage: string;
@@ -116,6 +121,19 @@ export default function TradePage() {
   // A2: Real-Time Coaching Panel
   const [showCoachingPanel, setShowCoachingPanel] = useState(false);
   const [showBlockchainProvenance, setShowBlockchainProvenance] = useState(false);
+
+  // P1.3: Instrument Switcher
+  const [selectedInstrument, setSelectedInstrument] = useState<InstrumentType>('WREI_CC');
+  const [instrumentPricing, setInstrumentPricing] = useState<ResolvedPricing | null>(null);
+
+  // P1.7: Trade blotter local state
+  const [blotterTrades, setBlotterTrades] = useState<BlotterTrade[]>([]);
+
+  const handleInstrumentChange = (type: InstrumentType, pricing: ResolvedPricing) => {
+    if (tradingStarted) return;
+    setSelectedInstrument(type);
+    setInstrumentPricing(pricing);
+  };
 
   // B4: Onboarding-to-Trading Pipeline - Pre-configuration State
   const [isPreConfigured, setIsPreConfigured] = useState(false);
@@ -269,7 +287,8 @@ export default function TradePage() {
         body: JSON.stringify({
           message: '',
           state: tradingState || getInitialWREIState(selectedPersona, selectedWREITokenType, selectedCreditType),
-          isOpening: true
+          isOpening: true,
+          instrumentType: selectedInstrument,
         }),
         signal: controller.signal
       });
@@ -331,7 +350,8 @@ export default function TradePage() {
         body: JSON.stringify({
           message: messageToSend,
           state: tradingState,
-          isOpening: false
+          isOpening: false,
+          instrumentType: selectedInstrument,
         }),
         signal: controller.signal
       });
@@ -356,6 +376,40 @@ export default function TradePage() {
         // Save to history if trading just completed
         if (data.state.negotiationComplete && tradingStartTime) {
           saveCompletedTrading(data.state);
+
+          // P1.7: Record agreed trade to DB + blotter
+          if (data.state.outcome === 'agreed') {
+            const tradeRecord: BlotterTrade = {
+              id: `TRD-${Date.now().toString(36).toUpperCase()}`,
+              instrument_id: selectedInstrument,
+              negotiation_id: null,
+              direction: 'sell',
+              quantity: data.state.buyerProfile?.volumeInterest ?? 1000,
+              price_per_unit: data.state.currentOfferPrice,
+              total_value: data.state.currentOfferPrice * (data.state.buyerProfile?.volumeInterest ?? 1000),
+              currency: selectedInstrument.startsWith('WREI') ? 'USD' : 'AUD',
+              buyer_persona: selectedPersona,
+              status: 'confirmed',
+              executed_at: new Date().toISOString(),
+              settled_at: null,
+            };
+            setBlotterTrades(prev => [tradeRecord, ...prev]);
+
+            // Persist to DB (fire-and-forget)
+            fetch('/api/trades', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                instrument_id: tradeRecord.instrument_id,
+                direction: tradeRecord.direction,
+                quantity: tradeRecord.quantity,
+                price_per_unit: tradeRecord.price_per_unit,
+                currency: tradeRecord.currency,
+                buyer_persona: tradeRecord.buyer_persona,
+                metadata: { source: 'negotiation', instrument: selectedInstrument },
+              }),
+            }).catch(() => { /* DB unavailable — local blotter still shows trade */ });
+          }
 
           // Calculate and display trading scorecard
           if (selectedPersona !== 'freeplay') {
@@ -406,7 +460,8 @@ export default function TradePage() {
         body: JSON.stringify({
           message: 'I would like to end this trade for now.',
           state: tradingState,
-          isOpening: false
+          isOpening: false,
+          instrumentType: selectedInstrument,
         })
       });
 
@@ -438,7 +493,8 @@ export default function TradePage() {
         body: JSON.stringify({
           message: 'I would like to speak with a human representative.',
           state: tradingState,
-          isOpening: false
+          isOpening: false,
+          instrumentType: selectedInstrument,
         })
       });
 
@@ -850,6 +906,18 @@ Professional Interface
 
           {/* Left Panel */}
           <div className="lg:w-1/3 space-y-6 order-2 lg:order-1">
+
+            {/* P1.3: Instrument Switcher */}
+            <InstrumentSwitcher
+              selectedInstrument={selectedInstrument}
+              onInstrumentChange={handleInstrumentChange}
+            />
+
+            {/* P1.6: Order Book */}
+            <OrderBookPanel
+              instrumentType={selectedInstrument}
+              spotPrice={instrumentPricing?.currentSpot}
+            />
 
             {/* WREI Token Type Selector */}
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
@@ -2187,6 +2255,14 @@ Institutional View
               )}
             </div>
           </div>
+        </div>
+
+        {/* P1.7: Trade Blotter */}
+        <div className="mt-4">
+          <TradeBlotter
+            localTrades={blotterTrades}
+            instrumentFilter={selectedInstrument}
+          />
         </div>
 
         {/* Bottom Status Bar */}

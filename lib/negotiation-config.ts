@@ -712,3 +712,56 @@ function getTokenSpecificYieldRequirement(
       return (benchmarks as any).moderate_return || 0.08;
   }
 }
+
+// =============================================================================
+// INSTRUMENT PRICING BRIDGE
+// Routes legacy creditType/wreiTokenType to the new per-instrument pricing
+// engine. New code should import directly from lib/trading/instruments/.
+// =============================================================================
+
+export { resolveInstrumentPricing, getMinAcceptablePrice, type ResolvedPricing } from './trading/instruments/pricing-engine';
+export type { InstrumentType, InstrumentPricingConfig } from './trading/instruments/types';
+
+import { resolveInstrumentPricing, type ResolvedPricing } from './trading/instruments/pricing-engine';
+import type { InstrumentType } from './trading/instruments/types';
+
+/**
+ * Bridge from legacy CreditType / WREITokenType to the new per-instrument
+ * pricing engine. Returns resolved pricing for the given instrument.
+ *
+ * @param creditType  - Legacy credit type ('carbon' | 'esc' | 'both')
+ * @param wreiTokenType - WREI token type (optional, overrides creditType)
+ * @param quantity    - Trade quantity for volume discount calculation
+ */
+export function getInstrumentPricing(
+  creditType: CreditType,
+  wreiTokenType?: WREITokenType,
+  quantity?: number,
+): ResolvedPricing {
+  const instrumentType = mapToInstrumentType(creditType, wreiTokenType);
+  return resolveInstrumentPricing(instrumentType, undefined, quantity);
+}
+
+/**
+ * Map legacy type identifiers to the canonical InstrumentType.
+ */
+function mapToInstrumentType(
+  creditType: CreditType,
+  wreiTokenType?: WREITokenType,
+): InstrumentType {
+  // WREITokenType takes precedence if provided
+  if (wreiTokenType) {
+    switch (wreiTokenType) {
+      case 'carbon_credits': return 'WREI_CC';
+      case 'asset_co': return 'WREI_ACO';
+      case 'dual_portfolio': return 'WREI_CC'; // Default to carbon for dual
+    }
+  }
+
+  // Fall back to legacy creditType mapping
+  switch (creditType) {
+    case 'esc': return 'ESC';
+    case 'carbon': return 'WREI_CC';
+    case 'both': return 'WREI_CC';
+  }
+}

@@ -68,9 +68,9 @@ describe('Phase 3.1: Institutional Buyer Personas', () => {
       });
     });
 
-    it('should have total persona count of 11 (5 original + 6 institutional)', () => {
+    it('should have total persona count of 15 (5 original + 6 institutional + 4 ESC)', () => {
       const allPersonas = getAllPersonas();
-      expect(allPersonas).toHaveLength(11);
+      expect(allPersonas).toHaveLength(15);
     });
   });
 
