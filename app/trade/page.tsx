@@ -39,6 +39,9 @@ import OrderBookPanel from '@/components/trading/OrderBookPanel';
 import TradeBlotter, { type BlotterTrade } from '@/components/trading/TradeBlotter';
 import type { InstrumentType } from '@/lib/trading/instruments/types';
 import type { ResolvedPricing } from '@/lib/trading/instruments/pricing-engine';
+import TokenDetailPanel from '@/components/trading/TokenDetailPanel';
+import ProvenanceCertificate from '@/components/trading/ProvenanceCertificate';
+import BulkNegotiationDashboard from '@/components/trading/BulkNegotiationDashboard';
 
 interface APIResponse {
   agentMessage: string;
@@ -104,7 +107,7 @@ export default function TradePage() {
   const [tradingStartTime, setTradingStartTime] = useState<string | null>(null);
 
   // Phase 6.2: Professional Interface Mode
-  const [interfaceMode, setInterfaceMode] = useState<'standard' | 'professional'>('standard');
+  const [interfaceMode, setInterfaceMode] = useState<'standard' | 'professional' | 'bulk'>('standard');
   const [investorClassification, setInvestorClassification] = useState<InvestorClassification>('wholesale');
   const [investmentSize, setInvestmentSize] = useState(25_000_000); // A$25M default
   const [timeHorizon, setTimeHorizon] = useState(5); // 5 year default
@@ -128,6 +131,10 @@ export default function TradePage() {
 
   // P1.7: Trade blotter local state
   const [blotterTrades, setBlotterTrades] = useState<BlotterTrade[]>([]);
+
+  // P3.3: Provenance certificate modal
+  const [showProvenanceCert, setShowProvenanceCert] = useState(false);
+  const [lastAgreedTrade, setLastAgreedTrade] = useState<BlotterTrade | null>(null);
 
   const handleInstrumentChange = (type: InstrumentType, pricing: ResolvedPricing) => {
     if (tradingStarted) return;
@@ -394,6 +401,7 @@ export default function TradePage() {
               settled_at: null,
             };
             setBlotterTrades(prev => [tradeRecord, ...prev]);
+            setLastAgreedTrade(tradeRecord);
 
             // Persist to DB (fire-and-forget)
             fetch('/api/trades', {
@@ -824,6 +832,16 @@ Standard Negotiation
               >
 Professional Interface
               </button>
+              <button
+                onClick={() => setInterfaceMode('bulk')}
+                className={`px-6 py-3 rounded-lg font-medium transition-all ${
+                  interfaceMode === 'bulk'
+                    ? 'bg-white text-slate-800 shadow-lg'
+                    : 'bg-slate-700 text-white hover:bg-slate-600'
+                }`}
+              >
+Bulk Procurement
+              </button>
               {interfaceMode === 'professional' && (
                 <button
                   onClick={() => setShowExportOptions(!showExportOptions)}
@@ -848,8 +866,12 @@ Professional Interface
         </div>
       </div>
 
-      {/* Professional Interface */}
-      {interfaceMode === 'professional' ? (
+      {/* Bulk Procurement Interface */}
+      {interfaceMode === 'bulk' ? (
+        <div className="max-w-7xl mx-auto p-4">
+          <BulkNegotiationDashboard />
+        </div>
+      ) : interfaceMode === 'professional' ? (
         <ProfessionalInterface
           investorProfile={{
             type: selectedPersona as PersonaType,
@@ -918,6 +940,11 @@ Professional Interface
               instrumentType={selectedInstrument}
               spotPrice={instrumentPricing?.currentSpot}
             />
+
+            {/* P3.1 A3/A4: Token Detail Panel for WREI tokens */}
+            {(selectedInstrument === 'WREI_CC' || selectedInstrument === 'WREI_ACO') && (
+              <TokenDetailPanel tokenType={selectedInstrument} />
+            )}
 
             {/* WREI Token Type Selector */}
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
@@ -1653,12 +1680,20 @@ Professional Interface
                             Final price: ${tradingState.currentOfferPrice}/t
                           </div>
                         </div>
-                        <button
-                          onClick={handleResetTrading}
-                          className="bg-green-700 text-white px-3 py-1 rounded bloomberg-small-text font-medium hover:bg-green-800 transition-colors"
-                        >
-                          Start New Negotiation
-                        </button>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => setShowProvenanceCert(true)}
+                            className="bg-blue-600 text-white px-3 py-1 rounded bloomberg-small-text font-medium hover:bg-blue-700 transition-colors"
+                          >
+                            View Certificate
+                          </button>
+                          <button
+                            onClick={handleResetTrading}
+                            className="bg-green-700 text-white px-3 py-1 rounded bloomberg-small-text font-medium hover:bg-green-800 transition-colors"
+                          >
+                            Start New Negotiation
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -1930,8 +1965,8 @@ Professional Interface
                 </div>
               )}
 
-              {/* Institutional Dashboard (Phase 6.1) - Appears for institutional personas */}
-              {tradingState && isInstitutionalPersona(selectedPersona) && (
+              {/* Institutional Dashboard (Phase 6.1) - Appears for institutional personas or WREI token negotiations */}
+              {tradingState && (isInstitutionalPersona(selectedPersona) || selectedInstrument === 'WREI_CC' || selectedInstrument === 'WREI_ACO') && (
                 <div className="mx-6 mb-4 bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl border border-slate-200 shadow-lg p-6">
                   {/* Dashboard Header with Tab Navigation */}
                   <div className="flex items-center justify-between mb-6">
@@ -2278,7 +2313,8 @@ Institutional View
         )}
 
         {/* AI Strategy Panel - Milestone 1.1 Enhancement */}
-        {isInstitutionalPersona(selectedPersona) && tradingStarted && (
+        {/* Visible for institutional personas or WREI token negotiations (P3.3 Scenario C) */}
+        {(isInstitutionalPersona(selectedPersona) || selectedInstrument === 'WREI_CC' || selectedInstrument === 'WREI_ACO') && tradingStarted && (
           <div className={`fixed ${showStrategyPanel ? 'right-4 top-20 w-96' : 'bottom-4 right-4'} z-50 transition-all duration-300`}>
             <NegotiationStrategyPanel
               explanation={currentStrategyExplanation}
@@ -2294,7 +2330,7 @@ Institutional View
             negotiationState={tradingState}
             isVisible={showCoachingPanel}
             onToggleVisibility={() => setShowCoachingPanel(!showCoachingPanel)}
-            className={showStrategyPanel && isInstitutionalPersona(selectedPersona) ? 'right-[420px]' : ''}
+            className={showStrategyPanel && (isInstitutionalPersona(selectedPersona) || selectedInstrument === 'WREI_CC' || selectedInstrument === 'WREI_ACO') ? 'right-[420px]' : ''}
           />
         )}
 
@@ -2319,6 +2355,42 @@ Institutional View
                 comparison={sessionComparison}
                 onSelectSessions={handleSessionComparison}
                 onClose={closeComparisonDashboard}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* P3.3: Provenance Certificate Modal */}
+        {showProvenanceCert && lastAgreedTrade && tradingState && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="w-11/12 max-w-3xl max-h-[90vh] bg-white rounded-lg shadow-xl overflow-auto">
+              <ProvenanceCertificate
+                trade={{
+                  tradeId: lastAgreedTrade.id,
+                  instrumentType: lastAgreedTrade.instrument_id,
+                  instrumentName: selectedInstrument === 'WREI_CC' ? 'WREI Carbon Credit Token' :
+                    selectedInstrument === 'WREI_ACO' ? 'WREI Asset Co Token' : lastAgreedTrade.instrument_id,
+                  quantity: lastAgreedTrade.quantity,
+                  pricePerUnit: lastAgreedTrade.price_per_unit,
+                  totalValue: lastAgreedTrade.total_value,
+                  currency: lastAgreedTrade.currency,
+                  buyer: selectedPersona === 'freeplay' ? 'Free Play Buyer' : selectedPersona.replace(/_/g, ' '),
+                  seller: 'WREI Trading Platform',
+                  timestamp: lastAgreedTrade.executed_at,
+                  settlementMethod: selectedInstrument.startsWith('WREI') ? 'Zoniqx zConnect (T+0)' : 'Registry Transfer',
+                  settlementStatus: 'confirmed',
+                }}
+                provenance={selectedInstrument === 'WREI_CC' ? {
+                  vesselId: 'WREI-V042',
+                  vesselName: 'Sydney Explorer',
+                  route: 'Circular Quay → Manly',
+                  emissionsSaved: lastAgreedTrade.quantity * 0.85,
+                  verificationStandards: ['ISO 14064-2', 'Verra VCS', 'Gold Standard'],
+                  blockchainTxHash: `0x${Date.now().toString(16)}a4f7b2c1d8e9f0`,
+                  tokenStandard: 'ERC-7518 (DyCIST)',
+                  blockchainNetwork: 'Polygon PoS',
+                } : undefined}
+                onClose={() => setShowProvenanceCert(false)}
               />
             </div>
           </div>

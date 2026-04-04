@@ -824,3 +824,267 @@ lib/trading/compliance/
 Gate report: `GATE_REPORT_P2.md`
 Tag: `v0.4.0-live-data`
 Recommendation: **PROCEED**
+
+---
+
+---
+
+## Session: P3.1 + P3.3 — Investor Demo Flow & Institutional Carbon Buyer
+
+- **Date:** 2026-04-04
+- **Phase:** P3.1 (Scenario A: Investor Demo), P3.3 (Scenario C: Institutional Carbon Buyer)
+- **Branch:** feature/negotiate-to-trade-implementation
+
+### Summary
+
+Implemented the 7-step investor demonstration flow (WP4 §2.2) and the institutional carbon buyer scenario (WP4 §4). Updated the landing dashboard with all 8 instrument prices, added product cards, created token detail panel, updated the analyse page with market overview and AI commentary, built the carbon credit market view with filters, added provenance certificate for trade confirmations, and widened the strategy panel to show for all WREI token negotiations.
+
+---
+
+### Task P3.1 A1 — Landing Dashboard Update
+
+**Result:** Complete rewrite of `app/page.tsx`
+
+| Feature | Description |
+|---------|-------------|
+| Market Ticker | Scrolling ticker strip with all 8 instrument types (ESC, VEEC, PRC, ACCU, LGC, STC, WREI-CC, WREI-ACO) with live simulated prices and % change |
+| Dashboard Metrics | 4 metric cards: Platform Volume, Active Sessions, Certificates Tracked, Settlement Speed |
+| Product Cards | 3 product cards (ESC Trading, Carbon Credit Tokens, Asset Co Tokens) with key metrics and trade links |
+| Registry Status | Connection indicators for TESSA (NSW), CER Registry, VEEC Registry, Blockchain |
+| Instrument Table | Full certificate & token summary table with spot price, change %, category |
+| Panel Tabs | Market Overview, Products, Active Trading, Portfolio Status |
+
+---
+
+### Task P3.1 A3/A4 — Token Detail Panel
+
+**Result:** `components/trading/TokenDetailPanel.tsx` (new file)
+
+| Token Type | Display Sections |
+|------------|-----------------|
+| WREI-CC | Verification standards (ISO 14064-2, Verra VCS, Gold Standard), generation source breakdown, provenance chain, WREI premium indicator, dMRV verification score (94/100), token lifecycle visualisation (6 stages), settlement details |
+| WREI-ACO | Underlying asset (88 vessels, 22 Deep Power, A$473M capex), yield characteristics (28.3% equity yield), fleet metrics, cash-on-cash multiple (3.0×), cross-collateralisation visual flow, AFSL Required + Wholesale Only badges |
+
+Integrated into `app/trade/page.tsx` — visible when WREI-CC or WREI-ACO instrument is selected.
+
+---
+
+### Task P3.1 A6 — Analyse Page Market Overview & AI Commentary
+
+**Result:** Complete rewrite of `app/analyse/page.tsx`
+
+| Tab | Description |
+|-----|-------------|
+| Market Overview | Certificate & token summary table (8 instruments), 3-column market reference cards (VCM, ESC, WREI), AI market commentary section |
+| Carbon Credits | Filter/search by standard, vintage, project type, co-benefits (P3.3.1) |
+| Investment Calculator | Preserved from original |
+| Market Scenarios | Preserved from original |
+
+AI commentary calls Claude Sonnet 4 via `/api/market-commentary` with fallback if API key unavailable.
+
+---
+
+### Task P3.1 A6 API — Market Commentary Route
+
+**Result:** `app/api/market-commentary/route.ts` (new file)
+
+- Calls Claude Sonnet 4 (`claude-sonnet-4-20250514`) with market pricing context
+- Returns structured commentary with topics and source attribution
+- Static fallback commentary when ANTHROPIC_API_KEY is unavailable
+- max_tokens: 500, professional Bloomberg-style tone
+
+---
+
+### Task P3.3.1 — Carbon Credit Market View
+
+**Result:** Integrated into analyse page "Carbon Credits" tab
+
+| Feature | Description |
+|---------|-------------|
+| Filters | Standard (ISO 14064-2, Verra VCS, Gold Standard), Vintage (2024, 2023), Project Type (Vessel Efficiency, Modal Shift, Construction Avoidance) |
+| Co-benefits | 9 filter chips: Air Quality, Noise Reduction, Congestion Relief, Health Benefits, Biodiversity, Water Quality, Climate Resilience, Economic Access, Tourism |
+| Search | By credit ID or region |
+| Display | 8 demo WREI-CC credits with price, available quantity, verification score, co-benefits, negotiate button |
+
+---
+
+### Task P3.3.2 — Strategy Panel for WREI-CC Negotiation
+
+**Result:** 3 edits to `app/trade/page.tsx`
+
+- NegotiationStrategyPanel visibility widened: now shows for institutional personas OR WREI-CC/WREI-ACO instrument selection
+- Institutional Dashboard visibility widened: same condition
+- CoachingPanel offset adjusted to account for wider visibility
+
+---
+
+### Task P3.3.3 — Provenance Certificate
+
+**Result:** `components/trading/ProvenanceCertificate.tsx` (new file)
+
+| Feature | Description |
+|---------|-------------|
+| Trade Details | Two-column grid: instrument, quantity, price, total value, buyer, seller, settlement method, timestamp |
+| Provenance | Verification standards, vessel data, emissions saved, blockchain tx hash (truncated with copy) |
+| Print Support | `@media print` styles — A4 sizing, action buttons hidden, professional certificate layout |
+| Integration | "View Certificate" button on agreed trade outcome banner, modal overlay in trade page |
+
+Trade recording flow updated to capture `lastAgreedTrade` for certificate generation.
+
+---
+
+### Test Updates
+
+| File | Change |
+|------|--------|
+| `__tests__/landing-page.test.tsx` | Rewrote all tests to match new dashboard structure (8-instrument ticker, metrics, product cards, registry status, panel tabs) |
+
+---
+
+### Verification Results
+
+| Check | Result |
+|-------|--------|
+| `npm run build` | **PASS** — all pages compile |
+| `npx tsc --noEmit` | **PASS** — 0 errors |
+| `npm test -- --passWithNoTests` | **PASS** — 80 suites, 1888 passed, 3 skipped, 0 failed |
+
+---
+
+### Files Created (4 files)
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `components/trading/TokenDetailPanel.tsx` | ~280 | WREI-CC and WREI-ACO token metadata panel with lifecycle visualisation |
+| `components/trading/ProvenanceCertificate.tsx` | ~180 | Printable trade confirmation with provenance data |
+| `app/api/market-commentary/route.ts` | ~90 | Claude Sonnet 4 market commentary API |
+
+### Files Modified (4 files)
+
+| File | Description |
+|------|-------------|
+| `app/page.tsx` | Complete rewrite — 8-instrument ticker, metrics, product cards, registry status |
+| `app/analyse/page.tsx` | Complete rewrite — market overview, AI commentary, carbon credit market view with filters |
+| `app/trade/page.tsx` | TokenDetailPanel + ProvenanceCertificate integration, strategy panel visibility widened |
+| `__tests__/landing-page.test.tsx` | Updated all tests for new dashboard structure |
+
+---
+
+### Scenario A Walkthrough
+
+| Step | Status | Notes |
+|------|--------|-------|
+| A1: Landing Dashboard | **PASS** | 8 instruments in ticker, metrics, product cards, registry status |
+| A2: ESC Trading Demo | **PASS** | Verified: instrument switcher → order book → negotiation → blotter (built in P1) |
+| A3: Carbon Credit Token | **PASS** | TokenDetailPanel shows WREI-CC metadata + lifecycle when selected |
+| A4: Asset Co Token | **PASS** | TokenDetailPanel shows WREI-ACO yield, fleet, cross-collateralisation when selected |
+| A5: Compliance | Reference only — scheduled for P3.4 |
+| A6: Analytics | **PASS** | Market overview table, AI commentary, certificate summary |
+| A7: Closing | No UI — presenter verbal |
+
+### Scenario C Walkthrough
+
+| Step | Status | Notes |
+|------|--------|-------|
+| Carbon credit market view | **PASS** | Filter by standard, vintage, project type, co-benefits; search by ID/region |
+| AI negotiation with strategy panel | **PASS** | Strategy panel visible for WREI-CC instrument selection |
+| Trade confirmation with provenance | **PASS** | Provenance certificate modal with print CSS |
+
+---
+
+---
+
+---
+
+## Session: P3.2, P3.4, P3.5, P3.6 — Broker, Compliance, Bulk ESC, Demo Seeding
+
+- **Date:** 2026-04-04
+- **Phase:** P3.2, P3.4, P3.5, P3.6
+- **Branch:** feature/negotiate-to-trade-implementation
+
+### Summary
+
+Implemented white-label branding system (Scenario B), compliance officer dashboards with audit trail viewer (Scenario D), bulk ESC negotiation dashboard (Scenario E), and demo mode data seeding. All 5 WP4 user scenarios now functional.
+
+---
+
+### Task P3.2 — Scenario B: ESC Broker White-Label
+
+**Result:** White-label configuration system with BloombergShell integration
+
+#### Files created (2 files):
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `lib/config/white-label.ts` | 80 | `WhiteLabelConfig` interface, default WREI branding, Demand Manager sample config, broker registry, env var resolver |
+| `components/branding/WhiteLabelProvider.tsx` | 91 | React context provider with `useWhiteLabel()` hook, CSS variable injection, runtime broker switching |
+
+#### Files modified (2 files):
+
+| File | Description |
+|------|-------------|
+| `components/navigation/BloombergShell.tsx` | White-label overrides: top bar background, terminal identifier badge, footer text/attribution, accent colours |
+| `app/layout.tsx` | Wrapped BloombergShell with WhiteLabelProvider |
+
+---
+
+### Task P3.4 — Scenario D: Compliance Officer Dashboards
+
+**Result:** Tabbed compliance page with regulatory grid, ESS view, scheme changes, audit trail
+
+#### Files created (1 file):
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `components/compliance/AuditTrailViewer.tsx` | 210 | Filterable audit log: action type, instrument, user, date range filters; colour-coded badges; demo fallback data; CSV export |
+
+#### Files modified (2 files):
+
+| File | Description |
+|------|-------------|
+| `app/compliance/page.tsx` | Complete rewrite — 4 tabs: Regulatory Overview (ASIC/AUSTRAC/IPART/CER status grid, trading activity), ESS Compliance (penalty rate, positions), Scheme Changes (3 consultations), Audit Trail |
+| `components/compliance/index.ts` | Added AuditTrailViewer export |
+
+---
+
+### Task P3.5 — Scenario E: Bulk ESC Purchase
+
+**Result:** Multi-counterparty bulk negotiation dashboard
+
+#### Files created (1 file):
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `components/trading/BulkNegotiationDashboard.tsx` | 265 | Buyer constraints, 5 simulated counterparties, sequential negotiation with animated progress, per-counterparty cards, execution report with VWAP |
+
+#### Files modified (1 file):
+
+| File | Description |
+|------|-------------|
+| `app/trade/page.tsx` | Added 'bulk' interface mode, Bulk Procurement button, BulkNegotiationDashboard rendering |
+
+---
+
+### Task P3.6 — Demo Mode Data Seeding
+
+**Result:** Comprehensive demo data generator with DB seeding
+
+#### Files created (1 file):
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `lib/demo/seed-data.ts` | 215 | `isDemoMode()`, `generateSeedData()` (248 price points, 5 counterparties, 3 trades, 2 compliance positions, 2 tokens), `seedDemoData()` idempotent DB seeder |
+
+---
+
+### Verification Results
+
+| Check | Result |
+|-------|--------|
+| `npm run build` | **PASS** — all pages compile |
+| `npx tsc --noEmit` | **PASS** — 0 errors |
+| `npm test -- --passWithNoTests` | **PASS** — 80 suites, 1888 passed, 3 skipped, 0 failed |
+
+Gate report: `GATE_REPORT_P3.md`
+Tag: `v0.5.0-scenarios`
+Recommendation: **PROCEED**

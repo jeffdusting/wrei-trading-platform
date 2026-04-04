@@ -8,6 +8,7 @@ import { MarketTicker } from '@/components/market'
 import SimpleDemoToggle from '@/components/demo/SimpleDemoToggle'
 import { useSimpleDemoMode } from '@/components/demo/SimpleDemoProvider'
 import FeedHealthIndicator from '@/components/market/FeedHealthIndicator'
+import { useWhiteLabel } from '@/components/branding/WhiteLabelProvider'
 
 interface NavigationItem {
   label: string
@@ -35,6 +36,7 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
   const pathname = usePathname()
   const { isActive: isDemoActive } = useSimpleDemoMode()
   const tokens = useDesignTokens('retail') // Use retail theme for light mode
+  const { config: wl, isWhiteLabelled } = useWhiteLabel()
 
   const isActive = (href: string) => {
     if (href === '/') {
@@ -52,7 +54,7 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
   }
 
   const topBarStyles = {
-    backgroundColor: tokens.colors.surface.secondary,
+    backgroundColor: isWhiteLabelled ? wl.primaryColour : tokens.colors.surface.secondary,
     borderBottom: `0.5px solid ${tokens.colors.surface.tertiary}`,
     height: '40px',
     display: 'flex',
@@ -89,20 +91,23 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
       {/* Bloomberg Terminal Top Bar - 40px */}
       <div style={topBarStyles} className="bloomberg-top-bar">
         <div className="flex items-center gap-6">
-          {/* WREI Terminal Identifier */}
+          {/* Terminal Identifier — white-label aware */}
           <div className="flex items-center gap-3">
             <div
               className="w-6 h-6 flex items-center justify-center bloomberg-small-text font-medium"
               style={{
-                backgroundColor: tokens.colors.accent.info,
+                backgroundColor: isWhiteLabelled ? wl.accentColour : tokens.colors.accent.info,
                 color: 'white',
                 borderRadius: tokens.borderRadius.sm
               }}
             >
-              WR
+              {wl.terminalCode}
             </div>
-            <span className="bloomberg-section-label text-slate-700">
-              WREI PLATFORM
+            <span
+              className="bloomberg-section-label"
+              style={{ color: isWhiteLabelled ? wl.primaryTextColour : undefined }}
+            >
+              {wl.businessName}
             </span>
           </div>
 
@@ -244,7 +249,7 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
                 width: '6px',
                 height: '6px',
                 borderRadius: '50%',
-                backgroundColor: tokens.colors.status.online
+                backgroundColor: isWhiteLabelled ? wl.accentColour : tokens.colors.status.online
               }}
             />
             <span className="bloomberg-small-text text-slate-500">
@@ -259,9 +264,10 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
         </div>
 
         <div className="flex items-center gap-4">
-          {/* Compliance Notice */}
+          {/* Footer text — white-label aware */}
           <span className="bloomberg-small-text text-slate-400">
-            © 2026 WREI Platform | Institutional-grade carbon credit tokenisation
+            {wl.footerText}
+            {isWhiteLabelled && wl.showAttribution && ' | Powered by WREI'}
           </span>
 
           {/* Feed Health Status — live/cached/simulated indicator */}

@@ -2,10 +2,11 @@
  * Landing Page Tests
  *
  * Tests for the Bloomberg Terminal-style trading dashboard (app/page.tsx)
+ * Updated P3.1 — new dashboard layout with 8-instrument ticker, metrics, product cards
  */
 
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import Home from '@/app/page';
 
 // Mock Next.js router for Link components
@@ -40,17 +41,16 @@ describe('Landing Page', () => {
     render(<Home />);
 
     expect(screen.getByText('Trading Dashboard')).toBeInTheDocument();
-    expect(screen.getByText(/Real-time carbon credit trading platform/)).toBeInTheDocument();
+    expect(screen.getByText(/Real-time carbon credit and environmental certificate trading platform/)).toBeInTheDocument();
   });
 
-  test('displays animated statistics counters', async () => {
-    jest.useRealTimers();
+  test('displays dashboard metrics', () => {
     render(<Home />);
 
-    // Check that stats containers are present
-    expect(screen.getByText('CREDITS VERIFIED')).toBeInTheDocument();
-    expect(screen.getByText('ACTIVE NEGOTIATIONS')).toBeInTheDocument();
-    expect(screen.getByText('AVG SETTLEMENT')).toBeInTheDocument();
+    expect(screen.getByText('PLATFORM VOLUME')).toBeInTheDocument();
+    expect(screen.getByText('ACTIVE SESSIONS')).toBeInTheDocument();
+    expect(screen.getByText('CERTIFICATES TRACKED')).toBeInTheDocument();
+    expect(screen.getByText('SETTLEMENT SPEED')).toBeInTheDocument();
   });
 
   test('renders primary CTA buttons', () => {
@@ -65,20 +65,22 @@ describe('Landing Page', () => {
     expect(institutionalLink).toHaveAttribute('href', '/institutional/portal');
   });
 
-  test('displays all six feature cards with correct content', () => {
+  test('displays instrument prices for all 8 instruments', () => {
     render(<Home />);
 
-    // Trading products section
-    expect(screen.getByText('PRODUCTS')).toBeInTheDocument();
-    expect(screen.getByText('Carbon Credits')).toBeInTheDocument();
-    expect(screen.getByText('Asset Co Tokens')).toBeInTheDocument();
-    expect(screen.getByText('Dual Portfolio')).toBeInTheDocument();
+    expect(screen.getByText('INSTRUMENT PRICES')).toBeInTheDocument();
+    // All 8 instrument tickers should appear in the left panel
+    const instrumentTickers = ['ESC', 'VEEC', 'PRC', 'ACCU', 'LGC', 'STC', 'WREI-CC', 'WREI-ACO'];
+    instrumentTickers.forEach(ticker => {
+      // Tickers appear in both the left panel AND the scrolling ticker strip (duplicated)
+      const elements = screen.getAllByText(ticker);
+      expect(elements.length).toBeGreaterThanOrEqual(1);
+    });
   });
 
   test('feature cards have correct navigation links', () => {
     render(<Home />);
 
-    // Quick actions in the left panel
     const tradingLink = screen.getByRole('link', { name: /Begin Trading/i });
     expect(tradingLink).toHaveAttribute('href', '/trade');
 
@@ -89,21 +91,20 @@ describe('Landing Page', () => {
     expect(portalLink).toHaveAttribute('href', '/institutional/portal');
   });
 
-  test('displays market stats from WREI pricing configuration', () => {
+  test('displays market references from WREI pricing configuration', () => {
     render(<Home />);
 
-    // Market depth panel
-    expect(screen.getByText('MARKET DEPTH')).toBeInTheDocument();
-    expect(screen.getByText('VCM SPOT')).toBeInTheDocument();
-    expect(screen.getByText('FORWARD REM')).toBeInTheDocument();
-    expect(screen.getByText('DMRV PREMIUM')).toBeInTheDocument();
+    expect(screen.getByText('MARKET REFERENCES')).toBeInTheDocument();
+    expect(screen.getByText('VCM Spot')).toBeInTheDocument();
+    expect(screen.getByText('dMRV Spot')).toBeInTheDocument();
+    expect(screen.getByText('Forward Removal')).toBeInTheDocument();
   });
 
-  test('renders platform navigation pathways section', () => {
+  test('renders panel navigation tabs', () => {
     render(<Home />);
 
-    // Panel tabs for the centre panel
     expect(screen.getByText('Market Overview')).toBeInTheDocument();
+    expect(screen.getByText('Products')).toBeInTheDocument();
     expect(screen.getByText('Active Trading')).toBeInTheDocument();
     expect(screen.getByText('Portfolio Status')).toBeInTheDocument();
   });
@@ -126,7 +127,6 @@ describe('Landing Page', () => {
   test('uses WREI colour scheme throughout', () => {
     render(<Home />);
 
-    // Bloomberg-style layout has white backgrounds and slate borders
     const container = screen.getByText('Trading Dashboard').closest('div');
     expect(container).toBeInTheDocument();
   });
@@ -136,7 +136,7 @@ describe('Landing Page', () => {
 
     // Check for grid classes in the market overview
     expect(document.querySelector('.grid')).toBeInTheDocument();
-    expect(document.querySelector('.grid-cols-3')).toBeInTheDocument();
+    expect(document.querySelector('.grid-cols-4')).toBeInTheDocument();
   });
 
   test('all navigation links are accessible', () => {
@@ -151,7 +151,6 @@ describe('Landing Page', () => {
 
     expect(internalLinks.length).toBeGreaterThan(0);
 
-    // Check key navigation links exist
     const expectedRoutes = ['/trade', '/institutional/portal', '/analyse'];
     expectedRoutes.forEach(route => {
       const linkExists = internalLinks.some(link => link.getAttribute('href') === route);
@@ -162,8 +161,6 @@ describe('Landing Page', () => {
   test('SVG icons are used instead of emojis', () => {
     render(<Home />);
 
-    // Bloomberg dashboard uses minimal UI — status indicators via colored dots
-    // rather than SVG icons or emojis
     const statusDots = document.querySelectorAll('.rounded-full');
     expect(statusDots.length).toBeGreaterThan(0);
   });
@@ -171,8 +168,8 @@ describe('Landing Page', () => {
   test('tab navigation switches panel content', () => {
     render(<Home />);
 
-    // Default tab shows market overview
-    expect(screen.getByText('CREDITS VERIFIED')).toBeInTheDocument();
+    // Default tab shows market overview with metrics
+    expect(screen.getByText('PLATFORM VOLUME')).toBeInTheDocument();
 
     // Click Active Trading tab
     fireEvent.click(screen.getByText('Active Trading'));
@@ -189,6 +186,33 @@ describe('Landing Page', () => {
     expect(screen.getByText('SYSTEM STATUS')).toBeInTheDocument();
     expect(screen.getByText('AI Engine')).toBeInTheDocument();
     expect(screen.getByText('Market Feed')).toBeInTheDocument();
-    expect(screen.getByText('Blockchain')).toBeInTheDocument();
+    // Blockchain appears in multiple places (status + ticker) — use getAllByText
+    const blockchainElements = screen.getAllByText('Blockchain');
+    expect(blockchainElements.length).toBeGreaterThanOrEqual(1);
+  });
+
+  test('registry connection status indicators are present', () => {
+    render(<Home />);
+
+    expect(screen.getByText('REGISTRY STATUS')).toBeInTheDocument();
+    expect(screen.getByText('TESSA (NSW)')).toBeInTheDocument();
+    expect(screen.getByText('CER Registry')).toBeInTheDocument();
+    expect(screen.getByText('VEEC Registry')).toBeInTheDocument();
+  });
+
+  test('product cards tab shows three product cards', () => {
+    render(<Home />);
+
+    fireEvent.click(screen.getByText('Products'));
+
+    expect(screen.getByText('ESC Trading')).toBeInTheDocument();
+    expect(screen.getByText('Carbon Credit Tokens')).toBeInTheDocument();
+    expect(screen.getByText('Asset Co Tokens')).toBeInTheDocument();
+  });
+
+  test('certificate summary table is visible in market overview', () => {
+    render(<Home />);
+
+    expect(screen.getByText('CERTIFICATE & TOKEN SUMMARY')).toBeInTheDocument();
   });
 });

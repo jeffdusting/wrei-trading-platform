@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import BloombergShell from '@/components/navigation/BloombergShell'
 import { SimpleDemoProvider } from '@/components/demo/SimpleDemoProvider'
+import { WhiteLabelProvider } from '@/components/branding/WhiteLabelProvider'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -56,7 +57,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans`}>
         <SimpleDemoProvider>
-          <BloombergShell>{children}</BloombergShell>
+          <WhiteLabelProvider>
+            <BloombergShell>{children}</BloombergShell>
+          </WhiteLabelProvider>
         </SimpleDemoProvider>
       </body>
     </html>
