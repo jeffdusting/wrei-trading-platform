@@ -178,7 +178,7 @@ describe('Enhanced Negotiation Analytics - Step 1.4', () => {
       render(
         <SimpleDemoProvider>
           <AnalyticsDashboard
-            selectedAudience="executive"
+            selectedDataSet="institutional"
             sessionId="test-session"
             onExport={jest.fn()}
           />
@@ -193,7 +193,7 @@ describe('Enhanced Negotiation Analytics - Step 1.4', () => {
       render(
         <SimpleDemoProvider>
           <AnalyticsDashboard
-            selectedAudience="technical"
+            selectedDataSet="retail"
             sessionId="test-session"
             onExport={jest.fn()}
           />
@@ -207,7 +207,7 @@ describe('Enhanced Negotiation Analytics - Step 1.4', () => {
       render(
         <SimpleDemoProvider>
           <AnalyticsDashboard
-            selectedAudience="compliance"
+            selectedDataSet="compliance"
             sessionId="test-session"
             onExport={jest.fn()}
           />
@@ -221,7 +221,7 @@ describe('Enhanced Negotiation Analytics - Step 1.4', () => {
       render(
         <SimpleDemoProvider>
           <AnalyticsDashboard
-            selectedAudience="executive"
+            selectedDataSet="institutional"
             sessionId="test-session"
             onExport={jest.fn()}
           />
@@ -238,7 +238,7 @@ describe('Enhanced Negotiation Analytics - Step 1.4', () => {
       render(
         <SimpleDemoProvider>
           <AnalyticsDashboard
-            selectedAudience="executive"
+            selectedDataSet="institutional"
             sessionId="test-session"
             onExport={jest.fn()}
           />
@@ -255,7 +255,7 @@ describe('Enhanced Negotiation Analytics - Step 1.4', () => {
       render(
         <SimpleDemoProvider>
           <AnalyticsDashboard
-            selectedAudience="executive"
+            selectedDataSet="institutional"
             sessionId="test-session"
             onExport={jest.fn()}
           />
@@ -336,38 +336,12 @@ describe('Enhanced Negotiation Analytics - Step 1.4', () => {
   });
 
   describe('PerformanceChart Component', () => {
-    const mockBenchmarks = [
-      {
-        id: 'test-benchmark',
-        name: 'Test Performance Metric',
-        type: 'market_average',
-        category: 'performance',
-        values: {
-          current: 0.18,
-          target: 0.20,
-          market_average: 0.12,
-          industry_best: 0.25
-        },
-        trend: {
-          direction: 'up',
-          change_percentage: 8.3,
-          timeframe: '1m',
-          historical_data: [
-            { timestamp: new Date(), value: 0.15 },
-            { timestamp: new Date(), value: 0.18 }
-          ]
-        },
-        analysis: {
-          performance_score: 85,
-          gap_analysis: {
-            gap_value: 0.02,
-            gap_percentage: 10,
-            improvement_potential: 0.07
-          },
-          recommendations: ['Improve AI algorithms', 'Enhance market data']
-        }
-      }
-    ];
+    const mockBenchmarks = {
+      market_return: 0.18,
+      peer_average: 0.12,
+      risk_free_rate: 0.04,
+      volatility_benchmark: 0.25
+    };
 
     test('renders chart for executive audience', () => {
       render(
@@ -409,7 +383,7 @@ describe('Enhanced Negotiation Analytics - Step 1.4', () => {
     test('shows no data message when benchmarks are empty', () => {
       render(
         <PerformanceChart
-          benchmarks={[]}
+          benchmarks={null}
           selectedAudience="executive"
           timeframe="1d"
         />
@@ -544,7 +518,7 @@ describe('Enhanced Negotiation Analytics - Step 1.4', () => {
       render(
         <SimpleDemoProvider>
           <AnalyticsDashboard
-            selectedAudience="executive"
+            selectedDataSet="institutional"
             sessionId={sessionId}
             onExport={jest.fn()}
           />

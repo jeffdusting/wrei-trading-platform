@@ -67,7 +67,7 @@ jest.mock('../../lib/demo-mode/demo-state-manager', () => ({
 }));
 
 // Add global mocks for removed esc-market-context functions
-global.getNorthmoreGordonValueProp = jest.fn((audience) => ({
+(globalThis as any).getNorthmoreGordonValueProp = jest.fn((audience: string) => ({
   headline: `Test headline for ${audience}`,
   benefits: ['Benefit 1', 'Benefit 2'],
   roi_metrics: { cost_savings: '40%' },
@@ -75,13 +75,13 @@ global.getNorthmoreGordonValueProp = jest.fn((audience) => ({
   compliance_features: { coder_integration: 'Real-time' }
 }));
 
-global.getCurrentESCMarketContext = jest.fn(() => ({
+(globalThis as any).getCurrentESCMarketContext = jest.fn(() => ({
   SPOT_PRICE: 47.80,
   market_participants: {},
   firm_context: {}
 }));
 
-global.getCERComplianceFramework = jest.fn(() => ({
+(globalThis as any).getCERComplianceFramework = jest.fn(() => ({
   authority: { name: 'Clean Energy Regulator' },
   key_requirements: ['CERTIFICATE_CREATION'],
   validation_methods: {}

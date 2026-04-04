@@ -6,7 +6,7 @@
 
 import { create } from 'zustand';
 
-export type SimpleDemoDataSet = 'institutional' | 'retail' | 'compliance';
+export type SimpleDemoDataSet = 'institutional' | 'retail' | 'compliance' | 'self-service' | 'investor-briefing';
 
 export interface SimpleDemoState {
   isActive: boolean;

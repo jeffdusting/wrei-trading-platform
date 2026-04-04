@@ -5,9 +5,41 @@ import {
   type NegotiationScorecard,
   type PersonaBenchmark
 } from '@/lib/negotiation-scoring';
-import { NegotiationState, PersonaType, ArgumentClassification, EmotionalState } from '@/lib/types';
+import { NegotiationState, PersonaType, ArgumentClassification, EmotionalState, BuyerProfile } from '@/lib/types';
 
 describe('NegotiationScoring', () => {
+  // Helper to create mock buyer profile
+  const createMockBuyerProfile = (overrides: Partial<BuyerProfile> = {}): BuyerProfile => ({
+    persona: 'compliance_officer',
+    detectedWarmth: 6,
+    detectedDominance: 8,
+    priceAnchor: 150,
+    volumeInterest: 10000,
+    timelineUrgency: 'medium',
+    complianceDriver: 'carbon_neutrality',
+    creditType: 'carbon',
+    escEligibilityBasis: null,
+    wreiTokenType: 'carbon_credits',
+    investorClassification: 'retail',
+    marketPreference: 'primary',
+    yieldMechanismPreference: null,
+    portfolioContext: {
+      ticketSize: { min: 50000, max: 500000 },
+      yieldRequirement: 0.08,
+      riskTolerance: 'moderate',
+      liquidityNeeds: 'quarterly',
+      esgFocus: true,
+      crossCollateralInterest: false
+    },
+    complianceRequirements: {
+      aflsRequired: false,
+      amlCompliance: true,
+      taxTreatmentPreference: 'cgt',
+      jurisdictionalConstraints: []
+    },
+    ...overrides
+  });
+
   // Helper to create mock negotiation state
   const createMockNegotiationState = (overrides: Partial<NegotiationState> = {}): NegotiationState => ({
     round: 5,
@@ -59,13 +91,42 @@ describe('NegotiationScoring', () => {
     buyerProfile: {
       persona: 'compliance_officer',
       detectedWarmth: 6,
-      detectedAssertiveness: 8,
-      adaptedApproach: 'direct_authoritative'
+      detectedDominance: 8,
+      priceAnchor: 150,
+      volumeInterest: 10000,
+      timelineUrgency: 'medium',
+      complianceDriver: 'carbon_neutrality',
+      creditType: 'carbon',
+      escEligibilityBasis: null,
+      wreiTokenType: 'carbon_credits',
+      investorClassification: 'retail',
+      marketPreference: 'primary',
+      yieldMechanismPreference: null,
+      portfolioContext: {
+        ticketSize: { min: 50000, max: 500000 },
+        yieldRequirement: 0.08,
+        riskTolerance: 'moderate',
+        liquidityNeeds: 'quarterly',
+        esgFocus: true,
+        crossCollateralInterest: false
+      },
+      complianceRequirements: {
+        aflsRequired: false,
+        amlCompliance: true,
+        taxTreatmentPreference: 'cgt',
+        jurisdictionalConstraints: []
+      }
     },
     argumentHistory: ['information_request', 'price_challenge', 'general'],
     emotionalState: 'satisfied',
     negotiationComplete: true,
     outcome: 'agreed',
+    marketContext: {
+      marketType: 'primary',
+      liquidityConditions: 'medium',
+      competitivePressure: 5,
+      regulatoryEnvironment: 'favorable'
+    },
     ...overrides
   });
 
@@ -335,12 +396,10 @@ describe('NegotiationScoring', () => {
     test('rewards information request arguments', () => {
       const state = createMockNegotiationState({
         argumentHistory: ['information_request', 'information_request', 'information_request'],
-        buyerProfile: {
-          persona: 'compliance_officer',
-          detectedWarmth: 7, // Non-default
-          detectedAssertiveness: 8, // Non-default
-          adaptedApproach: 'direct_authoritative'
-        }
+        buyerProfile: createMockBuyerProfile({
+          detectedWarmth: 7,
+          detectedDominance: 8,
+        })
       });
 
       const scorecard = calculateNegotiationScore(state, 'compliance_officer', 15);
@@ -349,21 +408,17 @@ describe('NegotiationScoring', () => {
 
     test('rewards buyer profile detection', () => {
       const detectedState = createMockNegotiationState({
-        buyerProfile: {
-          persona: 'compliance_officer',
-          detectedWarmth: 7, // Changed from default 5
-          detectedAssertiveness: 8, // Changed from default 5
-          adaptedApproach: 'direct_authoritative'
-        }
+        buyerProfile: createMockBuyerProfile({
+          detectedWarmth: 7,
+          detectedDominance: 8,
+        })
       });
 
       const defaultState = createMockNegotiationState({
-        buyerProfile: {
-          persona: 'compliance_officer',
-          detectedWarmth: 5, // Default
-          detectedAssertiveness: 5, // Default
-          adaptedApproach: 'balanced'
-        }
+        buyerProfile: createMockBuyerProfile({
+          detectedWarmth: 5,
+          detectedDominance: 5,
+        })
       });
 
       const detectedScore = calculateNegotiationScore(detectedState, 'compliance_officer', 15);
@@ -736,12 +791,10 @@ describe('NegotiationScoring', () => {
             emotionalState: 'enthusiastic'
           }
         ],
-        buyerProfile: {
-          persona: 'compliance_officer',
+        buyerProfile: createMockBuyerProfile({
           detectedWarmth: 8,
-          detectedAssertiveness: 7,
-          adaptedApproach: 'relationship_building'
-        },
+          detectedDominance: 7,
+        }),
         outcome: 'agreed'
       });
 

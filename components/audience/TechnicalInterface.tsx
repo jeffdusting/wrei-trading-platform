@@ -13,6 +13,13 @@ import React, { useState, useEffect } from 'react';
 import { useDemoMode } from '@/lib/demo-mode/demo-state-manager';
 // import { getNorthmoreGordonValueProp } from '@/lib/demo-mode/esc-market-context'; // Removed for Phase 4
 import { NSW_ESC_CONFIG } from '@/lib/negotiation-config';
+
+// Local stub for removed esc-market-context function
+const getNorthmoreGordonValueProp = (_audience?: string) => ({
+  headline: '',
+  benefits: [] as string[],
+  duration: '',
+});
 import {
   CpuChipIcon,
   CloudIcon,

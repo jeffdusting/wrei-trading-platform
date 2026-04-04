@@ -133,7 +133,7 @@ describe('Phase 1: Dual Token Architecture', () => {
       };
 
       expect(buyerProfile.portfolioContext?.aum).toBeGreaterThan(1_000_000_000);
-      expect(buyerProfile.portfolioContext?.ticketSize.min).toBeLessThan(buyerProfile.portfolioContext?.ticketSize.max);
+      expect(buyerProfile.portfolioContext!.ticketSize.min).toBeLessThan(buyerProfile.portfolioContext!.ticketSize.max);
       expect(['conservative', 'moderate', 'aggressive']).toContain(buyerProfile.portfolioContext?.riskTolerance);
     });
   });

@@ -318,7 +318,7 @@ export class ScenarioSpecificHelpers {
     await navigator.nextPhase();
 
     // Phase 2: Portfolio Analysis
-    await formInteractor.fillAllSliders(data.riskTolerance);
+    await formInteractor.fillAllSliders((data as { riskTolerance: number }).riskTolerance);
     await navigator.nextPhase();
 
     // Phase 3: Risk Assessment
@@ -341,7 +341,7 @@ export class ScenarioSpecificHelpers {
     await navigator.nextPhase(); // Orientation
     await navigator.nextPhase(); // ESG Analysis
 
-    await formInteractor.fillAllSliders(data.esgRating);
+    await formInteractor.fillAllSliders((data as { esgRating: number }).esgRating);
     await navigator.nextPhase(); // Impact Measurement
 
     await navigator.nextPhase(); // Premium Analysis
@@ -357,7 +357,7 @@ export class ScenarioSpecificHelpers {
     await navigator.nextPhase(); // Orientation
     await navigator.nextPhase(); // Protocol Analysis
 
-    await formInteractor.fillAllSliders(data.riskTolerance);
+    await formInteractor.fillAllSliders((data as { riskTolerance: number }).riskTolerance);
     await navigator.nextPhase(); // Yield Optimization
 
     await navigator.nextPhase(); // Automation Setup

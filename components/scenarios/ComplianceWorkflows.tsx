@@ -35,6 +35,14 @@ import { AudienceType } from '../audience';
 import { useDemoMode } from '../../lib/demo-mode/demo-state-manager';
 // import { getCERComplianceFramework } from '../../lib/demo-mode/esc-market-context'; // Removed for Phase 4
 
+// Local stub for removed esc-market-context function
+const getCERComplianceFramework = () => ({
+  authority: 'Clean Energy Regulator',
+  jurisdiction: 'Australia',
+  frameworks: [],
+  requirements: [],
+});
+
 interface ComplianceWorkflowsProps {
   workflowId?: string;
   selectedAudience?: AudienceType;

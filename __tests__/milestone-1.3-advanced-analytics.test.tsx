@@ -4,8 +4,8 @@
  * Comprehensive testing of all analytics components and integration points
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import React from 'react';
 import {
   calculateProfessionalMetrics,
@@ -47,15 +47,16 @@ jest.mock('@/components/AnalyticsHub', () => ({
 import { AnalyticsHub } from '@/components/AnalyticsHub';
 
 // Mock fetch for any API calls
-global.fetch = jest.fn();
+const mockFetch = jest.fn();
+global.fetch = mockFetch as any;
 
 describe('Phase 1 Milestone 1.3: Advanced Analytics and Market Intelligence', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    (fetch as jest.Mock).mockResolvedValue({
+    mockFetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ success: true, data: 'mock data' })
-    });
+    } as any);
   });
 
   describe('Professional Analytics Library', () => {
@@ -340,7 +341,7 @@ describe('Phase 1 Milestone 1.3: Advanced Analytics and Market Intelligence', ()
     });
 
     it('handles multiple concurrent metric calculations', () => {
-      const promises = [];
+      const promises: Promise<ReturnType<typeof calculateProfessionalMetrics>>[] = [];
       const portfolioSizes = [1e8, 1e9, 1e10, 1e11]; // Various sizes
 
       portfolioSizes.forEach(size => {

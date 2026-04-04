@@ -269,12 +269,12 @@ describe('WREI Yield Models - Core Logic', () => {
 
   test('15. Yield Model Validation and Constants', () => {
     // Validate core WREI yield model constants
-    expect(WREI_YIELD_MODELS.CARBON_CREDITS.revenue_share).toBe(0.08);
-    expect(WREI_YIELD_MODELS.CARBON_CREDITS.nav_accruing).toBe(0.12);
-    expect(WREI_YIELD_MODELS.ASSET_CO.revenue_share).toBe(0.283);
-    expect(WREI_YIELD_MODELS.ASSET_CO.nav_accruing).toBe(0.283);
-    expect(WREI_YIELD_MODELS.DUAL_PORTFOLIO.revenue_share).toBe(0.185);
-    expect(WREI_YIELD_MODELS.DUAL_PORTFOLIO.nav_accruing).toBe(0.20);
+    expect(WREI_YIELD_MODELS.carbon_revenue_share.type).toBe('revenue_share');
+    expect(WREI_YIELD_MODELS.carbon_nav_accruing.type).toBe('nav_accruing');
+    expect(WREI_YIELD_MODELS.asset_co_revenue_share.type).toBe('revenue_share');
+    expect(WREI_YIELD_MODELS.asset_co_nav_accruing.type).toBe('nav_accruing');
+    expect(WREI_YIELD_MODELS.dual_portfolio_hybrid.type).toBe('revenue_share');
+    expect(WREI_YIELD_MODELS.dual_portfolio_hybrid.tokenType).toBe('dual_portfolio');
 
     // Validate calculation consistency
     const carbonYield = calculateAnnualYield({
@@ -283,7 +283,7 @@ describe('WREI Yield Models - Core Logic', () => {
       yieldMechanism: 'revenue_share'
     });
 
-    expect(carbonYield.calculatedRate).toBe(WREI_YIELD_MODELS.CARBON_CREDITS.revenue_share);
+    expect(carbonYield.calculatedRate).toBe(WREI_YIELD_MODELS.carbon_revenue_share.yieldMechanism.carbonCredits?.priceAppreciation);
     expect(carbonYield.modelConsistency).toBe(true);
   });
 

@@ -273,8 +273,9 @@ describe('Phase 5.2: Competitive Positioning System', () => {
       expect(negotiationPositioning.directComparison).toContain('infrastructure REITs');
 
       expect(negotiationPositioning).toHaveProperty('yieldSustainability');
-      expect(negotiationPositioning.yieldSustainability).toContain('Physical fleet backing provides residual value');
-      expect(negotiationPositioning.yieldSustainability).toContain('Predictable lease income from government partnership');
+      const positioningWithYield = negotiationPositioning as { yieldSustainability: string[]; directComparison: string; competitiveAdvantages: string[]; addressedConcerns: string };
+      expect(positioningWithYield.yieldSustainability).toContain('Physical fleet backing provides residual value');
+      expect(positioningWithYield.yieldSustainability).toContain('Predictable lease income from government partnership');
 
       expect(negotiationPositioning).toHaveProperty('competitiveAdvantages');
       expect(Array.isArray(negotiationPositioning.competitiveAdvantages)).toBe(true);

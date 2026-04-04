@@ -43,8 +43,38 @@ describe('NegotiationHistoryManager', () => {
     buyerProfile: {
       persona: 'compliance_officer',
       detectedWarmth: 6,
-      detectedAssertiveness: 8,
-      adaptedApproach: 'direct_authoritative'
+      detectedDominance: 8,
+      priceAnchor: 130,
+      volumeInterest: 1000,
+      timelineUrgency: 'medium',
+      complianceDriver: 'audit requirement',
+      creditType: 'carbon',
+      escEligibilityBasis: null,
+      wreiTokenType: 'carbon_credits',
+      investorClassification: 'professional',
+      marketPreference: 'primary',
+      yieldMechanismPreference: 'revenue_share',
+      portfolioContext: {
+        aum: 500_000_000,
+        ticketSize: { min: 1_000_000, max: 50_000_000 },
+        yieldRequirement: 0.08,
+        riskTolerance: 'moderate',
+        liquidityNeeds: 'quarterly',
+        esgFocus: true,
+        crossCollateralInterest: false
+      },
+      complianceRequirements: {
+        aflsRequired: true,
+        amlCompliance: true,
+        taxTreatmentPreference: 'cgt',
+        jurisdictionalConstraints: ['AU']
+      }
+    },
+    marketContext: {
+      marketType: 'primary',
+      liquidityConditions: 'medium',
+      competitivePressure: 5,
+      regulatoryEnvironment: 'favorable'
     },
     argumentHistory: ['price_challenge', 'information_request', 'price_challenge'],
     emotionalState: 'satisfied',
@@ -598,8 +628,31 @@ describe('NegotiationHistoryManager', () => {
           buyerProfile: {
             persona: 'freeplay',
             detectedWarmth: 5,
-            detectedAssertiveness: 5,
-            adaptedApproach: 'balanced'
+            detectedDominance: 5,
+            priceAnchor: null,
+            volumeInterest: null,
+            timelineUrgency: null,
+            complianceDriver: null,
+            creditType: 'carbon',
+            escEligibilityBasis: null,
+            wreiTokenType: 'carbon_credits',
+            investorClassification: 'retail',
+            marketPreference: 'secondary',
+            yieldMechanismPreference: null,
+            portfolioContext: {
+              ticketSize: { min: 10_000, max: 1_000_000 },
+              yieldRequirement: 0.05,
+              riskTolerance: 'moderate',
+              liquidityNeeds: 'monthly',
+              esgFocus: false,
+              crossCollateralInterest: false
+            },
+            complianceRequirements: {
+              aflsRequired: false,
+              amlCompliance: true,
+              taxTreatmentPreference: 'either',
+              jurisdictionalConstraints: []
+            }
           }
         })
       });

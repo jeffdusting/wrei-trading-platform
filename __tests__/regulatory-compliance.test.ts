@@ -25,7 +25,8 @@ import {
   REGULATORY_THRESHOLDS,
   COMPLIANCE_FRAMEWORKS
 } from '@/lib/regulatory-compliance';
-import type { InvestorClassification, ComplianceReport, RegulatoryFramework } from '@/lib/types';
+import type { InvestorClassification } from '@/lib/types';
+import type { ComplianceReport } from '@/lib/regulatory-compliance';
 
 describe('WREI Regulatory Compliance - Core Logic', () => {
 

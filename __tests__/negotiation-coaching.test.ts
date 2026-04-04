@@ -33,14 +33,14 @@ const createMockNegotiationState = (
   overrides: Partial<NegotiationState> = {}
 ): NegotiationState => {
   const baseBuyerProfile: BuyerProfile = {
-    persona: 'corporate_compliance',
+    persona: 'compliance_officer',
     detectedWarmth: 5,
     detectedDominance: 5,
     priceAnchor: 150,
     volumeInterest: 10000,
     timelineUrgency: 'medium',
     complianceDriver: 'carbon_neutrality',
-    creditType: 'carbon_credits',
+    creditType: 'carbon',
     escEligibilityBasis: null,
     wreiTokenType: 'carbon_credits',
     investorClassification: 'retail',
@@ -65,7 +65,7 @@ const createMockNegotiationState = (
   const baseState: NegotiationState = {
     round: 3,
     phase: 'negotiation',
-    creditType: 'carbon_credits',
+    creditType: 'carbon',
     anchorPrice: 150,
     currentOfferPrice: 140,
     priceFloor: 120,
@@ -99,13 +99,12 @@ const createMockNegotiationState = (
     argumentHistory: ['general'],
     emotionalState: 'neutral',
     negotiationComplete: false,
-    outcome: {
-      agreed: false,
-      finalPrice: null,
-      finalVolume: null,
-      outcomeType: 'ongoing',
-      satisfaction: null,
-      metrics: null
+    outcome: null,
+    marketContext: {
+      marketType: 'primary',
+      liquidityConditions: 'medium',
+      competitivePressure: 5,
+      regulatoryEnvironment: 'favorable'
     }
   };
 
@@ -576,7 +575,7 @@ describe('Edge cases and error handling', () => {
     const state = createMockNegotiationState({
       buyerProfile: {
         ...createMockNegotiationState().buyerProfile,
-        portfolioContext: undefined
+        portfolioContext: undefined as any
       }
     });
 

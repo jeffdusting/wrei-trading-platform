@@ -13,6 +13,20 @@ import React, { useState, useEffect } from 'react';
 import { useDemoMode } from '@/lib/demo-mode/demo-state-manager';
 // import { getCERComplianceFramework, getNorthmoreGordonValueProp } from '@/lib/demo-mode/esc-market-context'; // Removed for Phase 4
 import { NSW_ESC_CONFIG } from '@/lib/negotiation-config';
+
+// Local stubs for removed esc-market-context functions
+const getCERComplianceFramework = () => ({
+  authority: 'Clean Energy Regulator',
+  jurisdiction: 'Australia',
+  frameworks: [],
+  requirements: [],
+});
+
+const getNorthmoreGordonValueProp = (_audience?: string) => ({
+  headline: '',
+  benefits: [] as string[],
+  duration: '',
+});
 import {
   ShieldCheckIcon,
   DocumentTextIcon,

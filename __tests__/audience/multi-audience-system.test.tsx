@@ -24,7 +24,14 @@ import {
 configure({ testIdAttribute: 'data-demo' });
 
 // Mock the simple demo mode hook
-const mockUseSimpleDemoStore = jest.fn(() => ({
+const mockUseSimpleDemoStore = jest.fn((): {
+  isActive: boolean;
+  selectedDataSet: string | null;
+  demoData: Record<string, unknown> | null;
+  activateDemo: jest.Mock;
+  deactivateDemo: jest.Mock;
+  getDemoData: jest.Mock;
+} => ({
   isActive: false,
   selectedDataSet: null,
   demoData: null,
@@ -34,11 +41,11 @@ const mockUseSimpleDemoStore = jest.fn(() => ({
 }));
 
 jest.mock('../../lib/demo-mode/simple-demo-state', () => ({
-  useSimpleDemoStore: (...args: any[]) => mockUseSimpleDemoStore(...args)
+  useSimpleDemoStore: (...args: unknown[]) => mockUseSimpleDemoStore()
 }));
 
 // Add global mocks for removed esc-market-context functions
-global.getNorthmoreGordonValueProp = jest.fn((audience) => ({
+(globalThis as any).getNorthmoreGordonValueProp = jest.fn((audience: string) => ({
   headline: `Test headline for ${audience}`,
   benefits: ['Benefit 1', 'Benefit 2'],
   roi_metrics: { cost_savings: '40%' },
@@ -46,13 +53,13 @@ global.getNorthmoreGordonValueProp = jest.fn((audience) => ({
   compliance_features: { coder_integration: 'Real-time' }
 }));
 
-global.getCurrentESCMarketContext = jest.fn(() => ({
+(globalThis as any).getCurrentESCMarketContext = jest.fn(() => ({
   SPOT_PRICE: 47.80,
   market_participants: {},
   firm_context: {}
 }));
 
-global.getCERComplianceFramework = jest.fn(() => ({
+(globalThis as any).getCERComplianceFramework = jest.fn(() => ({
   authority: { name: 'Clean Energy Regulator' },
   key_requirements: ['CERTIFICATE_CREATION'],
   validation_methods: {}

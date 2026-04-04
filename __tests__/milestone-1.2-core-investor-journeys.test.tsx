@@ -4,25 +4,25 @@
  * Comprehensive testing of all investor journey workflows
  */
 
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import { createMockPortfolioContext } from '@/lib/negotiation-strategy';
 import { PersonaType } from '@/lib/types';
 
 // Mock fetch for API calls
-global.fetch = jest.fn();
+const mockFetch = jest.fn();
+global.fetch = mockFetch as any;
 
 // Mock portfolio context creation
 jest.mock('@/lib/negotiation-strategy', () => ({
-  ...jest.requireActual('@/lib/negotiation-strategy'),
+  ...(jest.requireActual('@/lib/negotiation-strategy') as object),
   createMockPortfolioContext: jest.fn()
 }));
 
 describe('Phase 1 Milestone 1.2: Core Investor Journeys', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    (fetch as jest.Mock).mockResolvedValue({
+    mockFetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({
         success: true,
@@ -38,9 +38,9 @@ describe('Phase 1 Milestone 1.2: Core Investor Journeys', () => {
           institutionalFactors: ['Factor 1', 'Factor 2']
         }
       })
-    });
+    } as any);
 
-    (createMockPortfolioContext as jest.Mock).mockImplementation((persona: PersonaType) => ({
+    (createMockPortfolioContext as jest.Mock).mockImplementation(((persona: PersonaType) => ({
       currentHoldings: { carbonCredits: 100000, assetCoTokens: 50000, totalPortfolioValue: 1000000000 },
       investmentObjectives: {
         targetAllocation: { carbonCredits: 10, assetCoTokens: 15, cash: 5 },
@@ -53,7 +53,7 @@ describe('Phase 1 Milestone 1.2: Core Investor Journeys', () => {
         reportingRequirements: ['Standard reporting'],
         auditRequirements: ['Annual audit']
       }
-    }));
+    })) as any);
   });
 
   describe('Portfolio Context Generation', () => {
@@ -100,7 +100,7 @@ describe('Phase 1 Milestone 1.2: Core Investor Journeys', () => {
         })
       });
 
-      expect(fetch).toHaveBeenCalledWith('/api/negotiate', expect.objectContaining({
+      expect(mockFetch).toHaveBeenCalledWith('/api/negotiate', expect.objectContaining({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       }));
@@ -111,7 +111,7 @@ describe('Phase 1 Milestone 1.2: Core Investor Journeys', () => {
     });
 
     it('handles API errors gracefully', async () => {
-      (fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
+      mockFetch.mockRejectedValueOnce(new Error('Network error') as any);
 
       try {
         await fetch('/api/negotiate', {
@@ -369,7 +369,7 @@ describe('Phase 1 Milestone 1.2: Core Investor Journeys', () => {
     });
 
     it('handles network failures in API calls', async () => {
-      (fetch as jest.Mock).mockRejectedValueOnce(new Error('Network failure'));
+      mockFetch.mockRejectedValueOnce(new Error('Network failure') as any);
 
       await expect(
         fetch('/api/negotiate', {

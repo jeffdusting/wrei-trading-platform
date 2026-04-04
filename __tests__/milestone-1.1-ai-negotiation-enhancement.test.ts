@@ -21,7 +21,7 @@ describe('Milestone 1.1: AI Negotiation Enhancement', () => {
 
   beforeEach(() => {
       mockNegotiationState = {
-        buyer: {
+        buyerProfile: {
           persona: 'esg_impact_investor',
           detectedWarmth: 9,
           detectedDominance: 6,
@@ -36,30 +36,44 @@ describe('Milestone 1.1: AI Negotiation Enhancement', () => {
           marketPreference: 'primary',
           yieldMechanismPreference: null,
           portfolioContext: {
-            currentAllocation: { carbonCredits: 15, assetCoTokens: 10, cash: 5 },
-            targetAllocation: { carbonCredits: 20, assetCoTokens: 15, cash: 3 },
+            ticketSize: { min: 100000, max: 1000000 },
+            yieldRequirement: 0.08,
             riskTolerance: 'moderate',
-            liquidityRequirements: 'quarterly',
-            complianceRequirements: ['ESG reporting', 'TCFD disclosure']
+            liquidityNeeds: 'quarterly',
+            esgFocus: true,
+            crossCollateralInterest: false
+          },
+          complianceRequirements: {
+            aflsRequired: false,
+            amlCompliance: true,
+            taxTreatmentPreference: 'cgt',
+            jurisdictionalConstraints: []
           }
         },
         messages: [],
         phase: 'negotiation',
         round: 3,
         anchorPrice: 150,
-        proposedPrice: 145,
-        floorPrice: 120,
+        currentOfferPrice: 145,
+        priceFloor: 120,
         totalConcessionGiven: 5,
         maxConcessionPerRound: 7.5,
         maxTotalConcession: 30,
         outcome: null,
-        escalationThreshold: 0.8,
-        escalationTriggered: false,
+        roundsSinceLastConcession: 1,
+        minimumRoundsBeforeConcession: 3,
         creditType: 'carbon',
         wreiTokenType: 'carbon_credits',
         investorClassification: 'professional',
-        marketPreference: 'primary',
-        tokenMetadata: null
+        argumentHistory: [],
+        emotionalState: 'neutral',
+        negotiationComplete: false,
+        marketContext: {
+          marketType: 'primary',
+          liquidityConditions: 'medium',
+          competitivePressure: 5,
+          regulatoryEnvironment: 'favorable'
+        }
       };
 
       mockInstitutionalContext = {
@@ -106,7 +120,7 @@ describe('Milestone 1.1: AI Negotiation Enhancement', () => {
       const defiState = {
         ...mockNegotiationState,
         buyer: {
-          ...mockNegotiationState.buyer,
+          ...mockNegotiationState.buyerProfile,
           persona: 'defi_yield_farmer' as PersonaType
         },
         wreiTokenType: 'dual_portfolio' as WREITokenType
@@ -135,7 +149,7 @@ describe('Milestone 1.1: AI Negotiation Enhancement', () => {
       const familyState = {
         ...mockNegotiationState,
         buyer: {
-          ...mockNegotiationState.buyer,
+          ...mockNegotiationState.buyerProfile,
           persona: 'family_office' as PersonaType
         }
       };
@@ -163,7 +177,7 @@ describe('Milestone 1.1: AI Negotiation Enhancement', () => {
       const sovereignState = {
         ...mockNegotiationState,
         buyer: {
-          ...mockNegotiationState.buyer,
+          ...mockNegotiationState.buyerProfile,
           persona: 'sovereign_wealth' as PersonaType
         }
       };
@@ -193,8 +207,8 @@ describe('Milestone 1.1: AI Negotiation Enhancement', () => {
       // Lower confidence scenario: aggressive price movement
       const aggressiveState = {
         ...mockNegotiationState,
-        proposedPrice: 180, // 20% above anchor
-        buyer: { ...mockNegotiationState.buyer, persona: 'trading_desk' as PersonaType }
+        currentOfferPrice: 180, // 20% above anchor
+        buyer: { ...mockNegotiationState.buyerProfile, persona: 'trading_desk' as PersonaType }
       };
       const tradingContext = {
         ...mockInstitutionalContext,
@@ -340,10 +354,10 @@ describe('Milestone 1.1: AI Negotiation Enhancement', () => {
       // Test with minimal state
       const minimalState = {
         ...mockNegotiationState,
-        proposedPrice: 0,
+        currentOfferPrice: 0,
         anchorPrice: 0,
-        buyer: {
-          ...mockNegotiationState.buyer,
+        buyerProfile: {
+          ...mockNegotiationState.buyerProfile,
           persona: 'freeplay' as PersonaType
         }
       };
@@ -421,9 +435,9 @@ describe('Regression Tests', () => {
     });
 
     it('should maintain existing negotiation state structure', () => {
-      expect(mockNegotiationState.buyer).toBeDefined();
+      expect(mockNegotiationState.buyerProfile).toBeDefined();
       expect(mockNegotiationState.phase).toBeDefined();
-      expect(mockNegotiationState.proposedPrice).toBeDefined();
+      expect(mockNegotiationState.currentOfferPrice).toBeDefined();
       expect(mockNegotiationState.wreiTokenType).toBeDefined();
     });
 

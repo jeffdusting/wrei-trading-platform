@@ -321,12 +321,12 @@ describe('Milestone 2.1: Institutional Portal - Onboarding State Management', ()
       expect(result.restrictionFlags).toBeDefined();
 
       // Verify threshold checks
-      expect(result.thresholds.netAssets.met).toBe(true); // Above A$2.5M threshold
-      expect(result.thresholds.grossIncome.met).toBe(true); // Above A$250K threshold
-      expect(result.thresholds.aum.met).toBe(true); // Above AUM thresholds
+      expect(result.thresholds!.netAssets.met).toBe(true); // Above A$2.5M threshold
+      expect(result.thresholds!.grossIncome.met).toBe(true); // Above A$250K threshold
+      expect(result.thresholds!.aum.met).toBe(true); // Above AUM thresholds
 
       // Professional investors should have fewer restrictions
-      expect(result.restrictionFlags.length).toBeLessThanOrEqual(1);
+      expect(result.restrictionFlags!.length).toBeLessThanOrEqual(1);
     });
 
     test('calls with sophisticated entity parameters and verifies sophisticated result', () => {
@@ -345,13 +345,13 @@ describe('Milestone 2.1: Institutional Portal - Onboarding State Management', ()
       expect(result.rationale).toContain('sophisticated investor');
 
       // Sophisticated investors should meet all thresholds with significant margins
-      expect(result.thresholds.netAssets.met).toBe(true);
-      expect(result.thresholds.netAssets.value).toBeGreaterThan(100000000); // Well above threshold
-      expect(result.thresholds.grossIncome.met).toBe(true);
-      expect(result.thresholds.aum.met).toBe(true);
+      expect(result.thresholds!.netAssets.met).toBe(true);
+      expect(result.thresholds!.netAssets.value).toBeGreaterThan(100000000); // Well above threshold
+      expect(result.thresholds!.grossIncome.met).toBe(true);
+      expect(result.thresholds!.aum.met).toBe(true);
 
       // Sophisticated investors should have minimal restrictions
-      expect(result.restrictionFlags.length).toBe(0);
+      expect(result.restrictionFlags!.length).toBe(0);
     });
 
     test('tests wholesale threshold edge cases (exactly A$2.5M net assets)', () => {
@@ -367,8 +367,8 @@ describe('Milestone 2.1: Institutional Portal - Onboarding State Management', ()
 
       const exactResult = validateInvestorClassification(exactThresholdParams);
       expect(exactResult.classification).toBe('wholesale');
-      expect(exactResult.thresholds.netAssets.met).toBe(true);
-      expect(exactResult.thresholds.grossIncome.met).toBe(true);
+      expect(exactResult.thresholds!.netAssets.met).toBe(true);
+      expect(exactResult.thresholds!.grossIncome.met).toBe(true);
 
       // Test just below wholesale threshold
       const belowThresholdParams = {
@@ -379,7 +379,7 @@ describe('Milestone 2.1: Institutional Portal - Onboarding State Management', ()
 
       const belowResult = validateInvestorClassification(belowThresholdParams);
       expect(belowResult.classification).toBe('retail');
-      expect(belowResult.thresholds.netAssets.met).toBe(false);
+      expect(belowResult.thresholds!.netAssets.met).toBe(false);
 
       // Test just above wholesale threshold
       const aboveThresholdParams = {
@@ -389,7 +389,7 @@ describe('Milestone 2.1: Institutional Portal - Onboarding State Management', ()
 
       const aboveResult = validateInvestorClassification(aboveThresholdParams);
       expect(aboveResult.classification).toBe('wholesale');
-      expect(aboveResult.thresholds.netAssets.met).toBe(true);
+      expect(aboveResult.thresholds!.netAssets.met).toBe(true);
     });
   });
 
@@ -415,15 +415,15 @@ describe('Milestone 2.1: Institutional Portal - Onboarding State Management', ()
       expect(result.riskRating).toBe('high');
       expect(result.eddRequired).toBe(true);
       expect(result.monitoringLevel).toBe('enhanced');
-      expect(result.restrictionFlags.length).toBeGreaterThan(0);
+      expect(result.restrictionFlags!.length).toBeGreaterThan(0);
 
       // High-risk clients should have comprehensive documentation requirements
-      expect(result.documentationRequired.beneficialOwnership).toBe(true);
-      expect(result.documentationRequired.sourceOfFunds).toBe(true);
-      expect(result.documentationRequired.businessPurpose).toBe(true);
+      expect(result.documentationRequired!.beneficialOwnership).toBe(true);
+      expect(result.documentationRequired!.sourceOfFunds).toBe(true);
+      expect(result.documentationRequired!.businessPurpose).toBe(true);
 
       // Should have specific compliance notes for high-risk scenarios
-      expect(result.complianceNotes.some(note => note.includes('Enhanced Due Diligence'))).toBe(true);
+      expect(result.complianceNotes!.some(note => note.includes('Enhanced Due Diligence'))).toBe(true);
     });
 
     test('tests suspicious activity flagging with transaction values above thresholds', () => {
@@ -443,12 +443,12 @@ describe('Milestone 2.1: Institutional Portal - Onboarding State Management', ()
       const result = validateAMLRequirements(largeTxParams);
 
       // Large transactions should trigger enhanced scrutiny
-      expect(result.riskRating).toBeOneOf(['medium', 'high']);
+      expect(['medium', 'high']).toContain(result.riskRating);
       expect(result.reportingRequired).toBe(true);
-      expect(result.restrictionFlags.some(flag => flag.includes('large_cash_transaction'))).toBe(true);
+      expect(result.restrictionFlags!.some(flag => flag.includes('large_cash_transaction'))).toBe(true);
 
       // Should require threshold transaction reporting
-      const hasThresholdFlag = result.restrictionFlags.some(flag =>
+      const hasThresholdFlag = result.restrictionFlags!.some(flag =>
         flag.includes('threshold') || flag.includes('reporting')
       );
       expect(hasThresholdFlag).toBe(true);
@@ -487,15 +487,15 @@ describe('Milestone 2.1: Institutional Portal - Onboarding State Management', ()
       expect(result.reportingRequired).toBe(false);
 
       // Standard CDD should have basic documentation requirements
-      expect(result.documentationRequired.corporateStructure).toBe(true);
-      expect(result.documentationRequired.businessPurpose).toBe(true);
-      expect(result.documentationRequired.beneficialOwnership).toBe(true);
+      expect(result.documentationRequired!.corporateStructure).toBe(true);
+      expect(result.documentationRequired!.businessPurpose).toBe(true);
+      expect(result.documentationRequired!.beneficialOwnership).toBe(true);
 
       // Should have minimal restriction flags for normal risk
-      expect(result.restrictionFlags.length).toBeLessThanOrEqual(1);
+      expect(result.restrictionFlags!.length).toBeLessThanOrEqual(1);
 
       // Compliance notes should be standard, not enhanced
-      const hasEnhancedNotes = result.complianceNotes.some(note =>
+      const hasEnhancedNotes = result.complianceNotes!.some(note =>
         note.includes('Enhanced') || note.includes('enhanced')
       );
       expect(hasEnhancedNotes).toBe(false);
@@ -514,12 +514,12 @@ describe('Milestone 2.1: Institutional Portal - Onboarding State Management', ()
           professionalInvestorsOnly: false,
         },
         licenseDetails: {
-          afslNumber: null,
+          afslNumber: undefined as string | undefined,
           authorisedRepresentative: false,
           exemptionsClaimed: ['s708_wholesale'],
         },
         investorBase: 'wholesale' as const,
-        financialServices: ['dealing', 'advice'] as const[],
+        financialServices: ['dealing', 'advice'] as string[],
         jurisdiction: 'australia' as const,
       };
 
@@ -528,10 +528,10 @@ describe('Milestone 2.1: Institutional Portal - Onboarding State Management', ()
       expect(result.complianceStatus).toBe('exemption_claimed');
       expect(result.exemptionType).toBe('s708_wholesale');
       expect(result.licenseRequired).toBe(false);
-      expect(result.restrictionNotes.length).toBeGreaterThan(0);
+      expect(result.restrictionNotes!.length).toBeGreaterThan(0);
 
       // Should have specific wholesale-only restrictions
-      const hasWholesaleRestriction = result.restrictionNotes.some(note =>
+      const hasWholesaleRestriction = result.restrictionNotes!.some(note =>
         note.includes('wholesale') || note.includes('professional')
       );
       expect(hasWholesaleRestriction).toBe(true);
@@ -546,12 +546,12 @@ describe('Milestone 2.1: Institutional Portal - Onboarding State Management', ()
           professionalInvestorsOnly: false,
         },
         licenseDetails: {
-          afslNumber: null,
+          afslNumber: undefined as string | undefined,
           authorisedRepresentative: false,
-          exemptionsClaimed: [],
+          exemptionsClaimed: [] as string[],
         },
         investorBase: 'mixed' as const,
-        financialServices: ['dealing', 'advice', 'custody'] as const[],
+        financialServices: ['dealing', 'advice', 'custody'] as string[],
         jurisdiction: 'australia' as const,
       };
 
@@ -562,8 +562,8 @@ describe('Milestone 2.1: Institutional Portal - Onboarding State Management', ()
       expect(result.exemptionType).toBe(null);
 
       // Should have compliance requirements for retail offerings
-      expect(result.complianceRequirements.length).toBeGreaterThan(2);
-      expect(result.complianceRequirements.some(req => req.includes('retail'))).toBe(true);
+      expect(result.complianceRequirements!.length).toBeGreaterThan(2);
+      expect(result.complianceRequirements!.some(req => req.includes('retail'))).toBe(true);
 
       // Test with valid AFSL
       const licensedParams = {
@@ -620,10 +620,10 @@ describe('Milestone 2.1: Institutional Portal - Onboarding State Management', ()
 
       mockOnboardingState.investorClassification = {
         classification: classificationResult.classification,
-        rationale: classificationResult.rationale,
+        rationale: classificationResult.rationale || '',
         thresholdsMet: {
-          netAssets: classificationResult.thresholds.netAssets.met,
-          grossIncome: classificationResult.thresholds.grossIncome.met,
+          netAssets: classificationResult.thresholds!.netAssets.met,
+          grossIncome: classificationResult.thresholds!.grossIncome.met,
           aum: true,
           professionalExperience: true,
         },
@@ -650,8 +650,8 @@ describe('Milestone 2.1: Institutional Portal - Onboarding State Management', ()
       mockOnboardingState.kycAmlStatus = {
         kycRequired: true,
         kycCompleted: true,
-        amlRiskRating: amlResult.riskRating,
-        eddRequired: amlResult.eddRequired,
+        amlRiskRating: amlResult.riskRating!,
+        eddRequired: amlResult.eddRequired!,
         sanctionsScreeningPassed: true,
         pepStatus: false,
         documentation: {
@@ -685,7 +685,7 @@ describe('Milestone 2.1: Institutional Portal - Onboarding State Management', ()
         afslRequired: false,
         exemptionType: 's708',
         complianceStatus: afslResult.complianceStatus === 'compliant' ? 'compliant' : 'exemption_claimed',
-        restrictionNotes: afslResult.restrictionNotes,
+        restrictionNotes: afslResult.restrictionNotes || [],
       };
       mockOnboardingState.stepProgress.afsl_compliance = true;
 

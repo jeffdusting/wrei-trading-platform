@@ -166,16 +166,18 @@ const complianceDataSet: DemoDataSet = {
   }
 };
 
-// Data set registry
-const DATA_SETS = {
+// Data set registry — self-service and investor-briefing map to existing sets
+const DATA_SETS: Record<string, DemoDataSet> = {
   institutional: institutionalDataSet,
   retail: retailDataSet,
-  compliance: complianceDataSet
+  compliance: complianceDataSet,
+  'self-service': retailDataSet,
+  'investor-briefing': institutionalDataSet,
 };
 
 // Export function to get demo data for a specific set
-export function getDemoDataForSet(dataSet: 'institutional' | 'retail' | 'compliance'): DemoDataSet {
-  return DATA_SETS[dataSet];
+export function getDemoDataForSet(dataSet: string): DemoDataSet {
+  return DATA_SETS[dataSet] ?? institutionalDataSet;
 }
 
 // Export all data sets for reference

@@ -58,19 +58,20 @@ export interface TradePerformanceSummary {
  * Calculate comprehensive trading metrics for a given negotiation state
  */
 export function calculateTradingMetrics(negotiationState: NegotiationState): TradingMetrics {
-  const { currentPrice, anchor, floor, round, volume, phase } = negotiationState;
+  const { currentOfferPrice, anchorPrice, priceFloor, round, phase } = negotiationState;
+  const volume = negotiationState.buyerProfile.volumeInterest || 1000;
 
   // Execution Score (0-100): Based on price achievement vs. target
-  const priceRange = anchor - floor;
-  const priceAchievement = Math.max(0, currentPrice - floor) / priceRange;
+  const priceRange = anchorPrice - priceFloor;
+  const priceAchievement = Math.max(0, currentOfferPrice - priceFloor) / priceRange;
   const executionScore = Math.round(priceAchievement * 100);
 
   // Price Efficiency: How well we maintained price vs. market
   const marketPrice = PRICING_INDEX.VCM_SPOT_REFERENCE * PRICING_INDEX.DMRV_PREMIUM_BENCHMARK;
-  const priceEfficiency = Math.min(100, Math.round((currentPrice / marketPrice) * 100));
+  const priceEfficiency = Math.min(100, Math.round((currentOfferPrice / marketPrice) * 100));
 
   // Time to Close: Efficiency based on round progression
-  const maxRounds = NEGOTIATION_CONFIG.MAX_ROUNDS || 10;
+  const maxRounds = NEGOTIATION_CONFIG.MAX_ROUNDS_BEFORE_ESCALATION || 10;
   const timeEfficiency = phase === 'closure' ?
     Math.round(((maxRounds - round) / maxRounds) * 100) :
     Math.round(((maxRounds - round) / maxRounds) * 50); // Ongoing trades get partial score
@@ -126,11 +127,11 @@ export function generateTradingRecommendation(
   negotiationState: NegotiationState,
   marketContext?: MarketContext
 ): TradingRecommendation {
-  const { currentPrice, anchor, floor, round, phase } = negotiationState;
+  const { currentOfferPrice, anchorPrice, priceFloor, round, phase } = negotiationState;
   const context = marketContext || analyzeMarketContext();
 
-  const priceRatio = currentPrice / anchor;
-  const roundProgress = round / (NEGOTIATION_CONFIG.MAX_ROUNDS || 10);
+  const priceRatio = currentOfferPrice / anchorPrice;
+  const roundProgress = round / (NEGOTIATION_CONFIG.MAX_ROUNDS_BEFORE_ESCALATION || 10);
 
   // Decision logic based on price position, round progress, and market context
   let action: TradingRecommendation['action'] = 'hold';
@@ -152,7 +153,7 @@ export function generateTradingRecommendation(
     reasoning = 'Price negotiations have reached impasse';
     expectedOutcome = 'Potential trade failure or breakthrough';
     riskLevel = 'high';
-  } else if (currentPrice <= floor * 1.02) {
+  } else if (currentOfferPrice <= priceFloor * 1.02) {
     action = 'hold';
     confidence = 85;
     reasoning = 'Price near floor - maintain position';
@@ -170,7 +171,7 @@ export function generateTradingRecommendation(
     reasoning = 'Market trend bearish, late in negotiation';
     expectedOutcome = 'Close trade before further price decline';
     riskLevel = 'medium';
-    suggestedPrice = Math.max(floor, currentPrice * 0.97);
+    suggestedPrice = Math.max(priceFloor, currentOfferPrice * 0.97);
   } else if (context.volatilityLevel === 'high' && priceRatio > 0.85) {
     action = 'close';
     confidence = 80;

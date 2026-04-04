@@ -52,8 +52,8 @@ export const TradeExecutionDashboard: React.FC<TradeExecutionDashboardProps> = (
     if (negotiationState.phase === 'closure') status = 'completed';
     if (negotiationState.phase === 'escalation') status = 'failed';
 
-    const priceMovement = negotiationState.currentPrice > negotiationState.anchor ? 'down' :
-                         negotiationState.currentPrice < negotiationState.anchor ? 'up' : 'stable';
+    const priceMovement = negotiationState.currentOfferPrice > negotiationState.anchorPrice ? 'down' :
+                         negotiationState.currentOfferPrice < negotiationState.anchorPrice ? 'up' : 'stable';
 
     return {
       phase: negotiationState.phase,
@@ -135,7 +135,7 @@ export const TradeExecutionDashboard: React.FC<TradeExecutionDashboardProps> = (
             </div>
             <div className="flex items-center gap-2">
               <span className="bloomberg-data text-slate-800">
-                ${negotiationState.currentPrice.toFixed(2)}
+                ${negotiationState.currentOfferPrice.toFixed(2)}
               </span>
               {getPriceMovementIcon(tradeStatus.priceMovement)}
             </div>
@@ -177,11 +177,11 @@ export const TradeExecutionDashboard: React.FC<TradeExecutionDashboardProps> = (
             <div className="space-y-1">
               <div className="flex justify-between">
                 <span className="bloomberg-small-text text-slate-600">Floor:</span>
-                <span className="bloomberg-data text-slate-800">${negotiationState.floor.toFixed(2)}</span>
+                <span className="bloomberg-data text-slate-800">${negotiationState.priceFloor.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="bloomberg-small-text text-slate-600">Anchor:</span>
-                <span className="bloomberg-data text-slate-800">${negotiationState.anchor.toFixed(2)}</span>
+                <span className="bloomberg-data text-slate-800">${negotiationState.anchorPrice.toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -193,7 +193,7 @@ export const TradeExecutionDashboard: React.FC<TradeExecutionDashboardProps> = (
             </div>
             <div className="space-y-1">
               <div className="bloomberg-large-metric text-slate-800">
-                {negotiationState.volume.toLocaleString()}
+                {(negotiationState.buyerProfile.volumeInterest || 1000).toLocaleString()}
               </div>
               <div className="bloomberg-small-text text-slate-600">tCO₂e</div>
             </div>

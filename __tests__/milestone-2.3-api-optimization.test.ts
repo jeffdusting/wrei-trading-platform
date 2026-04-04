@@ -13,6 +13,7 @@ import {
 } from '@/lib/api-helpers';
 import { performanceMonitor, PerformanceOptimizer } from '@/lib/performance-monitor';
 import { calculateIRR, calculateNPV, calculateRiskProfile } from '@/lib/financial-calculations';
+import type { CashFlow } from '@/lib/types';
 
 // Import API routes for integration testing
 import { POST as AnalyticsAPI } from '@/app/api/analytics/route';
@@ -37,7 +38,7 @@ describe('Milestone 2.3: API Performance Optimization', () => {
       ]),
       url: url.toString(),
       json: async () => body || {}
-    } as NextRequest;
+    } as unknown as NextRequest;
   }
 
   // Helper function to parse API response
@@ -117,11 +118,11 @@ describe('Milestone 2.3: API Performance Optimization', () => {
     });
 
     test('tracks NPV calculation performance', () => {
-      const cashFlows = [
-        { year: 0, amount: -2000000 },
-        { year: 1, amount: 400000 },
-        { year: 2, amount: 600000 },
-        { year: 3, amount: 800000 }
+      const cashFlows: CashFlow[] = [
+        { date: '2026-01-01', amount: -2000000, type: 'initial_investment', description: 'Initial', taxable: false },
+        { date: '2027-01-01', amount: 400000, type: 'quarterly_distribution', description: 'Y1', taxable: true },
+        { date: '2028-01-01', amount: 600000, type: 'quarterly_distribution', description: 'Y2', taxable: true },
+        { date: '2029-01-01', amount: 800000, type: 'quarterly_distribution', description: 'Y3', taxable: true }
       ];
 
       const npv = trackCalculationPerformance('npv_calculation', () =>

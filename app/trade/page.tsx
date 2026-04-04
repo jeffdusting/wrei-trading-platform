@@ -49,7 +49,7 @@ interface APIResponse {
 const phaseColors = {
   opening: 'bg-blue-100 text-blue-800',
   elicitation: 'bg-amber-100 text-amber-800',
-  trading: 'bg-green-100 text-green-800',
+  negotiation: 'bg-green-100 text-green-800',
   closure: 'bg-purple-100 text-purple-800',
   escalation: 'bg-red-100 text-red-800'
 };
@@ -206,7 +206,7 @@ export default function TradePage() {
         console.log('Applied institutional constraints:', adjustedConstraints);
       }
 
-      setNegotiationState(initialState);
+      setTradingState(initialState);
       setPreConfigApplied(true);
 
       // Clean up URL parameters after applying pre-configuration
@@ -231,7 +231,7 @@ export default function TradePage() {
     if (!tradingStarted) {
       setSelectedPersona(persona);
       // Use WREI token system for new trading
-      setNegotiationState(getInitialWREIState(persona, selectedWREITokenType, selectedCreditType));
+      setTradingState(getInitialWREIState(persona, selectedWREITokenType, selectedCreditType));
     }
   };
 
@@ -239,20 +239,20 @@ export default function TradePage() {
     if (!tradingStarted) {
       setSelectedCreditType(creditType);
       // Update legacy credit type but keep WREI token as primary
-      setNegotiationState(getInitialWREIState(selectedPersona, selectedWREITokenType, creditType));
+      setTradingState(getInitialWREIState(selectedPersona, selectedWREITokenType, creditType));
     }
   };
 
   const handleWREITokenTypeChange = (tokenType: WREITokenType) => {
     if (!tradingStarted) {
       setSelectedWREITokenType(tokenType);
-      setNegotiationState(getInitialWREIState(selectedPersona, tokenType, selectedCreditType));
+      setTradingState(getInitialWREIState(selectedPersona, tokenType, selectedCreditType));
     }
   };
 
   const handleStartTrading = async () => {
     if (!tradingState) {
-      setNegotiationState(getInitialWREIState(selectedPersona, selectedWREITokenType, selectedCreditType));
+      setTradingState(getInitialWREIState(selectedPersona, selectedWREITokenType, selectedCreditType));
     }
 
     setIsLoading(true);
@@ -285,9 +285,9 @@ export default function TradePage() {
       if (data.error) {
         setError(data.error);
       } else {
-        setNegotiationState(data.state);
-        setNegotiationStarted(true);
-        setNegotiationStartTime(new Date().toISOString());
+        setTradingState(data.state);
+        setTradingStarted(true);
+        setTradingStartTime(new Date().toISOString());
         setCurrentClassification(data.classification);
         setCurrentEmotion(data.emotionalState);
         setThreatLevel(data.threatLevel);
@@ -348,7 +348,7 @@ export default function TradePage() {
         setError(data.error);
         setLastFailedMessage(messageToSend);
       } else {
-        setNegotiationState(data.state);
+        setTradingState(data.state);
         setCurrentClassification(data.classification);
         setCurrentEmotion(data.emotionalState);
         setThreatLevel(data.threatLevel);
@@ -362,7 +362,7 @@ export default function TradePage() {
             // Estimate duration (roughly 2 minutes per round)
             const durationMinutes = data.state.round * 2;
             const scorecard = calculateNegotiationScore(data.state, selectedPersona as PersonaType, durationMinutes);
-            setNegotiationScorecard(scorecard);
+            setTradingScorecard(scorecard);
             setShowScorecard(true);
           }
         }
@@ -417,7 +417,7 @@ export default function TradePage() {
           negotiationComplete: true,
           outcome: 'deferred' as const
         };
-        setNegotiationState(finalState);
+        setTradingState(finalState);
         saveCompletedTrading(finalState);
       }
     } catch (err) {
@@ -449,7 +449,7 @@ export default function TradePage() {
           negotiationComplete: true,
           outcome: 'escalated' as const
         };
-        setNegotiationState(finalState);
+        setTradingState(finalState);
         saveCompletedTrading(finalState);
       }
     } catch (err) {
@@ -461,8 +461,8 @@ export default function TradePage() {
 
   const handleResetTrading = () => {
     // Reset all state to start fresh
-    setNegotiationStarted(false);
-    setNegotiationState(null);
+    setTradingStarted(false);
+    setTradingState(null);
     setInputMessage('');
     setError(null);
     setCurrentClassification('general');
@@ -472,9 +472,9 @@ export default function TradePage() {
     setLastFailedMessage(null);
 
     // Reset scorecard state
-    setNegotiationScorecard(null);
+    setTradingScorecard(null);
     setShowScorecard(false);
-    setNegotiationStartTime(null);
+    setTradingStartTime(null);
     // Note: selectedPersona and selectedCreditType can be changed again after reset
   };
 
@@ -493,14 +493,14 @@ export default function TradePage() {
 
     // Update the local sessions list
     const updatedSessions = getAllNegotiationSessions();
-    setNegotiationSessions(updatedSessions);
+    setTradingSessions(updatedSessions);
 
     return sessionId;
   };
 
   const refreshSessionsList = () => {
     const sessions = getAllNegotiationSessions();
-    setNegotiationSessions(sessions);
+    setTradingSessions(sessions);
   };
 
   const handleSessionComparison = (sessionIds: string[]) => {
@@ -2215,7 +2215,7 @@ Institutional View
         {/* A2: Real-Time Coaching Panel */}
         {tradingStarted && tradingState && (
           <CoachingPanel
-            tradingState={tradingState}
+            negotiationState={tradingState}
             isVisible={showCoachingPanel}
             onToggleVisibility={() => setShowCoachingPanel(!showCoachingPanel)}
             className={showStrategyPanel && isInstitutionalPersona(selectedPersona) ? 'right-[420px]' : ''}

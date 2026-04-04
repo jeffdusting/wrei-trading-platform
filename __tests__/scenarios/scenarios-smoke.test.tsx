@@ -78,13 +78,13 @@ jest.mock('../../lib/demo-mode/demo-state-manager', () => ({
 }));
 
 // Add global mocks for removed esc-market-context functions
-global.getCurrentESCMarketContext = jest.fn(() => ({
+(globalThis as any).getCurrentESCMarketContext = jest.fn(() => ({
   SPOT_PRICE: 47.80,
   market_participants: {},
   firm_context: {}
 }));
 
-global.getCERComplianceFramework = jest.fn(() => ({
+(globalThis as any).getCERComplianceFramework = jest.fn(() => ({
   authority: { name: 'Clean Energy Regulator' },
   key_requirements: ['CERTIFICATE_CREATION'],
   validation_methods: {}

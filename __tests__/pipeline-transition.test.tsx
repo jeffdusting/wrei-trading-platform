@@ -24,55 +24,83 @@ jest.mock('@/lib/onboarding-pipeline', () => ({
 
 describe('PipelineTransition Component', () => {
   const mockOnboardingState: InstitutionalOnboardingState = {
+    currentStep: 'compliance_confirmation',
+    stepProgress: {
+      institutional_identity: true,
+      investor_classification: true,
+      kyc_aml_verification: true,
+      afsl_compliance: true,
+      investment_preferences: true,
+      compliance_confirmation: true,
+    },
     institutionalIdentity: {
       entityName: 'Test Superannuation Fund',
-      personaType: 'superannuation_fund',
-      entityType: 'fund',
+      personaType: 'pension_fund',
+      entityType: 'pension_fund',
       jurisdiction: 'australia',
-      regulatoryStatus: 'regulated'
+      aum: 15000000,
+      establishedYear: 2005,
+      primaryContactName: 'John Smith',
+      primaryContactRole: 'Fund Manager',
+      isTaxExempt: false
     },
     investorClassification: {
       classification: 'wholesale',
-      netWorth: 15000000,
-      grossIncome: 2500000,
-      professionalInvestor: true,
-      sophisticatedInvestor: true
+      rationale: 'Meets net asset and AUM thresholds',
+      thresholdsMet: {
+        netAssets: true,
+        grossIncome: true,
+        aum: true,
+        professionalExperience: true,
+      },
+      exemptionsAvailable: ['s708']
     },
-    kycAmlVerification: {
-      verificationStatus: 'complete',
-      documentsVerified: ['incorporation', 'afsl', 'financial_statements'],
-      sanctionsScreening: true,
-      pepStatus: 'not_identified',
-      riskRating: 'low'
+    kycAmlStatus: {
+      kycRequired: true,
+      kycCompleted: true,
+      amlRiskRating: 'low',
+      eddRequired: false,
+      sanctionsScreeningPassed: true,
+      pepStatus: false,
+      documentation: {
+        corporateStructure: true,
+        beneficialOwnership: true,
+        sourceOfFunds: true,
+        businessPurpose: true,
+      }
     },
     afslCompliance: {
-      hasAfslLicense: true,
-      licenseNumber: 'AFS123456',
+      afslRequired: true,
+      exemptionType: 's708',
       complianceStatus: 'compliant',
-      jurisdictionRestrictions: [],
-      clientTypeRestrictions: []
+      restrictionNotes: []
     },
     investmentPreferences: {
       primaryTokenType: 'carbon_credits',
-      secondaryTokenTypes: ['real_estate_tokens'],
-      minInvestmentSize: 1000000,
-      maxInvestmentSize: 50000000,
+      secondaryTokenTypes: ['asset_co'],
+      preferredYieldMechanism: 'revenue_share',
+      targetAllocation: { carbonCredits: 60, assetCo: 40 },
+      investmentHorizon: 'long_term',
+      minimumTicketSize: 1000000,
+      maximumTicketSize: 50000000,
       yieldRequirement: 8.5,
       riskTolerance: 'moderate',
-      timeHorizon: 'long_term',
-      esgConstraints: ['climate_positive', 'no_fossil_fuels'],
-      settlementTimeline: 't1',
-      paymentMethod: 'wire',
-      reportingRequirements: 'enhanced',
-      volumeRequirements: 'forward'
+      liquidityRequirement: 'quarterly',
+      esgMandatory: true,
+      concentrationLimits: { singleAssetMax: 25, singleRegionMax: 50, singleSectorMax: 40 }
     },
-    complianceConfirmation: {
-      wholesaleClientConfirmation: true,
-      riskWarningAcknowledged: true,
-      coolingOffPeriodWaived: true,
-      sophisticatedInvestorDeclaration: true,
-      regulatoryDisclosuresAccepted: true
-    }
+    finalCompliance: {
+      complianceReportGenerated: true,
+      allRequirementsMet: true,
+      riskAssessmentCompleted: true,
+      clientAcceptanceStatus: 'approved',
+      restrictedActivities: [],
+      monitoringRequirements: []
+    },
+    onboardingStarted: '2026-01-01T00:00:00Z',
+    lastUpdated: '2026-01-15T00:00:00Z',
+    onboardingCompleted: '2026-01-15T00:00:00Z',
+    version: '1.0'
   };
 
   const mockPreConfig = {

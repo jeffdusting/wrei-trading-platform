@@ -5,8 +5,17 @@ import Link from 'next/link'
 import { WREI_TOKEN_CONFIG, PRICING_INDEX } from '@/lib/negotiation-config'
 
 // Market data simulation for real-time updates
+interface MarketDataState {
+  vcmSpot: number;
+  forwardRemoval: number;
+  dmrvPremium: number;
+  totalCredits: number;
+  activeTrades: number;
+  settlementTime: number;
+}
+
 function useMarketData() {
-  const [data, setData] = useState({
+  const [data, setData] = useState<MarketDataState>({
     vcmSpot: PRICING_INDEX.VCM_SPOT_REFERENCE,
     forwardRemoval: PRICING_INDEX.FORWARD_REMOVAL_REFERENCE,
     dmrvPremium: PRICING_INDEX.DMRV_PREMIUM_BENCHMARK,

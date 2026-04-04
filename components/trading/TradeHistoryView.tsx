@@ -67,7 +67,7 @@ export const TradeHistoryView: React.FC<TradeHistoryViewProps> = ({
         id: 'current',
         startTime: new Date(Date.now() - (negotiationState.round * 45000)),
         entries: generateCurrentSessionEntries(negotiationState),
-        totalVolume: negotiationState.volume,
+        totalVolume: negotiationState.buyerProfile.volumeInterest || 1000,
         status: negotiationState.phase === 'closure' ? 'completed' :
                 negotiationState.phase === 'escalation' ? 'failed' : 'active'
       },
@@ -87,9 +87,9 @@ export const TradeHistoryView: React.FC<TradeHistoryViewProps> = ({
         timestamp: new Date(baseTime + (i * 45000)),
         round: i,
         phase: i === 1 ? 'opening' : i < state.round ? 'trading' : state.phase,
-        priceOffered: state.anchor - (i * 2), // Simulate price progression
-        volume: state.volume,
-        persona: state.persona || 'ESG Fund Manager',
+        priceOffered: state.anchorPrice - (i * 2), // Simulate price progression
+        volume: state.buyerProfile.volumeInterest || 1000,
+        persona: state.buyerProfile.persona || 'ESG Fund Manager',
         status: i === state.round ? (state.phase === 'closure' ? 'completed' : 'active') : 'completed',
         duration: 45,
         notes: i === 1 ? 'Initial offer submitted' : `Round ${i} negotiation`

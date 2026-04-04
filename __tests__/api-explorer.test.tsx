@@ -65,7 +65,7 @@ describe('APIExplorer Component', () => {
   test('renders endpoint paths in the sidebar', () => {
     render(<APIExplorer />);
 
-    const uniquePaths = new Set(allEndpoints.map((ep) => ep.path));
+    const uniquePaths = Array.from(new Set(allEndpoints.map((ep) => ep.path)));
     for (const path of uniquePaths) {
       const elements = screen.getAllByText(path);
       expect(elements.length).toBeGreaterThan(0);

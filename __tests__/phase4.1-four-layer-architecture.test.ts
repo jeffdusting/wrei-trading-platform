@@ -19,7 +19,6 @@ import {
   type VesselTelemetryData,
   type VerificationStatus,
   type TokenizationProcess,
-  type DistributionMechanics,
   type WREIArchitectureState
 } from '../lib/architecture-layers/types';
 
@@ -98,7 +97,8 @@ describe('Phase 4.1: Four-Layer Architecture Simulation', () => {
         scope1: 125.3,
         scope2: 89.7,
         scope3: 234.1,
-        avoidedEmissions: 1250.8
+        avoidedEmissions: 1250.8,
+        netBenefit: 1250.8 - 125.3 - 89.7 - 234.1
       };
 
       const iso14064Verification = verificationLayer.verifyISO14064(measurementData);
@@ -115,7 +115,8 @@ describe('Phase 4.1: Four-Layer Architecture Simulation', () => {
         scope1: 98.5,
         scope2: 67.2,
         scope3: 187.9,
-        avoidedEmissions: 985.3
+        avoidedEmissions: 985.3,
+        netBenefit: 985.3 - 98.5 - 67.2 - 187.9
       };
 
       const verraVerification = verificationLayer.verifyVerra(measurementData);
@@ -132,7 +133,8 @@ describe('Phase 4.1: Four-Layer Architecture Simulation', () => {
         scope1: 111.2,
         scope2: 78.8,
         scope3: 203.5,
-        avoidedEmissions: 1134.7
+        avoidedEmissions: 1134.7,
+        netBenefit: 1134.7 - 111.2 - 78.8 - 203.5
       };
 
       const goldStandardVerification = verificationLayer.verifyGoldStandard(measurementData);
@@ -149,7 +151,8 @@ describe('Phase 4.1: Four-Layer Architecture Simulation', () => {
         scope1: 105.7,
         scope2: 73.4,
         scope3: 195.8,
-        avoidedEmissions: 1089.2
+        avoidedEmissions: 1089.2,
+        netBenefit: 1089.2 - 105.7 - 73.4 - 195.8
       };
 
       const tripleStandardVerification = verificationLayer.verifyTripleStandard(measurementData);
@@ -296,7 +299,7 @@ describe('Phase 4.1: Four-Layer Architecture Simulation', () => {
         stakedTokens: { carbon: 1000, asset: 25 },
         stakingDuration: 90, // days
         yieldBooster: 1.25, // 25% boost for dual portfolio
-        compoundingFrequency: 'daily'
+        compoundingFrequency: 'daily' as const
       };
 
       const yieldFarming = distributionLayer.simulateYieldFarming(yieldStrategy);
@@ -348,10 +351,10 @@ describe('Phase 4.1: Four-Layer Architecture Simulation', () => {
 
     test('should maintain data consistency across all layers', () => {
       const architectureState: WREIArchitectureState = {
-        measurement: { vesselCount: 110, totalEfficiency: 47.2 },
-        verification: { standardsCompliant: 3, verificationRate: 99.8 },
-        tokenization: { tokensIssued: 3_120_000, totalValue: 468_000_000 },
-        distribution: { tradingVolume: 15_600_000, liquidityDepth: 2_340_000 }
+        measurement: { vesselCount: 110, totalEfficiency: 47.2, measurementsProcessed: 5000 },
+        verification: { standardsCompliant: 3, verificationRate: 99.8, averageScore: 95.5 },
+        tokenization: { tokensIssued: 3_120_000, totalValue: 468_000_000, provenanceVerified: true },
+        distribution: { tradingVolume: 15_600_000, liquidityDepth: 2_340_000, settlementSuccess: 99.9 }
       };
 
       const consistencyCheck = verifyArchitectureConsistency(architectureState);

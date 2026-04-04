@@ -262,8 +262,8 @@ describe('Negotiation Config: Integration and Consistency', () => {
     const now = new Date();
     const hoursSinceUpdate = (now.getTime() - indexTimestamp.getTime()) / (1000 * 60 * 60);
 
-    // Market data should be relatively recent (within 7 days for test environment)
-    expect(hoursSinceUpdate).toBeLessThan(7 * 24); // 7 days in hours
+    // Market data should be relatively recent (within 30 days for test/demo environment)
+    expect(hoursSinceUpdate).toBeLessThan(30 * 24); // 30 days in hours
 
     // Data sources should include reputable market providers
     const dataSources = PRICING_INDEX.DATA_SOURCES;

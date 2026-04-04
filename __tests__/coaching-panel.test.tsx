@@ -31,14 +31,14 @@ import { generateCoaching, getCoachingCategories, getCategoryDescription } from 
 // Helper function to create mock negotiation state
 const createMockNegotiationState = (overrides: Partial<NegotiationState> = {}): NegotiationState => {
   const baseBuyerProfile: BuyerProfile = {
-    persona: 'corporate_compliance',
+    persona: 'compliance_officer',
     detectedWarmth: 5,
     detectedDominance: 5,
     priceAnchor: 150,
     volumeInterest: 10000,
     timelineUrgency: 'medium',
     complianceDriver: 'carbon_neutrality',
-    creditType: 'carbon_credits',
+    creditType: 'carbon',
     escEligibilityBasis: null,
     wreiTokenType: 'carbon_credits',
     investorClassification: 'retail',
@@ -63,7 +63,7 @@ const createMockNegotiationState = (overrides: Partial<NegotiationState> = {}): 
   const baseState: NegotiationState = {
     round: 3,
     phase: 'negotiation',
-    creditType: 'carbon_credits',
+    creditType: 'carbon',
     anchorPrice: 150,
     currentOfferPrice: 140,
     priceFloor: 120,
@@ -77,13 +77,12 @@ const createMockNegotiationState = (overrides: Partial<NegotiationState> = {}): 
     argumentHistory: ['general'],
     emotionalState: 'neutral',
     negotiationComplete: false,
-    outcome: {
-      agreed: false,
-      finalPrice: null,
-      finalVolume: null,
-      outcomeType: 'ongoing',
-      satisfaction: null,
-      metrics: null
+    outcome: null,
+    marketContext: {
+      marketType: 'primary',
+      liquidityConditions: 'medium',
+      competitivePressure: 5,
+      regulatoryEnvironment: 'favorable'
     }
   };
 

@@ -9,8 +9,48 @@
  * - Cross-collateralization explanations
  */
 
-import { NegotiationState, WREITokenType, InvestorClassification, MarketType } from '@/lib/types';
+import { NegotiationState, WREITokenType, InvestorClassification, MarketType, BuyerProfile, PersonaType } from '@/lib/types';
 import { getPersonaById } from '@/lib/personas';
+
+/** Creates a complete mock BuyerProfile with all required fields */
+function createMockBuyerProfile(overrides: {
+  persona: PersonaType | 'freeplay';
+  detectedWarmth: number;
+  detectedDominance: number;
+  wreiTokenType?: WREITokenType;
+  investorClassification?: InvestorClassification;
+  marketPreference?: MarketType;
+}): BuyerProfile {
+  return {
+    persona: overrides.persona,
+    detectedWarmth: overrides.detectedWarmth,
+    detectedDominance: overrides.detectedDominance,
+    priceAnchor: null,
+    volumeInterest: null,
+    timelineUrgency: null,
+    complianceDriver: null,
+    creditType: 'carbon',
+    escEligibilityBasis: null,
+    wreiTokenType: overrides.wreiTokenType || 'carbon_credits',
+    investorClassification: overrides.investorClassification || 'wholesale',
+    marketPreference: overrides.marketPreference || 'primary',
+    yieldMechanismPreference: null,
+    portfolioContext: {
+      ticketSize: { min: 1_000_000, max: 50_000_000 },
+      yieldRequirement: 0.10,
+      riskTolerance: 'moderate',
+      liquidityNeeds: 'quarterly',
+      esgFocus: false,
+      crossCollateralInterest: false,
+    },
+    complianceRequirements: {
+      aflsRequired: false,
+      amlCompliance: true,
+      taxTreatmentPreference: 'cgt',
+      jurisdictionalConstraints: [],
+    },
+  };
+}
 
 describe('Phase 3.2: Advanced Negotiation Contexts', () => {
 
@@ -21,14 +61,11 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
         wreiTokenType: 'asset_co',
         marketType: 'primary',
         investorClassification: 'professional',
-        buyerProfile: {
+        buyerProfile: createMockBuyerProfile({
           persona: 'infrastructure_fund',
-          warmth: 7,
-          dominance: 8,
-          patience: 8,
           detectedWarmth: 7,
-          detectedDominance: 8
-        },
+          detectedDominance: 8,
+        }),
         tokenSpecificData: {
           targetAllocation: 100_000_000, // A$100M
           primaryMarketMinimum: 50_000_000, // A$50M minimum
@@ -46,7 +83,17 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
         roundsSinceLastConcession: 0,
         negotiationComplete: false,
         outcome: null,
-        creditType: 'carbon'
+        creditType: 'carbon',
+        priceFloor: 120,
+        maxConcessionPerRound: 0.05,
+        maxTotalConcession: 0.20,
+        minimumRoundsBeforeConcession: 3,
+        marketContext: {
+          marketType: 'primary',
+          liquidityConditions: 'high',
+          competitivePressure: 5,
+          regulatoryEnvironment: 'favorable',
+        },
       };
 
       // Validate that the state structure supports primary market data
@@ -61,14 +108,11 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
         wreiTokenType: 'carbon_credits',
         marketType: 'secondary',
         investorClassification: 'wholesale',
-        buyerProfile: {
+        buyerProfile: createMockBuyerProfile({
           persona: 'family_office',
-          warmth: 8,
-          dominance: 5,
-          patience: 9,
           detectedWarmth: 8,
-          detectedDominance: 5
-        },
+          detectedDominance: 5,
+        }),
         tokenSpecificData: {
           targetAllocation: 5_000_000, // A$5M
           secondaryMarketLiquidity: true,
@@ -87,7 +131,17 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
         roundsSinceLastConcession: 0,
         negotiationComplete: false,
         outcome: null,
-        creditType: 'carbon'
+        creditType: 'carbon',
+        priceFloor: 120,
+        maxConcessionPerRound: 0.05,
+        maxTotalConcession: 0.20,
+        minimumRoundsBeforeConcession: 3,
+        marketContext: {
+          marketType: 'primary',
+          liquidityConditions: 'high',
+          competitivePressure: 5,
+          regulatoryEnvironment: 'favorable',
+        },
       };
 
       expect(secondaryMarketState.tokenSpecificData?.secondaryMarketLiquidity).toBe(true);
@@ -103,14 +157,11 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
         wreiTokenType: 'dual_portfolio',
         marketType: 'primary',
         investorClassification: 'professional',
-        buyerProfile: {
+        buyerProfile: createMockBuyerProfile({
           persona: 'sovereign_wealth',
-          warmth: 7,
-          dominance: 8,
-          patience: 8,
           detectedWarmth: 7,
-          detectedDominance: 8
-        },
+          detectedDominance: 8,
+        }),
         tokenSpecificData: {
           targetAllocation: 750_000_000, // A$750M sovereign allocation
           primaryMarketAccess: true,
@@ -132,7 +183,17 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
         roundsSinceLastConcession: 0,
         negotiationComplete: false,
         outcome: null,
-        creditType: 'carbon'
+        creditType: 'carbon',
+        priceFloor: 120,
+        maxConcessionPerRound: 0.05,
+        maxTotalConcession: 0.20,
+        minimumRoundsBeforeConcession: 3,
+        marketContext: {
+          marketType: 'primary',
+          liquidityConditions: 'high',
+          competitivePressure: 5,
+          regulatoryEnvironment: 'favorable',
+        },
       };
 
       expect(sovereignPrimaryState.tokenSpecificData?.primaryMarketAccess).toBe(true);
@@ -147,14 +208,11 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
       const wholesaleState: NegotiationState = {
         wreiTokenType: 'asset_co',
         investorClassification: 'wholesale',
-        buyerProfile: {
+        buyerProfile: createMockBuyerProfile({
           persona: 'infrastructure_fund',
-          warmth: 7,
-          dominance: 8,
-          patience: 8,
           detectedWarmth: 7,
-          detectedDominance: 8
-        },
+          detectedDominance: 8,
+        }),
         tokenSpecificData: {
           wholesaleExemption: 's708', // AFSL wholesale investor exemption
           minimumInvestment: 500_000, // A$500K sophisticated investor minimum
@@ -176,7 +234,17 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
         roundsSinceLastConcession: 0,
         negotiationComplete: false,
         outcome: null,
-        creditType: 'carbon'
+        creditType: 'carbon',
+        priceFloor: 120,
+        maxConcessionPerRound: 0.05,
+        maxTotalConcession: 0.20,
+        minimumRoundsBeforeConcession: 3,
+        marketContext: {
+          marketType: 'primary',
+          liquidityConditions: 'high',
+          competitivePressure: 5,
+          regulatoryEnvironment: 'favorable',
+        },
       };
 
       expect(wholesaleState.tokenSpecificData?.wholesaleExemption).toBe('s708');
@@ -188,14 +256,11 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
       const professionalState: NegotiationState = {
         wreiTokenType: 'dual_portfolio',
         investorClassification: 'professional',
-        buyerProfile: {
+        buyerProfile: createMockBuyerProfile({
           persona: 'pension_fund',
-          warmth: 6,
-          dominance: 6,
-          patience: 9,
           detectedWarmth: 6,
-          detectedDominance: 6
-        },
+          detectedDominance: 6,
+        }),
         tokenSpecificData: {
           professionalInvestorStatus: true,
           enhancedDueDiligence: {
@@ -222,7 +287,17 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
         roundsSinceLastConcession: 0,
         negotiationComplete: false,
         outcome: null,
-        creditType: 'carbon'
+        creditType: 'carbon',
+        priceFloor: 120,
+        maxConcessionPerRound: 0.05,
+        maxTotalConcession: 0.20,
+        minimumRoundsBeforeConcession: 3,
+        marketContext: {
+          marketType: 'primary',
+          liquidityConditions: 'high',
+          competitivePressure: 5,
+          regulatoryEnvironment: 'favorable',
+        },
       };
 
       expect(professionalState.tokenSpecificData?.enhancedDueDiligence?.trusteeApproval).toBe(true);
@@ -233,14 +308,11 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
       const sophisticatedState: NegotiationState = {
         wreiTokenType: 'carbon_credits',
         investorClassification: 'sophisticated',
-        buyerProfile: {
+        buyerProfile: createMockBuyerProfile({
           persona: 'defi_yield_farmer',
-          warmth: 5,
-          dominance: 9,
-          patience: 4,
           detectedWarmth: 5,
-          detectedDominance: 9
-        },
+          detectedDominance: 9,
+        }),
         tokenSpecificData: {
           sophisticatedStructures: {
             leveragedExposure: true,
@@ -266,7 +338,17 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
         roundsSinceLastConcession: 0,
         negotiationComplete: false,
         outcome: null,
-        creditType: 'carbon'
+        creditType: 'carbon',
+        priceFloor: 120,
+        maxConcessionPerRound: 0.05,
+        maxTotalConcession: 0.20,
+        minimumRoundsBeforeConcession: 3,
+        marketContext: {
+          marketType: 'primary',
+          liquidityConditions: 'high',
+          competitivePressure: 5,
+          regulatoryEnvironment: 'favorable',
+        },
       };
 
       expect(sophisticatedState.tokenSpecificData?.sophisticatedStructures?.leveragedExposure).toBe(true);
@@ -279,14 +361,11 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
     test('Asset Co tokens include quarterly redemption windows', () => {
       const assetCoState: NegotiationState = {
         wreiTokenType: 'asset_co',
-        buyerProfile: {
+        buyerProfile: createMockBuyerProfile({
           persona: 'infrastructure_fund',
-          warmth: 7,
-          dominance: 8,
-          patience: 8,
           detectedWarmth: 7,
-          detectedDominance: 8
-        },
+          detectedDominance: 8,
+        }),
         tokenSpecificData: {
           redemptionTerms: {
             frequency: 'quarterly',
@@ -309,7 +388,17 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
         roundsSinceLastConcession: 0,
         negotiationComplete: false,
         outcome: null,
-        creditType: 'carbon'
+        creditType: 'carbon',
+        priceFloor: 120,
+        maxConcessionPerRound: 0.05,
+        maxTotalConcession: 0.20,
+        minimumRoundsBeforeConcession: 3,
+        marketContext: {
+          marketType: 'primary',
+          liquidityConditions: 'high',
+          competitivePressure: 5,
+          regulatoryEnvironment: 'favorable',
+        },
       };
 
       expect(assetCoState.tokenSpecificData?.redemptionTerms?.frequency).toBe('quarterly');
@@ -320,14 +409,11 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
     test('Carbon credit tokens enable immediate trading with settlement windows', () => {
       const carbonState: NegotiationState = {
         wreiTokenType: 'carbon_credits',
-        buyerProfile: {
+        buyerProfile: createMockBuyerProfile({
           persona: 'trading_desk',
-          warmth: 4,
-          dominance: 9,
-          patience: 3,
           detectedWarmth: 4,
-          detectedDominance: 9
-        },
+          detectedDominance: 9,
+        }),
         tokenSpecificData: {
           tradingTerms: {
             immediateTrading: true,
@@ -354,7 +440,17 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
         roundsSinceLastConcession: 0,
         negotiationComplete: false,
         outcome: null,
-        creditType: 'carbon'
+        creditType: 'carbon',
+        priceFloor: 120,
+        maxConcessionPerRound: 0.05,
+        maxTotalConcession: 0.20,
+        minimumRoundsBeforeConcession: 3,
+        marketContext: {
+          marketType: 'primary',
+          liquidityConditions: 'high',
+          competitivePressure: 5,
+          regulatoryEnvironment: 'favorable',
+        },
       };
 
       expect(carbonState.tokenSpecificData?.tradingTerms?.immediateTrading).toBe(true);
@@ -365,14 +461,11 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
     test('Dual portfolio allows strategic rebalancing windows', () => {
       const dualState: NegotiationState = {
         wreiTokenType: 'dual_portfolio',
-        buyerProfile: {
+        buyerProfile: createMockBuyerProfile({
           persona: 'family_office',
-          warmth: 8,
-          dominance: 5,
-          patience: 9,
           detectedWarmth: 8,
-          detectedDominance: 5
-        },
+          detectedDominance: 5,
+        }),
         tokenSpecificData: {
           rebalancingTerms: {
             frequency: 'quarterly',
@@ -399,7 +492,17 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
         roundsSinceLastConcession: 0,
         negotiationComplete: false,
         outcome: null,
-        creditType: 'carbon'
+        creditType: 'carbon',
+        priceFloor: 120,
+        maxConcessionPerRound: 0.05,
+        maxTotalConcession: 0.20,
+        minimumRoundsBeforeConcession: 3,
+        marketContext: {
+          marketType: 'primary',
+          liquidityConditions: 'high',
+          competitivePressure: 5,
+          regulatoryEnvironment: 'favorable',
+        },
       };
 
       expect(dualState.tokenSpecificData?.rebalancingTerms?.frequency).toBe('quarterly');
@@ -413,14 +516,11 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
     test('Asset Co tokens enable 80% LTV borrowing for additional exposure', () => {
       const crossCollateralState: NegotiationState = {
         wreiTokenType: 'asset_co',
-        buyerProfile: {
+        buyerProfile: createMockBuyerProfile({
           persona: 'defi_yield_farmer',
-          warmth: 5,
-          dominance: 9,
-          patience: 4,
           detectedWarmth: 5,
-          detectedDominance: 9
-        },
+          detectedDominance: 9,
+        }),
         tokenSpecificData: {
           crossCollateralization: {
             maxLtv: 0.80, // 80% loan-to-value
@@ -449,7 +549,17 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
         roundsSinceLastConcession: 0,
         negotiationComplete: false,
         outcome: null,
-        creditType: 'carbon'
+        creditType: 'carbon',
+        priceFloor: 120,
+        maxConcessionPerRound: 0.05,
+        maxTotalConcession: 0.20,
+        minimumRoundsBeforeConcession: 3,
+        marketContext: {
+          marketType: 'primary',
+          liquidityConditions: 'high',
+          competitivePressure: 5,
+          regulatoryEnvironment: 'favorable',
+        },
       };
 
       expect(crossCollateralState.tokenSpecificData?.crossCollateralization?.maxLtv).toBe(0.80);
@@ -459,14 +569,11 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
     test('Carbon credits can be staked for additional yield generation', () => {
       const carbonCollateralState: NegotiationState = {
         wreiTokenType: 'carbon_credits',
-        buyerProfile: {
+        buyerProfile: createMockBuyerProfile({
           persona: 'defi_yield_farmer',
-          warmth: 5,
-          dominance: 9,
-          patience: 4,
           detectedWarmth: 5,
-          detectedDominance: 9
-        },
+          detectedDominance: 9,
+        }),
         tokenSpecificData: {
           stakingMechanisms: {
             liquidityPooling: true,
@@ -492,7 +599,17 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
         roundsSinceLastConcession: 0,
         negotiationComplete: false,
         outcome: null,
-        creditType: 'carbon'
+        creditType: 'carbon',
+        priceFloor: 120,
+        maxConcessionPerRound: 0.05,
+        maxTotalConcession: 0.20,
+        minimumRoundsBeforeConcession: 3,
+        marketContext: {
+          marketType: 'primary',
+          liquidityConditions: 'high',
+          competitivePressure: 5,
+          regulatoryEnvironment: 'favorable',
+        },
       };
 
       expect(carbonCollateralState.tokenSpecificData?.stakingMechanisms?.liquidityPooling).toBe(true);
@@ -502,14 +619,11 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
     test('Dual portfolio enables optimized cross-collateral strategies', () => {
       const optimizedCollateralState: NegotiationState = {
         wreiTokenType: 'dual_portfolio',
-        buyerProfile: {
+        buyerProfile: createMockBuyerProfile({
           persona: 'family_office',
-          warmth: 8,
-          dominance: 5,
-          patience: 9,
           detectedWarmth: 8,
-          detectedDominance: 5
-        },
+          detectedDominance: 5,
+        }),
         tokenSpecificData: {
           portfolioLeverage: {
             correlationBenefit: 0.20, // 20% leverage increase from low correlation
@@ -536,7 +650,17 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
         roundsSinceLastConcession: 0,
         negotiationComplete: false,
         outcome: null,
-        creditType: 'carbon'
+        creditType: 'carbon',
+        priceFloor: 120,
+        maxConcessionPerRound: 0.05,
+        maxTotalConcession: 0.20,
+        minimumRoundsBeforeConcession: 3,
+        marketContext: {
+          marketType: 'primary',
+          liquidityConditions: 'high',
+          competitivePressure: 5,
+          regulatoryEnvironment: 'favorable',
+        },
       };
 
       expect(optimizedCollateralState.tokenSpecificData?.portfolioLeverage?.correlationBenefit).toBe(0.20);
@@ -622,9 +746,6 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
         investorClassification: 'professional',
         buyerProfile: {
           persona: 'infrastructure_fund',
-          warmth: 7,
-          dominance: 8,
-          patience: 8,
           detectedWarmth: 7,
           detectedDominance: 8,
           priceAnchor: null,
@@ -668,7 +789,13 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
         priceFloor: 120,
         maxConcessionPerRound: 0.05,
         maxTotalConcession: 0.20,
-        minimumRoundsBeforeConcession: 3
+        minimumRoundsBeforeConcession: 3,
+        marketContext: {
+          marketType: 'primary',
+          liquidityConditions: 'high',
+          competitivePressure: 5,
+          regulatoryEnvironment: 'favorable',
+        },
       };
 
       expect(testState.marketType).toBe('primary');
@@ -682,9 +809,6 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
         investorClassification: 'sophisticated',
         buyerProfile: {
           persona: 'defi_yield_farmer',
-          warmth: 5,
-          dominance: 9,
-          patience: 4,
           detectedWarmth: 5,
           detectedDominance: 9,
           priceAnchor: null,
@@ -738,7 +862,13 @@ describe('Phase 3.2: Advanced Negotiation Contexts', () => {
         priceFloor: 120,
         maxConcessionPerRound: 0.05,
         maxTotalConcession: 0.20,
-        minimumRoundsBeforeConcession: 3
+        minimumRoundsBeforeConcession: 3,
+        marketContext: {
+          marketType: 'primary',
+          liquidityConditions: 'high',
+          competitivePressure: 5,
+          regulatoryEnvironment: 'favorable',
+        },
       };
 
       expect(testState.tokenSpecificData?.crossCollateralization?.maxLtv).toBe(0.80);

@@ -37,6 +37,14 @@ import { AudienceType } from '../audience';
 import { useDemoMode } from '../../lib/demo-mode/demo-state-manager';
 // import { getCurrentESCMarketContext } from '../../lib/demo-mode/esc-market-context'; // Removed for Phase 4
 
+// Local stub for removed esc-market-context function
+const getCurrentESCMarketContext = () => ({
+  spot_price: 47.80,
+  volume_available: 5000,
+  participant_count: 12,
+  market_volatility: 'medium',
+});
+
 interface ESCMarketScenariosProps {
   scenarioId?: string;
   selectedAudience?: AudienceType;

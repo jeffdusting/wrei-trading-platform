@@ -45,7 +45,7 @@ describe('DemoOrchestrationEngine', () => {
   let engine: DemoOrchestrationEngine;
 
   beforeEach(() => {
-    engine = new DemoOrchestrationEngine();
+    engine = DemoOrchestrationEngine.getInstance();
   });
 
   afterEach(() => {

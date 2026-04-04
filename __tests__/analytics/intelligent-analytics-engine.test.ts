@@ -30,7 +30,7 @@ const TEST_AUDIENCE_TYPES: AudienceType[] = ['executive', 'technical', 'complian
 jest.useFakeTimers();
 
 // Mock environment variables
-process.env.NODE_ENV = 'test';
+Object.defineProperty(process.env, 'NODE_ENV', { value: 'test', writable: true });
 
 // Mock Anthropic SDK to avoid browser environment issues
 jest.mock('@anthropic-ai/sdk', () => {
@@ -505,22 +505,25 @@ describe('IntelligentAnalyticsEngine', () => {
         );
 
         const insights = analytics.ai_insights;
-        const audienceSpecific = insights.audience_insights[audienceType];
-
-        expect(audienceSpecific).toBeDefined();
 
         if (audienceType === 'executive') {
-          expect(audienceSpecific.strategic_recommendations).toBeDefined();
-          expect(audienceSpecific.investment_priorities).toBeDefined();
-          expect(audienceSpecific.market_opportunities).toBeDefined();
+          const executiveInsights = insights.audience_insights.executive;
+          expect(executiveInsights).toBeDefined();
+          expect(executiveInsights.strategic_recommendations).toBeDefined();
+          expect(executiveInsights.investment_priorities).toBeDefined();
+          expect(executiveInsights.market_opportunities).toBeDefined();
         } else if (audienceType === 'technical') {
-          expect(audienceSpecific.system_optimisations).toBeDefined();
-          expect(audienceSpecific.infrastructure_recommendations).toBeDefined();
-          expect(audienceSpecific.performance_improvements).toBeDefined();
+          const technicalInsights = insights.audience_insights.technical;
+          expect(technicalInsights).toBeDefined();
+          expect(technicalInsights.system_optimisations).toBeDefined();
+          expect(technicalInsights.infrastructure_recommendations).toBeDefined();
+          expect(technicalInsights.performance_improvements).toBeDefined();
         } else if (audienceType === 'compliance') {
-          expect(audienceSpecific.regulatory_updates).toBeDefined();
-          expect(audienceSpecific.compliance_priorities).toBeDefined();
-          expect(audienceSpecific.risk_mitigation_actions).toBeDefined();
+          const complianceInsights = insights.audience_insights.compliance;
+          expect(complianceInsights).toBeDefined();
+          expect(complianceInsights.regulatory_updates).toBeDefined();
+          expect(complianceInsights.compliance_priorities).toBeDefined();
+          expect(complianceInsights.risk_mitigation_actions).toBeDefined();
         }
       }
     });

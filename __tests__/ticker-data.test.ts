@@ -237,7 +237,7 @@ describe('TickerData', () => {
           expect(ticker.low24h).toBeDefined();
           expect(ticker.high24h).toBeGreaterThanOrEqual(ticker.price);
           expect(ticker.low24h).toBeLessThanOrEqual(ticker.price);
-          expect(ticker.high24h).toBeGreaterThanOrEqual(ticker.low24h);
+          expect(ticker.high24h!).toBeGreaterThanOrEqual(ticker.low24h!);
         });
 
         simulator.stopUpdates();

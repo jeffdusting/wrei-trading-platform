@@ -71,6 +71,12 @@ const createMockNegotiationState = (overrides: Partial<NegotiationState> = {}): 
   emotionalState: 'neutral',
   negotiationComplete: false,
   outcome: null,
+  marketContext: {
+    marketType: 'primary' as MarketType,
+    liquidityConditions: 'medium' as const,
+    competitivePressure: 5,
+    regulatoryEnvironment: 'favorable' as const
+  },
   ...overrides
 });
 

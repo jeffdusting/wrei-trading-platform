@@ -14,8 +14,8 @@ describe('Milestone 2.2: Compliance API', () => {
     jest.useFakeTimers();
 
     // Mock console methods to avoid noise in tests
-    jest.spyOn(console, 'log').mockImplementation();
-    jest.spyOn(console, 'error').mockImplementation();
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {

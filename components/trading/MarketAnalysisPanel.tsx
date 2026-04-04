@@ -12,7 +12,7 @@ import React, { useState, useEffect } from 'react';
 import { useDesignTokens } from '@/design-system/tokens/professional-tokens';
 import { PRICING_INDEX } from '@/lib/negotiation-config';
 import {
-  ChartLineIcon,
+  ChartBarSquareIcon,
   GlobeAltIcon,
   ClockIcon,
   ArrowTrendingUpIcon,
@@ -143,7 +143,7 @@ export const MarketAnalysisPanel: React.FC<MarketAnalysisPanelProps> = ({
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <ChartLineIcon className="w-5 h-5 text-slate-600" />
+            <ChartBarSquareIcon className="w-5 h-5 text-slate-600" />
             <h3 className="bloomberg-card-title text-slate-800">Market Analysis</h3>
           </div>
           <div className="flex items-center gap-3">

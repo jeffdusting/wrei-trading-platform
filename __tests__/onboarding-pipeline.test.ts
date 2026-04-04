@@ -28,57 +28,102 @@ import type { InstitutionalOnboardingState } from '@/lib/institutional-onboardin
 
 describe('Onboarding Pipeline Utilities', () => {
   // Mock institutional onboarding state for testing
-  const mockOnboardingState: InstitutionalOnboardingState = {
+  // Uses the actual InstitutionalOnboardingState structure from institutional-onboarding.ts
+  // with additional properties accessed via `as any` in the pipeline implementation
+  const mockOnboardingState = {
+    currentStep: 'compliance_confirmation' as const,
+    stepProgress: {
+      institutional_identity: true,
+      investor_classification: true,
+      kyc_aml_verification: true,
+      afsl_compliance: true,
+      investment_preferences: true,
+      compliance_confirmation: true,
+    },
     institutionalIdentity: {
       entityName: 'Test Superannuation Fund',
-      personaType: 'superannuation_fund',
-      entityType: 'fund',
-      jurisdiction: 'australia',
-      regulatoryStatus: 'regulated'
+      personaType: 'pension_fund' as const, // closest valid PersonaType for superannuation
+      entityType: 'pension_fund' as const,
+      jurisdiction: 'australia' as const,
+      aum: 15000000,
+      establishedYear: 2010,
+      primaryContactName: 'John Smith',
+      primaryContactRole: 'Investment Manager',
+      isTaxExempt: true,
     },
     investorClassification: {
-      classification: 'wholesale',
-      netWorth: 15000000,
-      grossIncome: 2500000,
-      professionalInvestor: true,
-      sophisticatedInvestor: true
+      classification: 'wholesale' as const,
+      rationale: 'Wholesale investor based on net assets threshold',
+      thresholdsMet: {
+        netAssets: true,
+        grossIncome: true,
+        aum: true,
+        professionalExperience: true,
+      },
+      exemptionsAvailable: ['s708_wholesale'],
     },
-    kycAmlVerification: {
-      verificationStatus: 'complete',
-      documentsVerified: ['incorporation', 'afsl', 'financial_statements'],
-      sanctionsScreening: true,
-      pepStatus: 'not_identified',
-      riskRating: 'low'
+    kycAmlStatus: {
+      kycRequired: true,
+      kycCompleted: true,
+      amlRiskRating: 'low' as const,
+      eddRequired: false,
+      sanctionsScreeningPassed: true,
+      pepStatus: false,
+      documentation: {
+        corporateStructure: true,
+        beneficialOwnership: true,
+        sourceOfFunds: true,
+        businessPurpose: true,
+      },
     },
     afslCompliance: {
-      hasAfslLicense: true,
-      licenseNumber: 'AFS123456',
-      complianceStatus: 'compliant',
-      jurisdictionRestrictions: [],
-      clientTypeRestrictions: []
+      afslRequired: false,
+      exemptionType: 's708' as const,
+      complianceStatus: 'compliant' as const,
+      restrictionNotes: [] as string[],
     },
     investmentPreferences: {
-      primaryTokenType: 'carbon_credits',
-      secondaryTokenTypes: ['real_estate_tokens'],
-      minInvestmentSize: 1000000,
-      maxInvestmentSize: 50000000,
+      primaryTokenType: 'carbon_credits' as const,
+      secondaryTokenTypes: ['asset_co' as const],
+      preferredYieldMechanism: 'nav_accruing' as const,
+      targetAllocation: { carbonCredits: 60, assetCo: 40 },
+      investmentHorizon: 'long_term' as const,
+      minimumTicketSize: 1000000,
+      maximumTicketSize: 50000000,
       yieldRequirement: 8.5,
-      riskTolerance: 'moderate',
-      timeHorizon: 'long_term',
-      esgConstraints: ['climate_positive', 'no_fossil_fuels'],
-      settlementTimeline: 't1',
-      paymentMethod: 'wire',
-      reportingRequirements: 'enhanced',
-      volumeRequirements: 'forward'
+      riskTolerance: 'moderate' as const,
+      liquidityRequirement: 'quarterly' as const,
+      esgMandatory: true,
+      concentrationLimits: {
+        singleAssetMax: 25,
+        singleRegionMax: 40,
+        singleSectorMax: 30,
+      },
     },
-    complianceConfirmation: {
-      wholesaleClientConfirmation: true,
-      riskWarningAcknowledged: true,
-      coolingOffPeriodWaived: true,
-      sophisticatedInvestorDeclaration: true,
-      regulatoryDisclosuresAccepted: true
-    }
-  };
+    finalCompliance: {
+      complianceReportGenerated: true,
+      allRequirementsMet: true,
+      riskAssessmentCompleted: true,
+      clientAcceptanceStatus: 'approved' as const,
+      restrictedActivities: [] as string[],
+      monitoringRequirements: ['annual_review'],
+    },
+    onboardingStarted: new Date().toISOString(),
+    lastUpdated: new Date().toISOString(),
+    onboardingCompleted: new Date().toISOString(),
+    version: '2.1.0',
+  } as InstitutionalOnboardingState;
+
+  // Add extra pipeline-specific properties accessed via `as any` in the implementation
+  Object.assign(mockOnboardingState.investmentPreferences!, {
+    minInvestmentSize: 1000000,
+    maxInvestmentSize: 50000000,
+    esgConstraints: ['climate_positive', 'no_fossil_fuels'],
+    settlementTimeline: 't1',
+    paymentMethod: 'wire',
+    reportingRequirements: 'enhanced',
+    volumeRequirements: 'forward',
+  });
 
   describe('mapInstitutionalPersonaToBuyerPersona', () => {
     test('maps ESG/Impact focused institutions correctly', () => {
@@ -177,15 +222,19 @@ describe('Onboarding Pipeline Utilities', () => {
     });
 
     test('handles missing data with defaults', () => {
-      const incompleteState: InstitutionalOnboardingState = {
+      const incompleteState = {
         institutionalIdentity: {
           entityName: 'Incomplete Entity',
-          personaType: 'hedge_fund',
-          entityType: 'fund',
-          jurisdiction: 'australia',
-          regulatoryStatus: 'regulated'
+          personaType: 'trading_desk' as const,
+          entityType: 'fund_manager' as const,
+          jurisdiction: 'australia' as const,
+          aum: 10000000,
+          establishedYear: 2015,
+          primaryContactName: 'Test',
+          primaryContactRole: 'Trader',
+          isTaxExempt: false,
         }
-      } as InstitutionalOnboardingState;
+      } as unknown as InstitutionalOnboardingState;
 
       const preConfig = extractNegotiationPreConfig(incompleteState);
 
@@ -197,11 +246,11 @@ describe('Onboarding Pipeline Utilities', () => {
 
     test('maps risk tolerance correctly', () => {
       const lowRiskState = { ...mockOnboardingState };
-      lowRiskState.investmentPreferences!.riskTolerance = 'low';
+      (lowRiskState.investmentPreferences as unknown as Record<string, unknown>).riskTolerance = 'low';
       expect(extractNegotiationPreConfig(lowRiskState).investmentFocus.riskTolerance).toBe('conservative');
 
       const highRiskState = { ...mockOnboardingState };
-      highRiskState.investmentPreferences!.riskTolerance = 'high';
+      (highRiskState.investmentPreferences as unknown as Record<string, unknown>).riskTolerance = 'high';
       expect(extractNegotiationPreConfig(highRiskState).investmentFocus.riskTolerance).toBe('aggressive');
     });
   });
@@ -226,7 +275,9 @@ describe('Onboarding Pipeline Utilities', () => {
 
     test('identifies missing persona type', () => {
       const invalidState = { ...mockOnboardingState };
-      delete invalidState.institutionalIdentity!.personaType;
+      const identity = { ...invalidState.institutionalIdentity! };
+      (identity as Record<string, unknown>).personaType = undefined;
+      invalidState.institutionalIdentity = identity;
 
       const validation = validateOnboardingForNegotiation(invalidState);
 
@@ -236,7 +287,9 @@ describe('Onboarding Pipeline Utilities', () => {
 
     test('identifies missing investor classification', () => {
       const invalidState = { ...mockOnboardingState };
-      delete invalidState.investorClassification!.classification;
+      const classification = { ...invalidState.investorClassification! };
+      (classification as Record<string, unknown>).classification = undefined;
+      invalidState.investorClassification = classification;
 
       const validation = validateOnboardingForNegotiation(invalidState);
 
@@ -246,7 +299,9 @@ describe('Onboarding Pipeline Utilities', () => {
 
     test('identifies missing compliance status', () => {
       const invalidState = { ...mockOnboardingState };
-      delete invalidState.afslCompliance!.complianceStatus;
+      const afsl = { ...invalidState.afslCompliance! };
+      (afsl as Record<string, unknown>).complianceStatus = undefined;
+      invalidState.afslCompliance = afsl;
 
       const validation = validateOnboardingForNegotiation(invalidState);
 
@@ -255,8 +310,9 @@ describe('Onboarding Pipeline Utilities', () => {
     });
 
     test('identifies missing KYC verification status', () => {
-      const invalidState = { ...mockOnboardingState };
-      delete invalidState.kycAmlVerification!.verificationStatus;
+      const invalidState: InstitutionalOnboardingState = { ...mockOnboardingState };
+      // Set kycAmlStatus to null so the pipeline can't find kycCompleted
+      invalidState.kycAmlStatus = null;
 
       const validation = validateOnboardingForNegotiation(invalidState);
 

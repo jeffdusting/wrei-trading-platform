@@ -303,7 +303,9 @@ describe('ComparisonDashboard', () => {
       expect(screen.getByText('USD 125')).toBeInTheDocument();
       expect(screen.getByText('6')).toBeInTheDocument();
       expect(screen.getByText('AGREED')).toBeInTheDocument();
-      expect(screen.getByText(/24\/03\/2026/)).toBeInTheDocument();
+      // Date rendered via toLocaleDateString('en-AU') — exact day depends on TZ
+      const datePattern = /2[45]\/03\/2026/;
+      expect(screen.getByText(datePattern)).toBeInTheDocument();
     });
   });
 

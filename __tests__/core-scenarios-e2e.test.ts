@@ -345,7 +345,8 @@ test.describe('Core Scenarios E2E Tests', () => {
   test('should perform accessibility validation', async ({ page }) => {
     // Basic accessibility checks
     await expect(page.locator('h1')).toBeVisible();
-    await expect(page.locator('button')).toHaveCount.greaterThan(0);
+    const buttonCount = await page.locator('button').count();
+    expect(buttonCount).toBeGreaterThan(0);
 
     // Check for proper labeling
     const inputs = page.locator('input');

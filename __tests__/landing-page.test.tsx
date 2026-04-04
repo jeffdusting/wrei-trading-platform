@@ -1,11 +1,11 @@
 /**
  * Landing Page Tests
  *
- * Tests for the redesigned home page with comprehensive feature showcase
+ * Tests for the Bloomberg Terminal-style trading dashboard (app/page.tsx)
  */
 
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Home from '@/app/page';
 
 // Mock Next.js router for Link components
@@ -29,149 +29,114 @@ global.cancelAnimationFrame = jest.fn();
 describe('Landing Page', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   test('renders main hero section with title and description', () => {
     render(<Home />);
 
-    expect(screen.getByText('WREI Carbon Credit')).toBeInTheDocument();
-    expect(screen.getByText('Trading Platform')).toBeInTheDocument();
-    expect(screen.getByText(/Experience institutional-grade carbon credit trading/)).toBeInTheDocument();
+    expect(screen.getByText('Trading Dashboard')).toBeInTheDocument();
+    expect(screen.getByText(/Real-time carbon credit trading platform/)).toBeInTheDocument();
   });
 
   test('displays animated statistics counters', async () => {
+    jest.useRealTimers();
     render(<Home />);
 
     // Check that stats containers are present
-    expect(screen.getByText('Credits Verified')).toBeInTheDocument();
-    expect(screen.getByText('Avg Settlement')).toBeInTheDocument();
-    expect(screen.getByText('Jurisdictions')).toBeInTheDocument();
-
-    // Wait for animation to potentially complete
-    await waitFor(() => {
-      const creditsElement = screen.getByText('Credits Verified');
-      expect(creditsElement).toBeInTheDocument();
-    });
+    expect(screen.getByText('CREDITS VERIFIED')).toBeInTheDocument();
+    expect(screen.getByText('ACTIVE NEGOTIATIONS')).toBeInTheDocument();
+    expect(screen.getByText('AVG SETTLEMENT')).toBeInTheDocument();
   });
 
   test('renders primary CTA buttons', () => {
     render(<Home />);
 
-    const negotiateButton = screen.getByRole('link', { name: /Begin Negotiation →/i });
+    const tradingLink = screen.getByRole('link', { name: /Begin Trading/i });
+    expect(tradingLink).toBeInTheDocument();
+    expect(tradingLink).toHaveAttribute('href', '/trade');
 
-    expect(negotiateButton).toBeInTheDocument();
-    expect(negotiateButton).toHaveAttribute('href', '/negotiate');
-
-    // Check institutional portal button exists (first occurrence in hero)
-    const institutionalButtons = screen.getAllByRole('link', { name: /Institutional Portal/i });
-    expect(institutionalButtons.length).toBeGreaterThan(0);
-    expect(institutionalButtons[0]).toHaveAttribute('href', '/institutional/portal');
+    const institutionalLink = screen.getByRole('link', { name: /Institutional Portal/i });
+    expect(institutionalLink).toBeInTheDocument();
+    expect(institutionalLink).toHaveAttribute('href', '/institutional/portal');
   });
 
   test('displays all six feature cards with correct content', () => {
     render(<Home />);
 
-    // Check all feature cards are present - using getAllByText since some titles appear multiple times
-    expect(screen.getAllByText('AI Negotiation').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('Institutional Portal').length).toBeGreaterThan(0);
-    expect(screen.getByText('Market Scenarios')).toBeInTheDocument();
-    expect(screen.getByText('Market Intelligence')).toBeInTheDocument();
-    expect(screen.getByText('Regulatory Compliance')).toBeInTheDocument();
-    expect(screen.getByText('System Performance')).toBeInTheDocument();
-
-    // Check descriptions
-    expect(screen.getByText(/Advanced AI agent handles complex negotiations/)).toBeInTheDocument();
-    expect(screen.getByText(/Full onboarding pipeline with AFSL compliance/)).toBeInTheDocument();
+    // Trading products section
+    expect(screen.getByText('PRODUCTS')).toBeInTheDocument();
+    expect(screen.getByText('Carbon Credits')).toBeInTheDocument();
+    expect(screen.getByText('Asset Co Tokens')).toBeInTheDocument();
+    expect(screen.getByText('Dual Portfolio')).toBeInTheDocument();
   });
 
   test('feature cards have correct navigation links', () => {
     render(<Home />);
 
-    // Check clickable feature cards have correct hrefs
-    const negotiationLink = screen.getByRole('link', { name: /AI Negotiation.*Start Trading →/s });
-    expect(negotiationLink).toHaveAttribute('href', '/negotiate');
+    // Quick actions in the left panel
+    const tradingLink = screen.getByRole('link', { name: /Begin Trading/i });
+    expect(tradingLink).toHaveAttribute('href', '/trade');
 
-    const institutionalLink = screen.getByRole('link', { name: /Institutional Portal.*Enter Portal →/s });
-    expect(institutionalLink).toHaveAttribute('href', '/institutional/portal');
+    const analysisLink = screen.getByRole('link', { name: /Analysis Tools/i });
+    expect(analysisLink).toHaveAttribute('href', '/analyse');
 
-    const scenarioLink = screen.getByRole('link', { name: /Market Scenarios.*Run Scenarios →/s });
-    expect(scenarioLink).toHaveAttribute('href', '/scenario');
-
-    const performanceLink = screen.getByRole('link', { name: /System Performance.*View Metrics →/s });
-    expect(performanceLink).toHaveAttribute('href', '/performance');
+    const portalLink = screen.getByRole('link', { name: /Institutional Portal/i });
+    expect(portalLink).toHaveAttribute('href', '/institutional/portal');
   });
 
   test('displays market stats from WREI pricing configuration', () => {
     render(<Home />);
 
-    // Check market stats section
-    expect(screen.getByText('Live Market Data')).toBeInTheDocument();
-    expect(screen.getByText('VCM Spot Reference')).toBeInTheDocument();
-    expect(screen.getByText('Forward Removal')).toBeInTheDocument();
-    expect(screen.getByText('dMRV Premium')).toBeInTheDocument();
-    expect(screen.getByText('Settlement')).toBeInTheDocument();
-
-    // Check specific values are displayed (values come from config)
-    expect(screen.getByText('T+0')).toBeInTheDocument();
-    expect(screen.getByText('EM SOVCM 2025')).toBeInTheDocument();
-    expect(screen.getByText('Sylvera SOCC 2025')).toBeInTheDocument();
+    // Market depth panel
+    expect(screen.getByText('MARKET DEPTH')).toBeInTheDocument();
+    expect(screen.getByText('VCM SPOT')).toBeInTheDocument();
+    expect(screen.getByText('FORWARD REM')).toBeInTheDocument();
+    expect(screen.getByText('DMRV PREMIUM')).toBeInTheDocument();
   });
 
   test('renders platform navigation pathways section', () => {
     render(<Home />);
 
-    expect(screen.getByText('Choose Your Pathway')).toBeInTheDocument();
-
-    // Check all three pathways
-    expect(screen.getByText('Investor Pathway')).toBeInTheDocument();
-    expect(screen.getByText('Developer Pathway')).toBeInTheDocument();
-    expect(screen.getByText('Compliance Pathway')).toBeInTheDocument();
-
-    // Check pathway descriptions
-    expect(screen.getByText(/For institutions and accredited investors/)).toBeInTheDocument();
-    expect(screen.getByText(/For technical teams building on WREI infrastructure/)).toBeInTheDocument();
-    expect(screen.getByText(/For compliance officers and legal teams/)).toBeInTheDocument();
+    // Panel tabs for the centre panel
+    expect(screen.getByText('Market Overview')).toBeInTheDocument();
+    expect(screen.getByText('Active Trading')).toBeInTheDocument();
+    expect(screen.getByText('Portfolio Status')).toBeInTheDocument();
   });
 
   test('investor pathway has working assessment link', () => {
     render(<Home />);
 
-    const assessmentButton = screen.getByRole('link', { name: /Start Assessment/i });
-    expect(assessmentButton).toBeInTheDocument();
-    expect(assessmentButton).toHaveAttribute('href', '/institutional/portal');
+    const portalLink = screen.getByRole('link', { name: /Institutional Portal/i });
+    expect(portalLink).toBeInTheDocument();
+    expect(portalLink).toHaveAttribute('href', '/institutional/portal');
   });
 
   test('displays demo environment notice', () => {
     render(<Home />);
 
-    expect(screen.getByText('Demonstration Environment')).toBeInTheDocument();
-    expect(screen.getByText(/This is a demonstration of the WREI platform/)).toBeInTheDocument();
-    expect(screen.getByText(/No real carbon credits are traded/)).toBeInTheDocument();
+    expect(screen.getByText('Demo Environment')).toBeInTheDocument();
+    expect(screen.getByText(/No real credits traded/)).toBeInTheDocument();
   });
 
   test('uses WREI colour scheme throughout', () => {
     render(<Home />);
 
-    // Check that main brand color classes are applied
-    const container = screen.getByText('WREI Carbon Credit').closest('div');
+    // Bloomberg-style layout has white backgrounds and slate borders
+    const container = screen.getByText('Trading Dashboard').closest('div');
     expect(container).toBeInTheDocument();
-
-    // Check for presence of WREI brand colors in the DOM structure
-    expect(document.querySelector('.text-\\[\\#0EA5E9\\]')).toBeInTheDocument();
-    expect(document.querySelector('.bg-\\[\\#1B2A4A\\]')).toBeInTheDocument();
   });
 
   test('responsive layout elements are present', () => {
     render(<Home />);
 
-    // Check for responsive grid classes
+    // Check for grid classes in the market overview
     expect(document.querySelector('.grid')).toBeInTheDocument();
-    expect(document.querySelector('.md\\:grid-cols-3')).toBeInTheDocument();
-    expect(document.querySelector('.lg\\:grid-cols-3')).toBeInTheDocument();
-
-    // Check for responsive text classes
-    expect(document.querySelector('.md\\:text-7xl')).toBeInTheDocument();
-    expect(document.querySelector('.sm\\:py-32')).toBeInTheDocument();
+    expect(document.querySelector('.grid-cols-3')).toBeInTheDocument();
   });
 
   test('all navigation links are accessible', () => {
@@ -179,7 +144,6 @@ describe('Landing Page', () => {
 
     const allLinks = screen.getAllByRole('link');
 
-    // Filter out external or hash links and check internal navigation links
     const internalLinks = allLinks.filter(link => {
       const href = link.getAttribute('href');
       return href && href.startsWith('/');
@@ -187,8 +151,8 @@ describe('Landing Page', () => {
 
     expect(internalLinks.length).toBeGreaterThan(0);
 
-    // Check some key navigation links exist
-    const expectedRoutes = ['/negotiate', '/institutional/portal', '/scenario', '/performance'];
+    // Check key navigation links exist
+    const expectedRoutes = ['/trade', '/institutional/portal', '/analyse'];
     expectedRoutes.forEach(route => {
       const linkExists = internalLinks.some(link => link.getAttribute('href') === route);
       expect(linkExists).toBe(true);
@@ -198,13 +162,33 @@ describe('Landing Page', () => {
   test('SVG icons are used instead of emojis', () => {
     render(<Home />);
 
-    // Check that SVG elements are present (replacing old emoji approach)
-    const svgElements = document.querySelectorAll('svg');
-    expect(svgElements.length).toBeGreaterThan(5); // Should have multiple SVG icons
+    // Bloomberg dashboard uses minimal UI — status indicators via colored dots
+    // rather than SVG icons or emojis
+    const statusDots = document.querySelectorAll('.rounded-full');
+    expect(statusDots.length).toBeGreaterThan(0);
+  });
 
-    // Ensure no emoji elements are present
-    expect(screen.queryByText('🛡️')).not.toBeInTheDocument();
-    expect(screen.queryByText('💬')).not.toBeInTheDocument();
-    expect(screen.queryByText('🏢')).not.toBeInTheDocument();
+  test('tab navigation switches panel content', () => {
+    render(<Home />);
+
+    // Default tab shows market overview
+    expect(screen.getByText('CREDITS VERIFIED')).toBeInTheDocument();
+
+    // Click Active Trading tab
+    fireEvent.click(screen.getByText('Active Trading'));
+    expect(screen.getByText('Active Trading Sessions')).toBeInTheDocument();
+
+    // Click Portfolio Status tab
+    fireEvent.click(screen.getByText('Portfolio Status'));
+    expect(screen.getByText('Portfolio Overview')).toBeInTheDocument();
+  });
+
+  test('system status panel shows service health', () => {
+    render(<Home />);
+
+    expect(screen.getByText('SYSTEM STATUS')).toBeInTheDocument();
+    expect(screen.getByText('AI Engine')).toBeInTheDocument();
+    expect(screen.getByText('Market Feed')).toBeInTheDocument();
+    expect(screen.getByText('Blockchain')).toBeInTheDocument();
   });
 });

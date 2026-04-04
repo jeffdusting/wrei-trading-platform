@@ -38,7 +38,7 @@ describe('Milestone 2.3: Performance Monitoring System', () => {
       ]),
       url: url.toString(),
       json: async () => body || {}
-    } as NextRequest;
+    } as unknown as NextRequest;
   }
 
   // Helper function to parse API response

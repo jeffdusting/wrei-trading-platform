@@ -4,64 +4,26 @@
  * Provides basic toggle functionality with 3 data sets
  */
 
-import { create } from 'zustand';
+/**
+ * Re-export canonical types and store from simple-demo-state.ts.
+ * This file provides backward-compatible useDemoMode() for components
+ * that still reference the old demo-state-manager API.
+ */
 
-export type SimpleDemoDataSet = 'institutional' | 'retail' | 'compliance';
+export {
+  useSimpleDemoStore,
+  isSimpleDemoActive,
+  getSimpleDemoData,
+} from './simple-demo-state';
 
-export interface SimpleDemoState {
-  isActive: boolean;
-  selectedDataSet: SimpleDemoDataSet | null;
-  demoData: any | null;
-}
+export type {
+  SimpleDemoDataSet,
+  SimpleDemoState,
+  SimpleDemoActions,
+  SimpleDemoStore,
+} from './simple-demo-state';
 
-export interface SimpleDemoActions {
-  activateDemo: (dataSet: SimpleDemoDataSet) => void;
-  deactivateDemo: () => void;
-  getDemoData: () => any | null;
-}
-
-export type SimpleDemoStore = SimpleDemoState & SimpleDemoActions;
-
-export const useSimpleDemoStore = create<SimpleDemoStore>((set, get) => ({
-  // State
-  isActive: false,
-  selectedDataSet: null,
-  demoData: null,
-
-  // Actions
-  activateDemo: (dataSet: SimpleDemoDataSet) => {
-    const { getDemoDataForSet } = require('./demo-data-simple');
-    const data = getDemoDataForSet(dataSet);
-
-    set({
-      isActive: true,
-      selectedDataSet: dataSet,
-      demoData: data
-    });
-  },
-
-  deactivateDemo: () => {
-    set({
-      isActive: false,
-      selectedDataSet: null,
-      demoData: null
-    });
-  },
-
-  getDemoData: () => {
-    return get().demoData;
-  },
-}));
-
-// Helper to check if demo mode is active (for compatibility)
-export const isSimpleDemoActive = () => {
-  return useSimpleDemoStore.getState().isActive;
-};
-
-// Helper to get current demo data (for compatibility)
-export const getSimpleDemoData = () => {
-  return useSimpleDemoStore.getState().demoData;
-};
+import { useSimpleDemoStore } from './simple-demo-state';
 
 // Compatibility export for components that haven't been updated yet
 export const useDemoMode = () => {
@@ -74,12 +36,15 @@ export const useDemoMode = () => {
     deactivateDemo: store.deactivateDemo,
     getDemoData: store.getDemoData,
     // Stub functions for removed functionality
-    currentTour: null,
+    currentTour: null as string | null,
+    presentationMode: null as string | null,
+    tourStep: 0,
+    prePopulatedData: null as any,
     showTourOverlay: false,
     loadESCMarketContext: () => {},
     configureNorthmoreGordonBranding: () => {},
-    trackInteraction: () => {},
-    startTour: () => {},
+    trackInteraction: (_interaction?: any) => {},
+    startTour: (_tourId?: string) => {},
     endTour: () => {},
     nextStep: () => {},
     skipStep: () => {},
@@ -87,3 +52,15 @@ export const useDemoMode = () => {
     getNorthmoreGordonContext: () => ({})
   };
 };
+
+// Type exports for compatibility
+export type DemoTourType = string;
+export const DEMO_TOURS: Record<string, { steps: { id: string }[] }> = {};
+export interface DemoDataSet {
+  investorProfile: Record<string, unknown>;
+  marketData: Record<string, unknown>;
+  negotiationHistory: Record<string, unknown>[];
+  portfolioData: Record<string, unknown>;
+  complianceData: Record<string, unknown>;
+  analyticsData: Record<string, unknown>;
+}

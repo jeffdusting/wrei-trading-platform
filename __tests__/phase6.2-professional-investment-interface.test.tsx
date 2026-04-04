@@ -837,8 +837,8 @@ describe('Phase 6.2: Final Integration Verification Summary', () => {
 
     // 6. ✅ Persistence Integration - State maintained across navigation
     fireEvent.click(screen.getByText('Market Access'));
-    const overviewButton = screen.getAllByText('Investment Overview')[0];
-    fireEvent.click(overviewButton);
+    const overviewButton2 = screen.getAllByText('Investment Overview')[0];
+    fireEvent.click(overviewButton2);
     expect(screen.getByText(/Professional Investment Interface/)).toBeInTheDocument();
 
     // 7. ✅ System-wide Integration - Platform ready for production
