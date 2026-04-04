@@ -1,6 +1,6 @@
-# WP3 CODEBASE ASSESSMENT
+# WP3 — Codebase Architecture Assessment
 
-**Date:** 2026-04-03
+**Document Reference:** WR-WREI-WP3 | **Version:** 1.0 (Final) | **Date:** 3 April 2026
 **Platform:** WREI Trading Platform v0.1.0
 **Assessment Scope:** Production Trading Platform Readiness Analysis
 **Target Use Cases:** ESC trading (NSW), tokenised carbon credits (global), asset tokenisation
