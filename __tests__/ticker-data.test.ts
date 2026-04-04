@@ -30,9 +30,10 @@ describe('TickerData', () => {
     test('initializes with correct number of tickers', () => {
       const tickers = simulator.getCurrentTickers();
 
-      expect(tickers).toHaveLength(7);
+      expect(tickers).toHaveLength(13);
 
       const symbols = tickers.map(t => t.symbol);
+      // Original 7 tickers
       expect(symbols).toContain('WREI-C');
       expect(symbols).toContain('WREI-ESC');
       expect(symbols).toContain('VCM-SPOT');
@@ -40,6 +41,13 @@ describe('TickerData', () => {
       expect(symbols).toContain('ESC-NSW');
       expect(symbols).toContain('ESC-FWD');
       expect(symbols).toContain('RWA-IDX');
+      // 6 new instrument tickers from feed-manager
+      expect(symbols).toContain('VEEC');
+      expect(symbols).toContain('ACCU');
+      expect(symbols).toContain('LGC');
+      expect(symbols).toContain('STC');
+      expect(symbols).toContain('PRC');
+      expect(symbols).toContain('WREI-ACO');
     });
 
     test('initializes with pricing index values', () => {
@@ -84,7 +92,7 @@ describe('TickerData', () => {
         expect.arrayContaining(['WREI-C', 'VCM-SPOT', 'DMRV-SPOT', 'RWA-IDX'])
       );
       expect(audTickers.map(t => t.symbol)).toEqual(
-        expect.arrayContaining(['WREI-ESC', 'ESC-NSW', 'ESC-FWD'])
+        expect.arrayContaining(['WREI-ESC', 'ESC-NSW', 'ESC-FWD', 'VEEC', 'ACCU', 'LGC', 'STC', 'PRC', 'WREI-ACO'])
       );
     });
 
@@ -140,7 +148,7 @@ describe('TickerData', () => {
       const tickers = simulator.getCurrentTickers();
 
       expect(Array.isArray(tickers)).toBe(true);
-      expect(tickers).toHaveLength(7);
+      expect(tickers).toHaveLength(13);
 
       tickers.forEach(ticker => {
         expect(ticker).toHaveProperty('symbol');
@@ -162,7 +170,7 @@ describe('TickerData', () => {
 
         if (callbackCount === 1) {
           // First call should be immediate with current data
-          expect(tickers).toHaveLength(7);
+          expect(tickers).toHaveLength(13);
           expect(tickers[0].change).toBe(0); // Initially zero
         } else if (callbackCount === 2) {
           // Second call should be after first update

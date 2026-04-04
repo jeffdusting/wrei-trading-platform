@@ -556,3 +556,271 @@ Built the simulated order book engine, persistent trade blotter, trades API endp
 | `TradeBlotter.tsx` ≤ 300 lines | **OVER** — 351 lines (includes Error Boundary, filters, sort, pagination) |
 
 ---
+
+---
+
+## Session: P2.1–P2.3 — Live Price Feeds, Cache, UI Integration
+
+- **Date:** 2026-04-04
+- **Phase:** P2.1–P2.3
+- **Branch:** feature/negotiate-to-trade-implementation
+
+### Summary
+
+Connected live price data and built the feed adapter framework. Implemented Ecovantage and Northmore Gordon web scrapers, a simulation engine for fallback/demo, an in-memory price cache with Vercel Postgres persistence, a feed-manager with circuit breaker pattern (WP6 §3.6), and integrated everything into the Bloomberg Terminal UI with live/cached/simulated health indicators.
+
+---
+
+### Task P2.1 — Price Feed Scrapers
+
+**Result:** 4 new files under `lib/data-feeds/adapters/`
+
+#### Files created:
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `lib/data-feeds/adapters/types.ts` | 50 | Shared types: `ScrapedPrice`, `ScrapeResult`, `ResolvedPrice`, `HistoricalPrice`, `FeedHealth`, `PriceTier` |
+| `lib/data-feeds/adapters/ecovantage-scraper.ts` | 158 | Scrapes ESC, VEEC, LGC, ACCU, STC, PRC spot prices from Ecovantage market update page. Regex extraction from stripped HTML. 15s timeout. Returns `ScrapedPrice[]` or null. |
+| `lib/data-feeds/adapters/northmore-scraper.ts` | 154 | Scrapes ESC, VEEC, LGC, ACCU, STC from Northmore Gordon certificate prices page. Secondary/validation source. Same pattern as Ecovantage. |
+| `lib/data-feeds/adapters/simulation-engine.ts` | 140 | Generates realistic prices using bounded random walk with per-instrument parameters (spot, volatility, trend, floor, ceiling). Generates 30-day history for charts. Seeded PRNG for reproducible historical data. |
+
+#### Scraper design:
+- HTML fetched with `fetch()` + AbortController timeout
+- HTML stripped to plain text, then regex-matched per instrument
+- Prices validated (> 0, < $10,000) before inclusion
+- All errors caught — returns `null`, never throws
+- Source attribution on every price for audit trail
+
+---
+
+### Task P2.2 — Price Cache + Feed Manager
+
+**Result:** 2 new files
+
+#### Files created:
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `lib/data-feeds/cache/price-cache.ts` | 213 | In-memory Map cache (latest + history per instrument) + fire-and-forget Vercel Postgres persistence. Feed health tracking per-feed. Three-tier fallback helpers. Max 1,000 history entries per instrument. |
+| `lib/data-feeds/feed-manager.ts` | 254 | Orchestrates all adapters with circuit breaker pattern per WP6 §3.6. States: closed → open (3 failures) → half-open (60s timeout). Single `getPrice(instrumentType)` function with three-tier fallback. `getAllPrices()` for ticker. `getPriceHistory()` for charts. `getHealthStatus()` for UI. 5-minute auto-refresh interval. |
+
+#### Circuit breaker implementation:
+
+| State | Behaviour | Transition |
+|-------|-----------|------------|
+| Closed | Requests pass through to adapter | Opens after 3 consecutive failures |
+| Open | Immediately returns null, no external calls | Half-opens after 60s |
+| Half-Open | Allows one test request | Closes on success, re-opens on failure |
+
+#### Feed priority (WP1 §4.2):
+1. **Ecovantage** (primary) — all 6 certificate types
+2. **Northmore Gordon** (secondary) — fills gaps not covered by Ecovantage
+3. **Simulation engine** (fallback) — WREI tokens + any remaining gaps
+
+---
+
+### Task P2.3 — Connect to UI
+
+**Result:** 3 new files + 4 modified files
+
+#### Files created:
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `app/api/prices/route.ts` | 38 | GET endpoint serving all prices + health, single instrument, or price history |
+| `components/market/FeedHealthIndicator.tsx` | 118 | Bloomberg Terminal status bar widget: green/Live, amber/Cached, grey/Simulated. Wrapped in Error Boundary. Polls `/api/prices` every 60s. |
+
+#### Files modified:
+
+| File | Change |
+|------|--------|
+| `lib/ticker-data.ts` | Added 6 new instrument tickers (VEEC, ACCU, LGC, STC, PRC, WREI-ACO). `MarketSimulator.ingestFeedPrices()` merges live prices from API. `startUpdates()` fetches from `/api/prices` every 60s. Added `feedTier` to `TickerData`. Added `feedOverallStatus` getter. |
+| `components/navigation/BloombergShell.tsx` | Replaced static "MARKET DATA" status dot with `FeedHealthIndicator` component |
+| `components/market/index.ts` | Added `FeedHealthIndicator` to barrel exports |
+| `__tests__/ticker-data.test.ts` | Updated ticker count assertions: 7 → 13, added new symbols to currency assertions |
+
+#### Feed health indicator behaviour:
+
+| Condition | Dot Colour | Label |
+|-----------|-----------|-------|
+| Scraper data < 24 hours old | Green | LIVE |
+| Using cached data (stale) | Amber | CACHED [time] |
+| Using simulation engine | Grey | SIMULATED |
+
+Error Boundary wraps the indicator — if it crashes, displays "FEED N/A" without affecting trading panels.
+
+---
+
+### Verification Results
+
+| Check | Result |
+|-------|--------|
+| `npx tsc --noEmit` | **PASS** — 0 errors |
+| `npm run build` | **PASS** — all pages compile |
+| `npm test -- --passWithNoTests` | **PASS** — 80 suites, 1884 passed, 3 skipped, 1 intermittent failure (pre-existing flaky `advanced-analytics.test.ts` — passes in isolation) |
+| `ecovantage-scraper.ts` ≤ 300 lines | **PASS** — 158 lines |
+| `northmore-scraper.ts` ≤ 300 lines | **PASS** — 154 lines |
+| `simulation-engine.ts` ≤ 300 lines | **PASS** — 140 lines |
+| `price-cache.ts` ≤ 300 lines | **PASS** — 213 lines |
+| `feed-manager.ts` ≤ 300 lines | **PASS** — 254 lines |
+
+---
+
+### Architecture After P2.3
+
+```
+lib/data-feeds/
+├── adapters/
+│   ├── types.ts                 — Shared adapter types
+│   ├── ecovantage-scraper.ts    — Weekly ESC/VEEC/ACCU/LGC/STC/PRC spot prices
+│   ├── northmore-scraper.ts     — Daily certificate prices (secondary)
+│   └── simulation-engine.ts     — Realistic data simulation for gaps
+├── cache/
+│   └── price-cache.ts           — In-memory + Vercel Postgres price cache
+├── feed-manager.ts              — Orchestrator with circuit breaker
+├── types.ts                     — Legacy feed types (Milestone 2.1)
+├── carbon-pricing-feed.ts       — Legacy carbon pricing (Milestone 2.1)
+├── live-carbon-pricing-feed.ts  — Legacy live pricing (Milestone 2.1)
+├── real-time-connector.ts       — Legacy real-time connector (Milestone 2.1)
+└── rwa-market-feed.ts           — Legacy RWA feed (Milestone 2.1)
+```
+
+---
+
+### Issues to Carry Forward
+
+1. **Scrapers untested against live pages** — Ecovantage and Northmore Gordon page structures may differ from regex patterns. First live deployment will validate extraction accuracy.
+2. **Legacy data-feed files** (85K+ lines) in `lib/data-feeds/` are superseded by the new adapter framework. Can be decomposed or removed in a future cleanup.
+3. **Intermittent test failure** in `advanced-analytics.test.ts` — passes in isolation, fails occasionally in full suite. Pre-existing.
+
+---
+
+---
+
+---
+
+## Session: P2.4–P2.8 — Settlement Adapters, Orchestrator, Audit Trail
+
+- **Date:** 2026-04-04
+- **Phase:** P2.4–P2.8
+- **Branch:** feature/negotiate-to-trade-implementation
+
+### Summary
+
+Built the settlement adapter framework per WP5 §7 and WP6 §3.2. Four operational adapters (TESSA, CER, VEEC, Blockchain), two documented API contract stubs (Zoniqx zConnect, Trovio CorTenX), a settlement orchestrator with circuit breaker pattern (WP6 §3.6), and an append-only audit trail logger integrated into the negotiation engine, trade API, and settlement orchestrator.
+
+---
+
+### Task P2.4 — Settlement Types
+
+**Result:** `lib/trading/settlement/types.ts` (105 lines)
+
+Types defined per WP5 §7:
+- `SettlementAdapter` interface (4 methods: initiate, getStatus, confirm, cancel)
+- `SettlementRecord` with full state history
+- `SettlementStatus`, `SettlementConfirmation`, `CancellationResult`
+- `CompletedTrade` input type
+- `SettlementStatusValue` state machine: confirmed → initiated → processing → transfer_recorded → complete | failed | cancelled
+- `SettlementMethod`: tessa_registry, cer_registry, veec_registry, blockchain, zoniqx_zconnect, cortenx_api
+
+---
+
+### Task P2.5 — Settlement Adapters
+
+**Result:** 4 adapters under `lib/trading/settlement/adapters/`
+
+| File | Lines | Instruments | Settlement Pattern |
+|------|-------|-------------|-------------------|
+| `tessa-adapter.ts` | 162 | ESC, PRC | Multi-step: Initiated → Transfer Recorded → Complete. Generates TESSA transfer instructions. 1–3 business day simulation. |
+| `cer-adapter.ts` | 151 | ACCU | CorTenX API simulation. Generates realistic ACCU unit data (project ID, serial range, methodology). T+1 timing. |
+| `veec-adapter.ts` | 156 | VEEC | Mirrors TESSA pattern for Victorian ESC registry. ESC Victoria confirmation workflow. |
+| `blockchain-adapter.ts` | 149 | WREI-CC, WREI-ACO | T+0 instant. Generates tx hash, block number, 12 confirmations. ERC-7518 (DyCIST) token standard. |
+
+All adapters use in-memory `Map<string, SettlementRecord>` for simulated state persistence.
+
+---
+
+### Task P2.6 — API Contract Stubs
+
+**Result:** 2 stubs with documented endpoint contracts
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `zoniqx-stub.ts` | 78 | Zoniqx zConnect API: /settlement/initiate, /settlement/:id/status, /settlement/:id/confirm, /settlement/:id/cancel, /compliance/check |
+| `cortenx-stub.ts` | 88 | Trovio CorTenX API: /transfers/initiate, /transfers/:id, /transfers/:id/confirm, DELETE /transfers/:id, /holdings, /projects/:id |
+
+All methods throw `NotImplemented` — these are interface contracts for future production integration.
+
+---
+
+### Task P2.7 — Settlement Orchestrator
+
+**Result:** `lib/trading/settlement/settlement-orchestrator.ts` (252 lines)
+
+| Function | Description |
+|----------|-------------|
+| `settleTradeForInstrument(trade)` | Routes to correct adapter, manages state machine, logs all transitions |
+| `getSettlementStatusForTrade(id, type)` | Status lookup via adapter |
+| `confirmSettlementForTrade(id, type)` | Advance settlement to next state |
+| `cancelSettlementForTrade(id, type)` | Cancel pending settlement |
+| `getMethodForInstrument(type)` | Map instrument type to settlement method |
+| `getAdapterForInstrument(type)` | Adapter registry lookup |
+
+Circuit breaker (WP6 §3.6): 3 consecutive failures → open (60s timeout) → half-open (1 test request) → closed on success.
+
+DB persistence: fire-and-forget INSERT to settlements table, maps adapter methods to DB-compatible values.
+
+---
+
+### Task P2.8 — Audit Trail Logger
+
+**Result:** `lib/trading/compliance/audit-logger.ts` (176 lines)
+
+13 action types: `trade_initiated`, `trade_confirmed`, `trade_cancelled`, `negotiation_started`, `negotiation_message`, `negotiation_completed`, `settlement_initiated`, `settlement_state_change`, `settlement_completed`, `settlement_failed`, `user_action`, `config_change`, `system_event`.
+
+Each entry: timestamp (auto), actionType, userId (null for system), instrumentId, instrumentType, sessionId, entityId, details (JSONB).
+
+Dual persistence: always in-memory (up to 10K entries), fire-and-forget to Vercel Postgres when available.
+
+#### Integration points:
+
+| Integration | Events Logged |
+|-------------|---------------|
+| `app/api/negotiate/route.ts` | `negotiation_started` (opening), `negotiation_message` (every turn), `negotiation_completed` (outcome reached) |
+| `app/api/trades/route.ts` | `trade_initiated` (POST creates trade) |
+| `settlement-orchestrator.ts` | `settlement_initiated`, `settlement_state_change` (each transition), `settlement_completed`, `settlement_failed` |
+
+---
+
+### Verification Results
+
+| Check | Result |
+|-------|--------|
+| `npm run build` | **PASS** — all pages compile |
+| `npx tsc --noEmit` | **PASS** — 0 errors |
+| `npm test -- --passWithNoTests` | **PASS** — 80 suites, 1885 passed, 3 skipped, 0 failed |
+| All modules ≤ 300 lines | **PASS** — max 252 (settlement-orchestrator.ts) |
+
+---
+
+### Architecture After P2.4–P2.8
+
+```
+lib/trading/settlement/
+├── types.ts                     — Settlement interfaces (105 lines)
+├── settlement-orchestrator.ts   — Trade routing + circuit breaker (252 lines)
+└── adapters/
+    ├── tessa-adapter.ts         — ESC/PRC registry (162 lines)
+    ├── cer-adapter.ts           — ACCU via CorTenX (151 lines)
+    ├── veec-adapter.ts          — VEEC Victorian registry (156 lines)
+    ├── blockchain-adapter.ts    — WREI tokens on-chain T+0 (149 lines)
+    ├── zoniqx-stub.ts           — Zoniqx zConnect stub (78 lines)
+    └── cortenx-stub.ts          — Trovio CorTenX stub (88 lines)
+
+lib/trading/compliance/
+└── audit-logger.ts              — Append-only audit trail (176 lines)
+```
+
+Gate report: `GATE_REPORT_P2.md`
+Tag: `v0.4.0-live-data`
+Recommendation: **PROCEED**

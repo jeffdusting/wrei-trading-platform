@@ -18,6 +18,8 @@ import {
   parseCommitteeResponse,
   advanceSpeaker,
 } from '@/lib/committee-mode';
+import { logNegotiationEvent } from '@/lib/trading/compliance/audit-logger';
+import type { InstrumentType } from '@/lib/trading/instruments/types';
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -132,6 +134,31 @@ export async function POST(request: NextRequest) {
       claudeResponse.response + premiumDefence,
       isOpening
     );
+
+    // Audit: log negotiation turn
+    const auditInstrumentType = instrumentType as InstrumentType | undefined;
+    const negotiationSessionId = state.buyerProfile?.persona ?? 'unknown';
+    if (isOpening) {
+      logNegotiationEvent('negotiation_started', negotiationSessionId, auditInstrumentType, {
+        persona: state.buyerProfile?.persona,
+        anchorPrice: state.anchorPrice,
+        round: 1,
+      }).catch(() => {});
+    }
+    logNegotiationEvent('negotiation_message', negotiationSessionId, auditInstrumentType, {
+      round: updatedState.round,
+      phase: updatedState.phase,
+      currentOffer: adjustedPrice,
+      classification: claudeResponse.argumentClassification,
+      outcome: updatedState.outcome ?? null,
+    }).catch(() => {});
+    if (updatedState.outcome) {
+      logNegotiationEvent('negotiation_completed', negotiationSessionId, auditInstrumentType, {
+        outcome: updatedState.outcome,
+        finalPrice: updatedState.currentOfferPrice,
+        totalRounds: updatedState.round,
+      }).catch(() => {});
+    }
 
     // Step 9: Generate Strategy Explanation for Institutional Investors
     let strategyExplanation: NegotiationStrategyExplanation | null = null;

@@ -7,6 +7,7 @@ import { useDesignTokens } from '@/design-system/tokens/professional-tokens'
 import { MarketTicker } from '@/components/market'
 import SimpleDemoToggle from '@/components/demo/SimpleDemoToggle'
 import { useSimpleDemoMode } from '@/components/demo/SimpleDemoProvider'
+import FeedHealthIndicator from '@/components/market/FeedHealthIndicator'
 
 interface NavigationItem {
   label: string
@@ -263,20 +264,8 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
             © 2026 WREI Platform | Institutional-grade carbon credit tokenisation
           </span>
 
-          {/* Connection Status */}
-          <div className="flex items-center gap-2">
-            <span className="bloomberg-small-text text-slate-400">
-              MARKET DATA
-            </span>
-            <div
-              style={{
-                width: '4px',
-                height: '4px',
-                borderRadius: '50%',
-                backgroundColor: tokens.colors.status.online
-              }}
-            />
-          </div>
+          {/* Feed Health Status — live/cached/simulated indicator */}
+          <FeedHealthIndicator />
         </div>
       </footer>
     </div>

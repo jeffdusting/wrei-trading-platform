@@ -6,3 +6,4 @@
 
 export { default as MarketTicker } from './MarketTicker';
 export { default as MarketStatus } from './MarketStatus';
+export { default as FeedHealthIndicator } from './FeedHealthIndicator';

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { logTradeEvent } from '@/lib/trading/compliance/audit-logger';
 
 // ---------------------------------------------------------------------------
 // GET /api/trades — list trades from Vercel Postgres
@@ -42,6 +43,16 @@ export async function POST(req: NextRequest) {
       buyer_persona: body.buyer_persona,
       metadata: body.metadata ?? {},
     });
+
+    // Audit: log trade creation
+    logTradeEvent('trade_initiated', trade.id, body.instrument_type ?? 'ESC', {
+      direction: trade.direction,
+      quantity: trade.quantity,
+      pricePerUnit: trade.price_per_unit,
+      totalValue: trade.total_value,
+      currency: trade.currency,
+      buyerPersona: trade.buyer_persona,
+    }).catch(() => {});
 
     return NextResponse.json({ trade }, { status: 201 });
   } catch (error) {
