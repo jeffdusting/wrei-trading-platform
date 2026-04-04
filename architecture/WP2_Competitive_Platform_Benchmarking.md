@@ -1,6 +1,6 @@
 # WP2 — Competitive Platform Benchmarking
 
-**Document Reference:** WR-WREI-WP2 | **Date:** 4 April 2026
+**Document Reference:** WR-WREI-WP2 | **Version:** 1.0 (Final) | **Date:** 4 April 2026
 **Purpose:** Identify feature expectations, scope gaps, and architectural patterns for an institutional-grade environmental trading platform
 
 ---

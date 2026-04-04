@@ -168,6 +168,18 @@ export default function ProvenanceCertificate({ trade, provenance, onClose }: Pr
             </div>
           )}
 
+          {/* AI Disclosure — WP5 section 8.2 */}
+          <div className="mb-4 rounded border border-amber-200 bg-amber-50 p-3">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-amber-700 mb-1">
+              AI Disclosure
+            </div>
+            <p className="text-xs text-amber-800">
+              This trade was negotiated with the assistance of an AI-powered negotiation agent.
+              The agent operates within defined price and volume constraints set by the platform
+              and/or the counterparty. All negotiation transcripts are recorded and available for audit.
+            </p>
+          </div>
+
           {/* Certificate Footer */}
           <div className="border-t border-slate-200 pt-4 text-center">
             <p className="bloomberg-body-text text-slate-500">

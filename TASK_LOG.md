@@ -1088,3 +1088,121 @@ Implemented white-label branding system (Scenario B), compliance officer dashboa
 Gate report: `GATE_REPORT_P3.md`
 Tag: `v0.5.0-scenarios`
 Recommendation: **PROCEED**
+
+---
+
+---
+
+## Session: P4.1–P4.9 — Compliance & Polish (Final)
+
+- **Date:** 2026-04-04
+- **Phase:** P4 (Final)
+- **Branch:** feature/negotiate-to-trade-implementation
+
+### Summary
+
+Production compliance features, reporting, AI disclosure, white-label polish, performance validation, API stub finalisation, full regression suite, and document set finalisation. All gate criteria met — platform tagged v1.0.0-investor-ready.
+
+---
+
+### Task P4.1 — Compliance Dashboard Final Pass
+
+**Result:** ESC penalty rate (A$29.48) and ESS targets verified; source citations added
+
+| Data Point | Value | Source |
+|-----------|-------|--------|
+| ESC penalty rate 2026 | A$29.48 | IPART Targets and Penalties |
+| ESS surrender deadline | 28 Feb 2027 | ESS Rule 2009 cl 11A |
+| ESS energy savings target | 8.5% of liable electricity | Electricity Supply Act 1995 (NSW) Part 9 |
+
+Files modified: `app/compliance/page.tsx` (source citations, ESS targets panel, export button, AI disclosure banner)
+
+---
+
+### Task P4.2 — Report Generation
+
+**Result:** `lib/trading/compliance/report-generator.ts` (210 lines)
+
+| Function | Output |
+|----------|--------|
+| `generateTradeReportCsv()` | Trade history CSV with AI-assisted flag and WP5 §8.2 disclosure |
+| `generateAuditExportCsv()` | Audit trail CSV for regulatory filing |
+| `generateComplianceSummaryHtml()` | PDF-styled HTML compliance summary |
+
+Export buttons added to: TradeBlotter header (CSV), Compliance ESS tab (HTML summary)
+
+---
+
+### Task P4.3 — AI Disclosure
+
+**Result:** WP5 §8.2 disclosure integrated across all trade confirmations and audit records
+
+| Integration Point | Change |
+|-------------------|--------|
+| `ProvenanceCertificate.tsx` | Amber disclosure box on all trade certificates |
+| `audit-logger.ts` | `aiAssisted` field on `AuditLogEntry`, auto-set for negotiation events |
+| `report-generator.ts` | Disclosure footer on CSV exports, disclosure section in HTML reports |
+| Compliance audit tab | AI disclosure banner |
+
+---
+
+### Task P4.4 — White-Label Polish
+
+**Result:** 4 styling leaks fixed in BloombergShell
+
+| Leak | Fix |
+|------|-----|
+| Active nav: hardcoded blue | Uses white-label accent colour |
+| Command bar background | Uses `wl.primaryColour` |
+| Command prompt text | Shows `{terminalCode}@trading:~$` |
+| Footer text colour | Uses semi-transparent `primaryTextColour` |
+
+---
+
+### Task P4.5 — Performance Testing
+
+**Result:** All 4 targets met
+
+| Metric | Target | Actual | Status |
+|--------|--------|--------|--------|
+| Landing page load | < 2s | ~0.5s | **PASS** |
+| Trade page load | < 2s | ~1.2s | **PASS** |
+| AI first-response | < 5s | ~2–4s | **PASS** |
+| Non-AI API | < 500ms | < 50ms | **PASS** |
+
+---
+
+### Task P4.6–P4.7 — API Stubs Finalised
+
+**Result:** Both stubs now return realistic simulated responses
+
+| Stub | Lines | Features |
+|------|-------|----------|
+| `zoniqx-stub.ts` | 168 | 5 documented endpoints, tx hashes, block numbers, T+0 flow |
+| `cortenx-stub.ts` | 202 | 6 documented endpoints, CER refs, serial ranges, 3 ERF projects |
+
+---
+
+### Task P4.8 — Final Regression Suite
+
+**Result:** 13/13 regression tests PASS (REG-A1 through REG-F4)
+
+---
+
+### Task P4.9 — Document Set Finalisation
+
+**Result:** All WP1–WP7 documents versioned. README.md rewritten for v1.0.0.
+
+---
+
+### Verification Results
+
+| Check | Result |
+|-------|--------|
+| `npm run build` | **PASS** — all pages compile |
+| `npx tsc --noEmit` | **PASS** — 0 errors |
+| `npm test -- --passWithNoTests` | **PASS** — 80 suites, 1888 passed, 3 skipped, 0 failed |
+
+Gate report: `GATE_REPORT_P4.md`
+Tag: `v1.0.0-investor-ready`
+Recommendation: **PROCEED — Investor-ready release**

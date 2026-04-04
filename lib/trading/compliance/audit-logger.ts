@@ -41,6 +41,7 @@ export interface AuditLogEntry {
   instrumentType?: InstrumentType;
   sessionId: string | null;
   entityId?: string;        // trade ID, settlement ID, negotiation ID, etc.
+  aiAssisted?: boolean;     // true for AI-negotiated trades (WP5 §8.2)
   details: Record<string, unknown>;
 }
 
@@ -56,9 +57,11 @@ const MAX_IN_MEMORY_ENTRIES = 10_000;
 // ---------------------------------------------------------------------------
 
 export async function logAuditEvent(entry: Omit<AuditLogEntry, 'timestamp'>): Promise<void> {
+  const isAi = entry.aiAssisted ?? entry.actionType.startsWith('negotiation_');
   const fullEntry: AuditLogEntry = {
     ...entry,
     timestamp: new Date().toISOString(),
+    aiAssisted: isAi,
   };
 
   // Always append to in-memory log
@@ -124,7 +127,8 @@ export async function logNegotiationEvent(
     instrumentType,
     sessionId: sessionId ?? null,
     entityId: negotiationId,
-    details,
+    aiAssisted: true, // All negotiation events are AI-assisted (WP5 §8.2)
+    details: { ...details, aiAssisted: true },
   });
 }
 

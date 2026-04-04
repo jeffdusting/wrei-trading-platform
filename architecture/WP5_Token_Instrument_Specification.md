@@ -1,9 +1,9 @@
 # WP5 — Token & Instrument Specification
 
-**Document Reference:** WR-WREI-WP5 | **Date:** 4 April 2026
+**Document Reference:** WR-WREI-WP5 | **Version:** 1.0 (Final) | **Date:** 4 April 2026
 **Purpose:** Define metadata schemas, lifecycle states, pricing mechanics, and agentic negotiation interaction for all tradeable products on the WREI platform
 **Source Documents:** WR-STR-008 (Tokenisation Strategy), WREI Tokenisation Practical Paper, WP1 (ESC Market Audit), WP3 (Codebase Assessment)
-**Status:** Draft for Jeff's review — conflicts with existing documents flagged for resolution
+**Status:** Final — implemented in v1.0.0
 
 ---
 

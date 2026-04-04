@@ -1,6 +1,6 @@
 # WP1 — ESC Market & Data Source Audit
 
-**Document Reference:** WR-WREI-WP1 | **Date:** 4 April 2026
+**Document Reference:** WR-WREI-WP1 | **Version:** 1.0 (Final) | **Date:** 4 April 2026
 **Purpose:** Inform WREI Trading Platform architecture decisions regarding data integration, registry connectivity, and market structure
 
 ---

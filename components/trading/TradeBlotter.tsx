@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { generateTradeReportCsv, downloadCsv } from '@/lib/trading/compliance/report-generator';
+import type { TradeRecord } from '@/lib/trading/compliance/report-generator';
 
 // ---------------------------------------------------------------------------
 // Types — mirrored from lib/db/queries/trades.ts (client-safe subset)
@@ -227,6 +229,20 @@ function BlotterInner({ localTrades = [], instrumentFilter, pageSize = 20 }: Tra
             <option value="settled">SETTLED</option>
             <option value="cancelled">CANCELLED</option>
           </select>
+          <button
+            onClick={() => {
+              const records: TradeRecord[] = sorted.map(t => ({
+                ...t,
+                ai_assisted: t.negotiation_id != null,
+              }));
+              const csv = generateTradeReportCsv(records);
+              downloadCsv(csv, `wrei-trade-report-${new Date().toISOString().slice(0, 10)}.csv`);
+            }}
+            className="text-[#6B7280] hover:text-[#FF6B1A] transition-colors"
+            title="Export trades as CSV"
+          >
+            CSV
+          </button>
           <button
             onClick={fetchTrades}
             className="text-[#6B7280] hover:text-[#FF6B1A] transition-colors"

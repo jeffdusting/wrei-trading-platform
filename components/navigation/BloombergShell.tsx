@@ -76,7 +76,7 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
   }
 
   const commandBarStyles = {
-    backgroundColor: tokens.colors.surface.secondary,
+    backgroundColor: isWhiteLabelled ? wl.primaryColour : tokens.colors.surface.secondary,
     borderTop: `0.5px solid ${tokens.colors.surface.tertiary}`,
     height: '36px',
     display: 'flex',
@@ -158,12 +158,17 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
                   border border-transparent hover:bg-slate-50
                   flex items-center gap-2
                   ${isActive(item.href)
-                    ? 'bg-blue-50 border-blue-200 text-blue-800'
+                    ? isWhiteLabelled ? 'border-current' : 'bg-blue-50 border-blue-200 text-blue-800'
                     : 'text-slate-700 hover:text-slate-900'
                   }
                 `}
                 style={{
-                  borderRadius: tokens.borderRadius.sm
+                  borderRadius: tokens.borderRadius.sm,
+                  ...(isWhiteLabelled && isActive(item.href) ? {
+                    backgroundColor: `${wl.accentColour}15`,
+                    borderColor: wl.accentColour,
+                    color: wl.accentColour,
+                  } : {}),
                 }}
                 title={item.description}
               >
@@ -258,14 +263,14 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
           </div>
 
           {/* Command prompt styling - Monospace */}
-          <span className="bloomberg-command bloomberg-small-text text-slate-500">
-            wrei@platform:~$
+          <span className="bloomberg-command bloomberg-small-text" style={{ color: isWhiteLabelled ? wl.primaryTextColour : undefined }}>
+            {isWhiteLabelled ? `${wl.terminalCode.toLowerCase()}@trading:~$` : 'wrei@platform:~$'}
           </span>
         </div>
 
         <div className="flex items-center gap-4">
           {/* Footer text — white-label aware */}
-          <span className="bloomberg-small-text text-slate-400">
+          <span className="bloomberg-small-text" style={{ color: isWhiteLabelled ? `${wl.primaryTextColour}99` : undefined }}>
             {wl.footerText}
             {isWhiteLabelled && wl.showAttribution && ' | Powered by WREI'}
           </span>

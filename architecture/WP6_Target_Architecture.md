@@ -1,6 +1,6 @@
 # WP6 — WREI Trading Platform: Target Architecture
 
-**Document Reference:** WR-WREI-WP6 | **Version:** 1.1 | **Date:** 4 April 2026
+**Document Reference:** WR-WREI-WP6 | **Version:** 2.0 (Final) | **Date:** 4 April 2026
 **Classification:** Internal — Development Reference
 **Author:** Strategic architecture developed in Claude, codebase assessment via Claude Code
 **Supersedes:** TRADE_IMPLEMENTATION_PLAN.md (negotiate-to-trade plan), WR-STR-011A v1.1 (R0–R4 refactoring programme)
@@ -14,13 +14,13 @@ This architecture document is part of a controlled document set governing the WR
 
 | Ref | Title | Purpose | Status |
 |---|---|---|---|
-| WR-WREI-WP1 | ESC Market & Data Source Audit | Market structure, registry APIs, data feed availability, integration strategy | Final |
-| WR-WREI-WP2 | Competitive Platform Benchmarking | Feature taxonomy, competitive analysis, scope gap identification | Final |
+| WR-WREI-WP1 | ESC Market & Data Source Audit | Market structure, registry APIs, data feed availability, integration strategy | Final v1.0 |
+| WR-WREI-WP2 | Competitive Platform Benchmarking | Feature taxonomy, competitive analysis, scope gap identification | Final v1.0 |
 | WR-WREI-WP3 | Codebase Architecture Assessment | Reusability analysis, decomposition plan, build health, risk register | Final |
-| WR-WREI-WP4 | User Scenarios | Five persona workflows, feature dependencies, cross-scenario matrix | Approved |
-| WR-WREI-WP5 | Token & Instrument Specification | Metadata schemas, lifecycle states, pricing mechanics, settlement adapters | Approved (conflicts resolved) |
-| **WR-WREI-WP6** | **Target Architecture** | **Platform architecture, phased implementation plan, test strategy** | **This document** |
-| WR-WREI-WP7 | CC Prompt Package | Claude Code execution prompts for each implementation phase | Pending (follows WP6 approval) |
+| WR-WREI-WP4 | User Scenarios | Five persona workflows, feature dependencies, cross-scenario matrix | Final v1.0 — all 5 implemented |
+| WR-WREI-WP5 | Token & Instrument Specification | Metadata schemas, lifecycle states, pricing mechanics, settlement adapters | Final v1.0 — implemented |
+| **WR-WREI-WP6** | **Target Architecture** | **Platform architecture, phased implementation plan, test strategy** | **Final v2.0** |
+| WR-WREI-WP7 | CC Prompt Package | Claude Code execution prompts for each implementation phase | Final — all phases executed |
 
 **Upstream references:** WR-STR-007 (AI Carbon Markets Strategy), WR-STR-008 (Tokenisation Strategy), WR-STR-009 (Investor Summary), WR-FIN-001 (Financial Model), WRR-ESG-001 v5.2 (Impact Report), WREI Tokenisation Practical Paper.
 

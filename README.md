@@ -1,314 +1,143 @@
 # WREI Trading Platform
 
-A Next.js 14 application demonstrating Water Roads' WREI carbon credit trading platform. Features an AI negotiation agent powered by Claude API that negotiates the sale of WREI-verified carbon credits with human buyers.
+A Next.js 14 application demonstrating the WREI institutional-grade carbon credit trading platform. Features a Bloomberg Terminal-style interface with AI-powered negotiation (Claude API), multi-instrument support for 8 tradeable products, live price feeds, and full settlement lifecycle management.
 
-![Platform Demo](public/banner.png)
+**Version:** 1.0.0 (Investor-Ready) | **Date:** 4 April 2026
 
-## Features
+## Platform Capabilities
 
-### Core Platform Capabilities
-- **AI-Powered Negotiation**: Claude API-driven negotiation agent with sophisticated strategies
-- **11 Buyer Personas**: Pre-configured buyer types including 5 original personas plus 6 advanced scenarios
-- **Real-Time Analytics**: Live negotiation metrics and progress tracking
-- **Dynamic Pricing**: WREI Pricing Index integration with market context
-- **Security Defence Layers**: Price floor enforcement, concession limits, input sanitisation
-- **Australian English**: Localised language throughout the platform
+### Trading Engine
+- **8 Tradeable Instruments**: ESC, VEEC, PRC, ACCU, LGC, STC, WREI-CC, WREI-ACO
+- **AI-Powered Negotiation**: Claude Opus 4.6 agentic negotiation with defence layers
+- **15 Buyer Personas**: 5 original + 4 ESC-specific + 6 advanced scenario personas
+- **Per-Instrument Pricing**: Spot-based, penalty-anchored, and NAV-based pricing engines
+- **Order Book Simulation**: Realistic bid/ask depth panels for all instruments
+- **Trade Blotter**: Bloomberg-style data grid with filtering, sorting, CSV export
 
-### **Stage 2: AI-Enhanced Platform (March 2026)**
-- **🎯 AI Demo Orchestration**: Simplified scenario manager with AI insights
-- **🧠 Dynamic Scenario Generation**: AI-powered market simulation and stress testing
-- **📊 Intelligent Analytics Dashboard**: Predictive insights with machine learning
-- **👥 Multi-Audience System**: Executive, Technical, and Compliance interfaces
+### Market Data
+- **Live Price Feeds**: Ecovantage and Northmore Gordon scrapers with circuit breaker
+- **Three-Tier Fallback**: Live → Cached → Simulated with UI health indicators
+- **Price Cache**: In-memory + Vercel Postgres persistence
 
-~~**Removed in Phase 5 Simplification:**~~
-~~🎨 Adaptive Presentation Layer: Audience-specific content optimization~~
+### Settlement
+- **4 Operational Adapters**: TESSA (ESC/PRC), CER (ACCU), VEEC Registry, Blockchain (WREI tokens)
+- **2 API Contract Stubs**: Zoniqx zConnect (T+0 atomic), Trovio CorTenX (CER registry)
+- **Settlement Orchestrator**: Circuit breaker pattern, state machine lifecycle
 
-### Advanced Capabilities
-- **Investment Calculator**: Sophisticated financial modelling with scenario comparison
-- **Compliance Dashboard**: Real-time regulatory compliance monitoring
-- **Demo Mode**: Simple trading simulation with realistic dummy data
-- **Developer Portal**: API Explorer with comprehensive documentation
-- **Scenario Simulation**: Market stress testing and portfolio optimization
-- **Performance Monitoring**: Real-time system health and analytics
-- **Committee Mode**: Multi-stakeholder negotiation interface
-- **Institutional Onboarding**: 6-step KYC/AML compliance workflow
+### Compliance & Audit
+- **Regulatory Dashboard**: ASIC, AUSTRAC, IPART, CER status tracking
+- **ESS Compliance**: Penalty rates (A$29.48, IPART 2026), surrender positions, deadline monitoring
+- **Audit Trail**: 13 action types, append-only, AI-assisted trade flagging (WP5 §8.2)
+- **Report Generation**: Trade CSV, compliance summary HTML, audit trail CSV
+- **AI Disclosure**: WP5 §8.2 disclosure on all trade confirmations and audit records
+
+### User Scenarios (WP4)
+- **A: Investor Demo** — 7-step demonstration flow with all instruments
+- **B: ESC Broker** — White-label theming with Demand Manager sample brand
+- **C: Institutional Carbon Buyer** — WREI-CC market view with provenance certificates
+- **D: Compliance Officer** — Regulatory grid, ESS positions, audit trail viewer
+- **E: Bulk ESC Purchase** — Multi-counterparty negotiation with VWAP execution report
+
+### Bloomberg Terminal Interface
+- 40px system status bar with real-time clock and feed health indicator
+- Scrolling market ticker with all 8 instruments
+- 48px navigation with terminal-style tabs (DSH, TRD, ANA, INS, CMP, SYS)
+- 36px command bar footer with `wrei@platform:~$` prompt
+- White-label CSS variable overrides for broker deployments
 
 ## Technology Stack
 
-- **Framework**: Next.js 14 (App Router) with TypeScript
-- **Styling**: Tailwind CSS with custom WREI design system
-- **AI Engine**: Anthropic Claude API (@anthropic-ai/sdk) - Sonnet 4 for dev, Opus 4.6 for production
-- **Charts & Visualization**: Recharts with custom WREI components
-- **Icons**: Heroicons React library
-- **State Management**: React useState/useReducer + Zustand for demo mode
-- **Testing**: Jest + React Testing Library + Playwright E2E
-- **Deployment**: Vercel (optimised for free tier)
+- **Framework**: Next.js 14 (App Router), TypeScript, Tailwind CSS
+- **AI Engine**: Anthropic Claude API — Sonnet 4 (dev), Opus 4.6 (production)
+- **State**: React useState/useReducer + Zustand for demo mode
+- **Database**: Vercel Postgres (optional — graceful degradation without it)
+- **Testing**: Jest + React Testing Library (80 suites, 1888 tests)
+- **Deployment**: Vercel (free hobby plan)
 
 ## Quick Start
 
-### Prerequisites
+```bash
+# Install
+npm install
 
-- Node.js 18+ and npm
-- Anthropic API key (Claude API access)
-- Git
+# Configure
+cp .env.local.example .env.local
+# Add ANTHROPIC_API_KEY to .env.local
 
-### Installation
+# Run
+npm run dev
+# Open http://localhost:3000
+```
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd wrei-trading-platform
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Configure environment variables**
-   ```bash
-   cp .env.local.example .env.local
-   ```
-
-   Edit `.env.local` and add your Anthropic API key:
-   ```env
-   ANTHROPIC_API_KEY=your_claude_api_key_here
-   ```
-
-4. **Run the development server**
-   ```bash
-   npm run dev
-   ```
-
-5. **Open your browser**
-   Navigate to `http://localhost:3000`
-
-### Build for Production
+### Build & Test
 
 ```bash
-npm run build
-npm start
+npm run build          # Production build
+npx tsc --noEmit       # Type check (0 errors)
+npm test               # Run test suite (1888 pass, 0 fail)
 ```
 
-## Project Structure
+## Architecture
 
 ```
-/app
-  /page.tsx                           # Landing page (Water Roads branding)
-  /negotiate/page.tsx                 # Main negotiation interface
-  /calculator/page.tsx                # Investment calculator
-  /compliance/page.tsx                # Compliance dashboard
-  /demo/page.tsx                     # Demo mode landing
-  /developer/page.tsx                # API Explorer and documentation
-  /institutional/portal/page.tsx     # Institutional onboarding
-  /performance/page.tsx              # Performance monitoring
-  /scenario/page.tsx                 # Scenario simulation
-  /api
-    /negotiate/route.ts              # Core negotiation engine (Claude API)
-    /analytics/route.ts              # Financial calculations
-    /analytics/predict/route.ts      # **Stage 2:** Predictive analytics
-    /scenarios/generate/route.ts     # **Stage 2:** Scenario generation
-    /presentation/adapt/route.ts     # **Stage 2:** Adaptive presentation
-    /compliance/route.ts             # Compliance reporting
-    /market-data/route.ts           # Market data feeds
-    /metadata/route.ts              # Token metadata
-    /performance/route.ts           # Performance monitoring
-/components
-  /analytics/                       # Analytics dashboards and charts
-  /audience/                       # **Stage 2:** Multi-audience system
-  /orchestration/                  # **Stage 2:** Simplified demo orchestration
-  /generation/                     # **Stage 2:** Scenario generation
-  /institutional/                  # Institutional onboarding components
-  /negotiation/                    # Negotiation-specific UI components
-  /charts/                         # Recharts-based visualization components
-  /demo/                          # Simple demo mode components
+app/
+  page.tsx                          — Landing dashboard (8-instrument ticker, metrics)
+  trade/page.tsx                    — Trading interface (instrument switcher, negotiation, blotter)
+  analyse/page.tsx                  — Market overview, AI commentary, carbon credit browser
+  compliance/page.tsx               — Regulatory dashboard with ESS compliance
+  api/negotiate/route.ts            — AI negotiation engine (Claude API)
+  api/trades/route.ts               — Trade CRUD
+  api/prices/route.ts               — Live price feed endpoint
+  api/market-commentary/route.ts    — AI market commentary
 
-~~**Removed:**~~
-~~presentation/                   # Stage 2: Adaptive presentation~~
-  /professional/                  # Professional-grade UI components
-/lib
-  /types.ts                       # TypeScript type definitions
-  /personas.ts                    # 11 buyer persona configurations
-  /negotiation-config.ts          # Pricing and constraint parameters
-  /defence.ts                     # Security layers and validation
-  /analytics-utils.ts             # Analytics utility functions
-  /ai-scenario-generation/        # **Stage 2:** AI scenario engine
-  /demo-mode/                     # Simple demo state management (Zustand)
-  /config/                        # **Stage 2:** Configuration modules
-  /services/                      # **Stage 2:** Service layer
-/hooks
-  /useLivePricing.ts             # **Stage 2:** Live pricing data hook
-/__tests__                        # Jest + React Testing Library (80+ test files)
-/e2e                             # Playwright end-to-end tests
-/docs                            # Comprehensive documentation suite (v2.0)
-/public                          # Static assets and branding
+lib/
+  trading/instruments/              — 8 instrument types, pricing configs, registry
+  trading/settlement/               — 4 adapters + 2 API stubs + orchestrator
+  trading/compliance/               — Audit logger + report generator
+  trading/orderbook/                — Simulated order book engine
+  trading/personas/                 — ESC-specific personas
+  trading/negotiation/              — Instrument-aware context builder
+  negotiate/                        — Decomposed API route modules (6 files)
+  data-feeds/                       — Scraper adapters, cache, feed manager
+  config/white-label.ts             — Broker theming configuration
+  db/                               — Vercel Postgres schema, queries, migration
+
+components/
+  trading/                          — InstrumentSwitcher, OrderBook, Blotter, TokenDetail, Provenance
+  compliance/                       — AuditTrailViewer
+  branding/                         — WhiteLabelProvider
+  navigation/BloombergShell.tsx     — Bloomberg Terminal shell wrapper
 ```
 
-## Configuration
+## Document Set
 
-### Negotiation Parameters
+| Ref | Title | Version |
+|-----|-------|---------|
+| WR-WREI-WP1 | ESC Market & Data Source Audit | v1.0 Final |
+| WR-WREI-WP2 | Competitive Platform Benchmarking | v1.0 Final |
+| WR-WREI-WP3 | Codebase Architecture Assessment | Final |
+| WR-WREI-WP4 | User Scenarios | v1.0 Final |
+| WR-WREI-WP5 | Token & Instrument Specification | v1.0 Final |
+| WR-WREI-WP6 | Target Architecture | v2.0 Final |
+| WR-WREI-WP7 | CC Prompt Package | Final |
 
-Key pricing and constraint settings in `/lib/negotiation-config.ts`:
+## Security
 
-- **Base Price**: $100/t (WREI Pricing Index reference)
-- **WREI Premium**: 1.5× multiplier
-- **Anchor Price**: $150/t
-- **Price Floor**: $120/t (absolute minimum)
-- **Max Concession per Round**: 5%
-- **Max Total Concession**: 20% from anchor price
+- API key server-side only (never exposed to client)
+- Price floors enforced in application code, not delegated to LLM
+- Max 5% concession per round, 20% total — enforced programmatically
+- Input sanitisation and output validation on all Claude API calls
+- AI disclosure on all AI-assisted trade confirmations (WP5 §8.2)
 
-### Buyer Personas
+## Infrastructure (Production Roadmap)
 
-**Core Personas (5):**
-1. **Corporate Compliance Officer** - Time-pressured, audit-focused, risk-averse
-2. **ESG Fund Portfolio Manager** - Quality-driven, sophisticated, premium-tolerant
-3. **Carbon Trading Desk Analyst** - Transactional, volume-focused, price-aggressive
-4. **Sustainability Director** - Values-driven, smaller budget, greenwashing-concerned
-5. **Government Procurement Officer** - Process-driven, multi-approval required
-
-**Advanced Scenario Personas (6):**
-6. **DeFi Yield Farming Scenario** - Decentralized finance integration and yield optimization
-7. **ESG Impact Scenario** - Environmental impact measurement and reporting
-8. **Family Office Scenario** - High-net-worth family wealth preservation
-9. **Infrastructure Fund Scenario** - Large-scale infrastructure project financing
-10. **Sovereign Wealth Fund Scenario** - Nation-state level investment strategies
-11. **Free Play Mode** - Unrestricted negotiation for custom scenarios
-
-## Security & Defence Layers
-
-The platform implements multiple defence layers:
-
-- **Price Floor Enforcement**: Hard $120/t minimum enforced in application code
-- **Concession Limits**: Maximum 5% per round, 20% total enforced programmatically
-- **Input Sanitisation**: Injection attempt filtering before Claude API calls
-- **Output Validation**: Internal reasoning stripped from client responses
-- **API Key Protection**: Anthropic credentials never exposed to client-side code
-
-## Deployment
-
-### Vercel (Recommended)
-
-1. **Connect to Vercel**
-   ```bash
-   npx vercel
-   ```
-
-2. **Configure environment variables in Vercel dashboard**
-   - Add `ANTHROPIC_API_KEY` to your Vercel project settings
-
-3. **Deploy**
-   ```bash
-   npx vercel --prod
-   ```
-
-### Alternative Deployment
-
-The application works on any Next.js-compatible hosting platform:
-- Railway
-- DigitalOcean App Platform
-- AWS Amplify
-- Netlify
-
-## API Endpoints
-
-### POST `/api/negotiate`
-
-Main negotiation endpoint for Claude API integration.
-
-**Request Body:**
-```json
-{
-  "message": "buyer message text",
-  "negotiationState": {
-    "round": 1,
-    "phase": "opening",
-    "currentOfferPrice": 150,
-    // ... full negotiation state
-  }
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "response": "agent response text",
-  "negotiationState": {
-    // updated state
-  }
-}
-```
-
-## Infrastructure Context
-
-**Note**: Zoniqx integration references are for agent knowledge only. No live API connections exist in this demo.
-
-The WREI platform architecture separates proprietary verification and negotiation capabilities from infrastructure layers:
+Zoniqx integration references are for agent knowledge only — no live API connections in demo.
 
 - **Settlement**: Zoniqx zConnect (T+0 atomic, cross-chain)
-- **Tokenisation**: Zoniqx zProtocol (DyCIST/ERC-7518, CertiK-audited)
+- **Token Standard**: Zoniqx zProtocol (DyCIST/ERC-7518, CertiK-audited)
 - **Compliance**: Zoniqx zCompliance (AI-powered, 20+ jurisdictions)
-- **Identity/KYC**: Zoniqx zIdentity (jurisdiction-based access control)
-
-## Development Guidelines
-
-### Code Style
-
-- Australian English spelling throughout (`organised`, `recognised`, `colour`)
-- Single-file components with Tailwind CSS classes
-- No separate CSS files
-- TypeScript strict mode enabled
-
-### Security Requirements
-
-- **NEVER** expose `ANTHROPIC_API_KEY` to client-side code
-- **ALWAYS** enforce price floors and concession limits in application logic
-- **NEVER** delegate pricing constraints to LLM instructions alone
-- Validate all inputs and sanitise outputs
-
-### State Management
-
-- Use React `useState`/`useReducer` only
-- No `localStorage` or `sessionStorage` usage
-- All state must be ephemeral and session-based
-
-## Troubleshooting
-
-### Build Errors
-
-```bash
-# Clear Next.js cache
-rm -rf .next
-npm run build
-```
-
-### API Connection Issues
-
-1. Verify `ANTHROPIC_API_KEY` is correctly set in `.env.local`
-2. Check API key has sufficient credits and permissions
-3. Ensure environment variables are configured in production deployment
-
-### TypeScript Errors
-
-```bash
-# Check types
-npm run type-check
-
-# Fix common issues
-npm run lint --fix
-```
-
-## License
-
-This project is a demonstration platform for Water Roads' WREI technology.
-
-## Support
-
-For technical issues or questions:
-- Check the troubleshooting section above
-- Review console logs for API connection issues
-- Ensure all environment variables are correctly configured
+- **Registry**: Trovio CorTenX (CER registry programmatic access)
 
 ---
 
-**Water Roads Engineering** | Verified Carbon Credit Trading Platform# Deployment trigger
+**Water Roads Engineering** | WREI Verified Carbon Credit Trading Platform | v1.0.0

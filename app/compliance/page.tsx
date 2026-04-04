@@ -13,6 +13,12 @@
 import { useState } from 'react'
 import { RegulatoryMap, ComplianceStatusDashboard } from '@/components/compliance'
 import AuditTrailViewer from '@/components/compliance/AuditTrailViewer'
+import {
+  generateComplianceSummaryHtml,
+  downloadHtml,
+  AI_DISCLOSURE_TEXT,
+} from '@/lib/trading/compliance/report-generator'
+import type { CompliancePosition } from '@/lib/trading/compliance/report-generator'
 
 // ---------------------------------------------------------------------------
 // Static data — regulatory status, ESS positions, scheme changes
@@ -194,17 +200,38 @@ export default function CompliancePage() {
           <>
             {/* ESS Overview Cards */}
             <section>
-              <h2 className="bloomberg-section-label text-slate-700 mb-3">ESS 2026 Compliance Year</h2>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="bloomberg-section-label text-slate-700">ESS 2026 Compliance Year</h2>
+                <button
+                  onClick={() => {
+                    const positions: CompliancePosition[] = ESS_POSITIONS.map(p => ({
+                      entity: p.entity,
+                      target: p.target2026,
+                      surrendered: p.surrendered,
+                      held: p.held,
+                      shortfall: p.shortfall,
+                      penaltyExposure: p.penaltyExposure,
+                      deadline: p.deadline,
+                      status: p.status,
+                    }))
+                    const html = generateComplianceSummaryHtml(positions, { penaltyRate: 29.48 })
+                    downloadHtml(html, `wrei-compliance-summary-${new Date().toISOString().slice(0, 10)}.html`)
+                  }}
+                  className="text-xs px-3 py-1 border border-slate-300 rounded text-slate-600 hover:bg-slate-100"
+                >
+                  Export Summary
+                </button>
+              </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                 <div className="bg-white border border-slate-200 rounded-lg p-3">
                   <div className="text-[10px] text-slate-500">Penalty Rate</div>
                   <div className="text-lg font-semibold text-red-600 font-mono">A$29.48</div>
-                  <div className="text-[10px] text-slate-400">Per ESC shortfall</div>
+                  <div className="text-[10px] text-slate-400">Per ESC shortfall (IPART 2026)</div>
                 </div>
                 <div className="bg-white border border-slate-200 rounded-lg p-3">
                   <div className="text-[10px] text-slate-500">Surrender Deadline</div>
                   <div className="text-sm font-semibold text-slate-800">28 Feb 2027</div>
-                  <div className="text-[10px] text-slate-400">Annual statement due</div>
+                  <div className="text-[10px] text-slate-400">ESS Rule 2009 cl 11A</div>
                 </div>
                 <div className="bg-white border border-slate-200 rounded-lg p-3">
                   <div className="text-[10px] text-slate-500">ESC Spot Price</div>
@@ -215,6 +242,19 @@ export default function CompliancePage() {
                   <div className="text-[10px] text-slate-500">Breakeven Discount</div>
                   <div className="text-lg font-semibold text-emerald-600 font-mono">22.0%</div>
                   <div className="text-[10px] text-slate-400">Spot vs penalty rate</div>
+                </div>
+              </div>
+
+              {/* ESS Energy Savings Targets */}
+              <div className="bg-white border border-slate-200 rounded-lg p-4 mb-4">
+                <h3 className="text-xs font-semibold text-slate-700 mb-2">ESS Energy Savings Targets</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-[11px]">
+                  <div><span className="text-slate-400">2026 Target:</span> <span className="font-mono text-slate-800">8.5% of liable electricity</span></div>
+                  <div><span className="text-slate-400">Scheme Period:</span> <span className="font-mono text-slate-800">2009 – 2050</span></div>
+                  <div><span className="text-slate-400">Administrator:</span> <span className="font-mono text-slate-800">IPART</span></div>
+                  <div><span className="text-slate-400">Legislation:</span> <span className="font-mono text-slate-800">Electricity Supply Act 1995 (NSW) Part 9</span></div>
+                  <div><span className="text-slate-400">Target Type:</span> <span className="font-mono text-slate-800">Individual (per liable entity)</span></div>
+                  <div><span className="text-slate-400">Penalty Source:</span> <span className="font-mono text-slate-800">IPART Targets and Penalties</span></div>
                 </div>
               </div>
             </section>
@@ -291,6 +331,10 @@ export default function CompliancePage() {
         {/* TAB: Audit Trail */}
         {activeTab === 'audit' && (
           <section>
+            <div className="mb-4 rounded border border-amber-200 bg-amber-50 p-3">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-700">AI Disclosure — </span>
+              <span className="text-xs text-amber-800">{AI_DISCLOSURE_TEXT}</span>
+            </div>
             <AuditTrailViewer />
           </section>
         )}
