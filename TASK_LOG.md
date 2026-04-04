@@ -1271,3 +1271,83 @@ Added `_archive` to `tsconfig.json` exclude list to prevent type-checking archiv
 Note: Test count decreased from 1888→1598 (290 tests) because 12 test files testing archived dead code were archived alongside their source modules. All active tests pass. Zero regressions.
 
 Tag: `v1.0.1-cleanup`
+
+---
+
+## Session: R2 — Trade Page Decomposition
+
+- **Date:** 2026-04-05
+- **Phase:** R2 (Decomposition)
+- **Branch:** main
+
+### Summary
+
+Decomposed the 2,402-line monolithic `app/trade/page.tsx` into 19 focused files across 3 directories. Zero functional changes — all behaviour preserved identically.
+
+---
+
+### Task R2.1 — Create Shared Types and Utilities
+
+Created `app/trade/_lib/trade-types.ts` (157 lines) and `app/trade/_lib/trade-utils.ts` (228 lines).
+
+Extracted from page.tsx:
+- `APIResponse` interface
+- `phaseColors`, `classificationColors`, `emotionalColors` maps
+- `TradeState` interface (full hook return type)
+- `isInstitutionalPersona`, `mapUrlPersonaToBuyerPersona`, `getPriceRangePercent`, `getConcessionPercent`
+- `generateReportData`, `buildInvestorProfile`, `buildPortfolioAllocation`
+- `buildProvenanceTradeData`, `buildProvenanceData`
+
+### Task R2.2 — Extract Custom Hooks (5 hooks)
+
+| File | Lines | Content |
+|------|-------|---------|
+| `_hooks/useTradeState.ts` | 126 | All 34 useState calls, 2 useRef calls, derived state |
+| `_hooks/useTradeAPI.ts` | 247 | handleStartTrading, handleSendMessage, handleKeyPress, selection handlers, scroll useEffect |
+| `_hooks/useTradeActions.ts` | 166 | handleEndTrading, handleRequestHuman, handleResetTrading, handleInvestmentDecision, handleExportReport |
+| `_hooks/useTradeHistory.ts` | 79 | saveCompletedTrading, refreshSessionsList, handleSessionComparison, handleViewReplay, close functions |
+| `_hooks/usePreConfig.ts` | 63 | URL parameter parsing, pre-configuration useEffect |
+
+### Task R2.3 — Extract Components (11 components)
+
+| File | Lines | Content |
+|------|-------|---------|
+| `_components/PreConfigBanner.tsx` | 29 | Institutional onboarding banner |
+| `_components/TradingStatusBar.tsx` | 20 | Bottom round/phase/price strip |
+| `_components/TradeModeSelector.tsx` | 91 | Standard/Professional/Bulk tabs + export button |
+| `_components/TokenTypeSelector.tsx` | 90 | 3 WREI token radio buttons |
+| `_components/PersonaSelector.tsx` | 106 | Free play + persona radio list |
+| `_components/NegotiationDashboard.tsx` | 209 | Price tracker, concession, classification, emotion, market intelligence |
+| `_components/TokenMetadataPanel.tsx` | 283 | Provenance, operational data, blockchain visualiser, quality metrics |
+| `_components/ChatInterface.tsx` | 296 | Messages, input, loading, error, completion states, scorecard |
+| `_components/AnalyticsInlinePanel.tsx` | 228 | Argument distribution, price movement, emotional timeline, feedback |
+| `_components/InstitutionalTabs.tsx` | 284 | Standard/Institutional/History tabs, session history |
+| `_components/TradeModals.tsx` | 103 | Strategy panel, coaching panel, replay viewer, comparison dashboard, provenance cert |
+
+### Task R2.4 — Rewrite page.tsx as Orchestrator
+
+Reduced `page.tsx` to 133 lines — imports, hook calls, and a layout skeleton composing all extracted components.
+
+---
+
+### File Size Summary
+
+| Category | Files | Total Lines | Max Single File |
+|----------|-------|-------------|-----------------|
+| page.tsx | 1 | 133 | 133 (≤200 ✓) |
+| _components/ | 11 | 1,739 | 296 (≤300 ✓) |
+| _hooks/ | 5 | 681 | 247 (≤300 ✓) |
+| _lib/ | 2 | 385 | 228 (≤300 ✓) |
+| **Total** | **19** | **2,938** | |
+
+### Verification Results
+
+| Check | Result |
+|-------|--------|
+| `npx tsc --noEmit` | **PASS** — 0 errors |
+| `npm run build` | **PASS** — all pages compile |
+| `npm test -- --passWithNoTests` | **PASS** — 68 suites, 1598 passed, 3 skipped, 0 failed |
+| All files ≤ 300 lines | **PASS** |
+| page.tsx ≤ 200 lines | **PASS** — 133 lines |
+
+Tag: `v1.0.2-decomposed`
