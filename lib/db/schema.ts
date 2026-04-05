@@ -12,7 +12,7 @@
  *   feed_status      — external data-feed health
  */
 
-export const SCHEMA_VERSION = 4;
+export const SCHEMA_VERSION = 5;
 
 export const CREATE_ORGANISATIONS = `
 CREATE TABLE IF NOT EXISTS organisations (
@@ -272,6 +272,21 @@ CREATE TABLE IF NOT EXISTS correspondence (
 );
 `;
 
+export const CREATE_WEBHOOK_REGISTRATIONS = `
+CREATE TABLE IF NOT EXISTS webhook_registrations (
+  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  organisation_id   UUID          NOT NULL REFERENCES organisations(id),
+  url               VARCHAR(2048) NOT NULL,
+  events            JSONB         NOT NULL DEFAULT '[]',
+  secret            VARCHAR(128)  NOT NULL,
+  is_active         BOOLEAN       NOT NULL DEFAULT true,
+  created_at        TIMESTAMPTZ   NOT NULL DEFAULT now(),
+  updated_at        TIMESTAMPTZ   NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_webhook_registrations_org
+  ON webhook_registrations (organisation_id, is_active);
+`;
+
 /** Ordered list of DDL statements — must run in this order due to FK deps. */
 export const ALL_TABLES = [
   CREATE_ORGANISATIONS,  // before users (users references organisations)
@@ -289,4 +304,5 @@ export const ALL_TABLES = [
   CREATE_CLIENT_HOLDINGS,    // after clients (client_holdings references clients)
   CREATE_SURRENDER_TRACKING, // after clients (surrender_tracking references clients)
   CREATE_CORRESPONDENCE,     // after clients, users (FK deps)
+  CREATE_WEBHOOK_REGISTRATIONS, // after organisations
 ] as const;

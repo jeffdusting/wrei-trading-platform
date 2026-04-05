@@ -1,5 +1,105 @@
 # WREI Trading Platform — Task Log
 
+## Session: P6-A — Public REST API
+
+- **Date:** 2026-04-05
+- **Phase:** P6 (Public API for Broker System Integration)
+- **Branch:** main
+
+### Summary
+
+Built the complete public REST API (v1) for broker system integration (CRM, accounting, compliance tools). 22 authenticated endpoints under `/api/v1/` covering market data, trading, clients, correspondence, and webhooks. All endpoints require `X-API-Key` authentication, return standardised JSON responses (`{ data, meta }` / `{ error: { code, message } }`), and are organisation-scoped.
+
+---
+
+### Task P6.1 — API Response Standards
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `lib/api/response.ts` | 65 | `apiSuccess`, `apiCreated`, `apiPaginated`, `apiError` — standardised response helpers |
+| `lib/api/validation.ts` | 85 | `validateRequired`, `validateInstrumentType`, `validatePagination` — request validation |
+
+---
+
+### Task P6.2 — Market Data API
+
+**Result:** Complete — 4 endpoints
+
+| Endpoint | Method | File | Description |
+|----------|--------|------|-------------|
+| `/api/v1/market/prices` | GET | `app/api/v1/market/prices/route.ts` | Current prices for all/specific instruments |
+| `/api/v1/market/prices/history` | GET | `app/api/v1/market/prices/history/route.ts` | Price history with `?instrument=ESC&days=30` |
+| `/api/v1/market/orderbook` | GET | `app/api/v1/market/orderbook/route.ts` | Simulated order book depth |
+| `/api/v1/market/instruments` | GET | `app/api/v1/market/instruments/route.ts` | All tradeable instruments with config |
+
+---
+
+### Task P6.3 — Trading API
+
+**Result:** Complete — 5 endpoints
+
+| Endpoint | Method | File | Description |
+|----------|--------|------|-------------|
+| `/api/v1/trades` | GET | `app/api/v1/trades/route.ts` | List trades, paginated |
+| `/api/v1/trades` | POST | `app/api/v1/trades/route.ts` | Create trade (manual entry) |
+| `/api/v1/trades/:id` | GET | `app/api/v1/trades/[id]/route.ts` | Trade detail with settlement |
+| `/api/v1/trades/negotiate` | POST | `app/api/v1/trades/negotiate/route.ts` | Initiate AI negotiation |
+| `/api/v1/trades/negotiate/:id` | GET/POST | `app/api/v1/trades/negotiate/[id]/route.ts` | Negotiation status & messaging |
+
+---
+
+### Task P6.4 — Client API
+
+**Result:** Complete — 6 endpoints
+
+| Endpoint | Method | File | Description |
+|----------|--------|------|-------------|
+| `/api/v1/clients` | GET/POST | `app/api/v1/clients/route.ts` | List/create clients |
+| `/api/v1/clients/:id` | GET/PUT | `app/api/v1/clients/[id]/route.ts` | Client detail/update |
+| `/api/v1/clients/:id/holdings` | GET | `app/api/v1/clients/[id]/holdings/route.ts` | Client holdings with summary |
+| `/api/v1/clients/:id/compliance` | GET | `app/api/v1/clients/[id]/compliance/route.ts` | Client surrender/compliance status |
+| `/api/v1/clients/compliance/summary` | GET | `app/api/v1/clients/compliance/summary/route.ts` | All clients' compliance in one call |
+
+---
+
+### Task P6.5 — Correspondence API
+
+**Result:** Complete — 4 endpoints
+
+| Endpoint | Method | File | Description |
+|----------|--------|------|-------------|
+| `/api/v1/correspondence` | GET | `app/api/v1/correspondence/route.ts` | List correspondence, filterable |
+| `/api/v1/correspondence/threads` | GET | `app/api/v1/correspondence/threads/route.ts` | Active negotiation threads |
+| `/api/v1/correspondence/threads/:id` | GET/POST | `app/api/v1/correspondence/threads/[id]/route.ts` | Thread detail, broker actions |
+| `/api/v1/correspondence/settlement` | GET | `app/api/v1/correspondence/settlement/route.ts` | Settlement status for pending trades |
+
+---
+
+### Task P6.6 — Webhook System
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `lib/api/webhooks.ts` | 148 | Register/list/delete webhooks, HMAC-SHA256 signed delivery, 3-retry exponential backoff |
+| `lib/db/schema.ts` | +16 | `webhook_registrations` table (schema v5) |
+| `app/api/v1/webhooks/route.ts` | 100 | GET/POST/DELETE webhook management |
+
+**Webhook events:** `trade.created`, `trade.settled`, `negotiation.completed`, `correspondence.received`, `price.alert`, `compliance.deadline`
+**Wired into:** Trade creation (P6.3), negotiation completion (P6.3)
+
+---
+
+### Verification
+
+- `npm run build` — passes, all 22 v1 routes registered as dynamic (λ)
+- `npx tsc --noEmit` — clean
+- `npm test -- --passWithNoTests` — 1604 passed (3 pre-existing DB connection failures unrelated to P6)
+
+---
+
 ## Session: P9-D — Settlement Facilitation, TESSA Instructions, Client Reporting
 
 - **Date:** 2026-04-05
