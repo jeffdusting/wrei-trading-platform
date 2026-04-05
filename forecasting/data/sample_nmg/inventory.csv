@@ -1,0 +1,9 @@
+instrument_type,vintage,quantity,average_cost,status,registry_reference
+ESC,2024,15000,6.85,registered,TESSA-ESC-2024-NMG-001
+ESC,2024,8500,7.1,unregistered,
+ESC,2025,22000,7.45,registered,TESSA-ESC-2025-NMG-001
+ESC,2025,12000,7.6,unregistered,
+ESC,2025,5000,7.3,committed,
+VEEC,2024,3200,63.5,registered,TESSA-VEEC-2024-NMG-001
+VEEC,2025,5800,66.2,registered,TESSA-VEEC-2025-NMG-001
+VEEC,2025,2100,65.0,unregistered,

@@ -1,5 +1,67 @@
 # WREI Trading Platform — Task Log
 
+## Session: P11-A — NMG Data Import, Shadow Market Calibration, Counterfactual Trade Analysis
+
+- **Date:** 2026-04-05
+- **Phase:** P11-A (NMG Integration — Data & Analysis)
+- **Branch:** main
+
+### Summary
+
+Created the NMG data import pipeline (clients, counterparties, trades, inventory), shadow market calibration using NMG's actual inventory to refine supply estimates, and a counterfactual trade analysis engine that applies the forecasting model to NMG's historical trades to calculate the dollar value of the platform's intelligence.
+
+---
+
+### Task P11-A.1 — NMG Data Import Tools
+
+**Result:** Complete — CSV import pipeline with sample data generation
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `forecasting/import/__init__.py` | 1 | Package init |
+| `forecasting/import/nmg_import.py` | ~220 | Import utilities: `import_clients()`, `import_counterparties()`, `import_trade_history()`, `import_inventory()`. CSV validation, deduplication, sample data generation (8 clients, 8 counterparties, 249 trades, 8 inventory lines) |
+| `app/api/v1/import/route.ts` | ~140 | REST API: POST /api/v1/import?type={clients,counterparties,trades,inventory}. Admin role required. CSV parsing, validation, DB insertion |
+| `lib/db/schema.ts` | updated | Added `trade_history` table with organisation_id FK, instrument/side checks, generated total_value column, indexes on (org, date) and (instrument, date) |
+
+---
+
+### Task P11-A.2 — Shadow Market Calibration
+
+**Result:** Complete — NMG inventory analysis producing market-wide shadow supply estimate
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `forecasting/calibration/__init__.py` | 1 | Package init |
+| `forecasting/calibration/shadow_market.py` | ~160 | Shadow multiplier: NMG total/registered = 1.60x. Market share extrapolation. Calibration output: visible surplus 2.8M, shadow estimate 8.7M, calibrated total 11.5M. Saves to `data/shadow_calibration.json` |
+
+---
+
+### Task P11-A.3 — Counterfactual Trade Analysis
+
+**Result:** Complete — analysis engine, API route, and Bloomberg Terminal-style dashboard
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `forecasting/counterfactual/trade_analysis.py` | ~260 | For each NMG trade: reconstruct information state, simulate ensemble model, compute hindsight-optimal timing, calculate counterfactual value. Aggregate report with per-trade details |
+| `app/api/v1/intelligence/counterfactual/route.ts` | ~55 | GET /api/v1/intelligence/counterfactual — returns pre-computed report. Admin role required |
+| `components/intelligence/CounterfactualReport.tsx` | ~415 | Dashboard: headline KPI ("Across N trades totalling $XM, model would have improved by $Y (Z%)"), KPI cards, buy/sell breakdown bars, filterable/sortable trade table with colour-coded model agreement |
+| `app/intelligence/page.tsx` | updated | Added "Trade Analysis (CFA)" tab to intelligence page |
+
+---
+
+### Verification
+
+| Check | Result |
+|-------|--------|
+| `npx tsc --noEmit` | Zero errors |
+| `npm run build` | Clean — `/intelligence` at 11.5 kB, all API routes compiled |
+| `python3 import/nmg_import.py --generate-sample` | 8 clients, 8 counterparties, 249 trades, 8 inventory lines |
+| `python3 import/nmg_import.py --import-sample` | All imported, 0 skipped |
+| `python3 calibration/shadow_market.py` | Shadow multiplier 1.60x, calibrated total 11.5M |
+| `python3 counterfactual/trade_analysis.py` | 249 trades analysed, report saved |
+
+---
+
 ## Session: P10-D — Market Intelligence UI, Continuous Monitoring, Anomaly Detection, Cron Job
 
 - **Date:** 2026-04-05

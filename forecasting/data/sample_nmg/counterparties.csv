@@ -1,0 +1,9 @@
+name,email,entity_type,relationship,notes
+Ecovantage Pty Ltd,trading@ecovantage.com.au,acp,preferred,"Major ACP — lighting, HVAC"
+Energy Makeovers,certs@energymakeovers.com.au,acp,preferred,Residential HEER specialist
+GreenPower Solutions,sales@greenpowersolutions.com.au,acp,active,Commercial lighting ACP
+Sustainable Australia Fund,trades@safund.com.au,institutional,active,ESC/VEEC aggregator
+Carbon Market Solutions,desk@carbonms.com.au,acp,active,Mixed activity ACP
+CER Registry Services,registry@cerservices.com.au,acp,new,New PIAMV-focused ACP
+TradeCert Australia,info@tradecert.com.au,institutional,active,Secondary market broker
+Greenfleet,certificates@greenfleet.com.au,acp,active,ACCU generator — reforestation

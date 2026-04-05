@@ -1,0 +1,14 @@
+{
+  "nmg_registered_total": 46000,
+  "nmg_unregistered_total": 22600,
+  "nmg_committed_total": 5000,
+  "nmg_total_inventory": 73600,
+  "nmg_shadow_multiplier": 1.6,
+  "nmg_market_share_pct": 8.65,
+  "visible_registry_surplus": 2800000,
+  "estimated_market_shadow_supply": 8668800,
+  "calibrated_total_supply": 11468800,
+  "prior_shadow_estimate": 224000,
+  "posterior_shadow_estimate": 8668800,
+  "confidence_improvement_pct": -3670.0
+}

@@ -1,0 +1,9 @@
+name,entity_type,contact_email,contact_name,abn,ess_participant_id,annual_esc_target,annual_veec_target
+Origin Energy,obligated_entity,procurement@origin.com.au,Sarah Chen,52 078 848 343,ESS-OE-001,45000,12000
+AGL Energy,obligated_entity,compliance@agl.com.au,Mark Thompson,74 115 061 375,ESS-AG-002,62000,18000
+EnergyAustralia,obligated_entity,certificates@energyaustralia.com.au,Lisa Wang,99 086 014 968,ESS-EA-003,38000,9500
+Ausgrid,obligated_entity,ess@ausgrid.com.au,James Park,78 508 211 731,ESS-AU-004,28000,7000
+Endeavour Energy,obligated_entity,compliance@endeavourenergy.com.au,Rachel Kim,11 247 365 823,ESS-EE-005,22000,5500
+CleanCo Queensland,government,trading@cleanco.qld.gov.au,David Brown,43 169 452 835,,0,0
+Macquarie Capital,institutional,carbon@macquarie.com,Tom Harris,48 008 583 542,,0,0
+BHP Sustainability,corporate,carbon.offsets@bhp.com,Anna Zhang,49 004 028 077,,15000,0

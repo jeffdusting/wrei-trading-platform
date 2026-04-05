@@ -414,6 +414,31 @@ CREATE TABLE IF NOT EXISTS intelligence_alerts (
 );
 `;
 
+export const CREATE_TRADE_HISTORY = `
+CREATE TABLE IF NOT EXISTS trade_history (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  organisation_id UUID NOT NULL REFERENCES organisations(id),
+  trade_date DATE NOT NULL,
+  instrument_type VARCHAR(20) NOT NULL,
+  side VARCHAR(10) NOT NULL CHECK (side IN ('buy','sell')),
+  quantity INTEGER NOT NULL CHECK (quantity > 0),
+  price_per_cert DECIMAL(10,4) NOT NULL CHECK (price_per_cert > 0),
+  total_value DECIMAL(14,2) GENERATED ALWAYS AS (quantity * price_per_cert) STORED,
+  counterparty_name VARCHAR(255),
+  client_name VARCHAR(255),
+  settlement_status VARCHAR(20) DEFAULT 'settled'
+    CHECK (settlement_status IN ('settled','pending','failed','cancelled')),
+  source VARCHAR(20) DEFAULT 'import'
+    CHECK (source IN ('import','platform','manual')),
+  metadata JSONB,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_trade_history_org_date
+  ON trade_history (organisation_id, trade_date DESC);
+CREATE INDEX IF NOT EXISTS idx_trade_history_instrument
+  ON trade_history (instrument_type, trade_date DESC);
+`;
+
 export const CREATE_BACKTEST_RESULTS = `
 CREATE TABLE IF NOT EXISTS backtest_results (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -459,4 +484,5 @@ export const ALL_TABLES = [
   CREATE_FORECASTS,
   CREATE_INTELLIGENCE_ALERTS,
   CREATE_BACKTEST_RESULTS,
+  CREATE_TRADE_HISTORY,
 ] as const;
