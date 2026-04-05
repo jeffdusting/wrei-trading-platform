@@ -12,7 +12,7 @@
  *   feed_status      — external data-feed health
  */
 
-export const SCHEMA_VERSION = 3;
+export const SCHEMA_VERSION = 4;
 
 export const CREATE_ORGANISATIONS = `
 CREATE TABLE IF NOT EXISTS organisations (
@@ -247,6 +247,31 @@ CREATE TABLE IF NOT EXISTS surrender_tracking (
 );
 `;
 
+export const CREATE_CORRESPONDENCE = `
+CREATE TABLE IF NOT EXISTS correspondence (
+  id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  organisation_id     UUID          NOT NULL REFERENCES organisations(id),
+  type                VARCHAR(20)   NOT NULL DEFAULT 'general'
+                        CHECK (type IN ('rfq','quote','confirmation','follow_up','general')),
+  counterparty_name   VARCHAR(255)  NOT NULL,
+  counterparty_email  VARCHAR(255)  NOT NULL,
+  subject             VARCHAR(500)  NOT NULL,
+  body                TEXT          NOT NULL,
+  status              VARCHAR(20)   NOT NULL DEFAULT 'drafted'
+                        CHECK (status IN ('drafted','approved','sent','rejected','replied')),
+  thread_id           UUID,
+  related_client_id   UUID          REFERENCES clients(id),
+  related_instrument  VARCHAR(20),
+  ai_model            VARCHAR(100),
+  ai_tokens_used      INTEGER,
+  rejection_reason    TEXT,
+  created_by          UUID          NOT NULL REFERENCES users(id),
+  created_at          TIMESTAMPTZ   NOT NULL DEFAULT now(),
+  updated_at          TIMESTAMPTZ   NOT NULL DEFAULT now(),
+  sent_at             TIMESTAMPTZ
+);
+`;
+
 /** Ordered list of DDL statements — must run in this order due to FK deps. */
 export const ALL_TABLES = [
   CREATE_ORGANISATIONS,  // before users (users references organisations)
@@ -263,4 +288,5 @@ export const ALL_TABLES = [
   CREATE_CLIENTS,            // after organisations (clients references organisations)
   CREATE_CLIENT_HOLDINGS,    // after clients (client_holdings references clients)
   CREATE_SURRENDER_TRACKING, // after clients (surrender_tracking references clients)
+  CREATE_CORRESPONDENCE,     // after clients, users (FK deps)
 ] as const;

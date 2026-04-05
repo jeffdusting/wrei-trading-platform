@@ -17,11 +17,12 @@ interface NavigationItem {
   icon?: string
 }
 
-// Consolidated navigation — 7 items (Clients visible for broker/admin workflows)
+// Consolidated navigation — 8 items (Clients + Correspondence visible for broker/admin workflows)
 const navigationItems: NavigationItem[] = [
   { label: 'Dashboard', href: '/', description: 'Home dashboard with three-panel layout', icon: 'DSH' },
   { label: 'Trading', href: '/trade', description: 'AI carbon credit trading interface', icon: 'TRD' },
   { label: 'Clients', href: '/clients', description: 'Client holdings and compliance tracking', icon: 'CLT' },
+  { label: 'Correspondence', href: '/correspondence', description: 'Procurement triggers and seller outreach', icon: 'COR' },
   { label: 'Analyse', href: '/analyse', description: 'Investment calculator + market scenarios (tabbed)', icon: 'ANA' },
   { label: 'Institutional', href: '/institutional/portal', description: 'Onboarding portal', icon: 'INS' },
   { label: 'Compliance', href: '/compliance', description: 'Regulatory compliance', icon: 'CMP' },
