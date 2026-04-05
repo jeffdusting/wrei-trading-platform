@@ -1,0 +1,2193 @@
+openapi: 3.0.3
+info:
+  title: WREI Trading Platform API
+  version: 1.0.0
+  description: |
+    REST API for the WREI carbon credit and energy savings certificate trading
+    platform.  Provides market data, AI-powered negotiation, trade management,
+    client administration, correspondence workflows, and webhook delivery.
+
+    All monetary values are denominated in **AUD** unless otherwise noted.
+    Australian spelling is used throughout.
+  contact:
+    name: WREI Platform Support
+    email: support@wrei.com.au
+  license:
+    name: Proprietary
+
+servers:
+  - url: https://wrei-trading-platform.vercel.app
+    description: Production (Vercel)
+
+# ---------------------------------------------------------------------------
+# Security
+# ---------------------------------------------------------------------------
+security:
+  - ApiKeyAuth: []
+
+components:
+  # -----------------------------------------------------------------------
+  # Security schemes
+  # -----------------------------------------------------------------------
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: >
+        Organisation-scoped API key. Keys are prefixed with `wrei_` and are
+        64 characters long (e.g. `wrei_abc123...`).
+
+  # -----------------------------------------------------------------------
+  # Reusable parameters
+  # -----------------------------------------------------------------------
+  parameters:
+    InstrumentQuery:
+      name: instrument
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/InstrumentType'
+      description: Filter by instrument code.
+    InstrumentQueryRequired:
+      name: instrument
+      in: query
+      required: true
+      schema:
+        $ref: '#/components/schemas/InstrumentType'
+    PageParam:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    LimitParam:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    IdPath:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Resource identifier (UUID).
+
+  # -----------------------------------------------------------------------
+  # Schemas
+  # -----------------------------------------------------------------------
+  schemas:
+    # -- Enums & primitives --------------------------------------------------
+    InstrumentType:
+      type: string
+      enum: [ESC, VEEC, PRC, ACCU, LGC, STC, WREI_CC, WREI_ACO]
+      description: Tradeable instrument code.
+
+    EntityType:
+      type: string
+      enum: [acp, obligated_entity, government, corporate, institutional]
+
+    PersonaType:
+      type: string
+      enum:
+        - corporate_compliance
+        - esg_fund
+        - trading_desk
+        - sustainability_director
+        - government_procurement
+        - free_play
+
+    TradeDirection:
+      type: string
+      enum: [buy, sell]
+
+    ThreadAction:
+      type: string
+      enum: [approve, edit, reject]
+
+    WebhookEventType:
+      type: string
+      enum:
+        - trade.created
+        - trade.settled
+        - negotiation.completed
+        - correspondence.received
+        - price.alert
+        - compliance.deadline
+
+    # -- Pagination ----------------------------------------------------------
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 20
+        total:
+          type: integer
+          example: 142
+        pages:
+          type: integer
+          example: 8
+
+    # -- Error ---------------------------------------------------------------
+    ApiError:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              example: validation_error
+            message:
+              type: string
+              example: "instrument must be one of: ESC, VEEC, PRC, ACCU, LGC, STC, WREI_CC, WREI_ACO"
+
+    # -- Market Data ---------------------------------------------------------
+    PriceEntry:
+      type: object
+      properties:
+        instrument:
+          $ref: '#/components/schemas/InstrumentType'
+        category:
+          type: string
+          example: energy_efficiency
+        displayName:
+          type: string
+          example: NSW Energy Savings Certificate
+        price:
+          type: number
+          format: double
+          example: 23.00
+          description: Current spot price.
+        anchorPrice:
+          type: number
+          format: double
+          example: 25.50
+        priceFloor:
+          type: number
+          format: double
+          example: 18.00
+        priceCeiling:
+          type: number
+          format: double
+          example: 29.48
+        currency:
+          type: string
+          example: AUD
+        unitOfMeasure:
+          type: string
+          example: MWh
+        source:
+          type: string
+          example: Ecovantage
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2026-04-05T02:30:00Z"
+
+    PriceHistoryEntry:
+      type: object
+      properties:
+        instrument:
+          $ref: '#/components/schemas/InstrumentType'
+        price:
+          type: number
+          format: double
+          example: 22.75
+        source:
+          type: string
+          example: Ecovantage
+        recordedAt:
+          type: string
+          format: date-time
+          example: "2026-03-20T09:00:00Z"
+
+    OrderBook:
+      type: object
+      properties:
+        instrument:
+          $ref: '#/components/schemas/InstrumentType'
+        currency:
+          type: string
+          example: AUD
+        midPrice:
+          type: number
+          format: double
+          example: 23.25
+        spread:
+          type: number
+          format: double
+          example: 0.50
+        bids:
+          type: array
+          items:
+            type: object
+            properties:
+              price:
+                type: number
+                format: double
+                example: 23.00
+              quantity:
+                type: integer
+                example: 5000
+              count:
+                type: integer
+                example: 3
+        asks:
+          type: array
+          items:
+            type: object
+            properties:
+              price:
+                type: number
+                format: double
+                example: 23.50
+              quantity:
+                type: integer
+                example: 4200
+              count:
+                type: integer
+                example: 2
+        source:
+          type: string
+          example: CORE Markets
+        updatedAt:
+          type: string
+          format: date-time
+
+    Instrument:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/InstrumentType'
+        displayName:
+          type: string
+          example: NSW Energy Savings Certificate
+        category:
+          type: string
+          example: energy_efficiency
+        currency:
+          type: string
+          example: AUD
+        unitOfMeasure:
+          type: string
+          example: MWh
+        tradingHours:
+          type: string
+          example: "Business Hours (9:00-17:00 AEST)"
+        settlementCycle:
+          type: string
+          example: T+2
+        minimumTradeSize:
+          type: integer
+          example: 1000
+        description:
+          type: string
+          example: >-
+            Certificates created under the NSW Energy Savings Scheme for verified
+            energy efficiency activities.
+
+    # -- Trading -------------------------------------------------------------
+    Trade:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        instrument_id:
+          type: string
+          example: ESC
+        direction:
+          $ref: '#/components/schemas/TradeDirection'
+        quantity:
+          type: number
+          example: 5000
+        price_per_unit:
+          type: number
+          format: double
+          example: 23.00
+        total_value:
+          type: number
+          format: double
+          example: 115000.00
+        currency:
+          type: string
+          example: AUD
+        status:
+          type: string
+          enum: [pending, confirmed, settled, cancelled]
+          example: confirmed
+        buyer_persona:
+          type: string
+          nullable: true
+        metadata:
+          type: object
+          additionalProperties: true
+        settlement:
+          $ref: '#/components/schemas/Settlement'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    TradeCreate:
+      type: object
+      required: [instrument_id, direction, quantity, price_per_unit]
+      properties:
+        instrument_id:
+          type: string
+          example: ESC
+          description: Instrument code or identifier.
+        direction:
+          $ref: '#/components/schemas/TradeDirection'
+        quantity:
+          type: number
+          minimum: 1
+          example: 5000
+        price_per_unit:
+          type: number
+          format: double
+          minimum: 0.01
+          example: 23.00
+        currency:
+          type: string
+          default: AUD
+          example: AUD
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Arbitrary key-value metadata attached to the trade.
+
+    Settlement:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        trade_id:
+          type: string
+          format: uuid
+        method:
+          type: string
+          enum: [registry_transfer, zoniqx_zconnect, manual]
+          example: registry_transfer
+        status:
+          type: string
+          enum: [pending, processing, completed, failed]
+          example: completed
+        registry:
+          type: string
+          example: NSW ESC Registry
+        transfer_reference:
+          type: string
+          nullable: true
+          example: "ESC-TXN-20260405-001"
+        settled_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    NegotiationSession:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "b2c3d4e5-f6a7-8901-bcde-f12345678901"
+        persona_type:
+          $ref: '#/components/schemas/PersonaType'
+        instrument:
+          $ref: '#/components/schemas/InstrumentType'
+        quantity:
+          type: number
+          example: 1000
+        anchor_price:
+          type: number
+          format: double
+          example: 25.50
+        current_offer:
+          type: number
+          format: double
+          example: 24.00
+        price_floor:
+          type: number
+          format: double
+          example: 18.00
+        status:
+          type: string
+          enum: [active, agreed, deferred, escalated, expired]
+          example: active
+        round:
+          type: integer
+          example: 2
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/NegotiationMessage'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    NegotiationMessage:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [agent, buyer]
+          example: agent
+        content:
+          type: string
+          example: >-
+            Thank you for your interest in our ESC portfolio. Based on current
+            market conditions, our indicative offer is A$25.50 per certificate
+            for a 1,000-unit tranche.
+        timestamp:
+          type: string
+          format: date-time
+
+    # -- Clients -------------------------------------------------------------
+    Client:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "c3d4e5f6-a7b8-9012-cdef-123456789012"
+        name:
+          type: string
+          example: AGL Energy Ltd
+        entity_type:
+          $ref: '#/components/schemas/EntityType'
+        contact_email:
+          type: string
+          format: email
+          example: procurement@agl.com.au
+        abn:
+          type: string
+          example: "74 115 061 375"
+        ess_participant_id:
+          type: string
+          nullable: true
+          example: "ESS-P-0042"
+        annual_esc_target:
+          type: integer
+          nullable: true
+          example: 250000
+        annual_veec_target:
+          type: integer
+          nullable: true
+          example: 120000
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ClientCreate:
+      type: object
+      required: [name, entity_type]
+      properties:
+        name:
+          type: string
+          example: Origin Energy
+        entity_type:
+          $ref: '#/components/schemas/EntityType'
+        contact_email:
+          type: string
+          format: email
+          example: esc-desk@originenergy.com.au
+        abn:
+          type: string
+          example: "30 000 051 696"
+        ess_participant_id:
+          type: string
+          example: "ESS-P-0099"
+        annual_esc_target:
+          type: integer
+          example: 180000
+        annual_veec_target:
+          type: integer
+          example: 90000
+
+    Holding:
+      type: object
+      properties:
+        instrument:
+          $ref: '#/components/schemas/InstrumentType'
+        displayName:
+          type: string
+          example: NSW Energy Savings Certificate
+        quantity:
+          type: integer
+          example: 42000
+        averageCost:
+          type: number
+          format: double
+          example: 21.30
+        currentPrice:
+          type: number
+          format: double
+          example: 23.00
+        unrealisedPnL:
+          type: number
+          format: double
+          example: 71400.00
+        currency:
+          type: string
+          example: AUD
+
+    ComplianceStatus:
+      type: object
+      properties:
+        client_id:
+          type: string
+          format: uuid
+        year:
+          type: integer
+          example: 2026
+        esc_target:
+          type: integer
+          example: 250000
+        esc_surrendered:
+          type: integer
+          example: 187500
+        esc_shortfall:
+          type: integer
+          example: 62500
+        esc_compliance_pct:
+          type: number
+          format: double
+          example: 75.0
+        veec_target:
+          type: integer
+          example: 120000
+        veec_surrendered:
+          type: integer
+          example: 120000
+        veec_shortfall:
+          type: integer
+          example: 0
+        veec_compliance_pct:
+          type: number
+          format: double
+          example: 100.0
+        penalty_exposure:
+          type: number
+          format: double
+          example: 1843750.00
+          description: Estimated penalty exposure for outstanding shortfall (AUD).
+        next_deadline:
+          type: string
+          format: date
+          example: "2027-03-31"
+
+    ComplianceSummary:
+      type: object
+      properties:
+        total_clients:
+          type: integer
+          example: 14
+        fully_compliant:
+          type: integer
+          example: 9
+        at_risk:
+          type: integer
+          example: 3
+        non_compliant:
+          type: integer
+          example: 2
+        aggregate_esc_shortfall:
+          type: integer
+          example: 310000
+        aggregate_veec_shortfall:
+          type: integer
+          example: 45000
+        total_penalty_exposure:
+          type: number
+          format: double
+          example: 12750000.00
+        reporting_year:
+          type: integer
+          example: 2026
+
+    # -- Correspondence ------------------------------------------------------
+    Correspondence:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [rfq, counter_offer, confirmation, report, settlement_instruction]
+          example: rfq
+        status:
+          type: string
+          enum: [drafted, pending_approval, sent, received, actioned, archived]
+          example: drafted
+        client_id:
+          type: string
+          format: uuid
+          nullable: true
+        subject:
+          type: string
+          example: "RFQ: 10,000 ESC — Q2 2026 Delivery"
+        body:
+          type: string
+        counterparty_email:
+          type: string
+          format: email
+          nullable: true
+        thread_id:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    InboundEmail:
+      type: object
+      required: [body]
+      properties:
+        body:
+          type: string
+          description: Raw email body text to be parsed by the AI offer-extraction engine.
+          example: >-
+            Hi, we'd like to purchase 15,000 ESCs at A$21.50 per certificate
+            for delivery by end of June. Please confirm availability.
+        threadId:
+          type: string
+          format: uuid
+          nullable: true
+          description: Existing thread to attach this message to.
+        counterpartyEmail:
+          type: string
+          format: email
+          example: buyer@example.com.au
+        subject:
+          type: string
+          example: "Re: ESC procurement enquiry"
+
+    ProcurementRecommendation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        client_id:
+          type: string
+          format: uuid
+        instrument:
+          $ref: '#/components/schemas/InstrumentType'
+        recommended_quantity:
+          type: integer
+          example: 62500
+        target_price:
+          type: number
+          format: double
+          example: 22.80
+        urgency:
+          type: string
+          enum: [low, medium, high, critical]
+          example: high
+        rationale:
+          type: string
+          example: >-
+            Client has 62,500 ESC shortfall with Q1 2027 surrender deadline.
+            Current spot (A$23.00) is below penalty rate (A$29.48). Recommend
+            immediate procurement.
+        created_at:
+          type: string
+          format: date-time
+
+    Report:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        client_id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [compliance_summary, trading_activity, settlement_confirmation, tessa_instruction]
+          example: compliance_summary
+        period:
+          type: string
+          example: "2026-Q1"
+        content:
+          type: string
+          description: Rendered report content (HTML or plain text).
+        generated_at:
+          type: string
+          format: date-time
+
+    Thread:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        counterpartyName:
+          type: string
+          example: EnergyAustralia Procurement
+        counterpartyEmail:
+          type: string
+          format: email
+          example: esc-desk@energyaustralia.com.au
+        instrument:
+          $ref: '#/components/schemas/InstrumentType'
+        quantity:
+          type: integer
+          example: 10000
+        state:
+          type: string
+          enum: [open, pending_approval, countered, agreed, rejected, expired]
+          example: open
+        currentOurPrice:
+          type: number
+          format: double
+          example: 23.50
+        currentTheirPrice:
+          type: number
+          format: double
+          nullable: true
+          example: 21.50
+        rounds:
+          type: integer
+          example: 2
+          description: Number of negotiation rounds completed.
+        totalConcessionGiven:
+          type: number
+          format: double
+          example: 0.04
+          description: Total concession as a fraction (e.g. 0.04 = 4%).
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # -- Webhooks ------------------------------------------------------------
+    Webhook:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "d4e5f6a7-b8c9-0123-def0-123456789abc"
+        url:
+          type: string
+          format: uri
+          example: "https://example.com.au/webhooks/wrei"
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookEventType'
+          example: [trade.created, trade.settled]
+        active:
+          type: boolean
+          example: true
+        created_at:
+          type: string
+          format: date-time
+
+    WebhookCreate:
+      type: object
+      required: [url, events]
+      properties:
+        url:
+          type: string
+          format: uri
+          example: "https://example.com.au/webhooks/wrei"
+          description: HTTPS endpoint that will receive POST requests.
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookEventType'
+          minItems: 1
+          example: [trade.created, negotiation.completed]
+
+    WebhookCreatedResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        url:
+          type: string
+          format: uri
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookEventType'
+        secret:
+          type: string
+          description: >
+            HMAC-SHA256 signing secret. Store securely — it is only returned
+            once at registration time.
+          example: "whsec_a1b2c3d4e5f6..."
+        active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+
+    WebhookEvent:
+      type: object
+      description: Payload delivered to registered webhook endpoints.
+      properties:
+        id:
+          type: string
+          format: uuid
+        event:
+          $ref: '#/components/schemas/WebhookEventType'
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          type: object
+          additionalProperties: true
+          description: Event-specific payload (e.g. the full Trade object for `trade.created`).
+
+# ---------------------------------------------------------------------------
+# Paths
+# ---------------------------------------------------------------------------
+paths:
+  # =========================================================================
+  # Market Data
+  # =========================================================================
+  /api/v1/market/prices:
+    get:
+      operationId: getMarketPrices
+      summary: Current instrument prices
+      description: >
+        Returns current spot prices for all instruments, or filtered to a single
+        instrument via the `instrument` query parameter.
+      tags: [Market Data]
+      parameters:
+        - $ref: '#/components/parameters/InstrumentQuery'
+      responses:
+        '200':
+          description: Price list returned successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PriceEntry'
+              example:
+                data:
+                  - instrument: ESC
+                    category: energy_efficiency
+                    displayName: NSW Energy Savings Certificate
+                    price: 23.00
+                    anchorPrice: 25.50
+                    priceFloor: 18.00
+                    priceCeiling: 29.48
+                    currency: AUD
+                    unitOfMeasure: MWh
+                    source: Ecovantage
+                    updatedAt: "2026-04-05T02:30:00Z"
+        '400':
+          description: Invalid instrument code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/market/prices/history:
+    get:
+      operationId: getPriceHistory
+      summary: Historical price data
+      description: >
+        Returns daily historical prices for a given instrument over the
+        specified number of days (default 30, max 365).
+      tags: [Market Data]
+      parameters:
+        - $ref: '#/components/parameters/InstrumentQueryRequired'
+        - name: days
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 365
+            default: 30
+          description: Number of days of history to retrieve.
+      responses:
+        '200':
+          description: Historical price data returned successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PriceHistoryEntry'
+              example:
+                data:
+                  - instrument: ESC
+                    price: 22.75
+                    source: Ecovantage
+                    recordedAt: "2026-03-20T09:00:00Z"
+                  - instrument: ESC
+                    price: 22.90
+                    source: Ecovantage
+                    recordedAt: "2026-03-21T09:00:00Z"
+        '400':
+          description: Validation error (missing instrument or invalid days).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/market/orderbook:
+    get:
+      operationId: getOrderBook
+      summary: Order book for an instrument
+      description: >
+        Returns the current order book (bids and asks) for the specified
+        instrument. Sourced from bilateral OTC aggregation.
+      tags: [Market Data]
+      parameters:
+        - $ref: '#/components/parameters/InstrumentQueryRequired'
+      responses:
+        '200':
+          description: Order book returned successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/OrderBook'
+              example:
+                data:
+                  instrument: ESC
+                  currency: AUD
+                  midPrice: 23.25
+                  spread: 0.50
+                  bids:
+                    - price: 23.00
+                      quantity: 5000
+                      count: 3
+                    - price: 22.80
+                      quantity: 12000
+                      count: 5
+                  asks:
+                    - price: 23.50
+                      quantity: 4200
+                      count: 2
+                    - price: 23.75
+                      quantity: 8000
+                      count: 4
+                  source: CORE Markets
+                  updatedAt: "2026-04-05T02:30:00Z"
+        '400':
+          description: Validation error (missing instrument).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/market/instruments:
+    get:
+      operationId: listInstruments
+      summary: List tradeable instruments
+      description: >
+        Returns metadata for all instruments available on the platform,
+        including trading hours, settlement cycles, and minimum trade sizes.
+      tags: [Market Data]
+      responses:
+        '200':
+          description: Instrument catalogue returned successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Instrument'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  # =========================================================================
+  # Trading
+  # =========================================================================
+  /api/v1/trades:
+    get:
+      operationId: listTrades
+      summary: List trades
+      description: >
+        Returns a paginated list of trades for the authenticated organisation.
+        Supports filtering by status and instrument.
+      tags: [Trading]
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [pending, confirmed, settled, cancelled]
+        - name: instrument_id
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paginated trade list.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Trade'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+    post:
+      operationId: createTrade
+      summary: Create a trade
+      description: >
+        Records a new trade for the authenticated organisation. The trade
+        enters `pending` status and triggers the `trade.created` webhook event.
+      tags: [Trading]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TradeCreate'
+            example:
+              instrument_id: ESC
+              direction: buy
+              quantity: 5000
+              price_per_unit: 23.00
+              currency: AUD
+              metadata:
+                broker_ref: "BRK-20260405-007"
+      responses:
+        '201':
+          description: Trade created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Trade'
+        '400':
+          description: Validation error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/trades/{id}:
+    get:
+      operationId: getTradeById
+      summary: Get trade details
+      description: >
+        Returns the full trade record including settlement information.
+      tags: [Trading]
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200':
+          description: Trade details with settlement object.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Trade'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Trade not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/trades/negotiate:
+    post:
+      operationId: initiateNegotiation
+      summary: Start an AI-powered negotiation
+      description: >
+        Initiates a new negotiation session with the WREI AI agent. The agent
+        uses the specified buyer persona and instrument pricing engine to
+        generate an opening offer.
+      tags: [Trading]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [instrument, persona_type]
+              properties:
+                instrument:
+                  $ref: '#/components/schemas/InstrumentType'
+                persona_type:
+                  $ref: '#/components/schemas/PersonaType'
+                quantity:
+                  type: number
+                  minimum: 1
+                  description: Number of units to negotiate. Defaults to 1000.
+                  example: 5000
+            example:
+              instrument: ESC
+              persona_type: corporate_compliance
+              quantity: 10000
+      responses:
+        '201':
+          description: Negotiation session created with opening message.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/NegotiationSession'
+        '400':
+          description: Validation error (invalid instrument or persona).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/trades/negotiate/{id}:
+    get:
+      operationId: getNegotiationStatus
+      summary: Get negotiation status
+      description: >
+        Returns the current state of a negotiation session including all
+        messages exchanged between the buyer and the AI agent.
+      tags: [Trading]
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200':
+          description: Negotiation session with message history.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/NegotiationSession'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Negotiation session not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+    post:
+      operationId: sendNegotiationMessage
+      summary: Send a message in a negotiation
+      description: >
+        Sends a buyer message to the AI negotiation agent and returns the
+        agent's response. Defence layers enforce price floor and concession
+        limits in application code.
+      tags: [Trading]
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [message]
+              properties:
+                message:
+                  type: string
+                  description: The buyer's message to the AI negotiation agent.
+                  example: "We can do A$22.00 per certificate for 10,000 units. Can you match that?"
+      responses:
+        '200':
+          description: Agent response returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/NegotiationSession'
+        '400':
+          description: Validation error (empty message).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Negotiation session not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  # =========================================================================
+  # Clients
+  # =========================================================================
+  /api/v1/clients:
+    get:
+      operationId: listClients
+      summary: List clients
+      description: >
+        Returns all clients belonging to the authenticated organisation.
+      tags: [Clients]
+      responses:
+        '200':
+          description: Client list.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Client'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+    post:
+      operationId: createClient
+      summary: Create a client
+      description: >
+        Registers a new client under the authenticated organisation. Requires
+        `admin` or `broker` role.
+      tags: [Clients]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientCreate'
+            example:
+              name: Origin Energy
+              entity_type: obligated_entity
+              contact_email: esc-desk@originenergy.com.au
+              abn: "30 000 051 696"
+              ess_participant_id: "ESS-P-0099"
+              annual_esc_target: 180000
+              annual_veec_target: 90000
+      responses:
+        '201':
+          description: Client created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Client'
+        '400':
+          description: Validation error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/clients/{id}:
+    get:
+      operationId: getClientById
+      summary: Get client details
+      tags: [Clients]
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200':
+          description: Client record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Client'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Client not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+    put:
+      operationId: updateClient
+      summary: Update a client
+      description: >
+        Partial update of client fields. Only provided fields are modified.
+      tags: [Clients]
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                entity_type:
+                  $ref: '#/components/schemas/EntityType'
+                contact_email:
+                  type: string
+                  format: email
+                abn:
+                  type: string
+                ess_participant_id:
+                  type: string
+                annual_esc_target:
+                  type: integer
+                annual_veec_target:
+                  type: integer
+            example:
+              annual_esc_target: 200000
+              contact_email: new-contact@originenergy.com.au
+      responses:
+        '200':
+          description: Client updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Client'
+        '400':
+          description: Validation error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Client not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/clients/{id}/holdings:
+    get:
+      operationId: getClientHoldings
+      summary: Client certificate holdings
+      description: >
+        Returns the current certificate holdings for the specified client,
+        including unrealised profit/loss.
+      tags: [Clients]
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200':
+          description: Holdings list.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Holding'
+              example:
+                data:
+                  - instrument: ESC
+                    displayName: NSW Energy Savings Certificate
+                    quantity: 42000
+                    averageCost: 21.30
+                    currentPrice: 23.00
+                    unrealisedPnL: 71400.00
+                    currency: AUD
+                  - instrument: VEEC
+                    displayName: Victorian Energy Efficiency Certificate
+                    quantity: 18000
+                    averageCost: 58.50
+                    currentPrice: 61.20
+                    unrealisedPnL: 48600.00
+                    currency: AUD
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Client not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/clients/{id}/compliance:
+    get:
+      operationId: getClientCompliance
+      summary: Client compliance status
+      description: >
+        Returns the compliance position for the specified client, including
+        certificate surrender progress and penalty exposure.
+      tags: [Clients]
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+        - name: year
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 2026
+          description: Reporting year (defaults to current year).
+      responses:
+        '200':
+          description: Compliance status.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ComplianceStatus'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Client not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/clients/compliance/summary:
+    get:
+      operationId: getComplianceSummary
+      summary: Organisation-wide compliance summary
+      description: >
+        Returns an aggregate compliance overview across all clients managed
+        by the authenticated organisation.
+      tags: [Clients]
+      responses:
+        '200':
+          description: Compliance summary.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ComplianceSummary'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  # =========================================================================
+  # Correspondence
+  # =========================================================================
+  /api/v1/correspondence:
+    get:
+      operationId: listCorrespondence
+      summary: List correspondence
+      description: >
+        Returns correspondence records for the organisation, optionally
+        filtered by type, status, or client.
+      tags: [Correspondence]
+      parameters:
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [rfq, counter_offer, confirmation, report, settlement_instruction]
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [drafted, pending_approval, sent, received, actioned, archived]
+        - name: client_id
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Correspondence list.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Correspondence'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/correspondence/inbound:
+    post:
+      operationId: processInboundEmail
+      summary: Process inbound email
+      description: >
+        Submits an inbound email for AI-powered offer extraction and automatic
+        thread matching. The system parses the message body, identifies pricing
+        signals and quantities, and creates or updates a negotiation thread.
+      tags: [Correspondence]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InboundEmail'
+            example:
+              body: >-
+                Hi, we'd like to purchase 15,000 ESCs at A$21.50 per certificate
+                for delivery by end of June. Please confirm availability.
+              counterpartyEmail: buyer@example.com.au
+              subject: "ESC procurement enquiry"
+      responses:
+        '201':
+          description: Inbound message processed and thread created/updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      threadId:
+                        type: string
+                        format: uuid
+                      extractedOffer:
+                        type: object
+                        properties:
+                          instrument:
+                            $ref: '#/components/schemas/InstrumentType'
+                          quantity:
+                            type: integer
+                          price:
+                            type: number
+                            format: double
+                          deliveryDate:
+                            type: string
+                            nullable: true
+                      draftResponse:
+                        type: string
+                        description: AI-generated draft counter-offer awaiting broker approval.
+        '400':
+          description: Validation error (missing body).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/correspondence/procurement:
+    get:
+      operationId: getProcurementRecommendations
+      summary: List procurement recommendations
+      description: >
+        Returns AI-generated procurement recommendations based on client
+        compliance shortfalls and current market conditions.
+      tags: [Correspondence]
+      responses:
+        '200':
+          description: Procurement recommendations.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProcurementRecommendation'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/correspondence/procurement/generate-rfqs:
+    post:
+      operationId: generateRfqs
+      summary: Generate RFQs from recommendation
+      description: >
+        Generates request-for-quote correspondence from a procurement
+        recommendation. The AI drafts personalised RFQ emails for known
+        sellers in the platform's counterparty network.
+      tags: [Correspondence]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: The procurement recommendation object to generate RFQs from.
+              properties:
+                recommendation_id:
+                  type: string
+                  format: uuid
+                instrument:
+                  $ref: '#/components/schemas/InstrumentType'
+                quantity:
+                  type: integer
+                  example: 62500
+                target_price:
+                  type: number
+                  format: double
+                  example: 22.80
+                client_id:
+                  type: string
+                  format: uuid
+            example:
+              recommendation_id: "e5f6a7b8-c9d0-1234-ef01-23456789abcd"
+              instrument: ESC
+              quantity: 62500
+              target_price: 22.80
+              client_id: "c3d4e5f6-a7b8-9012-cdef-123456789012"
+      responses:
+        '201':
+          description: RFQ correspondence generated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      generated:
+                        type: integer
+                        example: 3
+                        description: Number of RFQ emails generated.
+                      correspondence_ids:
+                        type: array
+                        items:
+                          type: string
+                          format: uuid
+        '400':
+          description: Validation error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/correspondence/reports:
+    get:
+      operationId: listReports
+      summary: List generated reports
+      description: >
+        Returns reports generated for clients, optionally filtered by client ID.
+      tags: [Correspondence]
+      parameters:
+        - name: clientId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Report list.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Report'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+    post:
+      operationId: generateReport
+      summary: Generate a client report
+      description: >
+        Triggers generation of a compliance summary, trading activity, or
+        settlement report for the specified client and period.
+      tags: [Correspondence]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [clientId]
+              properties:
+                clientId:
+                  type: string
+                  format: uuid
+                batch:
+                  type: boolean
+                  default: false
+                  description: If true, generates reports for all clients.
+                period:
+                  type: string
+                  example: "2026-Q1"
+                  description: Reporting period (e.g. "2026-Q1", "2026-03").
+            example:
+              clientId: "c3d4e5f6-a7b8-9012-cdef-123456789012"
+              period: "2026-Q1"
+      responses:
+        '201':
+          description: Report generated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Report'
+        '400':
+          description: Validation error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/correspondence/settlement:
+    get:
+      operationId: listSettlementCorrespondence
+      summary: List settlement correspondence
+      description: >
+        Returns settlement-related correspondence including TESSA instructions
+        and registry transfer confirmations.
+      tags: [Correspondence]
+      responses:
+        '200':
+          description: Settlement correspondence list.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Correspondence'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/correspondence/threads:
+    get:
+      operationId: listThreads
+      summary: List negotiation threads
+      description: >
+        Returns a summary of all active email negotiation threads for the
+        authenticated organisation, including current pricing positions and
+        concession tracking.
+      tags: [Correspondence]
+      responses:
+        '200':
+          description: Thread summaries.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Thread'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /api/v1/correspondence/threads/{id}:
+    get:
+      operationId: getThreadById
+      summary: Get thread detail
+      description: >
+        Returns the full negotiation thread including all rounds, pricing
+        history, and drafted responses.
+      tags: [Correspondence]
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        '200':
+          description: Full thread detail.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Thread'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Thread not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+    post:
+      operationId: submitThreadAction
+      summary: Submit broker action on a thread
+      description: >
+        Allows the broker to approve, edit, or reject an AI-drafted
+        counter-offer within a negotiation thread.
+      tags: [Correspondence]
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action:
+                  $ref: '#/components/schemas/ThreadAction'
+                reason:
+                  type: string
+                  description: Reason for rejection (required when action is `reject`).
+                edited_body:
+                  type: string
+                  description: Modified response body (required when action is `edit`).
+            examples:
+              approve:
+                summary: Approve the drafted counter-offer
+                value:
+                  action: approve
+              edit:
+                summary: Edit before sending
+                value:
+                  action: edit
+                  edited_body: >-
+                    Thank you for your offer of A$21.50. We can meet you at
+                    A$22.75 per certificate for the 15,000-unit tranche,
+                    reflecting current market conditions.
+              reject:
+                summary: Reject the drafted response
+                value:
+                  action: reject
+                  reason: "Price too aggressive — need to hold above A$23.00."
+      responses:
+        '200':
+          description: Action applied to thread.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Thread'
+        '400':
+          description: Validation error (missing required fields for action).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Thread not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  # =========================================================================
+  # Webhooks
+  # =========================================================================
+  /api/v1/webhooks:
+    get:
+      operationId: listWebhooks
+      summary: List registered webhooks
+      description: >
+        Returns all webhook registrations for the authenticated organisation.
+        Secrets are redacted from the response.
+      tags: [Webhooks]
+      responses:
+        '200':
+          description: Webhook list (secrets omitted).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Webhook'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+    post:
+      operationId: registerWebhook
+      summary: Register a webhook
+      description: >
+        Registers a new webhook endpoint. The signing secret is returned in the
+        response and is **not retrievable afterwards** — store it securely.
+        Payloads are signed with HMAC-SHA256 using this secret.
+      tags: [Webhooks]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookCreate'
+            example:
+              url: "https://example.com.au/webhooks/wrei"
+              events:
+                - trade.created
+                - trade.settled
+                - negotiation.completed
+      responses:
+        '201':
+          description: Webhook registered. Secret included in response (one-time only).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/WebhookCreatedResponse'
+        '400':
+          description: Validation error (invalid URL or events).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+    delete:
+      operationId: deleteWebhook
+      summary: Delete a webhook
+      description: >
+        Removes a webhook registration. The endpoint will no longer receive
+        event deliveries.
+      tags: [Webhooks]
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Webhook ID to delete.
+      responses:
+        '200':
+          description: Webhook deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      deleted:
+                        type: boolean
+                        example: true
+                      id:
+                        type: string
+                        format: uuid
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Webhook not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+tags:
+  - name: Market Data
+    description: Real-time and historical pricing, order books, and instrument metadata.
+  - name: Trading
+    description: Trade management and AI-powered negotiation sessions.
+  - name: Clients
+    description: Client administration, holdings, and compliance tracking.
+  - name: Correspondence
+    description: Email negotiation threads, procurement workflows, reports, and settlement correspondence.
+  - name: Webhooks
+    description: Event-driven notifications delivered to registered HTTPS endpoints.

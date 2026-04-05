@@ -1,9 +1,9 @@
 /**
- * WREI API Documentation System
+ * WREI API v1 Documentation System
  *
- * Structured documentation for all 6 platform API endpoints.
+ * Structured documentation for all v1 REST API endpoints.
  * Provides schemas, example payloads, error codes, and rate limit information
- * for the Developer Portal / API Explorer (Enhancement C3).
+ * for the Developer Portal / API Explorer.
  */
 
 // =============================================================================
@@ -33,7 +33,7 @@ export interface ApiEndpointAction {
 export interface ApiEndpoint {
   id: string;
   path: string;
-  method: 'GET' | 'POST' | 'DELETE';
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   category: ApiCategory;
   title: string;
   description: string;
@@ -64,12 +64,12 @@ export interface ErrorCode {
 }
 
 export type ApiCategory =
-  | 'trading'
-  | 'analytics'
-  | 'compliance'
   | 'market-data'
-  | 'metadata'
-  | 'performance';
+  | 'trading'
+  | 'clients'
+  | 'compliance'
+  | 'correspondence'
+  | 'webhooks';
 
 export interface ApiCategoryInfo {
   id: ApiCategory;
@@ -84,1533 +84,1347 @@ export interface ApiCategoryInfo {
 
 export const apiCategories: ApiCategoryInfo[] = [
   {
+    id: 'market-data',
+    label: 'Market Data',
+    description: 'ESC/VEEC/ACCU prices, order book, instrument metadata',
+    icon: 'globe',
+  },
+  {
     id: 'trading',
     label: 'Trading',
-    description: 'AI-powered carbon credit negotiation engine',
+    description: 'Trade records and AI-powered negotiation sessions',
     icon: 'exchange',
   },
   {
-    id: 'analytics',
-    label: 'Analytics',
-    description: 'Financial calculations, risk profiling, and portfolio optimisation',
-    icon: 'chart',
+    id: 'clients',
+    label: 'Clients',
+    description: 'Client management, holdings, and entity data',
+    icon: 'cube',
   },
   {
     id: 'compliance',
     label: 'Compliance',
-    description: 'Regulatory reporting and compliance monitoring',
+    description: 'Surrender status, shortfall tracking, penalty exposure',
     icon: 'shield',
   },
   {
-    id: 'market-data',
-    label: 'Market Data',
-    description: 'Carbon pricing feeds, RWA market data, and competitive intelligence',
-    icon: 'globe',
+    id: 'correspondence',
+    label: 'Correspondence',
+    description: 'Procurement, email negotiation, reporting, settlement',
+    icon: 'chart',
   },
   {
-    id: 'metadata',
-    label: 'Token Metadata',
-    description: 'Blockchain provenance and token lifecycle tracking',
-    icon: 'cube',
-  },
-  {
-    id: 'performance',
-    label: 'Performance',
-    description: 'System health, benchmarks, and performance monitoring',
+    id: 'webhooks',
+    label: 'Webhooks',
+    description: 'Event subscriptions with HMAC-SHA256 signed delivery',
     icon: 'gauge',
   },
 ];
 
 // =============================================================================
-// COMMON ERROR CODES
-// =============================================================================
-
-const commonErrorCodes: ErrorCode[] = [
-  { code: 400, name: 'Bad Request', description: 'Invalid request parameters or malformed JSON body' },
-  { code: 401, name: 'Unauthorised', description: 'Missing or invalid X-WREI-API-Key header' },
-  { code: 429, name: 'Rate Limited', description: 'Too many requests. Retry after the rate limit window resets.' },
-  { code: 500, name: 'Internal Error', description: 'Unexpected server error. Contact support if persistent.' },
-];
-
-// =============================================================================
-// COMMON AUTHENTICATION
+// COMMON HELPERS
 // =============================================================================
 
 const standardAuth: AuthenticationInfo = {
   required: true,
-  header: 'X-WREI-API-Key',
-  description: 'Include your API key in the X-WREI-API-Key header. Keys are issued during institutional onboarding.',
-  devMode: 'In development/test mode (no WREI_API_KEY env var set), authentication is bypassed automatically.',
+  header: 'X-API-Key',
+  description: 'Include your API key in the X-API-Key header. Keys are provisioned during institutional onboarding.',
+  devMode: 'When DATABASE_URL is not configured, the auth middleware returns 503. Use a valid API key for all requests.',
+};
+
+const commonErrors: ErrorCode[] = [
+  { code: 400, name: 'Bad Request', description: 'Invalid request parameters or malformed JSON body' },
+  { code: 401, name: 'Unauthorised', description: 'Missing or invalid API key' },
+  { code: 403, name: 'Forbidden', description: 'Insufficient permissions for this operation' },
+  { code: 500, name: 'Internal Error', description: 'Unexpected server error' },
+];
+
+const readErrors: ErrorCode[] = [
+  { code: 401, name: 'Unauthorised', description: 'Missing or invalid API key' },
+  { code: 403, name: 'Forbidden', description: 'No organisation associated with account' },
+  { code: 500, name: 'Internal Error', description: 'Failed to retrieve data' },
+];
+
+const stdRate: RateLimitInfo = {
+  maxRequests: 100,
+  windowMs: 60000,
+  windowDescription: '100 requests per minute',
+};
+
+const writeRate: RateLimitInfo = {
+  maxRequests: 30,
+  windowMs: 60000,
+  windowDescription: '30 requests per minute',
 };
 
 // =============================================================================
-// NEGOTIATE API DOCUMENTATION
+// MARKET DATA ENDPOINTS
 // =============================================================================
 
-const negotiateEndpoint: ApiEndpoint = {
-  id: 'negotiate',
-  path: '/api/negotiate',
-  method: 'POST',
-  category: 'trading',
-  title: 'AI Negotiation Engine',
-  description:
-    'Powers the WREI AI negotiation agent. Sends buyer messages to the Claude-powered negotiation engine and returns structured responses with pricing, strategy explanations, and deal terms. The agent enforces price floors, concession limits, and institutional-grade defence layers.',
-  authentication: {
-    required: false,
-    header: 'N/A',
-    description: 'The negotiation endpoint uses session-based state management rather than API key authentication.',
-    devMode: 'No authentication required for the demo negotiation interface.',
-  },
-  rateLimit: {
-    maxRequests: 20,
-    windowMs: 60000,
-    windowDescription: '20 requests per minute',
-  },
-  actions: [
-    {
-      name: 'negotiate',
-      description: 'Send a buyer message to the AI negotiation agent and receive a structured response with pricing and strategy.',
-      parameters: [
-        { name: 'message', type: 'string', required: true, description: 'The buyer\'s message or offer', example: 'I would like to purchase 500 carbon credits at $130 per tonne.' },
-        {
-          name: 'state',
-          type: 'object',
-          required: true,
-          description: 'Current negotiation state including round count, pricing history, and persona context',
-        },
-        { name: 'isOpening', type: 'boolean', required: false, description: 'Whether this is the opening message of a new negotiation', default: false },
-      ],
-      exampleRequest: {
-        message: 'I would like to purchase 500 carbon credits at $130 per tonne.',
-        state: {
-          personaId: 'corporate_compliance',
-          currentPrice: 150,
-          round: 1,
-          maxRounds: 12,
-          history: [],
-        },
-        isOpening: false,
-      },
-      exampleResponse: {
-        success: true,
-        response: {
-          message: 'Thank you for your interest in WREI-verified carbon credits. Our current pricing reflects the institutional-grade dMRV verification and Zoniqx zConnect settlement infrastructure...',
-          currentPrice: 147.5,
-          concession: 2.5,
-          dealStatus: 'negotiating',
-          round: 2,
-        },
-        strategyExplanation: {
-          tactic: 'anchoring',
-          reasoning: 'Maintaining price near anchor while demonstrating value proposition',
-        },
-      },
-    },
-  ],
-  errorCodes: [
-    { code: 400, name: 'Bad Request', description: 'Missing required fields (message, state) or invalid persona ID' },
-    { code: 500, name: 'Internal Error', description: 'Claude API error or constraint enforcement failure' },
-  ],
-  notes: [
-    'Price floor of $120/tonne is enforced in application code, not delegated to the LLM.',
-    'Maximum 5% concession per round enforced server-side.',
-    'Maximum 20% total concession from anchor price ($150) enforced server-side.',
-    'Input sanitisation removes injection attempts before sending to Claude API.',
-    'Output filtering strips internal reasoning before delivery to client.',
-  ],
-};
-
-// =============================================================================
-// ANALYTICS API DOCUMENTATION
-// =============================================================================
-
-const analyticsEndpoint: ApiEndpoint = {
-  id: 'analytics',
-  path: '/api/analytics',
-  method: 'POST',
-  category: 'analytics',
-  title: 'Financial Analytics Engine',
-  description:
-    'Comprehensive financial calculation engine providing IRR, NPV, carbon credit metrics, portfolio optimisation, Monte Carlo simulation, risk profiling, and scenario analysis for WREI token investments.',
-  authentication: standardAuth,
-  rateLimit: {
-    maxRequests: 100,
-    windowMs: 60000,
-    windowDescription: '100 requests per minute',
-  },
-  actions: [
-    {
-      name: 'irr',
-      description: 'Calculate Internal Rate of Return for a series of cash flows.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "irr"', enum: ['irr'] },
-        { name: 'cashFlows', type: 'array', required: true, description: 'Array of cash flows (initial investment should be negative)', example: [-100000, 25000, 30000, 35000, 40000] as unknown as number },
-      ],
-      exampleRequest: {
-        action: 'irr',
-        cashFlows: [-100000, 25000, 30000, 35000, 40000],
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          irr: 0.0892,
-          annualizedReturn: '8.92%',
-          periods: 4,
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_IRR_CALCULATOR',
-          apiVersion: '2.2.0',
-          requestId: 'wrei_1711270800000_abc123def',
-        },
-      },
-    },
-    {
-      name: 'npv',
-      description: 'Calculate Net Present Value of future cash flows at a given discount rate.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "npv"', enum: ['npv'] },
-        { name: 'cashFlows', type: 'array', required: true, description: 'Array of future cash flows' },
-        { name: 'discountRate', type: 'number', required: true, description: 'Annual discount rate (0.01 to 0.50)', min: 0.01, max: 0.50, example: 0.08 },
-      ],
-      exampleRequest: {
-        action: 'npv',
-        cashFlows: [-100000, 25000, 30000, 35000, 40000],
-        discountRate: 0.08,
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          npv: 5243.18,
-          discountRate: 0.08,
-          periods: 4,
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_NPV_CALCULATOR',
-          apiVersion: '2.2.0',
-          requestId: 'wrei_1711270800000_def456ghi',
-        },
-      },
-    },
-    {
-      name: 'carbon_metrics',
-      description: 'Calculate carbon credit investment metrics including yield, price appreciation, and risk-adjusted returns.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "carbon_metrics"', enum: ['carbon_metrics'] },
-        { name: 'investmentAmount', type: 'number', required: true, description: 'Investment amount in USD (1,000 to 1,000,000,000)', min: 1000, max: 1000000000 },
-        { name: 'timeHorizon', type: 'number', required: true, description: 'Investment time horizon in years (1 to 30)', min: 1, max: 30 },
-      ],
-      exampleRequest: {
-        action: 'carbon_metrics',
-        investmentAmount: 500000,
-        timeHorizon: 5,
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          investmentAmount: 500000,
-          timeHorizon: 5,
-          projectedReturn: 892500,
-          annualYield: 0.157,
-          carbonCreditsAcquired: 3333,
-          pricePerCredit: 150,
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_CARBON_ANALYTICS',
-          apiVersion: '2.2.0',
-          requestId: 'wrei_1711270800000_ghi789jkl',
-        },
-      },
-    },
-    {
-      name: 'asset_co_metrics',
-      description: 'Calculate Asset Co token metrics for infrastructure-backed carbon investments.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "asset_co_metrics"', enum: ['asset_co_metrics'] },
-        { name: 'investmentAmount', type: 'number', required: true, description: 'Investment amount in USD', min: 1000, max: 1000000000 },
-        { name: 'timeHorizon', type: 'number', required: true, description: 'Time horizon in years', min: 1, max: 30 },
-      ],
-      exampleRequest: {
-        action: 'asset_co_metrics',
-        investmentAmount: 1000000,
-        timeHorizon: 10,
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          investmentAmount: 1000000,
-          timeHorizon: 10,
-          projectedNAV: 2150000,
-          annualAppreciation: 0.08,
-          revenueShareYield: 0.065,
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_ASSET_CO_ANALYTICS',
-          apiVersion: '2.2.0',
-          requestId: 'wrei_1711270800000_jkl012mno',
-        },
-      },
-    },
-    {
-      name: 'dual_portfolio',
-      description: 'Calculate dual portfolio metrics combining carbon credits and Asset Co tokens.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "dual_portfolio"', enum: ['dual_portfolio'] },
-        { name: 'investmentAmount', type: 'number', required: true, description: 'Total investment amount', min: 1000, max: 1000000000 },
-        { name: 'timeHorizon', type: 'number', required: true, description: 'Time horizon in years', min: 1, max: 30 },
-        { name: 'carbonAllocation', type: 'number', required: false, description: 'Percentage allocated to carbon credits (0 to 1)', default: 0.5 },
-      ],
-      exampleRequest: {
-        action: 'dual_portfolio',
-        investmentAmount: 2000000,
-        timeHorizon: 7,
-        carbonAllocation: 0.6,
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          totalInvestment: 2000000,
-          carbonAllocation: 1200000,
-          assetCoAllocation: 800000,
-          blendedReturn: 0.124,
-          diversificationBenefit: 0.018,
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_DUAL_PORTFOLIO_ANALYTICS',
-          apiVersion: '2.2.0',
-          requestId: 'wrei_1711270800000_mno345pqr',
-        },
-      },
-    },
-    {
-      name: 'risk_profile',
-      description: 'Generate a comprehensive risk assessment for a given investment profile.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "risk_profile"', enum: ['risk_profile'] },
-        { name: 'investmentAmount', type: 'number', required: true, description: 'Investment amount in USD', min: 1000, max: 1000000000 },
-        { name: 'timeHorizon', type: 'number', required: true, description: 'Time horizon in years', min: 1, max: 30 },
-        { name: 'tokenType', type: 'string', required: true, description: 'Token type for risk assessment', enum: ['carbon_credits', 'asset_co', 'dual_portfolio'] },
-      ],
-      exampleRequest: {
-        action: 'risk_profile',
-        investmentAmount: 500000,
-        timeHorizon: 5,
-        tokenType: 'carbon_credits',
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          riskScore: 42,
-          riskCategory: 'moderate',
-          maxDrawdown: -0.18,
-          volatility: 0.22,
-          sharpeRatio: 1.35,
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_RISK_PROFILER',
-          apiVersion: '2.2.0',
-          requestId: 'wrei_1711270800000_pqr678stu',
-        },
-      },
-    },
-    {
-      name: 'scenario_analysis',
-      description: 'Run scenario analysis across bull, base, and bear market conditions.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "scenario_analysis"', enum: ['scenario_analysis'] },
-        { name: 'investmentAmount', type: 'number', required: true, description: 'Investment amount in USD', min: 1000, max: 1000000000 },
-        { name: 'timeHorizon', type: 'number', required: true, description: 'Time horizon in years', min: 1, max: 30 },
-        { name: 'tokenType', type: 'string', required: true, description: 'Token type for scenario modelling', enum: ['carbon_credits', 'asset_co', 'dual_portfolio'] },
-      ],
-      exampleRequest: {
-        action: 'scenario_analysis',
-        investmentAmount: 1000000,
-        timeHorizon: 10,
-        tokenType: 'carbon_credits',
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          scenarios: {
-            bull: { returnRate: 0.25, finalValue: 9313226 },
-            base: { returnRate: 0.15, finalValue: 4045558 },
-            bear: { returnRate: 0.05, finalValue: 1628895 },
-          },
-          probabilityWeighted: 4329226,
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_SCENARIO_ANALYTICS',
-          apiVersion: '2.2.0',
-          requestId: 'wrei_1711270800000_stu901vwx',
-        },
-      },
-    },
-    {
-      name: 'portfolio_optimization',
-      description: 'Run portfolio optimisation to find optimal asset allocation.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "portfolio_optimization"', enum: ['portfolio_optimization'] },
-        { name: 'investmentAmount', type: 'number', required: true, description: 'Total investment amount', min: 1000, max: 1000000000 },
-        { name: 'timeHorizon', type: 'number', required: true, description: 'Time horizon in years', min: 1, max: 30 },
-        { name: 'riskTolerance', type: 'string', required: false, description: 'Risk tolerance level', enum: ['conservative', 'moderate', 'aggressive'], default: 'moderate' },
-      ],
-      exampleRequest: {
-        action: 'portfolio_optimization',
-        investmentAmount: 5000000,
-        timeHorizon: 10,
-        riskTolerance: 'moderate',
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          optimalAllocation: {
-            carbonCredits: 0.55,
-            assetCo: 0.35,
-            cash: 0.10,
-          },
-          expectedReturn: 0.142,
-          expectedVolatility: 0.18,
-          sharpeRatio: 1.42,
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_PORTFOLIO_OPTIMIZER',
-          apiVersion: '2.2.0',
-          requestId: 'wrei_1711270800000_vwx234yza',
-        },
-      },
-    },
-    {
-      name: 'monte_carlo',
-      description: 'Run Monte Carlo simulation for investment outcome distribution analysis.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "monte_carlo"', enum: ['monte_carlo'] },
-        { name: 'investmentAmount', type: 'number', required: true, description: 'Investment amount in USD', min: 1000, max: 1000000000 },
-        { name: 'timeHorizon', type: 'number', required: true, description: 'Time horizon in years', min: 1, max: 30 },
-        { name: 'tokenType', type: 'string', required: true, description: 'Token type', enum: ['carbon_credits', 'asset_co', 'dual_portfolio'] },
-        { name: 'simulations', type: 'number', required: false, description: 'Number of Monte Carlo simulations (100 to 10000)', min: 100, max: 10000, default: 1000 },
-      ],
-      exampleRequest: {
-        action: 'monte_carlo',
-        investmentAmount: 1000000,
-        timeHorizon: 5,
-        tokenType: 'carbon_credits',
-        simulations: 1000,
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          simulations: 1000,
-          percentiles: {
-            p5: 820000,
-            p25: 1050000,
-            p50: 1340000,
-            p75: 1680000,
-            p95: 2250000,
-          },
-          meanOutcome: 1390000,
-          probabilityOfLoss: 0.12,
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_MONTE_CARLO_ENGINE',
-          apiVersion: '2.2.0',
-          requestId: 'wrei_1711270800000_yza567bcd',
-        },
-      },
-    },
-    {
-      name: 'professional_metrics',
-      description: 'Calculate professional-grade investment metrics for institutional reporting.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "professional_metrics"', enum: ['professional_metrics'] },
-        { name: 'investmentAmount', type: 'number', required: true, description: 'Investment amount', min: 1000, max: 1000000000 },
-        { name: 'timeHorizon', type: 'number', required: true, description: 'Time horizon in years', min: 1, max: 30 },
-        { name: 'tokenType', type: 'string', required: true, description: 'Token type', enum: ['carbon_credits', 'asset_co', 'dual_portfolio'] },
-        { name: 'persona', type: 'string', required: false, description: 'Investor persona for tailored metrics', enum: ['esg_fund', 'family_office', 'infrastructure_fund', 'sovereign_wealth', 'defi_native'] },
-      ],
-      exampleRequest: {
-        action: 'professional_metrics',
-        investmentAmount: 10000000,
-        timeHorizon: 7,
-        tokenType: 'carbon_credits',
-        persona: 'esg_fund',
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          investmentMetrics: {
-            irr: 0.157,
-            npv: 4250000,
-            cashOnCash: 2.42,
-          },
-          riskMetrics: {
-            sharpeRatio: 1.35,
-            maxDrawdown: -0.18,
-            volatility: 0.22,
-          },
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_PROFESSIONAL_ANALYTICS',
-          apiVersion: '2.2.0',
-          requestId: 'wrei_1711270800000_bcd890efg',
-        },
-      },
-    },
-    {
-      name: 'calculate',
-      description: 'General-purpose investment calculator for WREI token investments.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "calculate"', enum: ['calculate'] },
-        { name: 'investmentAmount', type: 'number', required: true, description: 'Investment amount in USD', min: 1000, max: 1000000000 },
-        { name: 'timeHorizon', type: 'number', required: true, description: 'Time horizon in years', min: 1, max: 30 },
-        { name: 'tokenType', type: 'string', required: true, description: 'Token type', enum: ['carbon_credits', 'asset_co', 'dual_portfolio'] },
-      ],
-      exampleRequest: {
-        action: 'calculate',
-        investmentAmount: 250000,
-        timeHorizon: 5,
-        tokenType: 'carbon_credits',
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          summary: {
-            investmentAmount: 250000,
-            projectedValue: 445000,
-            totalReturn: 195000,
-            annualReturn: 0.122,
-          },
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_INVESTMENT_CALCULATOR',
-          apiVersion: '2.2.0',
-          requestId: 'wrei_1711270800000_efg123hij',
-        },
-      },
-    },
-  ],
-  errorCodes: commonErrorCodes,
-  notes: [
-    'All analytics calculations use real WREI financial models.',
-    'Investment amounts are validated between $1,000 and $1,000,000,000.',
-    'Time horizons are validated between 1 and 30 years.',
-    'Discount rates are validated between 1% and 50%.',
-  ],
-};
-
-// =============================================================================
-// COMPLIANCE API DOCUMENTATION
-// =============================================================================
-
-const complianceGetEndpoint: ApiEndpoint = {
-  id: 'compliance-get',
-  path: '/api/compliance',
-  method: 'GET',
-  category: 'compliance',
-  title: 'Compliance Status (Read)',
-  description:
-    'Read-only compliance status queries. Retrieve overall compliance status, alerts, regulatory framework details, and digital assets framework assessments.',
-  authentication: standardAuth,
-  rateLimit: {
-    maxRequests: 100,
-    windowMs: 60000,
-    windowDescription: '100 requests per minute',
-  },
-  actions: [
-    {
-      name: 'status',
-      description: 'Get overall compliance status for the platform.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=status', enum: ['status'] },
-      ],
-      exampleRequest: {},
-      exampleResponse: {
-        success: true,
-        data: {
-          complianceStatus: {
-            overallStatus: 'compliant',
-            complianceScore: 85,
-            lastAssessment: '2026-03-24T10:00:00.000Z',
-          },
-          jurisdiction: 'australia',
-          framework: 'AUSTRAC_ASIC_APRA',
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_COMPLIANCE_STATUS',
-          apiVersion: '2.2.0',
-          requestId: 'cmp_1711270800000_abc123',
-        },
-      },
-    },
-    {
-      name: 'alerts',
-      description: 'Get current compliance alerts and warnings.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=alerts', enum: ['alerts'] },
-      ],
-      exampleRequest: {},
-      exampleResponse: {
-        success: true,
-        data: {
-          alerts: [
-            { level: 'info', message: 'Quarterly compliance review due in 14 days', timestamp: '2026-03-24T10:00:00.000Z' },
-          ],
-          totalAlerts: 1,
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_COMPLIANCE_ALERTS',
-          apiVersion: '2.2.0',
-          requestId: 'cmp_1711270800000_def456',
-        },
-      },
-    },
-    {
-      name: 'regulatory_framework',
-      description: 'Get the full Australian regulatory framework reference data.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=regulatory_framework', enum: ['regulatory_framework'] },
-      ],
-      exampleRequest: {},
-      exampleResponse: {
-        success: true,
-        data: {
-          framework: {
-            jurisdiction: 'Australia',
-            regulators: ['ASIC', 'AUSTRAC', 'APRA', 'ATO'],
-            keyLegislation: ['Corporations Act 2001', 'AML/CTF Act 2006'],
-          },
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_REGULATORY_FRAMEWORK',
-          apiVersion: '2.2.0',
-          requestId: 'cmp_1711270800000_ghi789',
-        },
-      },
-    },
-    {
-      name: 'digital_assets_framework',
-      description: 'Get digital assets regulatory framework compliance assessment.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=digital_assets_framework', enum: ['digital_assets_framework'] },
-      ],
-      exampleRequest: {},
-      exampleResponse: {
-        success: true,
-        data: {
-          digitalAssetsCompliance: {
-            tokenClassification: 'financial_product',
-            regulatoryStatus: 'compliant',
-            applicableRegulations: ['ASIC Information Sheet 225', 'Token Mapping Framework'],
-          },
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_DAF_COMPLIANCE',
-          apiVersion: '2.2.0',
-          requestId: 'cmp_1711270800000_jkl012',
-        },
-      },
-    },
-  ],
-  errorCodes: commonErrorCodes,
-  notes: [
-    'GET endpoints use query parameters for action selection.',
-    'URL format: /api/compliance?action=status',
-    'All compliance data reflects Australian regulatory frameworks (AFSL, AML/CTF, AUSTRAC).',
-  ],
-};
-
-const compliancePostEndpoint: ApiEndpoint = {
-  id: 'compliance-post',
-  path: '/api/compliance',
-  method: 'POST',
-  category: 'compliance',
-  title: 'Compliance Assessment (Write)',
-  description:
-    'Run compliance assessments and generate reports. Includes investor classification, AFSL checks, AML/CTF verification, environmental compliance, tokenisation standards, and full compliance reports.',
-  authentication: standardAuth,
-  rateLimit: {
-    maxRequests: 100,
-    windowMs: 60000,
-    windowDescription: '100 requests per minute',
-  },
-  actions: [
-    {
-      name: 'investor_classification',
-      description: 'Classify an investor type for regulatory purposes (wholesale, sophisticated, retail).',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "investor_classification"', enum: ['investor_classification'] },
-        { name: 'investorType', type: 'string', required: true, description: 'Investor type to classify', enum: ['wholesale', 'sophisticated', 'retail', 'professional'] },
-        { name: 'investmentAmount', type: 'number', required: true, description: 'Proposed investment amount', min: 1000, max: 1000000000 },
-      ],
-      exampleRequest: {
-        action: 'investor_classification',
-        investorType: 'sophisticated',
-        investmentAmount: 500000,
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          classification: 'sophisticated',
-          eligible: true,
-          requirements: ['Net assets > $2.5M or gross income > $250K for last 2 years'],
-          restrictions: [],
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_INVESTOR_CLASSIFIER',
-          apiVersion: '2.2.0',
-          requestId: 'cmp_1711270800000_mno345',
-        },
-      },
-    },
-    {
-      name: 'afsl_check',
-      description: 'Check AFSL (Australian Financial Services Licence) compliance for a given activity.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "afsl_check"', enum: ['afsl_check'] },
-        { name: 'tokenType', type: 'string', required: true, description: 'Token type being traded', enum: ['carbon_credits', 'asset_co', 'dual_portfolio'] },
-        { name: 'investmentAmount', type: 'number', required: true, description: 'Investment amount', min: 1000, max: 1000000000 },
-      ],
-      exampleRequest: {
-        action: 'afsl_check',
-        tokenType: 'carbon_credits',
-        investmentAmount: 1000000,
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          afslRequired: true,
-          afslStatus: 'compliant',
-          licenceNumber: 'AFSL-WREI-001',
-          authorisations: ['dealing in financial products', 'providing financial advice'],
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_AFSL_COMPLIANCE',
-          apiVersion: '2.2.0',
-          requestId: 'cmp_1711270800000_pqr678',
-        },
-      },
-    },
-    {
-      name: 'aml_check',
-      description: 'Run AML/CTF (Anti-Money Laundering / Counter-Terrorism Financing) verification.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "aml_check"', enum: ['aml_check'] },
-        { name: 'investmentAmount', type: 'number', required: true, description: 'Transaction amount to check', min: 1000, max: 1000000000 },
-        { name: 'investorType', type: 'string', required: false, description: 'Type of investor', enum: ['wholesale', 'sophisticated', 'retail', 'professional'] },
-      ],
-      exampleRequest: {
-        action: 'aml_check',
-        investmentAmount: 750000,
-        investorType: 'wholesale',
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          amlStatus: 'cleared',
-          riskLevel: 'low',
-          thresholdExceeded: false,
-          reportingRequired: false,
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_AML_COMPLIANCE',
-          apiVersion: '2.2.0',
-          requestId: 'cmp_1711270800000_stu901',
-        },
-      },
-    },
-    {
-      name: 'environmental',
-      description: 'Assess environmental compliance for carbon credit operations.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "environmental"', enum: ['environmental'] },
-        { name: 'tokenType', type: 'string', required: true, description: 'Token type', enum: ['carbon_credits', 'asset_co', 'dual_portfolio'] },
-      ],
-      exampleRequest: {
-        action: 'environmental',
-        tokenType: 'carbon_credits',
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          environmentalCompliance: {
-            status: 'compliant',
-            certifications: ['Verra VCS', 'Gold Standard', 'WREI dMRV'],
-            carbonIntegrity: 'high',
-          },
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_ENVIRONMENTAL_COMPLIANCE',
-          apiVersion: '2.2.0',
-          requestId: 'cmp_1711270800000_vwx234',
-        },
-      },
-    },
-    {
-      name: 'tokenization_standards',
-      description: 'Verify tokenisation standards compliance (ERC-7518 / DyCIST).',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "tokenization_standards"', enum: ['tokenization_standards'] },
-        { name: 'tokenType', type: 'string', required: true, description: 'Token type to verify', enum: ['carbon_credits', 'asset_co', 'dual_portfolio'] },
-      ],
-      exampleRequest: {
-        action: 'tokenization_standards',
-        tokenType: 'carbon_credits',
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          standard: 'ERC-7518 (DyCIST)',
-          audit: 'CertiK',
-          compliant: true,
-          infrastructure: 'Zoniqx zProtocol',
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_TOKENIZATION_STANDARDS',
-          apiVersion: '2.2.0',
-          requestId: 'cmp_1711270800000_yza567',
-        },
-      },
-    },
-    {
-      name: 'full_report',
-      description: 'Generate a comprehensive compliance report covering all regulatory aspects.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "full_report"', enum: ['full_report'] },
-        { name: 'tokenType', type: 'string', required: true, description: 'Token type', enum: ['carbon_credits', 'asset_co', 'dual_portfolio'] },
-        { name: 'investmentAmount', type: 'number', required: true, description: 'Investment amount', min: 1000, max: 1000000000 },
-        { name: 'investorType', type: 'string', required: false, description: 'Investor type', enum: ['wholesale', 'sophisticated', 'retail', 'professional'] },
-      ],
-      exampleRequest: {
-        action: 'full_report',
-        tokenType: 'carbon_credits',
-        investmentAmount: 2000000,
-        investorType: 'wholesale',
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          report: {
-            overallStatus: 'compliant',
-            score: 92,
-            sections: {
-              afsl: 'compliant',
-              aml: 'cleared',
-              environmental: 'compliant',
-              tokenisation: 'compliant',
-              tax: 'optimised',
-            },
-          },
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_COMPLIANCE_REPORT',
-          apiVersion: '2.2.0',
-          requestId: 'cmp_1711270800000_bcd890',
-        },
-      },
-    },
-    {
-      name: 'tax_treatment',
-      description: 'Get optimal tax treatment recommendation for a WREI token investment.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "tax_treatment"', enum: ['tax_treatment'] },
-        { name: 'tokenType', type: 'string', required: true, description: 'Token type', enum: ['carbon_credits', 'asset_co', 'dual_portfolio'] },
-        { name: 'investmentAmount', type: 'number', required: true, description: 'Investment amount', min: 1000, max: 1000000000 },
-      ],
-      exampleRequest: {
-        action: 'tax_treatment',
-        tokenType: 'carbon_credits',
-        investmentAmount: 500000,
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          taxTreatment: {
-            classification: 'CGT Asset',
-            cgtDiscount: '50% for holdings > 12 months',
-            gstTreatment: 'GST-free (financial supply)',
-            recommendedStructure: 'Trust or company holding',
-          },
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_TAX_OPTIMIZATION',
-          apiVersion: '2.2.0',
-          requestId: 'cmp_1711270800000_efg123',
-        },
-      },
-    },
-  ],
-  errorCodes: commonErrorCodes,
-  notes: [
-    'POST endpoints use JSON body with an action field.',
-    'All compliance checks reference Australian regulatory frameworks.',
-    'AFSL compliance is assessed against ASIC requirements.',
-    'AML/CTF checks follow AUSTRAC reporting obligations.',
-  ],
-};
-
-// =============================================================================
-// MARKET DATA API DOCUMENTATION
-// =============================================================================
-
-const marketDataEndpoint: ApiEndpoint = {
-  id: 'market-data',
-  path: '/api/market-data',
+const marketPrices: ApiEndpoint = {
+  id: 'market-prices',
+  path: '/api/v1/market/prices',
   method: 'GET',
   category: 'market-data',
-  title: 'Market Data Feeds',
-  description:
-    'Real-time and historical market data for carbon pricing, RWA markets, sentiment analysis, and competitive intelligence. Data feeds simulate institutional-grade market connectivity.',
+  title: 'Current Prices',
+  description: 'Retrieve current spot prices for all instruments, or filter by a specific instrument type. Returns pricing from the WREI Pricing Index including anchor price, floor, ceiling, and source.',
   authentication: standardAuth,
-  rateLimit: {
-    maxRequests: 100,
-    windowMs: 60000,
-    windowDescription: '100 requests per minute',
-  },
+  rateLimit: stdRate,
   actions: [
     {
-      name: 'carbon_pricing',
-      description: 'Get current carbon credit pricing data across multiple markets and indices.',
+      name: 'get_prices',
+      description: 'Get current prices for all instruments or a specific type.',
       parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=carbon_pricing', enum: ['carbon_pricing'] },
+        { name: 'instrument', type: 'string', required: false, description: 'Filter by instrument type', enum: ['ESC', 'VEEC', 'PRC', 'ACCU', 'LGC', 'STC', 'WREI_CC', 'WREI_ACO'], example: 'ESC' },
       ],
-      exampleRequest: {},
+      exampleRequest: { instrument: 'ESC' },
       exampleResponse: {
-        success: true,
-        data: {
-          carbonPricing: {
-            vcmSpot: 6.34,
-            forwardRemoval: 180.00,
-            dmrvPremium: 1.78,
-            wreiIndex: 150.00,
+        data: [
+          {
+            instrument: 'ESC',
+            category: 'energy_savings',
+            displayName: 'Energy Savings Certificate',
+            price: 6.34,
+            anchorPrice: 9.51,
+            priceFloor: 7.61,
+            priceCeiling: 14.27,
+            currency: 'AUD',
+            unitOfMeasure: 'certificate',
+            source: 'NSW ESS Registry',
+            updatedAt: '2026-04-05T10:00:00.000Z',
           },
-          timestamp: '2026-03-24T10:00:00.000Z',
-          dataAge: 0,
-          nextUpdate: '2026-03-24T10:01:00.000Z',
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_CARBON_FEED',
-          apiVersion: '2.2.0',
-          requestId: 'mkt_1711270800000_abc123',
-        },
-      },
-    },
-    {
-      name: 'carbon_analytics',
-      description: 'Get carbon market analytics including trends, forecasts, and market depth.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=carbon_analytics', enum: ['carbon_analytics'] },
-      ],
-      exampleRequest: {},
-      exampleResponse: {
-        success: true,
-        data: {
-          carbonAnalytics: {
-            trends: [{ direction: 'bullish', confidence: 0.78, timeframe: '30d' }],
-            volumeMetrics: { daily: 125000, weekly: 875000 },
-          },
-          analysisDepth: 'comprehensive',
-          trendConfidence: 'high',
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_CARBON_ANALYTICS',
-          apiVersion: '2.2.0',
-          requestId: 'mkt_1711270800000_def456',
-        },
-      },
-    },
-    {
-      name: 'rwa_market',
-      description: 'Get Real World Asset (RWA) market data and tokenisation metrics.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=rwa_market', enum: ['rwa_market'] },
-      ],
-      exampleRequest: {},
-      exampleResponse: {
-        success: true,
-        data: {
-          rwaMarket: {
-            totalMarketCap: 12500000000,
-            carbonTokenShare: 0.08,
-            growthRate: 0.45,
-          },
-          timestamp: '2026-03-24T10:00:00.000Z',
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_RWA_FEED',
-          apiVersion: '2.2.0',
-          requestId: 'mkt_1711270800000_ghi789',
-        },
-      },
-    },
-    {
-      name: 'rwa_analytics',
-      description: 'Get RWA market analytics and institutional adoption trends.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=rwa_analytics', enum: ['rwa_analytics'] },
-      ],
-      exampleRequest: {},
-      exampleResponse: {
-        success: true,
-        data: {
-          rwaAnalytics: {
-            institutionalAdoption: 0.34,
-            regulatoryClarity: 'improving',
-            topSectors: ['real_estate', 'carbon_credits', 'commodities'],
-          },
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_RWA_ANALYTICS',
-          apiVersion: '2.2.0',
-          requestId: 'mkt_1711270800000_jkl012',
-        },
-      },
-    },
-    {
-      name: 'market_sentiment',
-      description: 'Get aggregated market sentiment for carbon and RWA markets.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=market_sentiment', enum: ['market_sentiment'] },
-      ],
-      exampleRequest: {},
-      exampleResponse: {
-        success: true,
-        data: {
-          sentiment: {
-            overall: 'bullish',
-            score: 72,
-            sources: ['institutional_flows', 'regulatory_signals', 'market_momentum'],
-          },
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_SENTIMENT_FEED',
-          apiVersion: '2.2.0',
-          requestId: 'mkt_1711270800000_mno345',
-        },
-      },
-    },
-    {
-      name: 'competitive_analysis',
-      description: 'Get competitive intelligence on carbon credit platforms and market positioning.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=competitive_analysis', enum: ['competitive_analysis'] },
-      ],
-      exampleRequest: {},
-      exampleResponse: {
-        success: true,
-        data: {
-          competitiveAnalysis: {
-            wreiPosition: 'premium_differentiated',
-            competitors: 5,
-            marketShare: 0.12,
-          },
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_COMPETITIVE_INTELLIGENCE',
-          apiVersion: '2.2.0',
-          requestId: 'mkt_1711270800000_pqr678',
-        },
-      },
-    },
-    {
-      name: 'carbon_projections',
-      description: 'Get carbon credit price projections and forecast models.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=carbon_projections', enum: ['carbon_projections'] },
-      ],
-      exampleRequest: {},
-      exampleResponse: {
-        success: true,
-        data: {
-          projections: {
-            shortTerm: { horizon: '3m', target: 165, confidence: 0.82 },
-            mediumTerm: { horizon: '12m', target: 195, confidence: 0.68 },
-            longTerm: { horizon: '36m', target: 280, confidence: 0.52 },
-          },
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_CARBON_PROJECTIONS',
-          apiVersion: '2.2.0',
-          requestId: 'mkt_1711270800000_stu901',
-        },
-      },
-    },
-    {
-      name: 'historical',
-      description: 'Get historical market data for a specified time range.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=historical', enum: ['historical'] },
-        { name: 'feedType', type: 'string', required: false, description: 'Data feed type', enum: ['carbon_pricing', 'rwa_market', 'regulatory_alerts', 'market_sentiment'], default: 'carbon_pricing' },
-        { name: 'timeRange', type: 'string', required: false, description: 'Time range for historical data', enum: ['1h', '4h', '12h', '24h', '3d', '7d', '30d', '90d', '1y'], default: '24h' },
-      ],
-      exampleRequest: {},
-      exampleResponse: {
-        success: true,
-        data: {
-          historicalData: {
-            feedType: 'carbon_pricing',
-            timeRange: '24h',
-            dataPoints: 24,
-            series: [
-              { timestamp: '2026-03-23T10:00:00.000Z', value: 148.50 },
-              { timestamp: '2026-03-23T11:00:00.000Z', value: 149.20 },
-            ],
-          },
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_HISTORICAL_DATA',
-          apiVersion: '2.2.0',
-          requestId: 'mkt_1711270800000_vwx234',
-        },
-      },
-    },
-    {
-      name: 'feed_status',
-      description: 'Get the operational status of all market data feeds.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=feed_status', enum: ['feed_status'] },
-      ],
-      exampleRequest: {},
-      exampleResponse: {
-        success: true,
-        data: {
-          feeds: {
-            carbonPricing: { status: 'active', latency: 12, lastUpdate: '2026-03-24T10:00:00.000Z' },
-            rwaMarket: { status: 'active', latency: 8, lastUpdate: '2026-03-24T10:00:00.000Z' },
-            sentiment: { status: 'active', latency: 45, lastUpdate: '2026-03-24T09:59:00.000Z' },
-          },
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_FEED_STATUS',
-          apiVersion: '2.2.0',
-          requestId: 'mkt_1711270800000_yza567',
-        },
+        ],
       },
     },
   ],
-  errorCodes: commonErrorCodes,
-  notes: [
-    'All market data endpoints use GET with query parameters.',
-    'URL format: /api/market-data?action=carbon_pricing',
-    'Historical data supports multiple time ranges from 1 hour to 1 year.',
-    'Feed data simulates real-time market connectivity for the demo.',
+  errorCodes: [
+    { code: 400, name: 'Bad Request', description: 'Invalid instrument type' },
+    ...readErrors,
   ],
 };
 
-// =============================================================================
-// METADATA API DOCUMENTATION
-// =============================================================================
-
-const metadataEndpoint: ApiEndpoint = {
-  id: 'metadata',
-  path: '/api/metadata',
+const marketPriceHistory: ApiEndpoint = {
+  id: 'market-prices-history',
+  path: '/api/v1/market/prices/history',
   method: 'GET',
-  category: 'metadata',
-  title: 'Token Metadata',
-  description:
-    'Query and retrieve blockchain provenance metadata for WREI tokens. Provides token lifecycle tracking, quality scores, verification status, and comprehensive audit trails.',
-  authentication: {
-    required: false,
-    header: 'N/A',
-    description: 'The metadata endpoint does not require API key authentication in the current version.',
-    devMode: 'No authentication required.',
-  },
-  rateLimit: {
-    maxRequests: 200,
-    windowMs: 60000,
-    windowDescription: '200 requests per minute',
-  },
+  category: 'market-data',
+  title: 'Price History',
+  description: 'Retrieve historical price data for a specific instrument. Returns timestamped price records from the database.',
+  authentication: standardAuth,
+  rateLimit: stdRate,
   actions: [
     {
-      name: 'query',
-      description: 'Query tokens with optional filters for type, vessel, quality score, and date range.',
+      name: 'get_history',
+      description: 'Get price history for an instrument over a specified number of days.',
       parameters: [
-        { name: 'action', type: 'string', required: false, description: 'Query parameter: action=query (default)', enum: ['query'], default: 'query' },
-        { name: 'tokenType', type: 'string', required: false, description: 'Filter by token type' },
-        { name: 'vesselId', type: 'string', required: false, description: 'Filter by vessel ID' },
-        { name: 'minQualityScore', type: 'number', required: false, description: 'Minimum quality score (0 to 100)' },
-        { name: 'verificationStatus', type: 'boolean', required: false, description: 'Filter by verification status' },
-        { name: 'fromDate', type: 'string', required: false, description: 'Start date for date range filter (ISO 8601)' },
-        { name: 'toDate', type: 'string', required: false, description: 'End date for date range filter (ISO 8601)' },
+        { name: 'instrument', type: 'string', required: true, description: 'Instrument type', enum: ['ESC', 'VEEC', 'PRC', 'ACCU', 'LGC', 'STC', 'WREI_CC', 'WREI_ACO'], example: 'ESC' },
+        { name: 'days', type: 'number', required: false, description: 'Number of days of history (1-365)', default: 30, min: 1, max: 365, example: 30 },
       ],
-      exampleRequest: {},
+      exampleRequest: { instrument: 'ESC', days: 30 },
       exampleResponse: {
-        success: true,
-        data: {
-          tokens: [],
-          totalCount: 0,
-        },
-        query: { tokenType: 'carbon_credits' },
+        data: [
+          { instrument: 'ESC', price: 6.34, source: 'NSW ESS Registry', recordedAt: '2026-04-05T10:00:00.000Z' },
+          { instrument: 'ESC', price: 6.28, source: 'NSW ESS Registry', recordedAt: '2026-04-04T10:00:00.000Z' },
+        ],
       },
     },
+  ],
+  errorCodes: [
+    { code: 400, name: 'Bad Request', description: 'Missing instrument param or invalid days range' },
+    ...readErrors,
+  ],
+};
+
+const marketOrderbook: ApiEndpoint = {
+  id: 'market-orderbook',
+  path: '/api/v1/market/orderbook',
+  method: 'GET',
+  category: 'market-data',
+  title: 'Order Book',
+  description: 'Retrieve the current order book for an instrument. In the demo environment this returns simulated market depth with 5 levels of bids and asks.',
+  authentication: standardAuth,
+  rateLimit: stdRate,
+  actions: [
     {
-      name: 'statistics',
-      description: 'Get aggregate metadata statistics across all tokens.',
+      name: 'get_orderbook',
+      description: 'Get order book depth for an instrument.',
       parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=statistics', enum: ['statistics'] },
+        { name: 'instrument', type: 'string', required: true, description: 'Instrument type', enum: ['ESC', 'VEEC', 'PRC', 'ACCU', 'LGC', 'STC', 'WREI_CC', 'WREI_ACO'], example: 'ESC' },
       ],
-      exampleRequest: {},
+      exampleRequest: { instrument: 'ESC' },
       exampleResponse: {
-        success: true,
         data: {
-          totalTokens: 0,
-          averageQualityScore: 0,
-          verificationRate: 0,
-          tokenTypeDistribution: {},
-        },
-      },
-    },
-    {
-      name: 'retrieve',
-      description: 'Retrieve metadata for a specific token by ID.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=retrieve', enum: ['retrieve'] },
-        { name: 'tokenId', type: 'string', required: true, description: 'The unique token identifier', example: 'WREI-CC-001' },
-      ],
-      exampleRequest: {},
-      exampleResponse: {
-        success: true,
-        data: {
-          tokenId: 'WREI-CC-001',
-          tokenType: 'carbon_credits',
-          qualityScore: 92,
-          verificationStatus: true,
-          provenance: {
-            issueDate: '2026-01-15T00:00:00.000Z',
-            verifier: 'WREI dMRV Engine',
-          },
-        },
-      },
-    },
-    {
-      name: 'tokens',
-      description: 'Get a list of all token IDs in the system.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=tokens', enum: ['tokens'] },
-      ],
-      exampleRequest: {},
-      exampleResponse: {
-        success: true,
-        data: {
-          tokenIds: ['WREI-CC-001', 'WREI-AC-001'],
-          count: 2,
+          instrument: 'ESC',
+          currency: 'AUD',
+          midPrice: 6.34,
+          spread: 0.03,
+          bids: [{ price: 6.33, quantity: 2500, orders: 3 }],
+          asks: [{ price: 6.35, quantity: 1800, orders: 2 }],
+          source: 'simulated',
+          updatedAt: '2026-04-05T10:00:00.000Z',
         },
       },
     },
   ],
   errorCodes: [
-    { code: 400, name: 'Bad Request', description: 'Missing required parameters (e.g., tokenId for retrieve action)' },
-    { code: 404, name: 'Not Found', description: 'Token metadata not found for the specified tokenId' },
-    { code: 500, name: 'Internal Error', description: 'Unexpected server error' },
-  ],
-  notes: [
-    'GET endpoints use query parameters.',
-    'URL format: /api/metadata?action=query&tokenType=carbon_credits',
-    'The metadata system stores token provenance on a per-session basis (no persistent database in demo).',
+    { code: 400, name: 'Bad Request', description: 'Missing or invalid instrument type' },
+    ...readErrors,
   ],
 };
 
-const metadataDeleteEndpoint: ApiEndpoint = {
-  id: 'metadata-delete',
-  path: '/api/metadata',
-  method: 'DELETE',
-  category: 'metadata',
-  title: 'Token Metadata (Clear)',
-  description: 'Clear all stored token metadata. Used for testing and demo reset purposes.',
-  authentication: {
-    required: false,
-    header: 'N/A',
-    description: 'No authentication required.',
-    devMode: 'No authentication required.',
-  },
-  rateLimit: {
-    maxRequests: 10,
-    windowMs: 60000,
-    windowDescription: '10 requests per minute',
-  },
+const marketInstruments: ApiEndpoint = {
+  id: 'market-instruments',
+  path: '/api/v1/market/instruments',
+  method: 'GET',
+  category: 'market-data',
+  title: 'Instruments',
+  description: 'List all tradeable instruments with current configuration including pricing, negotiation style, jurisdictions, and regulatory classification.',
+  authentication: standardAuth,
+  rateLimit: stdRate,
   actions: [
     {
-      name: 'clear',
-      description: 'Clear all stored token metadata.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=clear', enum: ['clear'] },
-      ],
+      name: 'list_instruments',
+      description: 'List all tradeable instruments.',
+      parameters: [],
       exampleRequest: {},
       exampleResponse: {
-        success: true,
-        message: 'All metadata cleared',
+        data: [
+          {
+            instrumentType: 'ESC',
+            category: 'energy_savings',
+            displayName: 'Energy Savings Certificate',
+            ticker: 'ESC',
+            currency: 'AUD',
+            unitOfMeasure: 'certificate',
+            currentSpot: 6.34,
+            anchorPrice: 9.51,
+            priceFloor: 7.61,
+            priceCeiling: 14.27,
+            negotiationStyle: 'institutional',
+            keyConsiderations: ['ESS Rule compliance', 'Surrender deadline awareness'],
+            jurisdictions: ['NSW'],
+            regulatoryClassification: 'not_financial_product',
+          },
+        ],
+      },
+    },
+  ],
+  errorCodes: readErrors,
+};
+
+// =============================================================================
+// TRADING ENDPOINTS
+// =============================================================================
+
+const tradesList: ApiEndpoint = {
+  id: 'trades-list',
+  path: '/api/v1/trades',
+  method: 'GET',
+  category: 'trading',
+  title: 'List Trades',
+  description: 'Retrieve paginated trade records for the authenticated organisation. Filter by status or instrument.',
+  authentication: standardAuth,
+  rateLimit: stdRate,
+  actions: [
+    {
+      name: 'list_trades',
+      description: 'List trades with pagination and optional filters.',
+      parameters: [
+        { name: 'page', type: 'number', required: false, description: 'Page number (1-based)', default: 1, example: 1 },
+        { name: 'limit', type: 'number', required: false, description: 'Results per page (max 200)', default: 50, max: 200, example: 20 },
+        { name: 'status', type: 'string', required: false, description: 'Filter by trade status', example: 'pending' },
+        { name: 'instrument_id', type: 'string', required: false, description: 'Filter by instrument ID', example: 'ESC' },
+      ],
+      exampleRequest: { page: 1, limit: 20 },
+      exampleResponse: {
+        data: [
+          {
+            id: 'trd_abc123',
+            instrument_id: 'ESC',
+            direction: 'buy',
+            quantity: 1000,
+            price_per_unit: 6.50,
+            total_value: 6500,
+            currency: 'AUD',
+            status: 'confirmed',
+            executed_at: '2026-04-05T09:30:00.000Z',
+          },
+        ],
+        meta: { page: 1, limit: 20, total: 45, pages: 3 },
       },
     },
   ],
   errorCodes: [
-    { code: 400, name: 'Bad Request', description: 'Invalid action parameter' },
-    { code: 500, name: 'Internal Error', description: 'Unexpected server error' },
+    { code: 400, name: 'Bad Request', description: 'Invalid pagination parameters' },
+    ...readErrors,
   ],
 };
 
-// =============================================================================
-// PERFORMANCE API DOCUMENTATION
-// =============================================================================
-
-const performanceGetEndpoint: ApiEndpoint = {
-  id: 'performance-get',
-  path: '/api/performance',
-  method: 'GET',
-  category: 'performance',
-  title: 'Performance Monitoring (Read)',
-  description:
-    'Retrieve real-time performance metrics, system health status, benchmarks, and load test results for the WREI platform.',
+const tradesCreate: ApiEndpoint = {
+  id: 'trades-create',
+  path: '/api/v1/trades',
+  method: 'POST',
+  category: 'trading',
+  title: 'Create Trade',
+  description: 'Record a new trade. Fires a trade.created webhook event. Requires admin, broker, or trader role.',
   authentication: standardAuth,
-  rateLimit: {
-    maxRequests: 50,
-    windowMs: 60000,
-    windowDescription: '50 requests per minute',
-  },
+  rateLimit: writeRate,
   actions: [
     {
-      name: 'snapshot',
-      description: 'Get a current performance snapshot with all key metrics.',
+      name: 'create_trade',
+      description: 'Create a new trade record.',
       parameters: [
-        { name: 'action', type: 'string', required: false, description: 'Query parameter: action=snapshot (default)', enum: ['snapshot'], default: 'snapshot' },
+        { name: 'instrument_id', type: 'string', required: true, description: 'Instrument type', example: 'ESC' },
+        { name: 'direction', type: 'string', required: true, description: 'Trade direction', enum: ['buy', 'sell'] },
+        { name: 'quantity', type: 'number', required: true, description: 'Number of units', example: 1000 },
+        { name: 'price_per_unit', type: 'number', required: true, description: 'Price per unit in currency', example: 6.50 },
+        { name: 'currency', type: 'string', required: false, description: 'Currency code', default: 'AUD' },
+        { name: 'buyer_persona', type: 'string', required: false, description: 'Buyer persona type' },
+        { name: 'metadata', type: 'object', required: false, description: 'Additional trade metadata' },
       ],
-      exampleRequest: {},
+      exampleRequest: {
+        instrument_id: 'ESC',
+        direction: 'buy',
+        quantity: 1000,
+        price_per_unit: 6.50,
+        currency: 'AUD',
+      },
       exampleResponse: {
-        success: true,
         data: {
-          snapshot: {
-            responseTime: { avg: 45, p95: 120, p99: 250 },
-            throughput: 1200,
-            errorRate: 0.002,
-            uptime: 0.999,
-          },
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_PERFORMANCE_MONITOR',
-          apiVersion: '2.2.0',
-          requestId: 'wrei_1711270800000_perf01',
+          id: 'trd_abc123',
+          instrument_id: 'ESC',
+          direction: 'buy',
+          quantity: 1000,
+          price_per_unit: 6.50,
+          total_value: 6500,
+          currency: 'AUD',
+          status: 'pending',
+          executed_at: '2026-04-05T09:30:00.000Z',
         },
       },
     },
+  ],
+  errorCodes: commonErrors,
+  notes: ['Fires trade.created webhook event on success.'],
+};
+
+const tradesDetail: ApiEndpoint = {
+  id: 'trades-detail',
+  path: '/api/v1/trades/:id',
+  method: 'GET',
+  category: 'trading',
+  title: 'Trade Detail',
+  description: 'Retrieve a single trade by ID, including settlement timeline and status if available.',
+  authentication: standardAuth,
+  rateLimit: stdRate,
+  actions: [
     {
-      name: 'benchmarks',
-      description: 'Get performance benchmarks and target compliance status.',
+      name: 'get_trade',
+      description: 'Get trade detail with settlement information.',
       parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=benchmarks', enum: ['benchmarks'] },
+        { name: 'id', type: 'string', required: true, description: 'Trade ID', example: 'trd_abc123' },
       ],
+      exampleRequest: { id: 'trd_abc123' },
+      exampleResponse: {
+        data: {
+          id: 'trd_abc123',
+          instrument_id: 'ESC',
+          direction: 'buy',
+          quantity: 1000,
+          price_per_unit: 6.50,
+          total_value: 6500,
+          currency: 'AUD',
+          status: 'confirmed',
+          executed_at: '2026-04-05T09:30:00.000Z',
+          settlement: {
+            id: 'stl_xyz789',
+            method: 'tessa_transfer',
+            status: 'processing',
+            blockchain_hash: null,
+            settled_at: null,
+          },
+        },
+      },
+    },
+  ],
+  errorCodes: [
+    { code: 404, name: 'Not Found', description: 'Trade not found' },
+    ...readErrors,
+  ],
+};
+
+const negotiateCreate: ApiEndpoint = {
+  id: 'negotiate-create',
+  path: '/api/v1/trades/negotiate',
+  method: 'POST',
+  category: 'trading',
+  title: 'Initiate Negotiation',
+  description: 'Start a new AI-powered negotiation session for a specific instrument. Returns session ID, anchor price, and pricing constraints. Requires admin, broker, or trader role.',
+  authentication: standardAuth,
+  rateLimit: writeRate,
+  actions: [
+    {
+      name: 'initiate_negotiation',
+      description: 'Create a new AI negotiation session.',
+      parameters: [
+        { name: 'instrument', type: 'string', required: true, description: 'Instrument to negotiate', enum: ['ESC', 'VEEC', 'PRC', 'ACCU', 'LGC', 'STC', 'WREI_CC', 'WREI_ACO'], example: 'ESC' },
+        { name: 'persona_type', type: 'string', required: true, description: 'Buyer persona', enum: ['corporate_compliance', 'esg_fund', 'trading_desk', 'sustainability_director', 'government_procurement', 'free_play'] },
+        { name: 'quantity', type: 'number', required: false, description: 'Number of units to negotiate', example: 5000 },
+        { name: 'buyer_profile', type: 'object', required: false, description: 'Additional buyer context' },
+      ],
+      exampleRequest: {
+        instrument: 'ESC',
+        persona_type: 'corporate_compliance',
+        quantity: 5000,
+      },
+      exampleResponse: {
+        data: {
+          id: 'neg_def456',
+          instrument: 'ESC',
+          personaType: 'corporate_compliance',
+          anchorPrice: 9.51,
+          currentOffer: 9.51,
+          priceFloor: 7.61,
+          phase: 'opening',
+          round: 0,
+          status: 'active',
+          pricing: {
+            currency: 'AUD',
+            unitOfMeasure: 'certificate',
+            volumeDiscount: 0.02,
+            maxConcessionPerRound: 0.05,
+            maxTotalConcession: 0.20,
+          },
+          startedAt: '2026-04-05T10:00:00.000Z',
+        },
+      },
+    },
+  ],
+  errorCodes: commonErrors,
+  notes: [
+    'Price floor enforced in application code, not delegated to the LLM.',
+    'Max 5% concession per round enforced server-side.',
+    'Max 20% total concession from anchor price enforced server-side.',
+  ],
+};
+
+const negotiateStatus: ApiEndpoint = {
+  id: 'negotiate-status',
+  path: '/api/v1/trades/negotiate/:id',
+  method: 'GET',
+  category: 'trading',
+  title: 'Negotiation Status',
+  description: 'Retrieve the current state of a negotiation session including round, phase, offer history, and outcome.',
+  authentication: standardAuth,
+  rateLimit: stdRate,
+  actions: [
+    {
+      name: 'get_negotiation',
+      description: 'Get negotiation status and transcript.',
+      parameters: [
+        { name: 'id', type: 'string', required: true, description: 'Negotiation session ID', example: 'neg_def456' },
+      ],
+      exampleRequest: { id: 'neg_def456' },
+      exampleResponse: {
+        data: {
+          id: 'neg_def456',
+          personaType: 'corporate_compliance',
+          instrument: 'ESC',
+          phase: 'mid_negotiation',
+          round: 3,
+          anchorPrice: 9.51,
+          currentOffer: 8.80,
+          priceFloor: 7.61,
+          totalConcession: 0.075,
+          outcome: null,
+          messages: [
+            { role: 'buyer', content: 'We need 5,000 ESCs for Q2 surrender.', timestamp: '2026-04-05T10:01:00.000Z' },
+          ],
+          startedAt: '2026-04-05T10:00:00.000Z',
+          completedAt: null,
+        },
+      },
+    },
+  ],
+  errorCodes: [
+    { code: 404, name: 'Not Found', description: 'Negotiation session not found' },
+    ...readErrors,
+  ],
+};
+
+const negotiateMessage: ApiEndpoint = {
+  id: 'negotiate-message',
+  path: '/api/v1/trades/negotiate/:id',
+  method: 'POST',
+  category: 'trading',
+  title: 'Send Negotiation Message',
+  description: 'Send a buyer message or instruction to an active negotiation session. Advances the round counter. Fires negotiation.completed webhook if the session concludes.',
+  authentication: standardAuth,
+  rateLimit: writeRate,
+  actions: [
+    {
+      name: 'send_message',
+      description: 'Send a message to the negotiation session.',
+      parameters: [
+        { name: 'id', type: 'string', required: true, description: 'Negotiation session ID (URL param)', example: 'neg_def456' },
+        { name: 'message', type: 'string', required: true, description: 'Buyer message or instruction', example: 'We can offer $8.50 per certificate for the full lot.' },
+      ],
+      exampleRequest: {
+        message: 'We can offer $8.50 per certificate for the full lot.',
+      },
+      exampleResponse: {
+        data: {
+          id: 'neg_def456',
+          round: 4,
+          phase: 'mid_negotiation',
+          currentOffer: 8.56,
+          totalConcession: 0.10,
+          outcome: null,
+          messageCount: 8,
+        },
+      },
+    },
+  ],
+  errorCodes: [
+    { code: 400, name: 'Bad Request', description: 'Missing message field or negotiation already concluded' },
+    { code: 404, name: 'Not Found', description: 'Negotiation session not found' },
+    ...readErrors,
+  ],
+  notes: ['Fires negotiation.completed webhook when the session concludes.'],
+};
+
+// =============================================================================
+// CLIENT ENDPOINTS
+// =============================================================================
+
+const clientsList: ApiEndpoint = {
+  id: 'clients-list',
+  path: '/api/v1/clients',
+  method: 'GET',
+  category: 'clients',
+  title: 'List Clients',
+  description: 'Retrieve all clients for the authenticated organisation.',
+  authentication: standardAuth,
+  rateLimit: stdRate,
+  actions: [
+    {
+      name: 'list_clients',
+      description: 'List all clients in the organisation.',
+      parameters: [],
       exampleRequest: {},
       exampleResponse: {
-        success: true,
+        data: [
+          {
+            id: 'cli_001',
+            name: 'Acme Energy Pty Ltd',
+            entity_type: 'obligated_entity',
+            contact_email: 'compliance@acme-energy.com.au',
+            abn: '12345678901',
+            ess_participant_id: 'ESS-001',
+            annual_esc_target: 50000,
+            is_active: true,
+          },
+        ],
+      },
+    },
+  ],
+  errorCodes: readErrors,
+};
+
+const clientsCreate: ApiEndpoint = {
+  id: 'clients-create',
+  path: '/api/v1/clients',
+  method: 'POST',
+  category: 'clients',
+  title: 'Create Client',
+  description: 'Create a new client record. Requires admin or broker role.',
+  authentication: standardAuth,
+  rateLimit: writeRate,
+  actions: [
+    {
+      name: 'create_client',
+      description: 'Create a new client.',
+      parameters: [
+        { name: 'name', type: 'string', required: true, description: 'Client name', example: 'Acme Energy Pty Ltd' },
+        { name: 'entity_type', type: 'string', required: true, description: 'Entity classification', enum: ['acp', 'obligated_entity', 'government', 'corporate', 'institutional'] },
+        { name: 'contact_email', type: 'string', required: false, description: 'Primary contact email' },
+        { name: 'contact_name', type: 'string', required: false, description: 'Primary contact name' },
+        { name: 'abn', type: 'string', required: false, description: 'Australian Business Number' },
+        { name: 'ess_participant_id', type: 'string', required: false, description: 'ESS participant ID' },
+        { name: 'annual_esc_target', type: 'number', required: false, description: 'Annual ESC surrender target' },
+        { name: 'annual_veec_target', type: 'number', required: false, description: 'Annual VEEC surrender target' },
+        { name: 'safeguard_facility_id', type: 'string', required: false, description: 'Safeguard Mechanism facility ID' },
+        { name: 'metadata', type: 'object', required: false, description: 'Additional metadata' },
+      ],
+      exampleRequest: {
+        name: 'Acme Energy Pty Ltd',
+        entity_type: 'obligated_entity',
+        contact_email: 'compliance@acme-energy.com.au',
+        abn: '12345678901',
+        ess_participant_id: 'ESS-001',
+        annual_esc_target: 50000,
+      },
+      exampleResponse: {
         data: {
-          benchmarks: [
-            { category: 'API', name: 'Response Time', target: 200, current: 45, unit: 'ms', status: 'healthy' },
-            { category: 'API', name: 'Throughput', target: 1000, current: 1200, unit: 'req/min', status: 'healthy' },
+          id: 'cli_001',
+          name: 'Acme Energy Pty Ltd',
+          entity_type: 'obligated_entity',
+          organisation_id: 'org_ng001',
+          contact_email: 'compliance@acme-energy.com.au',
+          abn: '12345678901',
+          is_active: true,
+          created_at: '2026-04-05T10:00:00.000Z',
+        },
+      },
+    },
+  ],
+  errorCodes: commonErrors,
+};
+
+const clientsDetail: ApiEndpoint = {
+  id: 'clients-detail',
+  path: '/api/v1/clients/:id',
+  method: 'GET',
+  category: 'clients',
+  title: 'Client Detail',
+  description: 'Retrieve a single client by ID. Organisation-scoped.',
+  authentication: standardAuth,
+  rateLimit: stdRate,
+  actions: [
+    {
+      name: 'get_client',
+      description: 'Get client detail.',
+      parameters: [
+        { name: 'id', type: 'string', required: true, description: 'Client ID', example: 'cli_001' },
+      ],
+      exampleRequest: { id: 'cli_001' },
+      exampleResponse: {
+        data: {
+          id: 'cli_001',
+          name: 'Acme Energy Pty Ltd',
+          entity_type: 'obligated_entity',
+          contact_email: 'compliance@acme-energy.com.au',
+          abn: '12345678901',
+          ess_participant_id: 'ESS-001',
+          annual_esc_target: 50000,
+          annual_veec_target: 20000,
+          is_active: true,
+        },
+      },
+    },
+  ],
+  errorCodes: [
+    { code: 404, name: 'Not Found', description: 'Client not found' },
+    ...readErrors,
+  ],
+};
+
+const clientsUpdate: ApiEndpoint = {
+  id: 'clients-update',
+  path: '/api/v1/clients/:id',
+  method: 'PUT',
+  category: 'clients',
+  title: 'Update Client',
+  description: 'Update an existing client record. Requires admin or broker role. Organisation-scoped.',
+  authentication: standardAuth,
+  rateLimit: writeRate,
+  actions: [
+    {
+      name: 'update_client',
+      description: 'Update client fields.',
+      parameters: [
+        { name: 'id', type: 'string', required: true, description: 'Client ID (URL param)', example: 'cli_001' },
+        { name: 'name', type: 'string', required: false, description: 'Updated client name' },
+        { name: 'contact_email', type: 'string', required: false, description: 'Updated contact email' },
+        { name: 'annual_esc_target', type: 'number', required: false, description: 'Updated ESC target' },
+        { name: 'metadata', type: 'object', required: false, description: 'Updated metadata' },
+      ],
+      exampleRequest: {
+        annual_esc_target: 55000,
+        contact_email: 'new-compliance@acme-energy.com.au',
+      },
+      exampleResponse: {
+        data: {
+          id: 'cli_001',
+          name: 'Acme Energy Pty Ltd',
+          annual_esc_target: 55000,
+          contact_email: 'new-compliance@acme-energy.com.au',
+          updated_at: '2026-04-05T11:00:00.000Z',
+        },
+      },
+    },
+  ],
+  errorCodes: [
+    { code: 404, name: 'Not Found', description: 'Client not found' },
+    ...commonErrors,
+  ],
+};
+
+const clientsHoldings: ApiEndpoint = {
+  id: 'clients-holdings',
+  path: '/api/v1/clients/:id/holdings',
+  method: 'GET',
+  category: 'clients',
+  title: 'Client Holdings',
+  description: 'Retrieve a client\'s certificate and token holdings with a summary grouped by instrument type.',
+  authentication: standardAuth,
+  rateLimit: stdRate,
+  actions: [
+    {
+      name: 'get_holdings',
+      description: 'Get client holdings with instrument summary.',
+      parameters: [
+        { name: 'id', type: 'string', required: true, description: 'Client ID', example: 'cli_001' },
+      ],
+      exampleRequest: { id: 'cli_001' },
+      exampleResponse: {
+        data: {
+          clientId: 'cli_001',
+          clientName: 'Acme Energy Pty Ltd',
+          holdings: [
+            { instrument_type: 'ESC', quantity: 25000, total_cost: 162500, acquired_at: '2026-03-15T10:00:00.000Z' },
+          ],
+          summary: [
+            { instrumentType: 'ESC', totalQuantity: 25000, totalCost: 162500, positions: 1 },
           ],
         },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_PERFORMANCE_BENCHMARKS',
-          apiVersion: '2.2.0',
-          requestId: 'wrei_1711270800000_perf02',
-        },
-      },
-    },
-    {
-      name: 'health',
-      description: 'Get system health report covering all platform components.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=health', enum: ['health'] },
-      ],
-      exampleRequest: {},
-      exampleResponse: {
-        success: true,
-        data: {
-          overall: 'healthy',
-          components: {
-            apiGateway: 'healthy',
-            analyticsEngine: 'healthy',
-            complianceModule: 'healthy',
-            marketDataFeeds: 'healthy',
-          },
-          alerts: [],
-          recommendations: [],
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_SYSTEM_HEALTH',
-          apiVersion: '2.2.0',
-          requestId: 'wrei_1711270800000_perf03',
-        },
-      },
-    },
-    {
-      name: 'load_test',
-      description: 'Get the most recent load test results.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Query parameter: action=load_test', enum: ['load_test'] },
-      ],
-      exampleRequest: {},
-      exampleResponse: {
-        success: true,
-        data: {
-          testName: 'Standard Load Test',
-          duration: 60000,
-          totalRequests: 1200,
-          successfulRequests: 1198,
-          failedRequests: 2,
-          averageResponseTime: 45,
-          p95ResponseTime: 120,
-          errorRate: 0.0017,
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_LOAD_TEST_RESULTS',
-          apiVersion: '2.2.0',
-          requestId: 'wrei_1711270800000_perf04',
-        },
       },
     },
   ],
-  errorCodes: commonErrorCodes,
-  notes: [
-    'Performance endpoints have a lower rate limit (50/min) to prevent monitoring overhead.',
-    'Health checks are lightweight and can be used for uptime monitoring.',
-    'Load test results reflect the most recent test run.',
+  errorCodes: [
+    { code: 404, name: 'Not Found', description: 'Client not found' },
+    ...readErrors,
   ],
 };
 
-const performancePostEndpoint: ApiEndpoint = {
-  id: 'performance-post',
-  path: '/api/performance',
-  method: 'POST',
-  category: 'performance',
-  title: 'Performance Testing (Write)',
-  description:
-    'Trigger performance benchmarks, stress tests, and manage performance metrics.',
+// =============================================================================
+// COMPLIANCE ENDPOINTS
+// =============================================================================
+
+const clientsCompliance: ApiEndpoint = {
+  id: 'clients-compliance',
+  path: '/api/v1/clients/:id/compliance',
+  method: 'GET',
+  category: 'compliance',
+  title: 'Client Compliance',
+  description: 'Retrieve a client\'s compliance/surrender status across all schemes. Optionally filter by compliance year.',
   authentication: standardAuth,
-  rateLimit: {
-    maxRequests: 20,
-    windowMs: 60000,
-    windowDescription: '20 requests per minute',
-  },
+  rateLimit: stdRate,
   actions: [
     {
-      name: 'run_benchmark',
-      description: 'Trigger a performance benchmark run.',
+      name: 'get_compliance',
+      description: 'Get compliance position for a client.',
       parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "run_benchmark"', enum: ['run_benchmark'] },
-        { name: 'benchmarkType', type: 'string', required: false, description: 'Type of benchmark to run', enum: ['quick', 'standard', 'comprehensive'], default: 'quick' },
+        { name: 'id', type: 'string', required: true, description: 'Client ID', example: 'cli_001' },
+        { name: 'year', type: 'string', required: false, description: 'Compliance year filter', example: '2026' },
       ],
-      exampleRequest: {
-        action: 'run_benchmark',
-        benchmarkType: 'standard',
-      },
+      exampleRequest: { id: 'cli_001', year: '2026' },
       exampleResponse: {
-        success: true,
         data: {
-          benchmarkId: 'bench_1711270800000',
-          status: 'completed',
-          results: {
-            avgResponseTime: 42,
-            p95ResponseTime: 110,
-            throughput: 1350,
+          clientId: 'cli_001',
+          clientName: 'Acme Energy Pty Ltd',
+          complianceYear: '2026',
+          surrenderStatus: [
+            {
+              scheme: 'ESS',
+              target: 50000,
+              surrendered: 25000,
+              shortfall: 25000,
+              status: 'shortfall',
+              penalty_exposure: 737000,
+              deadline: '2026-11-30',
+            },
+          ],
+          summary: {
+            totalSchemes: 1,
+            totalShortfall: 25000,
+            totalPenaltyExposure: 737000,
+            atRisk: 1,
+            compliant: 0,
           },
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_BENCHMARK_RUNNER',
-          apiVersion: '2.2.0',
-          requestId: 'wrei_1711270800000_bench01',
-        },
-      },
-    },
-    {
-      name: 'stress_test',
-      description: 'Run a stress test to evaluate system capacity limits.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "stress_test"', enum: ['stress_test'] },
-        { name: 'concurrency', type: 'number', required: false, description: 'Number of concurrent simulated users', default: 10, min: 1, max: 100 },
-        { name: 'duration', type: 'number', required: false, description: 'Test duration in seconds', default: 30, min: 5, max: 300 },
-      ],
-      exampleRequest: {
-        action: 'stress_test',
-        concurrency: 20,
-        duration: 60,
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          testId: 'stress_1711270800000',
-          status: 'completed',
-          peakConcurrency: 20,
-          maxThroughput: 2400,
-          degradationPoint: 50,
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_STRESS_TEST',
-          apiVersion: '2.2.0',
-          requestId: 'wrei_1711270800000_stress01',
-        },
-      },
-    },
-    {
-      name: 'clear_metrics',
-      description: 'Clear all stored performance metrics and reset counters.',
-      parameters: [
-        { name: 'action', type: 'string', required: true, description: 'Must be "clear_metrics"', enum: ['clear_metrics'] },
-      ],
-      exampleRequest: {
-        action: 'clear_metrics',
-      },
-      exampleResponse: {
-        success: true,
-        data: {
-          cleared: true,
-          message: 'All performance metrics have been cleared',
-        },
-        metadata: {
-          timestamp: '2026-03-24T10:00:00.000Z',
-          source: 'WREI_METRICS_MANAGER',
-          apiVersion: '2.2.0',
-          requestId: 'wrei_1711270800000_clear01',
         },
       },
     },
   ],
-  errorCodes: commonErrorCodes,
+  errorCodes: [
+    { code: 404, name: 'Not Found', description: 'Client not found' },
+    ...readErrors,
+  ],
+};
+
+const complianceSummary: ApiEndpoint = {
+  id: 'compliance-summary',
+  path: '/api/v1/clients/compliance/summary',
+  method: 'GET',
+  category: 'compliance',
+  title: 'Compliance Summary',
+  description: 'All clients\' compliance positions in a single call. Returns per-client surrender status and aggregate penalty exposure.',
+  authentication: standardAuth,
+  rateLimit: stdRate,
+  actions: [
+    {
+      name: 'get_summary',
+      description: 'Get organisation-wide compliance summary.',
+      parameters: [],
+      exampleRequest: {},
+      exampleResponse: {
+        data: {
+          clients: [
+            {
+              clientId: 'cli_001',
+              clientName: 'Acme Energy Pty Ltd',
+              entityType: 'obligated_entity',
+              isActive: true,
+              schemes: 2,
+              totalShortfall: 25000,
+              totalPenaltyExposure: 737000,
+              status: 'at_risk',
+            },
+          ],
+          summary: {
+            totalClients: 3,
+            atRisk: 1,
+            compliant: 2,
+            aggregatePenaltyExposure: 737000,
+          },
+        },
+      },
+    },
+  ],
+  errorCodes: readErrors,
+};
+
+// =============================================================================
+// CORRESPONDENCE ENDPOINTS
+// =============================================================================
+
+const correspondenceList: ApiEndpoint = {
+  id: 'correspondence-list',
+  path: '/api/v1/correspondence',
+  method: 'GET',
+  category: 'correspondence',
+  title: 'List Correspondence',
+  description: 'List correspondence records for the organisation. Filter by type, status, or client.',
+  authentication: standardAuth,
+  rateLimit: stdRate,
+  actions: [
+    {
+      name: 'list_correspondence',
+      description: 'List correspondence with optional filters.',
+      parameters: [
+        { name: 'type', type: 'string', required: false, description: 'Correspondence type filter', enum: ['rfq', 'counter_offer', 'confirmation', 'report', 'settlement'] },
+        { name: 'status', type: 'string', required: false, description: 'Status filter', enum: ['drafted', 'approved', 'sent', 'rejected'] },
+        { name: 'client_id', type: 'string', required: false, description: 'Filter by client ID' },
+      ],
+      exampleRequest: { type: 'rfq', status: 'drafted' },
+      exampleResponse: {
+        data: [
+          {
+            id: 'cor_001',
+            type: 'rfq',
+            status: 'drafted',
+            subject: 'RFQ: 25,000 ESCs for Acme Energy',
+            counterpartyName: 'GreenTrade Solutions',
+            clientId: 'cli_001',
+            createdAt: '2026-04-05T10:00:00.000Z',
+          },
+        ],
+      },
+    },
+  ],
+  errorCodes: readErrors,
+};
+
+const correspondenceInbound: ApiEndpoint = {
+  id: 'correspondence-inbound',
+  path: '/api/v1/correspondence/inbound',
+  method: 'POST',
+  category: 'correspondence',
+  title: 'Process Inbound Email',
+  description: 'Receive forwarded email content, match it to an active negotiation thread, parse the offer using AI, and optionally generate a counter-offer. Requires admin or broker role.',
+  authentication: standardAuth,
+  rateLimit: writeRate,
+  actions: [
+    {
+      name: 'process_inbound',
+      description: 'Process an inbound email and match to a negotiation thread.',
+      parameters: [
+        { name: 'body', type: 'string', required: true, description: 'Email body content', example: 'Hi, we can offer $6.20 per ESC for the 25,000 lot. Best regards, Sarah.' },
+        { name: 'threadId', type: 'string', required: false, description: 'Thread ID to match (if known)' },
+        { name: 'counterpartyEmail', type: 'string', required: false, description: 'Counterparty email for thread matching' },
+        { name: 'subject', type: 'string', required: false, description: 'Email subject line' },
+      ],
+      exampleRequest: {
+        body: 'Hi, we can offer $6.20 per ESC for the 25,000 lot. Best regards, Sarah.',
+        counterpartyEmail: 'sarah@greentrade.com.au',
+        subject: 'Re: RFQ - 25,000 ESCs',
+      },
+      exampleResponse: {
+        threadId: 'thr_001',
+        state: 'counter_drafted',
+        parsedOffer: { price: 6.20, quantity: 25000, confidence: 0.92 },
+        threatLevel: 'low',
+        requiresManualReview: false,
+        counterOffer: {
+          counterPrice: 7.85,
+          concessionThisRound: 0.05,
+          remainingRoom: 0.15,
+          suggestedBody: 'Thank you for your offer. Given current market conditions...',
+          state: 'counter_drafted',
+        },
+        round: 2,
+        currentOurPrice: 7.85,
+        currentTheirPrice: 6.20,
+      },
+    },
+  ],
+  errorCodes: [
+    { code: 400, name: 'Bad Request', description: 'Missing email body or invalid payload' },
+    { code: 404, name: 'Not Found', description: 'Could not match to an active negotiation thread' },
+    ...commonErrors,
+  ],
+};
+
+const correspondenceProcurement: ApiEndpoint = {
+  id: 'correspondence-procurement',
+  path: '/api/v1/correspondence/procurement',
+  method: 'GET',
+  category: 'correspondence',
+  title: 'Procurement Recommendations',
+  description: 'Evaluate all clients for procurement needs based on compliance shortfalls. Returns risk-classified recommendations (red/amber/green). Requires admin or broker role.',
+  authentication: standardAuth,
+  rateLimit: stdRate,
+  actions: [
+    {
+      name: 'get_recommendations',
+      description: 'Get procurement recommendations for all clients.',
+      parameters: [],
+      exampleRequest: {},
+      exampleResponse: {
+        recommendations: [
+          {
+            clientId: 'cli_001',
+            clientName: 'Acme Energy Pty Ltd',
+            instrument: 'ESC',
+            shortfall: 25000,
+            riskLevel: 'red',
+            deadline: '2026-11-30',
+            penaltyExposure: 737000,
+            recommendedAction: 'Immediate procurement required',
+          },
+        ],
+        total: 3,
+        byRisk: { red: 1, amber: 1, green: 1 },
+      },
+    },
+  ],
+  errorCodes: readErrors,
+};
+
+const correspondenceRfqs: ApiEndpoint = {
+  id: 'correspondence-rfqs',
+  path: '/api/v1/correspondence/procurement/generate-rfqs',
+  method: 'POST',
+  category: 'correspondence',
+  title: 'Generate RFQ Drafts',
+  description: 'Generate AI-drafted RFQ emails for a procurement recommendation. The AI drafts are sent for broker review before distribution. Requires admin or broker role.',
+  authentication: standardAuth,
+  rateLimit: writeRate,
+  actions: [
+    {
+      name: 'generate_rfqs',
+      description: 'Generate RFQ email drafts for a procurement recommendation.',
+      parameters: [
+        {
+          name: 'recommendation', type: 'object', required: true,
+          description: 'Procurement recommendation object with clientId, instrument, and shortfall',
+        },
+      ],
+      exampleRequest: {
+        recommendation: {
+          clientId: 'cli_001',
+          clientName: 'Acme Energy Pty Ltd',
+          instrument: 'ESC',
+          shortfall: 25000,
+          riskLevel: 'red',
+          penaltyExposure: 737000,
+        },
+      },
+      exampleResponse: {
+        drafts: [
+          {
+            counterpartyName: 'GreenTrade Solutions',
+            subject: 'RFQ: 25,000 ESCs — Acme Energy',
+            body: 'Dear GreenTrade team, We are seeking...',
+            status: 'drafted',
+          },
+        ],
+        totalDrafts: 3,
+        totalTokensUsed: 1250,
+      },
+    },
+  ],
+  errorCodes: [
+    { code: 400, name: 'Bad Request', description: 'Invalid recommendation object' },
+    { code: 404, name: 'Not Found', description: 'No counterparties available for instrument' },
+    ...commonErrors,
+  ],
+};
+
+const correspondenceReportsList: ApiEndpoint = {
+  id: 'correspondence-reports-list',
+  path: '/api/v1/correspondence/reports',
+  method: 'GET',
+  category: 'correspondence',
+  title: 'List Reports',
+  description: 'List generated client position reports. Optionally filter by client ID. Requires admin or broker role.',
+  authentication: standardAuth,
+  rateLimit: stdRate,
+  actions: [
+    {
+      name: 'list_reports',
+      description: 'List generated reports.',
+      parameters: [
+        { name: 'clientId', type: 'string', required: false, description: 'Filter by client ID' },
+      ],
+      exampleRequest: { clientId: 'cli_001' },
+      exampleResponse: {
+        reports: [
+          {
+            id: 'rpt_001',
+            clientId: 'cli_001',
+            clientName: 'Acme Energy Pty Ltd',
+            period: 'Q1 2026',
+            subject: 'Compliance Position Report — Q1 2026',
+            status: 'drafted',
+            generatedAt: '2026-04-05T10:00:00.000Z',
+          },
+        ],
+        total: 1,
+      },
+    },
+  ],
+  errorCodes: readErrors,
+};
+
+const correspondenceReportsGenerate: ApiEndpoint = {
+  id: 'correspondence-reports-generate',
+  path: '/api/v1/correspondence/reports',
+  method: 'POST',
+  category: 'correspondence',
+  title: 'Generate Report',
+  description: 'Generate an AI-drafted compliance position report for a specific client, or batch-generate for all clients. Requires admin or broker role.',
+  authentication: standardAuth,
+  rateLimit: writeRate,
+  actions: [
+    {
+      name: 'generate_report',
+      description: 'Generate a client position report.',
+      parameters: [
+        { name: 'clientId', type: 'string', required: false, description: 'Client ID (required unless batch=true)' },
+        { name: 'batch', type: 'boolean', required: false, description: 'Generate for all clients', default: false },
+        { name: 'period', type: 'string', required: false, description: 'Report period label', example: 'Q1 2026' },
+      ],
+      exampleRequest: {
+        clientId: 'cli_001',
+        period: 'Q1 2026',
+      },
+      exampleResponse: {
+        id: 'rpt_001',
+        clientId: 'cli_001',
+        clientName: 'Acme Energy Pty Ltd',
+        period: 'Q1 2026',
+        subject: 'Compliance Position Report — Q1 2026',
+        body: 'Dear Acme Energy team, Please find enclosed your compliance position summary...',
+        status: 'drafted',
+        generatedAt: '2026-04-05T10:00:00.000Z',
+      },
+    },
+  ],
+  errorCodes: [
+    { code: 400, name: 'Bad Request', description: 'clientId required unless batch is true' },
+    { code: 404, name: 'Not Found', description: 'Client not found' },
+    ...commonErrors,
+  ],
+};
+
+const correspondenceSettlement: ApiEndpoint = {
+  id: 'correspondence-settlement',
+  path: '/api/v1/correspondence/settlement',
+  method: 'GET',
+  category: 'correspondence',
+  title: 'Settlement Status',
+  description: 'Retrieve settlement status for pending trades, including TESSA instruction links where applicable.',
+  authentication: standardAuth,
+  rateLimit: stdRate,
+  actions: [
+    {
+      name: 'get_settlements',
+      description: 'Get settlement status for pending trades.',
+      parameters: [],
+      exampleRequest: {},
+      exampleResponse: {
+        data: {
+          settlements: [
+            {
+              tradeId: 'trd_abc123',
+              instrumentId: 'ESC',
+              direction: 'buy',
+              quantity: 1000,
+              pricePerUnit: 6.50,
+              totalValue: 6500,
+              currency: 'AUD',
+              tradeStatus: 'confirmed',
+              executedAt: '2026-04-05T09:30:00.000Z',
+              settlement: {
+                id: 'stl_xyz789',
+                method: 'tessa_transfer',
+                status: 'processing',
+                blockchainHash: null,
+                settledAt: null,
+              },
+            },
+          ],
+          summary: { total: 5, pending: 3, processing: 2 },
+        },
+      },
+    },
+  ],
+  errorCodes: readErrors,
+};
+
+const correspondenceThreads: ApiEndpoint = {
+  id: 'correspondence-threads',
+  path: '/api/v1/correspondence/threads',
+  method: 'GET',
+  category: 'correspondence',
+  title: 'List Negotiation Threads',
+  description: 'List active email negotiation threads for the organisation with current pricing state.',
+  authentication: standardAuth,
+  rateLimit: stdRate,
+  actions: [
+    {
+      name: 'list_threads',
+      description: 'List active negotiation threads.',
+      parameters: [],
+      exampleRequest: {},
+      exampleResponse: {
+        data: [
+          {
+            id: 'thr_001',
+            counterpartyName: 'GreenTrade Solutions',
+            counterpartyEmail: 'sarah@greentrade.com.au',
+            instrument: 'ESC',
+            quantity: 25000,
+            state: 'counter_drafted',
+            currentOurPrice: 7.85,
+            currentTheirPrice: 6.20,
+            rounds: 2,
+            totalConcessionGiven: 0.05,
+            createdAt: '2026-04-04T10:00:00.000Z',
+            updatedAt: '2026-04-05T10:00:00.000Z',
+          },
+        ],
+      },
+    },
+  ],
+  errorCodes: readErrors,
+};
+
+const correspondenceThreadDetail: ApiEndpoint = {
+  id: 'correspondence-thread-detail',
+  path: '/api/v1/correspondence/threads/:id',
+  method: 'GET',
+  category: 'correspondence',
+  title: 'Thread Detail',
+  description: 'Retrieve full negotiation thread detail including all rounds, pricing history, and current state.',
+  authentication: standardAuth,
+  rateLimit: stdRate,
+  actions: [
+    {
+      name: 'get_thread',
+      description: 'Get full thread detail with all rounds.',
+      parameters: [
+        { name: 'id', type: 'string', required: true, description: 'Thread ID', example: 'thr_001' },
+      ],
+      exampleRequest: { id: 'thr_001' },
+      exampleResponse: {
+        data: {
+          id: 'thr_001',
+          counterpartyName: 'GreenTrade Solutions',
+          counterpartyEmail: 'sarah@greentrade.com.au',
+          instrument: 'ESC',
+          quantity: 25000,
+          state: 'counter_drafted',
+          currentOurPrice: 7.85,
+          currentTheirPrice: 6.20,
+          totalConcessionGiven: 0.05,
+          rounds: [
+            { direction: 'outbound', type: 'rfq', price: 9.51, sentAt: '2026-04-04T10:00:00.000Z' },
+            { direction: 'inbound', type: 'offer', price: 6.20, receivedAt: '2026-04-05T09:00:00.000Z' },
+          ],
+        },
+      },
+    },
+  ],
+  errorCodes: [
+    { code: 404, name: 'Not Found', description: 'Thread not found' },
+    ...readErrors,
+  ],
+};
+
+const correspondenceThreadAction: ApiEndpoint = {
+  id: 'correspondence-thread-action',
+  path: '/api/v1/correspondence/threads/:id',
+  method: 'POST',
+  category: 'correspondence',
+  title: 'Thread Broker Action',
+  description: 'Submit a broker action on a negotiation thread: approve a counter-offer, edit a draft, or reject an offer. Requires admin or broker role.',
+  authentication: standardAuth,
+  rateLimit: writeRate,
+  actions: [
+    {
+      name: 'broker_action',
+      description: 'Submit a broker action on a thread.',
+      parameters: [
+        { name: 'id', type: 'string', required: true, description: 'Thread ID (URL param)', example: 'thr_001' },
+        { name: 'action', type: 'string', required: true, description: 'Broker action', enum: ['approve', 'edit', 'reject'] },
+        { name: 'reason', type: 'string', required: false, description: 'Rejection reason (for reject action)' },
+        { name: 'edited_body', type: 'string', required: false, description: 'Edited email body (for edit action)' },
+        { name: 'correspondence_id', type: 'string', required: false, description: 'Linked correspondence record ID' },
+      ],
+      exampleRequest: {
+        action: 'approve',
+      },
+      exampleResponse: {
+        data: {
+          threadId: 'thr_001',
+          state: 'counter_approved',
+          message: 'Counter-offer approved and ready to send',
+        },
+      },
+    },
+  ],
+  errorCodes: [
+    { code: 400, name: 'Bad Request', description: 'Invalid action or missing required fields for action type' },
+    { code: 404, name: 'Not Found', description: 'Thread not found' },
+    ...commonErrors,
+  ],
+};
+
+// =============================================================================
+// WEBHOOK ENDPOINTS
+// =============================================================================
+
+const webhooksList: ApiEndpoint = {
+  id: 'webhooks-list',
+  path: '/api/v1/webhooks',
+  method: 'GET',
+  category: 'webhooks',
+  title: 'List Webhooks',
+  description: 'List all active webhook registrations for the organisation. Secrets are stripped from the response.',
+  authentication: standardAuth,
+  rateLimit: stdRate,
+  actions: [
+    {
+      name: 'list_webhooks',
+      description: 'List registered webhooks.',
+      parameters: [],
+      exampleRequest: {},
+      exampleResponse: {
+        data: [
+          {
+            id: 'whk_001',
+            organisation_id: 'org_ng001',
+            url: 'https://hooks.northmore-gordon.com.au/wrei',
+            events: ['trade.created', 'trade.settled', 'negotiation.completed'],
+            is_active: true,
+            created_at: '2026-04-01T10:00:00.000Z',
+            updated_at: '2026-04-01T10:00:00.000Z',
+          },
+        ],
+      },
+    },
+  ],
+  errorCodes: readErrors,
+};
+
+const webhooksRegister: ApiEndpoint = {
+  id: 'webhooks-register',
+  path: '/api/v1/webhooks',
+  method: 'POST',
+  category: 'webhooks',
+  title: 'Register Webhook',
+  description: 'Register a new webhook endpoint. The secret is returned once on creation — store it securely for payload signature verification. Requires admin or broker role.',
+  authentication: standardAuth,
+  rateLimit: writeRate,
+  actions: [
+    {
+      name: 'register_webhook',
+      description: 'Register a new webhook.',
+      parameters: [
+        { name: 'url', type: 'string', required: true, description: 'Webhook delivery URL (must be HTTPS)', example: 'https://hooks.northmore-gordon.com.au/wrei' },
+        {
+          name: 'events', type: 'array', required: true,
+          description: 'Event types to subscribe to',
+          enum: ['trade.created', 'trade.settled', 'negotiation.completed', 'correspondence.received', 'price.alert', 'compliance.deadline'],
+        },
+      ],
+      exampleRequest: {
+        url: 'https://hooks.northmore-gordon.com.au/wrei',
+        events: ['trade.created', 'trade.settled', 'negotiation.completed'],
+      },
+      exampleResponse: {
+        data: {
+          id: 'whk_001',
+          url: 'https://hooks.northmore-gordon.com.au/wrei',
+          events: ['trade.created', 'trade.settled', 'negotiation.completed'],
+          secret: 'a1b2c3d4e5f6...64_hex_chars',
+          isActive: true,
+          createdAt: '2026-04-05T10:00:00.000Z',
+        },
+      },
+    },
+  ],
+  errorCodes: [
+    { code: 400, name: 'Bad Request', description: 'Invalid URL or event types' },
+    ...commonErrors,
+  ],
   notes: [
-    'POST endpoints have a lower rate limit (20/min) as they trigger resource-intensive operations.',
-    'Stress tests are simulated in the demo and do not affect actual system performance.',
-    'Clearing metrics is irreversible within the current session.',
+    'The secret is only returned on creation. Store it securely.',
+    'Payloads are signed with HMAC-SHA256 using the secret.',
+    'Delivery uses 3 retries with exponential backoff (1s, 2s, 4s).',
+    'The X-WREI-Signature header contains the hex-encoded HMAC of the body.',
+    'The X-WREI-Event-Timestamp header contains the delivery timestamp.',
+  ],
+};
+
+const webhooksDelete: ApiEndpoint = {
+  id: 'webhooks-delete',
+  path: '/api/v1/webhooks',
+  method: 'DELETE',
+  category: 'webhooks',
+  title: 'Delete Webhook',
+  description: 'Deregister a webhook by ID. The webhook is soft-deleted (is_active set to false). Requires admin or broker role.',
+  authentication: standardAuth,
+  rateLimit: writeRate,
+  actions: [
+    {
+      name: 'delete_webhook',
+      description: 'Deregister a webhook.',
+      parameters: [
+        { name: 'id', type: 'string', required: true, description: 'Webhook ID (query parameter)', example: 'whk_001' },
+      ],
+      exampleRequest: { id: 'whk_001' },
+      exampleResponse: {
+        data: { id: 'whk_001', deleted: true },
+      },
+    },
+  ],
+  errorCodes: [
+    { code: 400, name: 'Bad Request', description: 'Missing id query parameter' },
+    { code: 404, name: 'Not Found', description: 'Webhook not found' },
+    ...commonErrors,
   ],
 };
 
@@ -1619,28 +1433,59 @@ const performancePostEndpoint: ApiEndpoint = {
 // =============================================================================
 
 export const allEndpoints: ApiEndpoint[] = [
-  negotiateEndpoint,
-  analyticsEndpoint,
-  complianceGetEndpoint,
-  compliancePostEndpoint,
-  marketDataEndpoint,
-  metadataEndpoint,
-  metadataDeleteEndpoint,
-  performanceGetEndpoint,
-  performancePostEndpoint,
+  // Market Data
+  marketPrices,
+  marketPriceHistory,
+  marketOrderbook,
+  marketInstruments,
+  // Trading
+  tradesList,
+  tradesCreate,
+  tradesDetail,
+  negotiateCreate,
+  negotiateStatus,
+  negotiateMessage,
+  // Clients
+  clientsList,
+  clientsCreate,
+  clientsDetail,
+  clientsUpdate,
+  clientsHoldings,
+  // Compliance
+  clientsCompliance,
+  complianceSummary,
+  // Correspondence
+  correspondenceList,
+  correspondenceInbound,
+  correspondenceProcurement,
+  correspondenceRfqs,
+  correspondenceReportsList,
+  correspondenceReportsGenerate,
+  correspondenceSettlement,
+  correspondenceThreads,
+  correspondenceThreadDetail,
+  correspondenceThreadAction,
+  // Webhooks
+  webhooksList,
+  webhooksRegister,
+  webhooksDelete,
 ];
+
+// =============================================================================
+// UTILITY FUNCTIONS
+// =============================================================================
 
 /**
  * Get all endpoints grouped by category
  */
 export function getEndpointsByCategory(): Record<ApiCategory, ApiEndpoint[]> {
   const grouped: Record<ApiCategory, ApiEndpoint[]> = {
-    trading: [],
-    analytics: [],
-    compliance: [],
     'market-data': [],
-    metadata: [],
-    performance: [],
+    trading: [],
+    clients: [],
+    compliance: [],
+    correspondence: [],
+    webhooks: [],
   };
 
   for (const endpoint of allEndpoints) {
@@ -1651,14 +1496,14 @@ export function getEndpointsByCategory(): Record<ApiCategory, ApiEndpoint[]> {
 }
 
 /**
- * Get a specific endpoint by ID
+ * Get a single endpoint by its unique ID
  */
 export function getEndpointById(id: string): ApiEndpoint | undefined {
   return allEndpoints.find((ep) => ep.id === id);
 }
 
 /**
- * Get all unique actions for an endpoint
+ * Get action names for a given endpoint
  */
 export function getEndpointActions(endpointId: string): string[] {
   const endpoint = getEndpointById(endpointId);
@@ -1667,21 +1512,21 @@ export function getEndpointActions(endpointId: string): string[] {
 }
 
 /**
- * Get total count of documented endpoints
+ * Get total endpoint count
  */
 export function getEndpointCount(): number {
   return allEndpoints.length;
 }
 
 /**
- * Get total count of documented actions across all endpoints
+ * Get total action count across all endpoints
  */
 export function getTotalActionCount(): number {
   return allEndpoints.reduce((sum, ep) => sum + ep.actions.length, 0);
 }
 
 /**
- * Validate that an example request contains valid JSON
+ * Validate that all example payloads are valid JSON
  */
 export function validateExamplePayloads(): { valid: boolean; errors: string[] } {
   const errors: string[] = [];
@@ -1728,14 +1573,14 @@ export function generateCodeExamples(
       .filter((p) => p.example !== undefined || p.enum)
       .map((p) => `${p.name}=${p.example || (p.enum ? p.enum[0] : '')}`)
       .join('&');
-    const url = `${baseUrl}${endpoint.path}?${queryParams || `action=${action.name}`}`;
+    const url = `${baseUrl}${endpoint.path}${queryParams ? `?${queryParams}` : ''}`;
 
     return [
       {
         language: 'curl',
         label: 'cURL',
         code: `curl -X GET "${url}" \\
-  -H "X-WREI-API-Key: your_api_key_here"`,
+  -H "X-API-Key: your_api_key_here"`,
       },
       {
         language: 'javascript',
@@ -1743,7 +1588,7 @@ export function generateCodeExamples(
         code: `const response = await fetch("${url}", {
   method: "GET",
   headers: {
-    "X-WREI-API-Key": "your_api_key_here"
+    "X-API-Key": "your_api_key_here"
   }
 });
 
@@ -1757,7 +1602,7 @@ console.log(data);`,
 
 response = requests.get(
     "${url}",
-    headers={"X-WREI-API-Key": "your_api_key_here"}
+    headers={"X-API-Key": "your_api_key_here"}
 )
 
 data = response.json()
@@ -1767,19 +1612,27 @@ print(data)`,
   }
 
   if (endpoint.method === 'DELETE') {
-    const url = `${baseUrl}${endpoint.path}?action=${action.name}`;
+    const queryParams = action.parameters
+      .filter((p) => p.example !== undefined)
+      .map((p) => `${p.name}=${p.example}`)
+      .join('&');
+    const url = `${baseUrl}${endpoint.path}${queryParams ? `?${queryParams}` : ''}`;
 
     return [
       {
         language: 'curl',
         label: 'cURL',
-        code: `curl -X DELETE "${url}"`,
+        code: `curl -X DELETE "${url}" \\
+  -H "X-API-Key: your_api_key_here"`,
       },
       {
         language: 'javascript',
         label: 'JavaScript',
         code: `const response = await fetch("${url}", {
-  method: "DELETE"
+  method: "DELETE",
+  headers: {
+    "X-API-Key": "your_api_key_here"
+  }
 });
 
 const data = await response.json();
@@ -1790,33 +1643,38 @@ console.log(data);`,
         label: 'Python',
         code: `import requests
 
-response = requests.delete("${url}")
+response = requests.delete(
+    "${url}",
+    headers={"X-API-Key": "your_api_key_here"}
+)
+
 data = response.json()
 print(data)`,
       },
     ];
   }
 
-  // POST requests
+  // POST and PUT requests
   const bodyJson = JSON.stringify(action.exampleRequest, null, 2);
+  const method = endpoint.method;
 
   return [
     {
       language: 'curl',
       label: 'cURL',
-      code: `curl -X POST "${baseUrl}${endpoint.path}" \\
+      code: `curl -X ${method} "${baseUrl}${endpoint.path}" \\
   -H "Content-Type: application/json" \\
-  -H "X-WREI-API-Key: your_api_key_here" \\
+  -H "X-API-Key: your_api_key_here" \\
   -d '${bodyJson}'`,
     },
     {
       language: 'javascript',
       label: 'JavaScript',
       code: `const response = await fetch("${baseUrl}${endpoint.path}", {
-  method: "POST",
+  method: "${method}",
   headers: {
     "Content-Type": "application/json",
-    "X-WREI-API-Key": "your_api_key_here"
+    "X-API-Key": "your_api_key_here"
   },
   body: JSON.stringify(${bodyJson})
 });
@@ -1829,11 +1687,11 @@ console.log(data);`,
       label: 'Python',
       code: `import requests
 
-response = requests.post(
+response = requests.${method.toLowerCase()}(
     "${baseUrl}${endpoint.path}",
     headers={
         "Content-Type": "application/json",
-        "X-WREI-API-Key": "your_api_key_here"
+        "X-API-Key": "your_api_key_here"
     },
     json=${bodyJson.replace(/"/g, '"').replace(/true/g, 'True').replace(/false/g, 'False').replace(/null/g, 'None')}
 )

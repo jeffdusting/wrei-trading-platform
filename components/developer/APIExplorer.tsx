@@ -21,6 +21,7 @@ function MethodBadge({ method }: { method: string }) {
   const colours: Record<string, string> = {
     GET: 'bg-emerald-100 text-emerald-800 border-emerald-200',
     POST: 'bg-sky-100 text-sky-800 border-sky-200',
+    PUT: 'bg-amber-100 text-amber-800 border-amber-200',
     DELETE: 'bg-red-100 text-red-800 border-red-200',
   }
 
@@ -193,36 +194,44 @@ function RequestBuilder({ endpoint, action }: RequestBuilderProps) {
       }
 
       if (apiKey) {
-        headers['X-WREI-API-Key'] = apiKey
+        headers['X-API-Key'] = apiKey
       }
 
       let url = endpoint.path
       let fetchOptions: RequestInit = { headers }
 
       if (endpoint.method === 'GET') {
-        // Build query params from the action
         const params = new URLSearchParams()
-        params.set('action', action.name)
-        // Add any additional parameters from the request body if set
         try {
           const bodyObj = JSON.parse(requestBody)
           Object.entries(bodyObj).forEach(([key, value]) => {
-            if (key !== 'action' && value !== undefined && value !== null) {
+            if (value !== undefined && value !== null) {
               params.set(key, String(value))
             }
           })
         } catch {
           // Empty body is fine for GET
         }
-        url = `${endpoint.path}?${params.toString()}`
+        const qs = params.toString()
+        url = qs ? `${endpoint.path}?${qs}` : endpoint.path
         fetchOptions.method = 'GET'
       } else if (endpoint.method === 'DELETE') {
         const params = new URLSearchParams()
-        params.set('action', action.name)
-        url = `${endpoint.path}?${params.toString()}`
+        try {
+          const bodyObj = JSON.parse(requestBody)
+          Object.entries(bodyObj).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+              params.set(key, String(value))
+            }
+          })
+        } catch {
+          // no params
+        }
+        const qs = params.toString()
+        url = qs ? `${endpoint.path}?${qs}` : endpoint.path
         fetchOptions.method = 'DELETE'
       } else {
-        fetchOptions.method = 'POST'
+        fetchOptions.method = endpoint.method // POST or PUT
         fetchOptions.body = requestBody
       }
 
@@ -267,8 +276,8 @@ function RequestBuilder({ endpoint, action }: RequestBuilderProps) {
         </div>
       )}
 
-      {/* Request body editor (for POST) */}
-      {endpoint.method === 'POST' && (
+      {/* Request body editor (for POST/PUT) */}
+      {(endpoint.method === 'POST' || endpoint.method === 'PUT') && (
         <div>
           <div className="flex items-center justify-between mb-1">
             <label className="block bloomberg-small-text text-slate-700">Request Body</label>
@@ -543,7 +552,7 @@ export default function APIExplorer() {
           <div className="flex items-center justify-between mb-4">
             <h3 className="bloomberg-card-title text-[#1B2A4A]">API Endpoints</h3>
             <span className="bloomberg-section-label text-slate-400 bg-slate-100 px-2 py-0.5 rounded">
-              v2.2.0
+              v1.0
             </span>
           </div>
 

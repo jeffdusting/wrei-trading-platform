@@ -1,7 +1,7 @@
 /**
  * API Explorer Component Tests
  *
- * Tests for the interactive API Explorer component (Enhancement C3).
+ * Tests for the interactive API Explorer component and Developer Portal page.
  * Validates endpoint list rendering, endpoint detail display, request builder,
  * code examples, and the Developer Portal page.
  */
@@ -85,20 +85,20 @@ describe('APIExplorer Component', () => {
   test('clicking an endpoint shows its detail view', () => {
     render(<APIExplorer />);
 
-    // Click on the analytics endpoint
-    const analyticsNav = screen.getByTestId('endpoint-nav-analytics');
-    fireEvent.click(analyticsNav);
+    // Click on the trades-create endpoint
+    const tradesCreateNav = screen.getByTestId('endpoint-nav-trades-create');
+    fireEvent.click(tradesCreateNav);
 
     const detail = screen.getByTestId('endpoint-detail');
-    expect(within(detail).getByText('Financial Analytics Engine')).toBeInTheDocument();
+    expect(within(detail).getByText('Create Trade')).toBeInTheDocument();
   });
 
   test('endpoint detail shows method badge', () => {
     render(<APIExplorer />);
 
     // Navigate to a POST endpoint
-    const analyticsNav = screen.getByTestId('endpoint-nav-analytics');
-    fireEvent.click(analyticsNav);
+    const tradesCreateNav = screen.getByTestId('endpoint-nav-trades-create');
+    fireEvent.click(tradesCreateNav);
 
     const methodBadges = screen.getAllByTestId('method-badge-post');
     expect(methodBadges.length).toBeGreaterThan(0);
@@ -107,9 +107,9 @@ describe('APIExplorer Component', () => {
   test('endpoint detail shows authentication info', () => {
     render(<APIExplorer />);
 
-    // Navigate to analytics endpoint which requires auth
-    const analyticsNav = screen.getByTestId('endpoint-nav-analytics');
-    fireEvent.click(analyticsNav);
+    // Navigate to trades-create endpoint which requires auth
+    const tradesCreateNav = screen.getByTestId('endpoint-nav-trades-create');
+    fireEvent.click(tradesCreateNav);
 
     expect(screen.getByText('Authentication')).toBeInTheDocument();
   });
@@ -120,34 +120,6 @@ describe('APIExplorer Component', () => {
     expect(screen.getByText('Rate Limit')).toBeInTheDocument();
   });
 
-  test('endpoint with multiple actions shows action buttons', () => {
-    render(<APIExplorer />);
-
-    // Navigate to analytics endpoint which has many actions
-    const analyticsNav = screen.getByTestId('endpoint-nav-analytics');
-    fireEvent.click(analyticsNav);
-
-    // Should show action buttons for the 11 analytics actions
-    expect(screen.getByTestId('action-button-irr')).toBeInTheDocument();
-    expect(screen.getByTestId('action-button-npv')).toBeInTheDocument();
-    expect(screen.getByTestId('action-button-monte_carlo')).toBeInTheDocument();
-  });
-
-  test('clicking an action button updates the documentation', () => {
-    render(<APIExplorer />);
-
-    // Navigate to analytics endpoint
-    const analyticsNav = screen.getByTestId('endpoint-nav-analytics');
-    fireEvent.click(analyticsNav);
-
-    // Click on NPV action
-    const npvButton = screen.getByTestId('action-button-npv');
-    fireEvent.click(npvButton);
-
-    // Should show NPV description
-    expect(screen.getByText(/Net Present Value/i)).toBeInTheDocument();
-  });
-
   test('shows Documentation, Try It, and Code Examples tabs', () => {
     render(<APIExplorer />);
 
@@ -156,12 +128,12 @@ describe('APIExplorer Component', () => {
     expect(screen.getByTestId('section-tab-code')).toBeInTheDocument();
   });
 
-  test('Documentation tab shows parameter table', () => {
+  test('Documentation tab shows parameter table for endpoints with parameters', () => {
     render(<APIExplorer />);
 
-    // Navigate to analytics (POST with parameters)
-    const analyticsNav = screen.getByTestId('endpoint-nav-analytics');
-    fireEvent.click(analyticsNav);
+    // Navigate to trades-create (POST with parameters)
+    const tradesCreateNav = screen.getByTestId('endpoint-nav-trades-create');
+    fireEvent.click(tradesCreateNav);
 
     // Should be on docs tab by default
     const paramTable = screen.getByTestId('parameter-table');
@@ -189,9 +161,9 @@ describe('APIExplorer Component', () => {
   test('Try It tab shows API key input for authenticated endpoints', () => {
     render(<APIExplorer />);
 
-    // Navigate to analytics endpoint (requires auth)
-    const analyticsNav = screen.getByTestId('endpoint-nav-analytics');
-    fireEvent.click(analyticsNav);
+    // Navigate to trades-create endpoint (requires auth)
+    const tradesCreateNav = screen.getByTestId('endpoint-nav-trades-create');
+    fireEvent.click(tradesCreateNav);
 
     // Click Try It tab
     const tryItTab = screen.getByTestId('section-tab-try');
@@ -203,9 +175,9 @@ describe('APIExplorer Component', () => {
   test('Try It tab shows request body editor for POST endpoints', () => {
     render(<APIExplorer />);
 
-    // Navigate to analytics (POST endpoint)
-    const analyticsNav = screen.getByTestId('endpoint-nav-analytics');
-    fireEvent.click(analyticsNav);
+    // Navigate to trades-create (POST endpoint)
+    const tradesCreateNav = screen.getByTestId('endpoint-nav-trades-create');
+    fireEvent.click(tradesCreateNav);
 
     // Click Try It tab
     const tryItTab = screen.getByTestId('section-tab-try');
@@ -221,14 +193,14 @@ describe('APIExplorer Component', () => {
 
     mockFetch.mockResolvedValueOnce({
       status: 200,
-      json: () => Promise.resolve({ success: true, data: { test: 'value' } }),
+      json: () => Promise.resolve({ data: [{ instrument: 'ESC', price: 6.34 }] }),
     });
 
     render(<APIExplorer />);
 
-    // Navigate to market-data (GET endpoint, simpler request)
-    const marketDataNav = screen.getByTestId('endpoint-nav-market-data');
-    fireEvent.click(marketDataNav);
+    // Navigate to market-prices (GET endpoint)
+    const marketPricesNav = screen.getByTestId('endpoint-nav-market-prices');
+    fireEvent.click(marketPricesNav);
 
     // Click Try It tab
     const tryItTab = screen.getByTestId('section-tab-try');
@@ -331,9 +303,9 @@ describe('APIExplorer Component', () => {
   test('reset body button restores example payload', () => {
     render(<APIExplorer />);
 
-    // Navigate to analytics (POST endpoint)
-    const analyticsNav = screen.getByTestId('endpoint-nav-analytics');
-    fireEvent.click(analyticsNav);
+    // Navigate to trades-create (POST endpoint)
+    const tradesCreateNav = screen.getByTestId('endpoint-nav-trades-create');
+    fireEvent.click(tradesCreateNav);
 
     // Click Try It tab
     const tryItTab = screen.getByTestId('section-tab-try');
@@ -349,15 +321,15 @@ describe('APIExplorer Component', () => {
     fireEvent.click(resetButton);
 
     // Should be restored to example
-    expect(editor.value).toContain('action');
+    expect(editor.value).toContain('instrument_id');
   });
 
   test('shows error codes in documentation', () => {
     render(<APIExplorer />);
 
-    // Navigate to analytics
-    const analyticsNav = screen.getByTestId('endpoint-nav-analytics');
-    fireEvent.click(analyticsNav);
+    // Navigate to trades-create
+    const tradesCreateNav = screen.getByTestId('endpoint-nav-trades-create');
+    fireEvent.click(tradesCreateNav);
 
     // Should show error codes section
     expect(screen.getByText('Error Codes')).toBeInTheDocument();
@@ -367,9 +339,9 @@ describe('APIExplorer Component', () => {
   test('shows notes section when endpoint has notes', () => {
     render(<APIExplorer />);
 
-    // Navigate to analytics which has notes
-    const analyticsNav = screen.getByTestId('endpoint-nav-analytics');
-    fireEvent.click(analyticsNav);
+    // Navigate to negotiate-create which has notes about price floor enforcement
+    const negotiateNav = screen.getByTestId('endpoint-nav-negotiate-create');
+    fireEvent.click(negotiateNav);
 
     expect(screen.getByText('Notes')).toBeInTheDocument();
   });
@@ -387,7 +359,7 @@ describe('DeveloperPortal Page', () => {
 
   test('renders the hero header with description', () => {
     render(<DeveloperPortal />);
-    expect(screen.getByText(/Explore, test, and integrate/)).toBeInTheDocument();
+    expect(screen.getByText(/REST API v1/)).toBeInTheDocument();
   });
 
   test('renders API overview statistics', () => {
@@ -397,9 +369,9 @@ describe('DeveloperPortal Page', () => {
 
     expect(within(overview).getByText('API Endpoints')).toBeInTheDocument();
     expect(within(overview).getByText('Actions')).toBeInTheDocument();
-    expect(within(overview).getByText('Categories')).toBeInTheDocument();
+    expect(within(overview).getByText('Resource Groups')).toBeInTheDocument();
     expect(within(overview).getByText('API Version')).toBeInTheDocument();
-    expect(within(overview).getByText('v2.2.0')).toBeInTheDocument();
+    expect(within(overview).getByText('v1')).toBeInTheDocument();
   });
 
   test('renders Quick Start Guide with 3 steps', () => {
@@ -412,24 +384,31 @@ describe('DeveloperPortal Page', () => {
     expect(screen.getByText('Integrate')).toBeInTheDocument();
   });
 
-  test('renders Authentication Guide (collapsed by default)', () => {
+  test('renders Authentication & Rate Limits guide (collapsed by default)', () => {
     render(<DeveloperPortal />);
     const authGuide = screen.getByTestId('auth-guide');
     expect(authGuide).toBeInTheDocument();
 
-    expect(screen.getByText('Authentication Guide')).toBeInTheDocument();
+    expect(screen.getByText('Authentication & Rate Limits')).toBeInTheDocument();
   });
 
-  test('expands Authentication Guide on click', () => {
+  test('expands Authentication guide on click', () => {
     render(<DeveloperPortal />);
 
     const toggle = screen.getByTestId('auth-guide-toggle');
     fireEvent.click(toggle);
 
     expect(screen.getByText('API Key Authentication')).toBeInTheDocument();
-    expect(screen.getByText('Development Mode')).toBeInTheDocument();
-    expect(screen.getByText('Rate Limiting')).toBeInTheDocument();
+    expect(screen.getByText('Rate Limits')).toBeInTheDocument();
     expect(screen.getByText('Response Format')).toBeInTheDocument();
+    expect(screen.getByText('Role-Based Access')).toBeInTheDocument();
+  });
+
+  test('renders Webhook Event Reference', () => {
+    render(<DeveloperPortal />);
+    const webhookSection = screen.getByTestId('webhook-events');
+    expect(webhookSection).toBeInTheDocument();
+    expect(screen.getByText('Webhook Event Reference')).toBeInTheDocument();
   });
 
   test('renders Infrastructure Overview', () => {
@@ -440,8 +419,6 @@ describe('DeveloperPortal Page', () => {
     expect(within(infra).getByText('Platform Infrastructure')).toBeInTheDocument();
     expect(within(infra).getByText('Settlement')).toBeInTheDocument();
     expect(within(infra).getByText('Token Standard')).toBeInTheDocument();
-    // Use within(infra) to avoid matching "Compliance" in other parts of the page
-    expect(within(infra).getByText('Compliance')).toBeInTheDocument();
     expect(within(infra).getByText('Identity')).toBeInTheDocument();
   });
 
@@ -453,7 +430,15 @@ describe('DeveloperPortal Page', () => {
 
   test('displays correct endpoint count in overview', () => {
     render(<DeveloperPortal />);
+    const overview = screen.getByTestId('api-overview');
     const endpointCount = String(allEndpoints.length);
-    expect(screen.getByText(endpointCount)).toBeInTheDocument();
+    // Count appears for both "API Endpoints" and "Actions" (same number)
+    const matches = within(overview).getAllByText(endpointCount);
+    expect(matches.length).toBeGreaterThanOrEqual(1);
+  });
+
+  test('renders OpenAPI spec link', () => {
+    render(<DeveloperPortal />);
+    expect(screen.getByText('OpenAPI Spec')).toBeInTheDocument();
   });
 });

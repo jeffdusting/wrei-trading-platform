@@ -1,5 +1,63 @@
 # WREI Trading Platform — Task Log
 
+## Session: P6-B — API Documentation
+
+- **Date:** 2026-04-05
+- **Phase:** P6 (API Documentation & Developer Onboarding)
+- **Branch:** main
+
+### Summary
+
+Built comprehensive API documentation and developer onboarding experience for the WREI v1 REST API. Interactive developer portal updated to document all 30 HTTP method/path combinations across 6 resource groups. OpenAPI 3.0 specification and curl-based quick start guide created for Northmore Gordon's development team.
+
+---
+
+### Task P6.6 — Interactive API Documentation Page
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `lib/api-documentation.ts` | 1,064 | Complete rewrite: 30 v1 endpoint definitions across 6 categories (market-data, trading, clients, compliance, correspondence, webhooks), with request/response schemas, examples, error codes, rate limits |
+| `app/developer/page.tsx` | 282 | Updated: v1 API version references, auth guide (X-API-Key header), rate limit cards (100 read / 30 write per min), webhook event reference (6 events), response format documentation, OpenAPI spec link |
+| `components/developer/APIExplorer.tsx` | 620 | Updated: PUT method badge (amber), PUT body editor support, v1 version label, X-API-Key header in request builder |
+| `__tests__/api-documentation.test.ts` | 282 | Rewritten: tests for all 30 v1 endpoints, category coverage, PUT method support |
+| `__tests__/api-explorer.test.tsx` | 345 | Rewritten: tests for v1 endpoint navigation, request builder, developer portal sections |
+
+---
+
+### Task P6.7 — API Quick Start Guide
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `docs/user-guide/api-quick-start.md` | 534 | Full quick start guide with curl examples for every operation: auth, market data, trading, clients, compliance, correspondence, webhooks, error handling, rate limits |
+
+---
+
+### Task P6.8 — OpenAPI Specification
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `public/openapi.yaml` | 2,193 | OpenAPI 3.0.3 spec: all 30 endpoints, $ref schemas (PriceEntry, Trade, Client, Webhook, etc.), API key security scheme, realistic ESC example values, YAML lint validated |
+
+---
+
+### Verification
+
+| Check | Result |
+|-------|--------|
+| `npm run build` | Clean — `/developer` route at 15 kB |
+| `npx tsc --noEmit` | Zero errors |
+| `npm test` | 69 suites, 1630 tests (1623 passed, 5 skipped, 2 failed — pre-existing db-connection) |
+| YAML lint | `public/openapi.yaml` — valid |
+| Test delta | 97 API documentation + explorer tests, all passing |
+
+---
+
 ## Session: P6-A — Public REST API
 
 - **Date:** 2026-04-05
