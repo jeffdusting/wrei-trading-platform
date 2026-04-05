@@ -25,6 +25,8 @@ const DEMO_RECOMMENDATIONS: ProcurementRecommendation[] = [
     penaltyExposure: 50_000 * 29.48, penaltyRate: 29.48, urgency: 45,
     riskLevel: 'amber', recommendedAction: 'Priority: source 50,000 ESC within 30 days',
     complianceYear: '2026', surrenderDeadline: '2027-02-28',
+    timingSignal: 'BUY_NOW', forecastPrice4w: 24.30, forecastConfidence: 0.72,
+    timingExplanation: 'Price forecast to rise from A$23.10 to A$24.30 at 4-week horizon (+A$1.20)',
   },
   {
     clientId: 'demo-2', clientName: 'EnergyAustralia', instrument: 'ESC',
@@ -32,6 +34,8 @@ const DEMO_RECOMMENDATIONS: ProcurementRecommendation[] = [
     penaltyExposure: 800_000 * 29.48, penaltyRate: 29.48, urgency: 22,
     riskLevel: 'red', recommendedAction: 'Urgent: procure 800,000 ESC immediately to avoid penalty exposure',
     complianceYear: '2026', surrenderDeadline: '2027-02-28',
+    timingSignal: 'BUY_NOW_DEADLINE', forecastPrice4w: 24.30, forecastConfidence: 0.72,
+    timingExplanation: 'Price forecast to rise. Deadline pressure overrides timing — only 22 days remaining',
   },
   {
     clientId: 'demo-3', clientName: 'AGL Energy', instrument: 'ESC',
@@ -39,6 +43,8 @@ const DEMO_RECOMMENDATIONS: ProcurementRecommendation[] = [
     penaltyExposure: 100_000 * 29.48, penaltyRate: 29.48, urgency: 120,
     riskLevel: 'green', recommendedAction: 'Monitor: 100,000 ESC shortfall — schedule procurement',
     complianceYear: '2026', surrenderDeadline: '2027-02-28',
+    timingSignal: 'CONSIDER', forecastPrice4w: 24.30, forecastConfidence: 0.72,
+    timingExplanation: 'Good price opportunity — consider opportunistic procurement',
   },
   {
     clientId: 'demo-4', clientName: 'Alinta Energy', instrument: 'VEEC',
@@ -46,6 +52,8 @@ const DEMO_RECOMMENDATIONS: ProcurementRecommendation[] = [
     penaltyExposure: 120_000 * 120.0, penaltyRate: 120.0, urgency: 15,
     riskLevel: 'red', recommendedAction: 'Urgent: procure 120,000 VEEC immediately to avoid penalty exposure',
     complianceYear: '2026', surrenderDeadline: '2027-02-28',
+    timingSignal: 'BUY_NOW_DEADLINE', forecastPrice4w: 58.90, forecastConfidence: 0.65,
+    timingExplanation: 'Deadline pressure — only 15 days remaining',
   },
 ]
 
@@ -149,6 +157,7 @@ export default function ProcurementDashboard({ onGenerateRFQs, pendingDraftCount
                   <th className="text-right px-4 py-2 font-medium">Shortfall</th>
                   <th className="text-right px-4 py-2 font-medium">Penalty Exposure</th>
                   <th className="text-right px-4 py-2 font-medium">Days Left</th>
+                  <th className="text-center px-4 py-2 font-medium">Timing</th>
                   <th className="text-center px-4 py-2 font-medium">Action</th>
                 </tr>
               </thead>
@@ -175,6 +184,22 @@ export default function ProcurementDashboard({ onGenerateRFQs, pendingDraftCount
                         <span className={`font-mono ${rec.urgency < 30 ? 'text-red-600 font-semibold' : rec.urgency < 90 ? 'text-amber-600' : 'text-slate-600'}`}>
                           {rec.urgency}d
                         </span>
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        {rec.timingSignal ? (
+                          <span
+                            className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold"
+                            style={{
+                              backgroundColor: rec.timingSignal.includes('BUY') ? '#DBEAFE' : rec.timingSignal === 'WAIT' ? '#FEF3C7' : rec.timingSignal === 'CONSIDER' ? '#F0FDF4' : '#F3F4F6',
+                              color: rec.timingSignal.includes('BUY') ? '#1E40AF' : rec.timingSignal === 'WAIT' ? '#92400E' : rec.timingSignal === 'CONSIDER' ? '#166534' : '#374151',
+                            }}
+                            title={rec.timingExplanation ?? ''}
+                          >
+                            {rec.timingSignal.replace(/_/g, ' ')}
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-slate-400">—</span>
+                        )}
                       </td>
                       <td className="px-4 py-3 text-center">
                         <button

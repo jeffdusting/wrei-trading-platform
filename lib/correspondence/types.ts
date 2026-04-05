@@ -77,6 +77,8 @@ export interface Counterparty {
 
 export type RiskLevel = 'green' | 'amber' | 'red';
 
+export type TimingSignal = 'BUY_NOW' | 'WAIT' | 'MARKET' | 'BUY_NOW_DEADLINE' | 'CONSIDER';
+
 export interface ProcurementRecommendation {
   clientId: string;
   clientName: string;
@@ -92,6 +94,11 @@ export interface ProcurementRecommendation {
   recommendedAction: string;
   complianceYear: string;
   surrenderDeadline: string | null;
+  // Forecast-connected fields (P11-B)
+  timingSignal: TimingSignal | null;
+  forecastPrice4w: number | null;
+  forecastConfidence: number | null;
+  timingExplanation: string | null;
 }
 
 // ---------------------------------------------------------------------------

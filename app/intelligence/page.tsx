@@ -7,11 +7,13 @@ import SupplyDemandPanel from '@/components/intelligence/SupplyDemandPanel'
 import AlertsFeed from '@/components/intelligence/AlertsFeed'
 import BacktestReport from '@/components/intelligence/BacktestReport'
 import CounterfactualReport from '@/components/intelligence/CounterfactualReport'
+import ForecastPerformance from '@/components/intelligence/ForecastPerformance'
 
 const TABS = [
   { id: 'forecast', label: 'Forecast', icon: 'FCT' },
   { id: 'supply', label: 'Supply & Demand', icon: 'S&D' },
   { id: 'alerts', label: 'Alerts', icon: 'ALT' },
+  { id: 'performance', label: 'Performance', icon: 'PRF' },
   { id: 'model', label: 'Model Performance', icon: 'MDL' },
   { id: 'counterfactual', label: 'Trade Analysis', icon: 'CFA' },
 ] as const
@@ -90,6 +92,10 @@ const IntelligencePage: FC = () => {
           <div className="max-w-3xl">
             <AlertsFeed />
           </div>
+        )}
+
+        {activeTab === 'performance' && (
+          <ForecastPerformance />
         )}
 
         {activeTab === 'model' && (

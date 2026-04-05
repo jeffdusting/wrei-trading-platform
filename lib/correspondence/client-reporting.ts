@@ -8,6 +8,9 @@
 
 import { routeAIRequest } from '@/lib/ai/ai-service-router';
 import { buildReportGeneratorPrompt } from '@/lib/ai/prompts/system-prompts';
+import { buildIntelligenceReportPrompt, type IntelligenceReportContext } from './prompts/intelligence-report-prompt';
+import { fetchLatestForecast, type ForecastResponse } from './procurement-trigger';
+import { getWhiteLabelConfig } from '@/lib/config/white-label';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -86,6 +89,141 @@ const MARKET_CONTEXT = {
 };
 
 // ---------------------------------------------------------------------------
+// Forecast-enhanced market intelligence (P11-B.2)
+// ---------------------------------------------------------------------------
+
+interface MarketIntelligenceSection {
+  marketOutlook: string;
+  recommendedActions: string;
+  forecastData: {
+    currentSpot: number;
+    forecast1m: number;
+    forecast3m: number;
+    forecast6m: number;
+    confidence: number;
+    direction: 'bullish' | 'neutral' | 'bearish';
+  };
+}
+
+async function generateMarketIntelligence(
+  data: ClientPositionData,
+  opts?: { userId?: string; organisationId?: string }
+): Promise<MarketIntelligenceSection | null> {
+  const forecast = await fetchLatestForecast('ESC');
+  const branding = getWhiteLabelConfig();
+
+  const currentSpot = forecast.currentSpot;
+  const fc4w = forecast.forecasts.find(f => f.horizonWeeks === 4);
+  const fc12w = forecast.forecasts.find(f => f.horizonWeeks === 12);
+  const fc26w = forecast.forecasts.find(f => f.horizonWeeks === 26);
+
+  const forecast1m = fc4w?.priceForecast ?? currentSpot;
+  const forecast3m = fc12w?.priceForecast ?? currentSpot;
+  const forecast6m = fc26w?.priceForecast ?? currentSpot;
+  const ci80Lower3m = fc12w?.confidenceIntervals.ci80.lower ?? forecast3m * 0.9;
+  const ci80Upper3m = fc12w?.confidenceIntervals.ci80.upper ?? forecast3m * 1.1;
+
+  const ciWidth = ci80Upper3m - ci80Lower3m;
+  const confidence = Math.max(0.3, Math.min(0.95, 1 - (ciWidth / forecast3m)));
+
+  const direction: 'bullish' | 'neutral' | 'bearish' =
+    forecast3m > currentSpot + 0.50 ? 'bullish'
+    : forecast3m < currentSpot - 0.50 ? 'bearish'
+    : 'neutral';
+
+  // Client shortfall context
+  const totalShortfall = data.surrenderProgress.reduce((sum, s) => sum + s.shortfall, 0);
+  const nearestDeadline = data.surrenderProgress
+    .filter(s => s.deadline)
+    .map(s => {
+      const d = new Date(s.deadline!);
+      return Math.max(0, Math.ceil((d.getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
+    })
+    .sort((a, b) => a - b)[0] ?? 365;
+
+  const timingSignal = direction === 'bullish'
+    ? 'BUY NOW — price forecast to rise'
+    : direction === 'bearish'
+      ? 'WAIT — price forecast to soften'
+      : 'MARKET — current price is fair value';
+
+  const ctx: IntelligenceReportContext = {
+    brokerName: branding.businessName,
+    currentSpot,
+    spotTrend30d: MARKET_CONTEXT.escTrend,
+    forecast1m,
+    forecast3m,
+    forecast6m,
+    forecastConfidence: confidence,
+    ci80Lower3m,
+    ci80Upper3m,
+    creationVelocityTrend: 'stable',
+    activityMixNotes: 'Residential HVAC and commercial lighting upgrades remain dominant activities',
+    commercialLightingImpact: 'Commercial lighting phase-out reducing creation volume by ~12% annually',
+    policyEvents: [
+      'ESS Rule Change 2026 consultation closing June 2026',
+      'IPART annual energy savings target review in progress',
+    ],
+    surplusRunwayWeeks: 18,
+    clientShortfall: totalShortfall,
+    clientDeadlineDays: nearestDeadline,
+    timingSignal,
+  };
+
+  try {
+    const result = await routeAIRequest({
+      capability: 'report_generator',
+      userId: opts?.userId,
+      organisationId: opts?.organisationId,
+      input: {
+        systemPrompt: buildIntelligenceReportPrompt(ctx),
+        messages: [{ role: 'user', content: 'Generate the Market Outlook and Recommended Actions sections.' }],
+      },
+    });
+
+    if (result.ok) {
+      const output = result.response.output;
+      const outlookMatch = output.match(/MARKET_OUTLOOK:\s*([\s\S]*?)(?=RECOMMENDED_ACTIONS:|$)/i);
+      const actionsMatch = output.match(/RECOMMENDED_ACTIONS:\s*([\s\S]*?)$/i);
+
+      return {
+        marketOutlook: outlookMatch?.[1]?.trim() || buildFallbackOutlook(ctx),
+        recommendedActions: actionsMatch?.[1]?.trim() || buildFallbackActions(ctx),
+        forecastData: { currentSpot, forecast1m, forecast3m, forecast6m, confidence, direction },
+      };
+    }
+  } catch {
+    // Fall through to template
+  }
+
+  return {
+    marketOutlook: buildFallbackOutlook(ctx),
+    recommendedActions: buildFallbackActions(ctx),
+    forecastData: { currentSpot, forecast1m, forecast3m, forecast6m, confidence, direction },
+  };
+}
+
+function buildFallbackOutlook(ctx: IntelligenceReportContext): string {
+  return `ESC certificates are currently trading at A$${ctx.currentSpot.toFixed(2)} with a ${ctx.spotTrend30d} 30-day trend. ` +
+    `Our model forecasts A$${ctx.forecast3m.toFixed(2)} at the 3-month horizon (80% confidence interval: A$${ctx.ci80Lower3m.toFixed(2)} — A$${ctx.ci80Upper3m.toFixed(2)}), ` +
+    `indicating a ${ctx.forecast3m > ctx.currentSpot + 0.50 ? 'bullish' : ctx.forecast3m < ctx.currentSpot - 0.50 ? 'bearish' : 'neutral'} outlook. ` +
+    `${ctx.commercialLightingImpact}. Creation velocity is ${ctx.creationVelocityTrend}.`;
+}
+
+function buildFallbackActions(ctx: IntelligenceReportContext): string {
+  if (ctx.clientShortfall === 0) {
+    return 'No immediate procurement action required. We recommend monitoring the market for opportunistic buying if prices soften.';
+  }
+  if (ctx.clientDeadlineDays < 30) {
+    return `Urgent: We recommend procuring ${ctx.clientShortfall.toLocaleString()} certificates immediately — only ${ctx.clientDeadlineDays} days to surrender deadline.`;
+  }
+  if (ctx.forecast3m > ctx.currentSpot + 0.50) {
+    return `Based on our bullish price outlook, we recommend procuring ${ctx.clientShortfall.toLocaleString()} certificates at current levels before the anticipated price increase.`;
+  }
+  return `We recommend splitting procurement of ${ctx.clientShortfall.toLocaleString()} certificates across the next 3 months to average into the market.`;
+}
+
+// ---------------------------------------------------------------------------
 // Generate a single client position report
 // ---------------------------------------------------------------------------
 
@@ -116,9 +254,24 @@ export async function generateClientPositionReport(
       ).join('\n')
     : 'No recent trades.';
 
+  // Generate forecast-enhanced market intelligence (P11-B.2)
+  const intelligence = await generateMarketIntelligence(data, opts);
+
   // Try AI-drafted commentary
   let commentary = '';
   try {
+    const intelligenceContext = intelligence
+      ? [
+          ``,
+          `FORECAST-ENHANCED MARKET OUTLOOK:`,
+          `ESC spot: A$${intelligence.forecastData.currentSpot.toFixed(2)}`,
+          `1-month forecast: A$${intelligence.forecastData.forecast1m.toFixed(2)}`,
+          `3-month forecast: A$${intelligence.forecastData.forecast3m.toFixed(2)} (${intelligence.forecastData.direction})`,
+          `6-month forecast: A$${intelligence.forecastData.forecast6m.toFixed(2)}`,
+          `Model confidence: ${(intelligence.forecastData.confidence * 100).toFixed(0)}%`,
+        ].join('\n')
+      : '';
+
     const result = await routeAIRequest({
       capability: 'report_generator',
       userId: opts?.userId,
@@ -147,6 +300,7 @@ export async function generateClientPositionReport(
             `VEEC spot: A$${MARKET_CONTEXT.veecSpot} (${MARKET_CONTEXT.veecTrend})`,
             `ACCU spot: A$${MARKET_CONTEXT.accuSpot}`,
             `Outlook: ${MARKET_CONTEXT.supplyOutlook}`,
+            intelligenceContext,
             ``,
             `Requirements:`,
             `- 3-4 paragraphs covering: position summary, compliance status, market commentary, recommended actions`,
@@ -169,23 +323,42 @@ export async function generateClientPositionReport(
     commentary = buildFallbackCommentary(data, reportPeriod);
   }
 
-  // Build the email body
+  // Build the email body with intelligence sections
+  const branding = getWhiteLabelConfig();
   const subject = `Compliance Position Report — ${data.clientName} — ${reportPeriod}`;
-  const body = [
+  const bodyParts = [
     `Dear ${data.clientName},`,
     '',
     `Please find below your compliance position report for ${reportPeriod}.`,
     '',
     commentary,
+  ];
+
+  // Add Market Outlook section (P11-B.2)
+  if (intelligence) {
+    bodyParts.push(
+      '',
+      '--- Market Outlook ---',
+      '',
+      intelligence.marketOutlook,
+      '',
+      '--- Recommended Actions ---',
+      '',
+      intelligence.recommendedActions,
+    );
+  }
+
+  bodyParts.push(
     '',
     'Please do not hesitate to contact us if you have any questions regarding this report.',
     '',
     'Kind regards,',
-    'WREI Trading Platform',
-  ].join('\n');
+    branding.businessName,
+  );
+  const body = bodyParts.join('\n');
 
   // Build printable HTML attachment
-  const attachmentHTML = renderReportHTML(data, commentary, reportPeriod);
+  const attachmentHTML = renderReportHTML(data, commentary, reportPeriod, intelligence);
 
   const report: ClientReport = {
     id: reportId,
@@ -300,7 +473,8 @@ function buildFallbackCommentary(data: ClientPositionData, period: string): stri
 function renderReportHTML(
   data: ClientPositionData,
   commentary: string,
-  period: string
+  period: string,
+  intelligence?: MarketIntelligenceSection | null
 ): string {
   const holdingsRows = data.holdings.map(h => `
     <tr>
@@ -382,6 +556,38 @@ function renderReportHTML(
   <div style="background:#F8FAFC;border:1px solid #E2E8F0;padding:12px;border-radius:4px;white-space:pre-line;line-height:1.5;">
     ${esc(commentary)}
   </div>
+
+  ${intelligence ? `
+  <h2 style="font-size:14px;color:#1B2A4A;margin:16px 0 8px;">Market Outlook</h2>
+  <div style="background:#F0F9FF;border:1px solid #BAE6FD;padding:12px;border-radius:4px;line-height:1.5;">
+    <table style="width:100%;border-collapse:collapse;margin-bottom:8px;">
+      <tr>
+        <td style="padding:2px 8px;font-size:11px;color:#64748B;">Current ESC Spot</td>
+        <td style="padding:2px 8px;font-size:11px;font-weight:600;">A$${intelligence.forecastData.currentSpot.toFixed(2)}</td>
+        <td style="padding:2px 8px;font-size:11px;color:#64748B;">1m Forecast</td>
+        <td style="padding:2px 8px;font-size:11px;font-weight:600;">A$${intelligence.forecastData.forecast1m.toFixed(2)}</td>
+      </tr>
+      <tr>
+        <td style="padding:2px 8px;font-size:11px;color:#64748B;">3m Forecast</td>
+        <td style="padding:2px 8px;font-size:11px;font-weight:600;">A$${intelligence.forecastData.forecast3m.toFixed(2)}</td>
+        <td style="padding:2px 8px;font-size:11px;color:#64748B;">6m Forecast</td>
+        <td style="padding:2px 8px;font-size:11px;font-weight:600;">A$${intelligence.forecastData.forecast6m.toFixed(2)}</td>
+      </tr>
+      <tr>
+        <td style="padding:2px 8px;font-size:11px;color:#64748B;">Direction</td>
+        <td style="padding:2px 8px;font-size:11px;font-weight:600;color:${intelligence.forecastData.direction === 'bullish' ? '#166534' : intelligence.forecastData.direction === 'bearish' ? '#991B1B' : '#374151'};">${intelligence.forecastData.direction.toUpperCase()}</td>
+        <td style="padding:2px 8px;font-size:11px;color:#64748B;">Confidence</td>
+        <td style="padding:2px 8px;font-size:11px;font-weight:600;">${(intelligence.forecastData.confidence * 100).toFixed(0)}%</td>
+      </tr>
+    </table>
+    <div style="white-space:pre-line;font-size:12px;">${esc(intelligence.marketOutlook)}</div>
+  </div>
+
+  <h2 style="font-size:14px;color:#1B2A4A;margin:16px 0 8px;">Recommended Actions</h2>
+  <div style="background:#F0FDF4;border:1px solid #BBF7D0;padding:12px;border-radius:4px;white-space:pre-line;line-height:1.5;font-size:12px;">
+    ${esc(intelligence.recommendedActions)}
+  </div>
+  ` : ''}
 
   <div style="border-top:1px solid #ddd;padding-top:12px;margin-top:24px;font-size:10px;color:#64748B;">
     <p>This report is for informational purposes only and does not constitute financial advice. Data sourced from WREI Trading Platform records.</p>

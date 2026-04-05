@@ -32,6 +32,28 @@ export async function generateRFQDraft(
     : recommendation.urgency <= 90 ? 'near-term (within 90 days)'
     : 'standard timeline';
 
+  // Build forecast context for the AI prompt (P11-B)
+  const forecastLines: string[] = [];
+  if (recommendation.forecastPrice4w != null && recommendation.timingSignal) {
+    const signalLabels: Record<string, string> = {
+      BUY_NOW: 'Price forecast to rise — recommend securing supply at current levels',
+      WAIT: 'Price forecast to soften — time is on our side',
+      MARKET: 'Current price is fair value',
+      BUY_NOW_DEADLINE: 'Deadline pressure — must secure supply despite pricing outlook',
+      CONSIDER: 'Good price opportunity — consider opportunistic procurement',
+    };
+    forecastLines.push(
+      ``,
+      `Market context (for tone, do NOT quote exact forecast figures to counterparty):`,
+      `Current ${recommendation.instrument} spot: A$${(recommendation.forecastPrice4w - (recommendation.forecastPrice4w - 23.10)).toFixed(2)}`,
+      `4-week forecast: A$${recommendation.forecastPrice4w.toFixed(2)}`,
+      `Timing assessment: ${signalLabels[recommendation.timingSignal] ?? recommendation.timingSignal}`,
+      `Confidence: ${((recommendation.forecastConfidence ?? 0.5) * 100).toFixed(0)}%`,
+      ``,
+      `Use the market context to calibrate urgency tone — if prices are rising, convey willingness to transact quickly. If softening, maintain negotiating leverage.`,
+    );
+  }
+
   const userMessage = [
     `Draft an RFQ email to ${counterparty.contactName} at ${counterparty.name}.`,
     ``,
@@ -40,6 +62,7 @@ export async function generateRFQDraft(
     `Compliance year: ${recommendation.complianceYear}`,
     `Urgency: ${urgencyLabel}`,
     `Penalty rate: A$${recommendation.penaltyRate.toFixed(2)}/unit (for context on pricing ceiling)`,
+    ...forecastLines,
     ``,
     `Relationship: ${counterparty.relationship} supplier`,
     counterparty.notes ? `Notes: ${counterparty.notes}` : '',

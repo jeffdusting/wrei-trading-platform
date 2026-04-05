@@ -1,5 +1,73 @@
 # WREI Trading Platform — Task Log
 
+## Session: P11-B — Forecast-Connected Procurement, Client Intelligence, Performance Dashboard
+
+- **Date:** 2026-04-05
+- **Phase:** P11-B (NMG Integration — Operational Intelligence)
+- **Branch:** main
+
+### Summary
+
+Connected the forecasting model to broker operations: procurement triggers now incorporate forecast-informed timing signals, client reports include market outlook and recommended actions, a public white-labelled intelligence page serves as inbound marketing, and a forecast performance dashboard tracks model accuracy in real time.
+
+---
+
+### Task P11-B.1 — Forecast-Connected Procurement Triggers
+
+**Result:** Complete — Timing signals, forecast integration, enhanced RFQ drafting
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `lib/correspondence/types.ts` | updated | Added `TimingSignal` type (`BUY_NOW`, `WAIT`, `MARKET`, `BUY_NOW_DEADLINE`, `CONSIDER`) and 4 new fields to `ProcurementRecommendation`: `timingSignal`, `forecastPrice4w`, `forecastConfidence`, `timingExplanation` |
+| `lib/correspondence/procurement-trigger.ts` | updated | Added `ForecastResponse` types, `fetchLatestForecast()` with demo fallback, `computeTimingSignal()` with override logic (deadline overrides WAIT, green risk downgrades BUY to CONSIDER). `evaluateClientNeeds()` and `evaluateSingleClient()` now fetch forecast and pass to evaluator |
+| `lib/correspondence/ai-draft-engine.ts` | updated | `generateRFQDraft()` now includes forecast context in the AI prompt — timing signal, confidence, and market tone calibration |
+| `components/correspondence/ProcurementDashboard.tsx` | updated | Demo data includes forecast fields; new "Timing" column shows colour-coded signal badges with tooltip explanations |
+
+---
+
+### Task P11-B.2 — Client Intelligence Reports with Forecast
+
+**Result:** Complete — Market Outlook and Recommended Actions sections in client reports
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `lib/correspondence/prompts/intelligence-report-prompt.ts` | ~80 | System prompt for AI-generated market outlook — includes forecast data, supply metrics, policy events, client position context. Professional NMG-branded voice |
+| `lib/correspondence/client-reporting.ts` | updated | New `generateMarketIntelligence()` function fetches forecast, builds `IntelligenceReportContext`, calls AI (with template fallback). Reports now include "Market Outlook" and "Recommended Actions" sections in both email body and HTML attachment |
+
+---
+
+### Task P11-B.3 — White-Labelled Client Intelligence Page
+
+**Result:** Complete — Public-facing ESC market intelligence page with broker branding
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `components/intelligence/ClientIntelligencePage.tsx` | ~250 | Client-facing intelligence page: 3-month outlook direction card, current spot, model confidence, supply/demand balance with activity mix bar, compliance calendar, policy tracker with impact badges, forecast horizon table, broker contact CTA. White-label branding from URL parameter |
+| `app/client-intelligence/page.tsx` | ~35 | Public route — reads `?broker=nmg` URL parameter, renders `ClientIntelligencePage` with Suspense boundary |
+
+---
+
+### Task P11-B.4 — Forecast Performance Dashboard
+
+**Result:** Complete — Real-time forecast accuracy tracking for broker use
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `components/intelligence/ForecastPerformance.tsx` | ~200 | Broker-facing dashboard: KPI cards (avg MAPE, directional accuracy, cumulative decision value, recommendation success rate), model drift detection (4+ consecutive same-direction errors), predicted vs actual SVG chart, active recommendations table with P&L tracking, weekly error table |
+| `app/intelligence/page.tsx` | updated | Added "Performance" tab (PRF icon) between Alerts and Model Performance tabs |
+
+---
+
+### Verification
+
+| Check | Result |
+|-------|--------|
+| `npx tsc --noEmit` | Pass (0 errors) |
+| `npm run build` | Pass — `/client-intelligence` (4.99kB), `/intelligence` (13.8kB) |
+| `npm test -- --passWithNoTests` | 1623 passed, 2 pre-existing failures (db table count from P11-A) |
+
+---
+
 ## Session: P11-A — NMG Data Import, Shadow Market Calibration, Counterfactual Trade Analysis
 
 - **Date:** 2026-04-05
