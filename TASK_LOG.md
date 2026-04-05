@@ -1,5 +1,71 @@
 # WREI Trading Platform — Task Log
 
+## Session: P10-D — Market Intelligence UI, Continuous Monitoring, Anomaly Detection, Cron Job
+
+- **Date:** 2026-04-05
+- **Phase:** P10-D (Market Intelligence — UI & Monitoring)
+- **Branch:** main
+
+### Summary
+
+Built the Market Intelligence user interface with four Bloomberg Terminal-style panels (Forecast, Supply & Demand, Alerts, Model Performance), a continuous monitoring system that scans IPART/broker/DCCEEW sources and runs AI signal extraction, an anomaly detector for structured market data, and a daily cron job orchestrating the full intelligence pipeline.
+
+---
+
+### Task P10-D.1 — Continuous Monitoring System
+
+**Result:** Complete — Python monitoring pipeline with graceful degradation
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `forecasting/monitoring/__init__.py` | 1 | Package init |
+| `forecasting/monitoring/monitor.py` | ~200 | Source monitors: IPART, Ecovantage, NMG, DCCEEW. AI signal extraction with graceful fallback. Regime change detection (supply >10% or demand >5%). Alert generation and DB storage |
+| `forecasting/monitoring/anomaly_detector.py` | ~110 | Structured data anomaly detection: creation velocity slowdown (4w vs 12w avg >20% drop), surplus runway <2yr, price-to-penalty >0.85, forward curve inversion (backwardation) |
+| `forecasting/monitoring/run_monitor.py` | ~45 | Orchestrator — runs source monitors then anomaly detection, stores all alerts |
+| `lib/market-intelligence/monitoring.ts` | ~60 | TypeScript wrapper: `runMonitor()`, `getActiveAlerts()`, `acknowledgeAlert()` |
+| `app/api/v1/intelligence/alerts/route.ts` | ~50 | REST API: GET (list active alerts), POST (acknowledge alert) |
+
+---
+
+### Task P10-D.2 — Market Intelligence UI
+
+**Result:** Complete — 4 Bloomberg Terminal-style panels with demo data fallback
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `components/intelligence/ForecastPanel.tsx` | ~250 | Fan chart with CI bands (80%/95%), horizon table (1w/4w/12w/26w), regime probability bar, action badge (BUY/HOLD/SELL), estimated value per certificate |
+| `components/intelligence/SupplyDemandPanel.tsx` | ~200 | Surplus bar chart (historical + forecast), creation velocity comparison (4w vs 12w), surplus runway indicator, surrender deadline countdown, activity mix chart |
+| `components/intelligence/AlertsFeed.tsx` | ~150 | Scrollable alert feed with severity indicators, type filters (policy/creation/sentiment/surplus/regime), expand for full analysis, acknowledge button |
+| `components/intelligence/BacktestReport.tsx` | ~200 | Key metrics cards (MAPE/direction accuracy/decision value), model comparison table, regime-specific performance, horizon breakdown, ML feature importance ranking |
+| `app/intelligence/page.tsx` | ~100 | Tabbed layout: Forecast, Supply & Demand, Alerts, Model Performance |
+
+Navigation updated: `BloombergShell.tsx` now includes Intelligence (INT) nav item.
+
+---
+
+### Task P10-D.3 — Cron Job Configuration
+
+**Result:** Complete — daily pipeline at 6am AEST
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `vercel.json` | updated | Added cron entry: `/api/cron/intelligence` at `0 6 * * *` |
+| `app/api/cron/intelligence/route.ts` | ~60 | Pipeline: ingestion → forecast → monitoring. CRON_SECRET auth. Error alerts stored to DB. Audit logging |
+
+---
+
+### Verification
+
+| Check | Result |
+|-------|--------|
+| `npm run build` | Clean — `/intelligence` page at 8.99 kB, all API routes compiled |
+| `npx tsc --noEmit` | Zero errors |
+| New API route `/api/v1/intelligence/alerts` | Compiled (GET + POST) |
+| Cron route `/api/cron/intelligence` | Compiled (GET) |
+| Navigation | Intelligence (INT) added to BloombergShell |
+
+---
+
 ## Session: P10-C — AI Signal Extraction, Historical Reconstruction, ML Counterfactual Model, Ensemble Forecast
 
 - **Date:** 2026-04-05
