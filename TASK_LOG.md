@@ -1,5 +1,116 @@
 # WREI Trading Platform — Task Log
 
+## Session: P9-C — Email Negotiation Manager, Offer Parser, Trade Confirmations
+
+- **Date:** 2026-04-05
+- **Phase:** P9 (Correspondence Engine — Negotiation)
+- **Branch:** main
+
+### Summary
+
+Built email negotiation and trade confirmation capabilities for the AI correspondence engine. Multi-round email negotiations are managed with the same pricing constraint enforcement as the platform negotiation engine (price floor, per-round concession limits, total concession limits). Defence layers applied to all inbound content. AI parses counterparty offers from natural language email into structured data with confidence scoring. Trade confirmations follow AFMA Environmental Product Conventions.
+
+---
+
+### Task P9.5 — Email Negotiation Manager
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `lib/correspondence/types.ts` | 244 (+86) | EmailNegotiationThread, NegotiationThreadState, NegotiationRound, ParsedOffer, NegotiationConstraints, TradeConfirmation types |
+| `lib/correspondence/negotiation-manager.ts` | 386 | Thread state machine (RFQ Sent → Offer Received → Counter Drafted → Counter Approved → Counter Sent → Accepted/Rejected), constraint enforcement at every round, in-memory thread store |
+| `lib/correspondence/offer-parser.ts` | 170 | AI-powered email parsing via service router (Sonnet), regex fallback, confidence scoring (< 70% = manual review) |
+| `lib/correspondence/trade-confirmation-generator.ts` | 266 | AFMA-style trade confirmation (template-generated, not AI), AI-drafted covering email, HTML rendering, business day settlement calculation |
+
+**State machine transitions:** rfq_sent → offer_received → counter_drafted → counter_approved → counter_sent → offer_received → ... → accepted/rejected
+
+**Constraint enforcement:** Price floor, per-round concession limit (30% of gap, capped at maxConcessionPerRound), total concession limit, min rounds before concession — all enforced in application code, not delegated to AI.
+
+---
+
+### Task P9.6 — Inbound Email Processing
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `app/api/v1/correspondence/inbound/route.ts` | 112 | POST inbound email: thread matching (by ID or counterparty email), offer parsing, auto counter-offer generation, threat level reporting |
+| `components/correspondence/NegotiationThread.tsx` | 393 | Thread timeline (outbound/inbound rounds), parsed offer summaries with confidence, AI analysis, state indicator, action buttons (Approve Counter, Edit, Accept, Reject, Manual Review), concession tracker side panel with progress bar |
+
+---
+
+### Verification
+
+| Check | Result |
+|-------|--------|
+| `npx tsc --noEmit` | Zero errors |
+| `npm run build` | Clean — 1 new λ API route (inbound) |
+| `npm test` | 69 suites, 1612 tests (1606 passed, 5 skipped, 1 failed — stale duplicate file) |
+| Line counts | Lib: 1,066 lines, Component: 393 lines, API: 112 lines, Total: 1,571 new lines |
+
+---
+
+## Session: P9-B — Procurement Trigger, Seller Outreach, Correspondence UI
+
+- **Date:** 2026-04-05
+- **Phase:** P9 (Correspondence Engine)
+- **Branch:** main
+- **Commit:** d7e8111
+
+### Summary
+
+Built procurement trigger and seller outreach capabilities for the AI correspondence engine. When a client's compliance position shows a shortfall, the platform generates procurement recommendations (risk-classified red/amber/green) and AI-drafted RFQ emails to the broker's seller network. Includes broker review workflow (approve, edit, reject) and full correspondence history timeline.
+
+---
+
+### Task P9.3 — Procurement Trigger
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `lib/correspondence/types.ts` | 158 | Correspondence lifecycle types, DB row mapping, procurement recommendation, counterparty, RFQ types |
+| `lib/correspondence/ai-draft-engine.ts` | 136 | AI RFQ drafting via service router (correspondence_draft capability), fallback templates on guard rejection |
+| `lib/correspondence/procurement-trigger.ts` | 162 | evaluateClientNeeds(orgId), evaluateSingleClient, risk classification (red: <50% or <30d, amber: 50-80% or 30-90d, green: >80% and >90d) |
+| `lib/correspondence/seller-outreach.ts` | 141 | generateRFQBatch, 5 demo counterparties, getCounterpartiesForInstrument filter |
+| `lib/db/queries/correspondence.ts` | 147 | Correspondence CRUD: create, getByOrg (with filters), getDrafted, updateStatus |
+| `lib/db/schema.ts` | +25 | CREATE_CORRESPONDENCE table, schema v3→v4, ALL_TABLES 14→15 |
+
+**Penalty rates used:** ESC $29.48, VEEC $120, PRC $5, ACCU $75, LGC $15, STC $40 (from certificate-config.ts).
+
+---
+
+### Task P9.4 — Correspondence Management UI
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `components/correspondence/ProcurementDashboard.tsx` | 198 | Clients with shortfalls table (risk-sorted), summary cards (at risk, shortfall, penalty exposure, pending drafts), "Generate RFQs" per row |
+| `components/correspondence/DraftReview.tsx` | 271 | AI-drafted emails with Approve & Send, Edit (inline), Reject (with reason); pending vs processed sections |
+| `components/correspondence/CorrespondenceHistory.tsx` | 231 | Timeline view, filterable by type/status/counterparty, expandable email content, thread references |
+| `app/correspondence/page.tsx` | 96 | Tabbed layout: Procurement | Drafts (with badge count) | History |
+| `app/api/v1/correspondence/procurement/route.ts` | 43 | GET procurement recommendations (withAuth, broker/admin) |
+| `app/api/v1/correspondence/procurement/generate-rfqs/route.ts` | 63 | POST generate RFQ drafts (withAuth, broker/admin) |
+
+**Navigation:** Added "Correspondence" (COR) to BloombergShell after Clients.
+
+---
+
+### Verification
+
+| Check | Result |
+|-------|--------|
+| `npx tsc --noEmit` | Zero errors |
+| `npm run build` | Clean — `/correspondence` route at 5.89 kB, 2 new λ API routes |
+| `npm test` | 69 suites, 1612 tests (1605 passed, 5 skipped, 2 failed — stale duplicate file) |
+| Line counts | Components: 700 lines, Lib: 744 lines, Total: 1,444 new lines |
+
+**Note:** 2 test failures are from `__tests__/db-connection.test 2.ts` — a stale duplicate file (note the space in filename) that was untracked before this session. Not related to P9-B changes.
+
+---
+
 ## Session: P7-A — AI Engine Guards
 
 - **Date:** 2026-04-05

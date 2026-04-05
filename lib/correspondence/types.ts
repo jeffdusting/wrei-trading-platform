@@ -133,6 +133,92 @@ export interface CorrespondenceRow {
   sent_at: string | null;
 }
 
+// ---------------------------------------------------------------------------
+// Email negotiation thread
+// ---------------------------------------------------------------------------
+
+export type NegotiationThreadState =
+  | 'rfq_sent'          // Initial RFQ dispatched to counterparty
+  | 'offer_received'    // Counterparty responded with an offer
+  | 'counter_drafted'   // AI counter-offer drafted, awaiting broker approval
+  | 'counter_approved'  // Broker approved counter, ready to send
+  | 'counter_sent'      // Counter-offer sent to counterparty
+  | 'accepted'          // Negotiation concluded — offer accepted
+  | 'rejected';         // Negotiation concluded — offer rejected
+
+export interface ParsedOffer {
+  price: number | null;
+  quantity: number | null;
+  vintage: string | null;
+  terms: string | null;
+  counterOffer: boolean;
+  confidence: number;       // 0–100, below 70 = manual review
+  rawExcerpt: string;       // The relevant excerpt from the email
+}
+
+export interface NegotiationConstraints {
+  instrumentType: string;
+  anchorPrice: number;       // Our opening price
+  priceFloor: number;        // Absolute minimum
+  priceCeiling: number;      // Maximum (usually penalty rate)
+  maxConcessionPerRound: number;  // e.g. 0.05 = 5%
+  maxTotalConcession: number;     // e.g. 0.20 = 20%
+  minRoundsBeforeConcession: number;
+  currency: 'AUD' | 'USD';
+}
+
+export interface NegotiationRound {
+  roundNumber: number;
+  direction: 'outbound' | 'inbound';
+  timestamp: string;
+  correspondenceId: string | null;
+  subject: string;
+  body: string;
+  parsedOffer: ParsedOffer | null;
+  ourPrice: number | null;         // Our current offer price after this round
+  theirPrice: number | null;       // Their offer price (if inbound)
+  aiAnalysis: string | null;       // AI commentary on their position
+}
+
+export interface EmailNegotiationThread {
+  id: string;
+  organisationId: string;
+  clientId: string | null;
+  counterpartyId: string;
+  counterpartyName: string;
+  counterpartyEmail: string;
+  instrument: string;
+  quantity: number;
+  state: NegotiationThreadState;
+  constraints: NegotiationConstraints;
+  rounds: NegotiationRound[];
+  currentOurPrice: number;          // Our latest offer price
+  currentTheirPrice: number | null; // Their latest offer price
+  totalConcessionGiven: number;     // Total $ conceded from anchor
+  createdAt: string;
+  updatedAt: string;
+  closedAt: string | null;
+  closedReason: string | null;
+}
+
+export interface TradeConfirmation {
+  tradeDate: string;
+  settlementDate: string;
+  instrument: string;
+  quantity: number;
+  pricePerUnit: number;
+  totalConsideration: number;
+  currency: 'AUD' | 'USD';
+  buyerName: string;
+  buyerEntity: string;
+  sellerName: string;
+  sellerEntity: string;
+  settlementMethod: string;
+  registryReference: string | null;
+  specialConditions: string[];
+  threadId: string;
+}
+
 /** Convert DB row to domain object */
 export function rowToCorrespondence(row: CorrespondenceRow): DraftCorrespondence {
   return {
