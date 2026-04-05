@@ -92,6 +92,12 @@ export async function runMigrations(
  */
 export async function resetSchema(): Promise<void> {
   const tables = [
+    'backtest_results',
+    'intelligence_alerts',
+    'forecasts',
+    'market_metrics',
+    'creation_volumes',
+    'market_data_daily',
     'surrender_tracking',
     'client_holdings',
     'clients',

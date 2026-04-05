@@ -12,7 +12,7 @@
  *   feed_status      — external data-feed health
  */
 
-export const SCHEMA_VERSION = 6;
+export const SCHEMA_VERSION = 7;
 
 export const CREATE_ORGANISATIONS = `
 CREATE TABLE IF NOT EXISTS organisations (
@@ -328,6 +328,111 @@ CREATE INDEX IF NOT EXISTS idx_alert_events_unacked
   ON alert_events (acknowledged_at, created_at DESC) WHERE acknowledged_at IS NULL;
 `;
 
+export const CREATE_MARKET_DATA_DAILY = `
+CREATE TABLE IF NOT EXISTS market_data_daily (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  date DATE NOT NULL,
+  instrument_type VARCHAR(20) NOT NULL,
+  spot_price DECIMAL(10,4),
+  spot_volume INTEGER,
+  forward_3m_price DECIMAL(10,4),
+  forward_6m_price DECIMAL(10,4),
+  forward_12m_price DECIMAL(10,4),
+  source VARCHAR(50) NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(date, instrument_type, source)
+);
+`;
+
+export const CREATE_CREATION_VOLUMES = `
+CREATE TABLE IF NOT EXISTS creation_volumes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  week_ending DATE NOT NULL,
+  instrument_type VARCHAR(20) NOT NULL,
+  total_created INTEGER NOT NULL,
+  by_activity JSONB,
+  source VARCHAR(50) NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(week_ending, instrument_type)
+);
+`;
+
+export const CREATE_MARKET_METRICS = `
+CREATE TABLE IF NOT EXISTS market_metrics (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  date DATE NOT NULL,
+  instrument_type VARCHAR(20) NOT NULL,
+  cumulative_surplus DECIMAL(14,0),
+  creation_velocity_4w DECIMAL(10,2),
+  creation_velocity_12w DECIMAL(10,2),
+  implied_annual_demand DECIMAL(14,0),
+  surplus_runway_years DECIMAL(6,2),
+  days_to_surrender INTEGER,
+  price_to_penalty_ratio DECIMAL(6,4),
+  penalty_rate DECIMAL(8,2),
+  shadow_supply_estimate DECIMAL(14,0),
+  forward_curve_slope DECIMAL(8,4),
+  regime_indicator VARCHAR(20),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(date, instrument_type)
+);
+`;
+
+export const CREATE_FORECASTS = `
+CREATE TABLE IF NOT EXISTS forecasts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  generated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  instrument_type VARCHAR(20) NOT NULL,
+  horizon_weeks INTEGER NOT NULL,
+  price_forecast DECIMAL(10,4) NOT NULL,
+  price_lower_80 DECIMAL(10,4),
+  price_upper_80 DECIMAL(10,4),
+  price_lower_95 DECIMAL(10,4),
+  price_upper_95 DECIMAL(10,4),
+  volume_forecast DECIMAL(14,0),
+  surplus_forecast DECIMAL(14,0),
+  regime_probability JSONB,
+  model_version VARCHAR(20),
+  metadata JSONB
+);
+`;
+
+export const CREATE_INTELLIGENCE_ALERTS = `
+CREATE TABLE IF NOT EXISTS intelligence_alerts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  detected_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  source VARCHAR(100) NOT NULL,
+  alert_type VARCHAR(50) NOT NULL,
+  severity VARCHAR(20) NOT NULL DEFAULT 'info',
+  title VARCHAR(500) NOT NULL,
+  summary TEXT NOT NULL,
+  estimated_price_impact DECIMAL(8,4),
+  estimated_volume_impact DECIMAL(14,0),
+  confidence DECIMAL(4,2),
+  acknowledged BOOLEAN DEFAULT false,
+  metadata JSONB
+);
+`;
+
+export const CREATE_BACKTEST_RESULTS = `
+CREATE TABLE IF NOT EXISTS backtest_results (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  run_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  model_version VARCHAR(20) NOT NULL,
+  test_period_start DATE NOT NULL,
+  test_period_end DATE NOT NULL,
+  horizon_weeks INTEGER NOT NULL,
+  mape DECIMAL(8,4),
+  directional_accuracy DECIMAL(6,4),
+  decision_value DECIMAL(14,2),
+  coverage_80 DECIMAL(6,4),
+  coverage_95 DECIMAL(6,4),
+  benchmark_mape_naive DECIMAL(8,4),
+  benchmark_mape_sma DECIMAL(8,4),
+  metadata JSONB
+);
+`;
+
 /** Ordered list of DDL statements — must run in this order due to FK deps. */
 export const ALL_TABLES = [
   CREATE_ORGANISATIONS,  // before users (users references organisations)
@@ -348,4 +453,10 @@ export const ALL_TABLES = [
   CREATE_WEBHOOK_REGISTRATIONS, // after organisations
   CREATE_ALERT_RULES,          // after users, organisations
   CREATE_ALERT_EVENTS,         // after alert_rules, users
+  CREATE_MARKET_DATA_DAILY,    // market intelligence tables (no FK deps)
+  CREATE_CREATION_VOLUMES,
+  CREATE_MARKET_METRICS,
+  CREATE_FORECASTS,
+  CREATE_INTELLIGENCE_ALERTS,
+  CREATE_BACKTEST_RESULTS,
 ] as const;

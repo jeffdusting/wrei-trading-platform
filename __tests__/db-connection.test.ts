@@ -27,8 +27,8 @@ describe('Database Schema', () => {
     expect(SCHEMA_VERSION).toBeGreaterThan(0);
   });
 
-  it('defines all 18 required tables', () => {
-    expect(ALL_TABLES).toHaveLength(18);
+  it('defines all 24 required tables', () => {
+    expect(ALL_TABLES).toHaveLength(24);
   });
 
   it('each DDL statement is a non-empty string', () => {
@@ -52,6 +52,12 @@ describe('Database Schema', () => {
       'clients',
       'client_holdings',
       'surrender_tracking',
+      'market_data_daily',
+      'creation_volumes',
+      'market_metrics',
+      'forecasts',
+      'intelligence_alerts',
+      'backtest_results',
     ];
     for (const table of expectedTables) {
       expect(combined).toContain(table);
