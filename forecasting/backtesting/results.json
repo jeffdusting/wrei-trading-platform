@@ -1,0 +1,286 @@
+{
+  "run_at": "2026-04-05T06:11:24.810056",
+  "model_version": "1.0.0",
+  "test_period": {
+    "start": "2020-01-03",
+    "end": "2025-04-04"
+  },
+  "overall": {
+    "1w": {
+      "horizon_weeks": 1,
+      "mape": 0.021433,
+      "mape_pct": "2.14%",
+      "directional_accuracy": 0.5385,
+      "directional_accuracy_pct": "53.8%",
+      "decision_value": -187000.0,
+      "coverage_80": 0.8059,
+      "coverage_95": 0.8095,
+      "n_observations": 273,
+      "benchmarks": {
+        "mape_naive": 0.005075,
+        "mape_sma4": 0.012716,
+        "mape_sma12": 0.032347
+      }
+    },
+    "4w": {
+      "horizon_weeks": 4,
+      "mape": 0.037802,
+      "mape_pct": "3.78%",
+      "directional_accuracy": 0.5333,
+      "directional_accuracy_pct": "53.3%",
+      "decision_value": 1401000.0,
+      "coverage_80": 0.7778,
+      "coverage_95": 0.7963,
+      "n_observations": 270,
+      "benchmarks": {
+        "mape_naive": 0.020302,
+        "mape_sma4": 0.02784,
+        "mape_sma12": 0.046925
+      }
+    },
+    "12w": {
+      "horizon_weeks": 12,
+      "mape": 0.071319,
+      "mape_pct": "7.13%",
+      "directional_accuracy": 0.6031,
+      "directional_accuracy_pct": "60.3%",
+      "decision_value": 4607500.0,
+      "coverage_80": 0.6145,
+      "coverage_95": 0.7634,
+      "n_observations": 262,
+      "benchmarks": {
+        "mape_naive": 0.058599,
+        "mape_sma4": 0.06558,
+        "mape_sma12": 0.082869
+      }
+    },
+    "26w": {
+      "horizon_weeks": 26,
+      "mape": 0.120095,
+      "mape_pct": "12.01%",
+      "directional_accuracy": 0.5887,
+      "directional_accuracy_pct": "58.9%",
+      "decision_value": 2697000.0,
+      "coverage_80": 0.3911,
+      "coverage_95": 0.5726,
+      "n_observations": 248,
+      "benchmarks": {
+        "mape_naive": 0.112764,
+        "mape_sma4": 0.118464,
+        "mape_sma12": 0.132057
+      }
+    }
+  },
+  "regime_specific": [
+    {
+      "period_type": "stable",
+      "n_weeks": 27,
+      "metrics": {
+        "1w": {
+          "horizon_weeks": 1,
+          "mape": 0.030736,
+          "mape_pct": "3.07%",
+          "directional_accuracy": 0.5556,
+          "directional_accuracy_pct": "55.6%",
+          "decision_value": 52000.0,
+          "coverage_80": 0.7778,
+          "coverage_95": 0.7778,
+          "n_observations": 27,
+          "benchmarks": {
+            "mape_naive": 0.004849,
+            "mape_sma4": 0.011691,
+            "mape_sma12": 0.022554
+          }
+        },
+        "4w": {
+          "horizon_weeks": 4,
+          "mape": 0.041409,
+          "mape_pct": "4.14%",
+          "directional_accuracy": 0.4444,
+          "directional_accuracy_pct": "44.4%",
+          "decision_value": 505500.0,
+          "coverage_80": 0.7778,
+          "coverage_95": 0.7778,
+          "n_observations": 27,
+          "benchmarks": {
+            "mape_naive": 0.023344,
+            "mape_sma4": 0.030222,
+            "mape_sma12": 0.041118
+          }
+        },
+        "12w": {
+          "horizon_weeks": 12,
+          "mape": 0.066301,
+          "mape_pct": "6.63%",
+          "directional_accuracy": 0.4444,
+          "directional_accuracy_pct": "44.4%",
+          "decision_value": 2248000.0,
+          "coverage_80": 0.6667,
+          "coverage_95": 0.8889,
+          "n_observations": 27,
+          "benchmarks": {
+            "mape_naive": 0.090891,
+            "mape_sma4": 0.098005,
+            "mape_sma12": 0.109104
+          }
+        },
+        "26w": {
+          "horizon_weeks": 26,
+          "mape": 0.10478,
+          "mape_pct": "10.48%",
+          "directional_accuracy": 0.4444,
+          "directional_accuracy_pct": "44.4%",
+          "decision_value": 866000.0,
+          "coverage_80": 0.4444,
+          "coverage_95": 0.5926,
+          "n_observations": 27,
+          "benchmarks": {
+            "mape_naive": 0.136614,
+            "mape_sma4": 0.14361,
+            "mape_sma12": 0.154306
+          }
+        }
+      }
+    },
+    {
+      "period_type": "transition",
+      "n_weeks": 48,
+      "metrics": {
+        "1w": {
+          "horizon_weeks": 1,
+          "mape": 0.038611,
+          "mape_pct": "3.86%",
+          "directional_accuracy": 0.1875,
+          "directional_accuracy_pct": "18.8%",
+          "decision_value": 204500.0,
+          "coverage_80": 0.6667,
+          "coverage_95": 0.6875,
+          "n_observations": 48,
+          "benchmarks": {
+            "mape_naive": 0.006219,
+            "mape_sma4": 0.016653,
+            "mape_sma12": 0.048518
+          }
+        },
+        "4w": {
+          "horizon_weeks": 4,
+          "mape": 0.061027,
+          "mape_pct": "6.10%",
+          "directional_accuracy": 0.625,
+          "directional_accuracy_pct": "62.5%",
+          "decision_value": 1244000.0,
+          "coverage_80": 0.6667,
+          "coverage_95": 0.7292,
+          "n_observations": 48,
+          "benchmarks": {
+            "mape_naive": 0.021167,
+            "mape_sma4": 0.031303,
+            "mape_sma12": 0.061749
+          }
+        },
+        "12w": {
+          "horizon_weeks": 12,
+          "mape": 0.107769,
+          "mape_pct": "10.78%",
+          "directional_accuracy": 0.7083,
+          "directional_accuracy_pct": "70.8%",
+          "decision_value": 3459500.0,
+          "coverage_80": 0.3333,
+          "coverage_95": 0.6875,
+          "n_observations": 48,
+          "benchmarks": {
+            "mape_naive": 0.044737,
+            "mape_sma4": 0.051955,
+            "mape_sma12": 0.074027
+          }
+        },
+        "26w": {
+          "horizon_weeks": 26,
+          "mape": 0.176915,
+          "mape_pct": "17.69%",
+          "directional_accuracy": 0.7708,
+          "directional_accuracy_pct": "77.1%",
+          "decision_value": 9253500.0,
+          "coverage_80": 0.0833,
+          "coverage_95": 0.5,
+          "n_observations": 48,
+          "benchmarks": {
+            "mape_naive": 0.103175,
+            "mape_sma4": 0.104857,
+            "mape_sma12": 0.110217
+          }
+        }
+      }
+    },
+    {
+      "period_type": "policy_window",
+      "n_weeks": 161,
+      "metrics": {
+        "1w": {
+          "horizon_weeks": 1,
+          "mape": 0.023616,
+          "mape_pct": "2.36%",
+          "directional_accuracy": 0.5652,
+          "directional_accuracy_pct": "56.5%",
+          "decision_value": 2500.0,
+          "coverage_80": 0.8137,
+          "coverage_95": 0.8137,
+          "n_observations": 161,
+          "benchmarks": {
+            "mape_naive": 0.005441,
+            "mape_sma4": 0.013434,
+            "mape_sma12": 0.03398
+          }
+        },
+        "4w": {
+          "horizon_weeks": 4,
+          "mape": 0.037639,
+          "mape_pct": "3.76%",
+          "directional_accuracy": 0.5839,
+          "directional_accuracy_pct": "58.4%",
+          "decision_value": 1615000.0,
+          "coverage_80": 0.7826,
+          "coverage_95": 0.795,
+          "n_observations": 161,
+          "benchmarks": {
+            "mape_naive": 0.021619,
+            "mape_sma4": 0.029407,
+            "mape_sma12": 0.049499
+          }
+        },
+        "12w": {
+          "horizon_weeks": 12,
+          "mape": 0.065829,
+          "mape_pct": "6.58%",
+          "directional_accuracy": 0.6065,
+          "directional_accuracy_pct": "60.6%",
+          "decision_value": 4411000.0,
+          "coverage_80": 0.6323,
+          "coverage_95": 0.7613,
+          "n_observations": 155,
+          "benchmarks": {
+            "mape_naive": 0.059455,
+            "mape_sma4": 0.066472,
+            "mape_sma12": 0.084155
+          }
+        },
+        "26w": {
+          "horizon_weeks": 26,
+          "mape": 0.103923,
+          "mape_pct": "10.39%",
+          "directional_accuracy": 0.6,
+          "directional_accuracy_pct": "60.0%",
+          "decision_value": 6466500.0,
+          "coverage_80": 0.4759,
+          "coverage_95": 0.6069,
+          "n_observations": 145,
+          "benchmarks": {
+            "mape_naive": 0.107174,
+            "mape_sma4": 0.112107,
+            "mape_sma12": 0.124115
+          }
+        }
+      }
+    }
+  ]
+}
