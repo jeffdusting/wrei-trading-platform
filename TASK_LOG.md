@@ -1,5 +1,70 @@
 # WREI Trading Platform — Task Log
 
+## Session: P9-D — Settlement Facilitation, TESSA Instructions, Client Reporting
+
+- **Date:** 2026-04-05
+- **Phase:** P9 (Correspondence Engine — Settlement & Reporting)
+- **Branch:** main
+
+### Summary
+
+Built settlement facilitation and client reporting capabilities for the AI correspondence engine. TESSA/VEEC transfer instruction generators produce step-by-step registry transfer documents for broker admin staff. AI-drafted client position reports summarise holdings, surrender progress, penalty exposure, and market commentary. Correspondence dashboard expanded to 6 tabs with settlement tracking and report management.
+
+---
+
+### Task P9.7 — Settlement Facilitation
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `lib/correspondence/settlement-facilitation.ts` | 452 | TESSA/VEEC instruction generators, settlement follow-up AI drafting, status tracking (instructions_generated → transferred → confirmed → complete), overdue detection, demo data |
+| `components/correspondence/SettlementInstructions.tsx` | 392 | Formatted transfer instructions with checklist steps, progress bar, copy-to-clipboard, settlement timer with overdue indicators, tracking table with status badges |
+
+**Settlement tracking states:** instructions_generated → transferred → confirmed → complete
+**Follow-up drafting:** AI-drafted (via correspondence_draft capability) with fallback template. Tone adapts based on overdue status.
+**Instruction generators:** `generateTESSAInstructions(trade)` for ESC/PRC, `generateVEECInstructions(trade)` for VEEC, `generateTransferInstructions(trade)` auto-routes by instrument.
+
+---
+
+### Task P9.8 — Client Reporting
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `lib/correspondence/client-reporting.ts` | 460 | `generateClientPositionReport(data, period)` — AI-drafted via report_generator capability, data-driven (AI contextualises structured data, does not invent numbers), fallback template, printable HTML attachment, batch generation |
+| `components/correspondence/ClientReporting.tsx` | 306 | Client list with generate/view buttons, "Generate All" batch, report preview with iframe for HTML attachment, approve/mark-sent workflow, report history timeline |
+| `app/api/v1/correspondence/reports/route.ts` | 130 | POST generate (single or batch), GET list reports (optionally by clientId), withAuth broker/admin |
+
+**Report output:** `{ subject, body (email-ready), attachmentHTML (printable) }` — broker reviews each report before sending.
+**AI capability used:** `report_generator` (Sonnet 4, via service router with guard enforcement).
+**Demo data:** 3 clients with realistic ESC/VEEC holdings, surrender progress, and penalty exposure.
+
+---
+
+### Task P9.9 — Dashboard Integration
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `app/correspondence/page.tsx` | 112 (updated) | 6 tabs: Procurement, Drafts, Negotiations, Settlement, Reports, History |
+| `components/navigation/BloombergShell.tsx` | +15 (updated) | Badge count on Correspondence nav item showing items requiring broker attention (demo: 4) |
+
+---
+
+### Verification
+
+| Check | Result |
+|-------|--------|
+| `npx tsc --noEmit` | Zero errors |
+| `npm run build` | Clean — 1 new λ API route (reports) |
+| `npm test` | 69 suites, 1612 tests (1606 passed, 5 skipped, 1 failed — stale duplicate file) |
+| Line counts | Lib: 912 lines, Components: 698 lines, API: 130 lines, Page: 112 lines, Total: 1,852 lines |
+
+---
+
 ## Session: P9-C — Email Negotiation Manager, Offer Parser, Trade Confirmations
 
 - **Date:** 2026-04-05

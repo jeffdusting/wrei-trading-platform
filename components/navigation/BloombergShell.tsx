@@ -1,6 +1,6 @@
 'use client'
 
-import { FC, ReactNode, useState } from 'react'
+import { FC, ReactNode, useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useDesignTokens } from '@/design-system/tokens/professional-tokens'
@@ -15,14 +15,15 @@ interface NavigationItem {
   href: string
   description: string
   icon?: string
+  badge?: number
 }
 
 // Consolidated navigation — 8 items (Clients + Correspondence visible for broker/admin workflows)
-const navigationItems: NavigationItem[] = [
+const BASE_NAVIGATION: NavigationItem[] = [
   { label: 'Dashboard', href: '/', description: 'Home dashboard with three-panel layout', icon: 'DSH' },
   { label: 'Trading', href: '/trade', description: 'AI carbon credit trading interface', icon: 'TRD' },
   { label: 'Clients', href: '/clients', description: 'Client holdings and compliance tracking', icon: 'CLT' },
-  { label: 'Correspondence', href: '/correspondence', description: 'Procurement triggers and seller outreach', icon: 'COR' },
+  { label: 'Correspondence', href: '/correspondence', description: 'Procurement, settlement, and client reporting', icon: 'COR' },
   { label: 'Analyse', href: '/analyse', description: 'Investment calculator + market scenarios (tabbed)', icon: 'ANA' },
   { label: 'Institutional', href: '/institutional/portal', description: 'Onboarding portal', icon: 'INS' },
   { label: 'Compliance', href: '/compliance', description: 'Regulatory compliance', icon: 'CMP' },
@@ -35,10 +36,24 @@ interface BloombergShellProps {
 
 export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [correspondenceBadge, setCorrespondenceBadge] = useState(0)
   const pathname = usePathname()
   const { isActive: isDemoActive } = useSimpleDemoMode()
   const tokens = useDesignTokens('retail') // Use retail theme for light mode
   const { config: wl, isWhiteLabelled } = useWhiteLabel()
+
+  // Compute correspondence badge: pending drafts + overdue settlements (demo)
+  useEffect(() => {
+    // Demo badge count — 3 pending drafts + 1 overdue settlement = 4
+    setCorrespondenceBadge(4)
+  }, [])
+
+  // Inject badge counts into navigation items
+  const navigationItems: NavigationItem[] = BASE_NAVIGATION.map(item =>
+    item.href === '/correspondence' && correspondenceBadge > 0
+      ? { ...item, badge: correspondenceBadge }
+      : item
+  )
 
   const isActive = (href: string) => {
     if (href === '/') {
@@ -179,6 +194,11 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
                   {item.icon}
                 </span>
                 {item.label}
+                {item.badge != null && item.badge > 0 && (
+                  <span className="ml-1 text-[9px] px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium">
+                    {item.badge}
+                  </span>
+                )}
               </Link>
             ))}
           </div>

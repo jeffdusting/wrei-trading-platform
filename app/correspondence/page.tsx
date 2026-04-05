@@ -3,7 +3,7 @@
 /**
  * Correspondence Management Page
  *
- * Three tabs: Procurement | Drafts | History
+ * Six tabs: Procurement | Drafts | Negotiations | Settlement | Reports | History
  * Protected route — requires broker or admin role.
  * In demo mode, renders with simulated data.
  */
@@ -12,16 +12,21 @@ import { useState } from 'react'
 import ProcurementDashboard from '@/components/correspondence/ProcurementDashboard'
 import DraftReview from '@/components/correspondence/DraftReview'
 import CorrespondenceHistory from '@/components/correspondence/CorrespondenceHistory'
+import SettlementInstructions from '@/components/correspondence/SettlementInstructions'
+import ClientReporting from '@/components/correspondence/ClientReporting'
 
-type CorrespondenceTab = 'procurement' | 'drafts' | 'history'
+type CorrespondenceTab = 'procurement' | 'drafts' | 'negotiations' | 'settlement' | 'reports' | 'history'
 
 export default function CorrespondencePage() {
   const [activeTab, setActiveTab] = useState<CorrespondenceTab>('procurement')
   const [pendingDraftCount, setPendingDraftCount] = useState(3)
 
-  const tabs: { id: CorrespondenceTab; label: string }[] = [
+  const tabs: { id: CorrespondenceTab; label: string; badge?: number }[] = [
     { id: 'procurement', label: 'Procurement' },
-    { id: 'drafts', label: 'Drafts' },
+    { id: 'drafts', label: 'Drafts', badge: pendingDraftCount },
+    { id: 'negotiations', label: 'Negotiations' },
+    { id: 'settlement', label: 'Settlement' },
+    { id: 'reports', label: 'Reports' },
     { id: 'history', label: 'History' },
   ]
 
@@ -39,7 +44,7 @@ export default function CorrespondencePage() {
             <div>
               <h1 className="bloomberg-page-heading text-slate-800">Correspondence</h1>
               <p className="bloomberg-body-text text-slate-600 mt-1">
-                Procurement Triggers, AI-Drafted RFQs, and Seller Outreach Management
+                Procurement, Negotiations, Settlement Facilitation, and Client Reporting
               </p>
             </div>
             <div className="bloomberg-section-label">COR</div>
@@ -58,9 +63,9 @@ export default function CorrespondencePage() {
                 }`}
               >
                 {tab.label}
-                {tab.id === 'drafts' && pendingDraftCount > 0 && (
+                {tab.badge != null && tab.badge > 0 && (
                   <span className="ml-1.5 text-[10px] px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
-                    {pendingDraftCount}
+                    {tab.badge}
                   </span>
                 )}
               </button>
@@ -80,6 +85,22 @@ export default function CorrespondencePage() {
 
         {activeTab === 'drafts' && (
           <DraftReview />
+        )}
+
+        {activeTab === 'negotiations' && (
+          <div className="bg-white border border-slate-200 rounded-lg p-8 text-center">
+            <p className="text-xs text-slate-500">
+              Email negotiations are managed from the Drafts tab. Select a sent RFQ to view its negotiation thread.
+            </p>
+          </div>
+        )}
+
+        {activeTab === 'settlement' && (
+          <SettlementInstructions />
+        )}
+
+        {activeTab === 'reports' && (
+          <ClientReporting />
         )}
 
         {activeTab === 'history' && (
