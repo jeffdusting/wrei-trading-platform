@@ -1,7 +1,7 @@
 # WREI Trading Platform -- Gap Analysis and Review
 
-**Document Version:** 1.0
-**Date:** 2026-03-25
+**Document Version:** 2.0
+**Date:** 2026-04-05
 
 ---
 
@@ -9,199 +9,121 @@
 
 ### What is Documented
 
-| Area | Document | Coverage Level |
-|------|----------|---------------|
-| Platform overview and value proposition | 01-EXECUTIVE-SUMMARY.md | Complete |
-| User journeys and persona documentation | 02-USER-SCENARIOS-AND-PERSONAS.md | Complete |
-| Component hierarchy and data flows | 03-SYSTEM-FUNCTIONAL-ARCHITECTURE.md | Complete |
-| Technical implementation details | 04-TECHNICAL-ARCHITECTURE.md | Complete |
-| API endpoints and integration | 05-API-REFERENCE.md | Complete |
-| Test infrastructure and coverage | 06-TEST-COVERAGE-AND-QA.md | Complete |
-| Deployment and operations | 07-DEPLOYMENT-AND-OPERATIONS.md | Complete |
-| Library module reference | 08-LIBRARY-MODULE-REFERENCE.md | Complete |
-
-### Cross-Reference Verification
-
-All documentation sections have been verified against the actual codebase:
-- All 10 page routes documented and verified
-- All 6 API routes documented with actions
-- All 50+ components catalogued with purposes
-- All 30+ library modules referenced
-- All 66 test files inventoried
-- All configuration files reviewed
+| Area | Document | Version | Status |
+|------|----------|---------|--------|
+| Platform overview and roadmap | 01-EXECUTIVE-SUMMARY.md | 2.0 | Current (P11) |
+| User journeys and personas | 02-USER-SCENARIOS-AND-PERSONAS.md | 1.0 | Partially stale (pre-P5 personas only) |
+| Routes, components, data flows | 03-SYSTEM-FUNCTIONAL-ARCHITECTURE.md | 3.0 | Current (P11) |
+| Tech stack, AI, database, security | 04-TECHNICAL-ARCHITECTURE.md | 2.0 | Current (P11) |
+| API endpoint reference | 05-API-REFERENCE.md | 1.0 | Stale (6 endpoints, now 53) |
+| Test inventory and QA | 06-TEST-COVERAGE-AND-QA.md | 2.0 | Current (P11) |
+| Deployment and operations | 07-DEPLOYMENT-AND-OPERATIONS.md | 1.0 | Partially stale (no DB ops, no cron) |
+| Library module reference | 08-LIBRARY-MODULE-REFERENCE.md | 1.0 | Stale (pre-P5 modules only) |
+| Gap analysis (this document) | 09-GAP-ANALYSIS-AND-REVIEW.md | 2.0 | Current (P11) |
+| Detailed system specification | 10-SYSTEM-SPECIFICATION.md | 1.0 | New — Current (P11) |
+| Test plan and regression | testing/test-plan.md | 2.0 | Current (P11) |
 
 ---
 
-## 2. Codebase Alignment Audit
+## 2. Remaining Gaps
 
-### Verified Alignments
+### Gap 1: API Reference (05) is Stale
 
-| Claim in Documentation | Verified In Codebase | Status |
-|----------------------|---------------------|--------|
-| 11 buyer personas | `lib/personas.ts` -- PERSONA_DEFINITIONS array | Confirmed |
-| Claude Opus 4.6 model | `app/api/negotiate/route.ts` line 77: `model: 'claude-opus-4-6'` | Confirmed |
-| Price floor enforcement in code | `lib/defence.ts` enforceConstraints() | Confirmed |
-| 5% max concession per round | `lib/negotiation-config.ts` MAX_CONCESSION_PER_ROUND: 0.05 | Confirmed |
-| 20% max total concession | `lib/negotiation-config.ts` MAX_TOTAL_CONCESSION: 0.20 | Confirmed |
-| No localStorage/sessionStorage | Grep confirms zero usage in codebase | Confirmed |
-| API key server-side only | `ANTHROPIC_API_KEY` used only in `app/api/negotiate/route.ts` | Confirmed |
-| 6-step onboarding wizard | `components/institutional/` -- 6 step components | Confirmed |
-| Zustand for demo mode | `lib/demo-mode/demo-state-manager.ts` uses `create` from zustand | Confirmed |
-| 6 API endpoints | `app/api/` -- negotiate, analytics, compliance, market-data, metadata, performance | Confirmed |
-| Recharts for charts | `package.json` dependency + `components/charts/` | Confirmed |
-| X-WREI-API-Key authentication | `lib/api-helpers.ts` validateApiKey() | Confirmed |
-| Rate limiting 100 req/min | `lib/api-helpers.ts` checkRateLimit() default 100/60000 | Confirmed |
-| WREI colour scheme | `tailwind.config.ts` custom colors | Confirmed |
-| Australian spelling | User-facing text uses "organised", "recognised", etc. | Confirmed |
+**Severity:** High
+**Description:** Documents 6 endpoints from Milestone 2.2. The platform now has 53 API routes including the full v1 REST API, correspondence, intelligence, and import endpoints.
+**Recommendation:** Rewrite 05-API-REFERENCE.md to cover all v1 endpoints with request/response schemas.
 
-### Discrepancies Found and Resolved
-
-1. **CLAUDE.md states ANCHOR_PRICE = 150 and PRICE_FLOOR = 120** but `negotiation-config.ts` calculates these dynamically from live market data ($28.12 and $22.80 respectively). The CLAUDE.md values are for the WREI_TOKEN_CONFIG section (A$/tonne), while NEGOTIATION_CONFIG uses USD/tonne with different premiums. Both systems coexist -- CLAUDE.md describes the tokenisation document specification, while the live negotiation uses market-driven values. **Documentation accurately reflects both systems.**
-
-2. **CLAUDE.md lists 5 buyer personas** but the platform now has 11 (5 original + 6 institutional). **Documentation accurately reflects the current 11 personas.**
-
-3. **README.md mentions "5 Buyer Personas"** which is outdated relative to the current 11. The README should be updated to reflect the expanded persona set. **Noted as recommended update.**
-
----
-
-## 3. Identified Gaps
-
-### Gap 1: Demo Mode End-to-End Documentation
+### Gap 2: User Scenarios (02) Missing ESC Broker Personas
 
 **Severity:** Medium
-**Description:** While the demo mode system is documented architecturally, there is no step-by-step guide for conducting an investor presentation using demo mode. A presentation runbook would be valuable.
-**Recommendation:** Create a presentation guide document covering each of the 6 tour types with talking points and expected flow.
+**Description:** Documents the original 11 negotiation personas but does not cover the ESC broker workflow personas (obligated entity contacts, counterparty sellers, compliance officers in the correspondence context).
+**Recommendation:** Add ESC broker user scenarios covering RFQ generation, email negotiation, and settlement workflows.
 
-### Gap 2: Data Model Documentation
-
-**Severity:** Low
-**Description:** While TypeScript interfaces are documented, there is no visual entity-relationship diagram showing how NegotiationState, BuyerProfile, NegotiationSession, and related types interconnect.
-**Recommendation:** Create a data model diagram showing core entity relationships.
-
-### Gap 3: Zoniqx Integration Boundary Documentation
-
-**Severity:** Low
-**Description:** CLAUDE.md states that Zoniqx references are "knowledge-base content for agent dialogue only" with no live integration. This boundary is clear in code but could benefit from a dedicated section explaining what is simulated vs. what would be live in production.
-**Recommendation:** Add a "Production vs. Demo Boundaries" section to the technical architecture document.
-
-### Gap 4: Accessibility Documentation
+### Gap 3: Library Module Reference (08) is Stale
 
 **Severity:** Medium
-**Description:** The platform includes an `AccessibilityWrapper` component targeting WCAG 2.1 AA compliance, but there is no accessibility audit report or VPAT (Voluntary Product Accessibility Template).
-**Recommendation:** Conduct an accessibility audit and document findings.
+**Description:** Documents core modules from Milestone 2.3. Missing: `lib/correspondence/*`, `lib/ai/*`, `lib/db/*`, `lib/config/*`, `lib/data-feeds/adapters/*`, all Python modules.
+**Recommendation:** Rewrite 08-LIBRARY-MODULE-REFERENCE.md with current module inventory. The System Specification (10) partially covers this.
 
-### Gap 5: Error Handling Guide
+### Gap 4: Deployment Operations (07) Missing Database and Cron
+
+**Severity:** Medium
+**Description:** Documents Vercel deployment but does not cover PostgreSQL provisioning, schema migration, cron job configuration, or Python forecasting environment setup.
+**Recommendation:** Add sections for database setup, migration commands, cron job scheduling, and Python environment.
+
+### Gap 5: Python Forecasting Tests
+
+**Severity:** Medium
+**Description:** The Python forecasting pipeline has no automated test suite in CI. The backtesting engine validates model accuracy but runs ad-hoc. No regression tests for scrapers or data assembly.
+**Recommendation:** Add pytest suite for forecasting models, scrapers, and data assembly. Integrate into CI.
+
+### Gap 6: Correspondence Engine Tests
+
+**Severity:** Medium
+**Description:** Core broker workflow modules (procurement-trigger, ai-draft-engine, offer-parser, negotiation-manager, settlement-facilitation) have no dedicated Jest tests.
+**Recommendation:** Write unit tests for each correspondence module.
+
+### Gap 7: Accessibility Audit
 
 **Severity:** Low
-**Description:** While API error codes are documented, there is no comprehensive guide to client-side error handling patterns used in the negotiation interface (retry logic, fallback UI, error boundary behaviour).
-**Recommendation:** Add error handling patterns to the technical architecture document.
-
-### Gap 6: Demo Data Set Documentation
-
-**Severity:** Low
-**Description:** The demo data sets in `lib/demo-mode/demo-data-sets.ts` are not individually documented. Understanding what each data set contains would help presentation preparation.
-**Recommendation:** Document each demo data set's contents and intended use case.
+**Description:** The platform includes an `AccessibilityWrapper` but no VPAT or accessibility audit report exists.
+**Recommendation:** Conduct WCAG 2.1 AA audit and document findings.
 
 ---
 
-## 4. README.md Update Recommendations
+## 3. Platform Capability Coverage
 
-The current README.md is outdated relative to the platform's current capabilities. Recommended updates:
+| Capability | Documented | Tested | Gap |
+|-----------|-----------|--------|-----|
+| AI Negotiation Engine | Yes (03, 04, 10) | Yes (6 test files) | None |
+| Defence/Security Layers | Yes (04, 10) | Yes (4 test files) | None |
+| Bloomberg Terminal Interface | Yes (03) | Yes (landing, nav) | None |
+| AI Correspondence Engine | Yes (10) | Partial (API only) | Test gap |
+| ESC Market Intelligence | Yes (10) | Partial (API only) | Test gap |
+| Python Forecasting Pipeline | Yes (04, 10) | No (no CI tests) | Test gap |
+| Client Management | Yes (10) | Partial (API only) | None |
+| Market Data Pipeline | Yes (04, 10) | Yes (3 test files) | None |
+| White-Label System | Yes (04, 10) | No | Test gap |
+| Institutional Onboarding | Yes (03) | Yes (portal, pipeline) | None |
+| Investment Calculator | Yes (03) | Yes (calculator test) | None |
+| Regulatory Compliance | Yes (04) | Yes (2 test files) | None |
+| Performance Monitoring | Yes (04) | Yes (3 test files) | None |
+| Export/Reporting | Yes (03) | Yes (2 test files) | None |
+| Scenario Simulation | Yes (03) | Yes (e2e, engine) | None |
+| Database Layer | Yes (04, 10) | Low (schema only) | Test gap |
+| Live Price Feeds | Yes (04, 10) | Medium (adapter tests) | None |
+| Settlement Facilitation | Yes (10) | No | Test gap |
+| Client Intelligence Page | Yes (03, 10) | No | Test gap |
+| Forecast Performance Dashboard | Yes (03) | No | Test gap |
 
-1. **Update "5 Buyer Personas" to "11 Buyer Personas"** (5 original + 6 institutional)
-2. **Add new features** not mentioned: Investment Calculator, Compliance Dashboard, Demo Mode, Developer Portal, Scenario Simulation, Negotiation Coaching, Committee Mode
-3. **Update technology stack** to include Recharts, Zustand
-4. **Add route table** showing all 10 page routes
-5. **Reference the `/docs` documentation suite**
-
----
-
-## 5. Completeness Assessment
-
-### Platform Capability Coverage
-
-| Capability | Documented | Verified | Gap |
-|-----------|-----------|---------|-----|
-| Landing page and navigation | Yes | Yes | None |
-| AI negotiation engine | Yes | Yes | None |
-| Defence/security layers | Yes | Yes | None |
-| 11 buyer personas | Yes | Yes | None |
-| Committee mode | Yes | Yes | None |
-| Negotiation coaching | Yes | Yes | None |
-| Negotiation scoring | Yes | Yes | None |
-| Negotiation history/replay | Yes | Yes | None |
-| Institutional onboarding (6 steps) | Yes | Yes | None |
-| Pipeline transition | Yes | Yes | None |
-| Investment calculator | Yes | Yes | None |
-| Scenario comparison | Yes | Yes | None |
-| Regulatory compliance map | Yes | Yes | None |
-| AFSL compliance | Yes | Yes | None |
-| KYC/AML verification | Yes | Yes | None |
-| Tax treatment guidance | Yes | Yes | None |
-| Digital Assets Framework | Yes | Yes | None |
-| Market data feeds | Yes | Yes | None |
-| Competitive analysis | Yes | Yes | None |
-| ESG impact dashboard | Yes | Yes | None |
-| Demo mode (6 tours) | Yes | Yes | Presentation guide gap |
-| Developer portal / API explorer | Yes | Yes | None |
-| API documentation (6 endpoints) | Yes | Yes | None |
-| Performance monitoring | Yes | Yes | None |
-| Scenario simulation (5 scenarios) | Yes | Yes | None |
-| Bloomberg-style layout | Yes | Yes | None |
-| Accessibility wrapper | Yes | Yes | Audit report gap |
-| Chart components (4 types) | Yes | Yes | None |
-| Blockchain provenance | Yes | Yes | None |
-| Token metadata system | Yes | Yes | None |
-| Four-layer architecture | Yes | Yes | None |
-| Export/reporting (4 formats) | Yes | Yes | None |
-| Professional analytics | Yes | Yes | None |
-| Monte Carlo simulation | Yes | Yes | None |
-| Yield models (revenue share, NAV) | Yes | Yes | None |
-| Risk profiles | Yes | Yes | None |
-
-**Coverage Score: 35/35 capabilities documented (100%)**
-
-### User Persona Coverage
-
-| User Type | Journey Documented | Technical Docs | API Docs |
-|-----------|-------------------|----------------|----------|
-| Institutional Investor | Yes | Yes | Yes |
-| Corporate Compliance Officer | Yes | Yes | N/A |
-| ESG Fund Manager | Yes | Yes | N/A |
-| Carbon Trading Desk | Yes | Yes | Yes |
-| Sustainability Director | Yes | Yes | N/A |
-| Government Procurement | Yes | Yes | N/A |
-| Infrastructure Fund | Yes | Yes | N/A |
-| ESG Impact Investor | Yes | Yes | N/A |
-| DeFi Yield Farmer | Yes | Yes | N/A |
-| Family Office | Yes | Yes | N/A |
-| Sovereign Wealth Fund | Yes | Yes | N/A |
-| Developer | Yes | Yes | Yes |
-| Compliance Officer | Yes | Yes | Yes |
-| Presenter/Demo User | Partial | Yes | N/A |
+**Documentation Score:** 20/20 capabilities documented
+**Test Score:** 13/20 capabilities have dedicated tests (65%)
 
 ---
 
-## 6. Internal Contradiction Check
+## 4. Internal Consistency Check
 
-The documentation suite has been reviewed for internal contradictions:
-
-1. **Pricing values** are consistent across all documents (PRICING_INDEX values, WREI premiums, floor prices)
-2. **Persona counts** are consistently stated as 11 (5 + 6)
-3. **API endpoint counts** are consistently stated as 6
-4. **Test counts** reference the baseline of 623+ tests / 35 suites
-5. **Technology versions** are consistent with `package.json`
-6. **CLAUDE.md constraints** are respected throughout (no localStorage, server-side API keys only, Australian spelling)
+| Check | Result |
+|-------|--------|
+| Route counts match between docs | 15 pages, 53 API routes — consistent |
+| Component catalogue matches code | All major components documented |
+| Test counts match reality | 1,630 tests, 69 suites — matches `npm test` output |
+| Technology versions match package.json | Verified |
+| Pricing values consistent | WREI Pricing Index values consistent across docs |
+| Instrument count consistent | 8 instruments across all documents |
 
 **No internal contradictions found.**
 
 ---
 
-## 7. Documentation Maintenance Recommendations
+## 5. Recommended Documentation Priorities
 
-1. **Version tracking:** Update document versions when platform capabilities change
-2. **Test count updates:** Refresh test counts after each milestone
-3. **API action updates:** Document new API actions as they are added
-4. **Persona additions:** Document new personas following the established template
-5. **Component catalogue:** Add new components to the architecture document
-6. **Pricing updates:** Reflect any changes to PRICING_INDEX or NEGOTIATION_CONFIG
+| Priority | Action | Effort |
+|----------|--------|--------|
+| 1 | Rewrite 05-API-REFERENCE.md (53 endpoints) | High |
+| 2 | Add correspondence engine Jest tests | Medium |
+| 3 | Update 07-DEPLOYMENT-AND-OPERATIONS.md | Medium |
+| 4 | Update 08-LIBRARY-MODULE-REFERENCE.md | Medium |
+| 5 | Add pytest suite for forecasting | Medium |
+| 6 | Update 02-USER-SCENARIOS-AND-PERSONAS.md | Low |
+| 7 | Accessibility audit | Low |

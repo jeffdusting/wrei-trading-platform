@@ -1,7 +1,7 @@
 # WREI Trading Platform -- Technical Architecture Documentation
 
-**Document Version:** 1.0
-**Date:** 2026-03-25
+**Document Version:** 2.0
+**Date:** 2026-04-05
 
 ---
 
@@ -18,301 +18,292 @@
 
 ### Rendering Strategy
 
-All page routes use `'use client'` directive, making them client-side rendered components. This is a deliberate architectural choice because:
+All page routes use `'use client'` directive (except `/client-intelligence` which uses a hybrid SSR/client pattern). This is deliberate:
 
-1. The negotiation interface requires extensive client-side interactivity
-2. No database or persistent storage exists (pure client state)
-3. Real-time UI updates for negotiation, coaching, and market data
-4. Demo mode state managed via Zustand on the client
+1. Trading interfaces require extensive client-side interactivity
+2. Real-time UI updates for negotiation, coaching, and market data
+3. Bloomberg Terminal-style shell requires client-side state
 
-Server-side functionality is confined to API routes (`app/api/*/route.ts`), which handle:
-- Claude API calls (keeping ANTHROPIC_API_KEY server-side only)
+Server-side functionality is in API routes (`app/api/*/route.ts`), which handle:
+- Claude API calls (keeping `ANTHROPIC_API_KEY` server-side only)
+- Database operations (PostgreSQL via Vercel Postgres)
 - Financial calculations exposed as API services
-- Compliance assessment engines
-- Market data feed aggregation
-- Performance monitoring
+- Market data feed orchestration with circuit breaker pattern
+- AI service routing with guard pipeline
 
 ### Layout Architecture
 
 ```
 app/layout.tsx (Root Layout)
-  - Metadata configuration (title, description, OpenGraph, Twitter)
-  - Inter font from Google Fonts
-  - Global CSS (Tailwind)
-  - DemoDataProvider context wrapper
-  - NavigationShell wrapper
+  → Metadata configuration (title, description, OpenGraph)
+  → Inter font from Google Fonts
+  → Global CSS (Tailwind)
+  → BloombergShell wrapper
+    → TopBar (40px, branding + clock + status)
+    → MarketTicker (scrolling live prices)
+    → NavigationBar (48px, 6 consolidated items)
+    → {children} (page content)
+    → CommandBar (36px, terminal prompt + compliance)
 ```
 
 ---
 
-## 2. TypeScript Type System
+## 2. Database Layer
 
-### Core Types (`lib/types.ts`)
+### PostgreSQL (Vercel Postgres)
 
-The platform defines a comprehensive type system covering:
+**Schema Version:** 7 (25 tables)
+**Connection:** `lib/db/connection.ts` -- Singleton connection pool for serverless
 
-**Negotiation Types:**
-- `ArgumentClassification` -- 8 categories (price_challenge, fairness_appeal, time_pressure, information_request, relationship_signal, authority_constraint, emotional_expression, general)
-- `EmotionalState` -- 6 states (frustrated, enthusiastic, sceptical, satisfied, neutral, pressured)
-- `NegotiationPhase` -- 5 phases (opening, elicitation, negotiation, closure, escalation)
-- `PersonaType` -- 11 persona identifiers
-- `NegotiationOutcome` -- agreed, deferred, escalated, null
+| Category | Tables | Purpose |
+|----------|--------|---------|
+| Identity | organisations, users, api_keys, sessions | Authentication and authorisation |
+| Instruments | instruments, instrument_config | 8 tradeable instruments with pricing config |
+| Trading | trades, trade_history, negotiations, negotiation_rounds, settlements | Trade lifecycle and negotiation state |
+| Clients | clients, client_holdings, surrender_obligations | Client management and compliance |
+| Correspondence | correspondence, counterparties | Email drafts, threads, seller network |
+| Market Data | price_observations, price_history, feed_status | Price feeds and health monitoring |
+| Intelligence | forecasts, market_metrics | Forecast results and derived metrics |
+| Operations | audit_log, alert_rules, alert_events, webhook_registrations | Audit trail, monitoring, integrations |
 
-**Token Types:**
-- `CreditType` -- carbon, esc, both
-- `WREITokenType` -- carbon_credits, asset_co, dual_portfolio
-- `YieldMechanism` -- revenue_share, nav_accruing
-- `InvestorClassification` -- retail, wholesale, professional, sophisticated
-- `MarketType` -- primary, secondary
+### Migration System
 
-**Complex Interfaces:**
-- `CarbonCreditToken` -- Full carbon credit token with provenance chain
-- `AssetCoToken` -- Infrastructure-backed token with yield profile, lease income, NAV data
-- `NegotiationState` -- Complete negotiation state (round, phase, prices, constraints, messages, buyer profile)
-- `BuyerProfile` -- Full buyer characterisation including portfolio context and compliance requirements
-- `PersonaDefinition` -- Persona with warmth/dominance/patience calibration, briefing, and agent strategy
+`lib/db/migrate.ts` -- Idempotent migration runner:
+- Tracks schema version in `schema_migrations` table
+- Supports force reset for development
+- All DDL statements are `CREATE TABLE IF NOT EXISTS`
 
-### Architecture Layer Types (`lib/architecture-layers/types.ts`)
+### Query Layer
 
-Four-layer technical architecture type system:
-1. **Measurement Layer** -- VesselTelemetryData, GHGCalculation, MeasurementResult, FleetTelemetry, ModalShiftData
-2. **Verification Layer** -- ISO14064Verification, VerraVerification, GoldStandardVerification, TripleVerification
-3. **Tokenisation Layer** -- CarbonCreditTokenization, AssetCoTokenization, DualPortfolioTokenization
-4. **Distribution Layer** -- Market settlement and DeFi protocol integration
-
-### Data Feed Types (`lib/data-feeds/types.ts`)
-
-Subscription-based data feed architecture:
-- `DataFeedType` -- carbon_pricing, rwa_market, regulatory_alerts, market_sentiment
-- `DataFeedSubscription` -- Callback-based subscription with frequency control
-- `CarbonPricingData` -- Spot prices, indices, volatility, market depth
-- `RWAMarketData` -- Total market value, segment breakdown, institutional adoption
-- `MarketSentimentData` -- Sentiment indicators, institutional flow data
+`lib/db/queries/` -- Domain-specific query modules:
+- `trades.ts` -- Trade CRUD with settlement tracking
+- `negotiations.ts` -- Session state management
+- `correspondence.ts` -- Correspondence lifecycle
+- `pricing.ts` -- Price history and config
+- `clients.ts` -- Client CRUD with holdings/compliance
+- `audit-log.ts` -- Append-only audit trail
 
 ---
 
-## 3. AI/ML Integration (Claude API)
+## 3. AI/ML Integration
 
-### API Route (`app/api/negotiate/route.ts`)
+### AI Service Router (`lib/ai/ai-service-router.ts`)
 
-**Model:** `claude-opus-4-6`
-**Max Tokens:** 1024 (standard) / 2048 (committee mode)
+Single entry point for all Claude API calls with three-tier guard pipeline:
+
+```
+Request → Rate Limiter → Cost Guard → Timeout Guard → Claude API → Response
+              ↓              ↓              ↓
+          429 reject     402 reject     504 timeout
+              ↓              ↓              ↓
+           fallback       fallback       fallback
+```
+
+### Capabilities and Model Allocation
+
+| Capability | Model | Max Tokens | Rate Limit |
+|-----------|-------|------------|------------|
+| `negotiation` | claude-opus-4-6 | 1024 | 10/hr/user |
+| `market_intelligence` | claude-sonnet-4-6 | 1024 | 30/hr/user |
+| `report_generator` | claude-sonnet-4-6 | 1024 | 20/hr/user |
+| `correspondence_draft` | claude-sonnet-4-6 | 512 | 50/hr/user |
+| `compliance_monitor` | claude-sonnet-4-6 | 512 | 30/hr/user |
+| `portfolio_advisory` | claude-sonnet-4-6 | 512 | 20/hr/user |
+| `data_interpreter` | claude-sonnet-4-6 | 256 | 50/hr/user |
 
 ### System Prompt Architecture
 
-The system prompt is dynamically constructed from:
-1. **Base Agent Identity** -- WREI sales agent with role definition
-2. **Persona Strategy** -- Specific negotiation approach per persona type
-3. **Market Context** -- Current WREI Pricing Index data
-4. **Token Configuration** -- Dual-token system specifications
-5. **Constraint Rules** -- Price floor, concession limits, round rules
-6. **Response Format** -- Structured JSON output requirements
-7. **Committee Instructions** -- Multi-stakeholder protocol (if active)
+Prompts are dynamically constructed per capability (`lib/ai/prompts/system-prompts.ts`):
+- **Conciseness directive** prepended to ALL prompts (WP6 §3.5)
+- **Negotiation:** persona + state + market context + constraints + response format
+- **Correspondence:** professional tone + instrument context + Australian conventions
+- **Intelligence:** broker brand + forecast data + policy events + client position
 
-### Response Format
+### Defence Layers (Negotiation)
 
-The Claude API is instructed to return structured JSON:
+1. **Input Sanitisation** (`lib/defence.ts: sanitiseInput()`) -- Role override, strategy extraction, format manipulation, meta-instruction detection
+2. **Threat Classification** (`classifyThreatLevel()`) -- Pattern-based scoring: none/low/medium/high
+3. **Constraint Enforcement** (`enforceConstraints()`) -- Price floor, concession limits, round rules in application code
+4. **Output Validation** (`validateOutput()`) -- Strip internal reasoning, filter canary tokens, validate price range
+
+---
+
+## 4. Python Forecasting System
+
+### Architecture
+
+```
+forecasting/
+  ├── data_assembly.py          # Historical dataset (2019-2025)
+  ├── generate_forecast.py      # Daily forecast runner
+  ├── models/
+  │   ├── state_space.py        # Bayesian Kalman filter + HMM
+  │   ├── ou_bounded.py         # Ornstein-Uhlenbeck bounded process
+  │   ├── counterfactual_model.py  # XGBoost walk-forward
+  │   └── ensemble_forecast.py  # CV-weighted ensemble
+  ├── scrapers/
+  │   ├── ecovantage_scraper.py # Spot prices + creation volumes
+  │   ├── northmore_scraper.py  # Secondary price source
+  │   ├── ipart_scraper.py      # ESS news + rule changes
+  │   ├── tessa_scraper.py      # Registry data
+  │   └── run_daily.py          # Orchestration
+  ├── monitoring/
+  │   ├── monitor.py            # Continuous market monitoring
+  │   └── anomaly_detector.py   # Regime change alerts
+  ├── signals/
+  │   └── ai_signal_extractor.py  # Claude policy signal extraction
+  ├── backtesting/
+  │   └── backtest_engine.py    # Walk-forward validation
+  ├── calibration/
+  │   └── shadow_market.py      # NMG inventory shadow supply
+  └── import/
+      └── nmg_import.py         # NMG data import pipeline
+```
+
+### Ensemble Forecast Output
+```python
+@dataclass
+class EnsembleForecast:
+    week_ending: str
+    price_forecast_4w: float
+    price_forecast_12w: float
+    confidence_interval_80: Tuple[float, float]
+    confidence_interval_95: Tuple[float, float]
+    recommended_action: str        # BUY / HOLD / SELL
+    action_confidence: float       # 0-1
+    estimated_value_per_cert: float
+    bayesian_weight: float
+    ml_weight: float
+```
+
+---
+
+## 5. Market Data Pipeline
+
+### Three-Tier Fallback Architecture
+
+| Tier | Source | Timeout | Caching |
+|------|--------|---------|---------|
+| 1. Live | Ecovantage/NMG scraper | 15s | → Tier 2 |
+| 2. Cached | In-memory + PostgreSQL | Immediate | 5-min stale threshold |
+| 3. Simulated | Bounded random walk | Immediate | Not cached |
+
+### Circuit Breaker (per adapter)
+- **Threshold:** 3 consecutive failures
+- **Open duration:** 60 seconds
+- **Half-open:** Single test request before full reset
+
+### Feed Adapters
+
+| Adapter | File | Instruments |
+|---------|------|-------------|
+| Ecovantage | `lib/data-feeds/adapters/ecovantage-scraper.ts` | ESC, VEEC, LGC, ACCU, STC, PRC |
+| Northmore Gordon | `lib/data-feeds/adapters/northmore-scraper.ts` | ESC, VEEC, LGC, ACCU, STC, PRC |
+| Simulation | `lib/data-feeds/adapters/simulation-engine.ts` | All 8 instruments |
+
+---
+
+## 6. White-Label System
+
+### Configuration (`lib/config/white-label.ts`)
+
 ```typescript
-interface ClaudeResponse {
-  response: string;                    // Agent message to display
-  argumentClassification: ArgumentClassification;
-  emotionalState: EmotionalState;
-  detectedWarmth: number;              // 1-10
-  detectedDominance: number;           // 1-10
-  proposedPrice: number | null;
-  suggestedConcession: number | null;
-  escalate: boolean;
-  escalationReason: string | null;
+interface WhiteLabelConfig {
+  businessName: string       // Top bar display
+  terminalCode: string       // 2-3 char badge
+  logoUrl: string | null
+  primaryColour: string      // Top bar background
+  accentColour: string       // Buttons, badges
+  primaryTextColour: string
+  contactEmail: string       // Command bar footer
+  contactPhone: string | null
+  footerText: string
+  showAttribution: boolean   // "Powered by WREI"
 }
 ```
 
-### Defence Layers
-
-Four non-negotiable security layers enforced in application code (not delegated to the LLM):
-
-1. **Input Sanitisation** (`sanitiseInput()`)
-   - Role override detection (e.g., "you are now", "ignore previous")
-   - Strategy extraction blocking (e.g., "what is your minimum", "your BATNA")
-   - Format manipulation prevention (e.g., "output as JSON")
-   - Meta-instruction neutralisation (e.g., "you are an AI", "switch roles")
-   - Canary token detection (XRAY-FLOOR-7742, TANGO-STRAT-3391, DELTA-LIMIT-5580)
-
-2. **Threat Classification** (`classifyThreatLevel()`)
-   - Levels: none, low, medium, high
-   - Pattern-based classification with aggregate scoring
-
-3. **Constraint Enforcement** (`enforceConstraints()`)
-   - Price floor: Absolute minimum ($22.80 carbon / $51.62 ESC)
-   - Max concession per round: 5% of current price
-   - Max total concession: 20% from anchor price
-   - Minimum rounds before first price concession: 3
-   - Maximum rounds before escalation: 8
-
-4. **Output Validation** (`validateOutput()`)
-   - Strips internal reasoning markers
-   - Validates price within allowed range
-   - Ensures response format compliance
-   - Filters canary tokens from output
+### Resolution
+1. Check `NEXT_PUBLIC_WHITE_LABEL_BROKER` env var
+2. Check `?broker=` URL parameter (for `/client-intelligence`)
+3. Lookup in `WHITE_LABEL_REGISTRY` by slug
+4. Fall back to `DEFAULT_BRANDING` (WREI Platform)
 
 ---
 
-## 4. Financial Calculation Engine
+## 7. Security Architecture
 
-### Core Functions (`lib/financial-calculations.ts`)
+### Authentication
+- **Session tokens:** Bearer header, 24-hour expiry
+- **API keys:** `X-API-Key` header, hashed storage, per-key permissions
+- **Roles:** admin, broker, trader, compliance, readonly
 
-| Function | Purpose | Typical Performance |
-|----------|---------|-------------------|
-| `calculateIRR()` | Internal Rate of Return via Newton-Raphson | <50ms |
-| `calculateNPV()` | Net Present Value at given discount rate | <20ms |
-| `calculateCashOnCash()` | Cash-on-cash return multiple | <10ms |
-| `calculatePaybackPeriod()` | Years to recover investment | <10ms |
-| `calculateCAGR()` | Compound Annual Growth Rate | <5ms |
-| `calculateRiskProfile()` | Comprehensive risk assessment | <10ms |
-| `calculateCarbonCreditMetrics()` | Carbon-specific financial metrics | <30ms |
-| `calculateAssetCoMetrics()` | Asset Co token financial metrics | <30ms |
-| `calculateDualPortfolioMetrics()` | Combined portfolio metrics | <50ms |
+### API Security
+- Rate limiting: 100 req/min standard, 50 for performance, 20 for auth endpoints
+- Request validation on all POST/PUT endpoints
+- CORS restricted to deployment domain
 
-### Professional Analytics (`lib/professional-analytics.ts`)
+### AI Security
+- Canary tokens in system prompts (XRAY-FLOOR-7742, TANGO-STRAT-3391, DELTA-LIMIT-5580)
+- Input sanitisation blocks injection attempts before Claude API
+- Constraint enforcement in application code (not delegated to LLM)
+- Daily token budget per user (50K) and organisation (500K)
 
-| Function | Purpose |
-|----------|---------|
-| `calculateProfessionalMetrics()` | Full institutional metric suite (IRR, NPV, MIRR, Sharpe, Sortino, Calmar, Treynor) |
-| `generateScenarioAnalysis()` | Base/bull/bear/stress case scenarios |
-| `runMonteCarloAnalysis()` | Monte Carlo simulation with configurable iterations |
-| `generatePortfolioOptimization()` | Optimal allocation recommendations |
-| `calculateRiskAdjustedReturns()` | Risk-adjusted return analysis |
-
-### Financial Constants
-
-Based on WREI Tokenisation Practical Paper specifications:
-
-| Constant | Value | Context |
-|----------|-------|---------|
-| Carbon Credits Base | 3,120,000 tonnes | Base case (2027-2040) |
-| Carbon Credits Expansion | 13,100,000 tonnes | With Hyke routes |
-| Carbon Base Revenue | A$468M | Cumulative base case |
-| Carbon Expansion Revenue | A$1.97B | Cumulative expansion |
-| Asset Co Total CAPEX | A$473M | Fleet investment |
-| Asset Co Debt | A$342M | At 7% interest |
-| Equity Yield | 28.3% | Target annual |
-| Lease Income | A$61.1M | Annual |
-| Cash-on-Cash Multiple | 3.0x | Over asset lifecycle |
+### Data Security
+- `ANTHROPIC_API_KEY` server-side only
+- Password hashing with bcrypt
+- API key hashing (only hash stored)
+- Append-only audit log
 
 ---
 
-## 5. Security Architecture
+## 8. Performance
 
-### API Key Protection
-- `ANTHROPIC_API_KEY` is server-side only (environment variable)
-- Never exposed to client-side code
-- API route validates key existence before making Claude calls
+### Targets and Benchmarks
 
-### API Authentication
-- External APIs validate `X-WREI-API-Key` header
-- In development mode, authentication is bypassed when `WREI_API_KEY` env var is not set
-- Rate limiting: 100 requests/minute per API key (50 for performance endpoint)
-
-### Input Security
-- All user inputs sanitised before reaching Claude API
-- Injection pattern detection with 5 categories
-- Canary tokens embedded in system prompts for leak detection
-- Threat level classification for monitoring
-
-### Constraint Enforcement
-- Price floors enforced in application code, not by the LLM
-- Concession limits calculated and enforced server-side
-- Round progression rules prevent premature concessions
-
----
-
-## 6. Performance Optimisation
-
-### Monitoring System (`lib/performance-monitor.ts`)
-
-The `PerformanceMonitor` class tracks:
-- Individual metric start/end times
-- Aggregate statistics (average, P95, P99, min, max)
-- Performance snapshots with system load data
-- History limit of 1,000 metrics
-
-### Performance Targets
-
-| Metric | Target | P95 | P99 |
-|--------|--------|-----|-----|
-| API Response Time | <500ms | <1000ms | <2000ms |
-| Financial Calculations | <50ms | <100ms | <200ms |
-| System Throughput | 100+ req/min | -- | -- |
-| Memory Usage | <200MB steady state | -- | -- |
-| Error Rate | <0.1% | -- | -- |
-| Uptime | 99.9%+ | -- | -- |
+| Metric | Target | Measured |
+|--------|--------|----------|
+| First Contentful Paint | <2s | ~1.2s |
+| API response (financial) | <50ms | <20ms typical |
+| API response (AI) | <500ms | ~300ms |
+| JS bundle (first load) | <100kB | 84.5kB |
+| Build time | <60s | ~45s |
+| Test execution | <60s | ~27s |
 
 ### Caching Strategy
-- In-memory caching for financial calculations
-- Rate limit map with periodic cleanup
-- Demo data pre-loaded and cached in Zustand store
-- Token metadata cached in-memory with query capabilities
+- In-memory price cache with 5-minute stale threshold
+- Rate limit counters with periodic cleanup
+- Demo data pre-loaded in Zustand store
+- PostgreSQL persistent cache with fire-and-forget writes
 
 ---
 
-## 7. Regulatory Compliance Framework (`lib/regulatory-compliance.ts`)
-
-### Australian Regulatory Framework
-
-| Domain | Implementation |
-|--------|---------------|
-| AFSL (Financial Services) | Licence assessment, exemption checking (s708), authorisation scope |
-| AML/CTF (Anti-Money Laundering) | AUSTRAC registration, KYC requirements, enhanced due diligence, suspicious activity reporting |
-| Tax Treatment | CGT vs income classification, franking credits, withholding tax, optimisation strategies |
-| Digital Assets Framework | Bill 2025 compliance, digital asset custody, token classification |
-| Environmental Compliance | Carbon credit verification standards, ESG reporting requirements |
-
-### Compliance Functions
-
-| Function | Purpose |
-|----------|---------|
-| `assessOverallCompliance()` | Comprehensive compliance status assessment |
-| `getComplianceAlerts()` | Real-time compliance alert generation |
-| `validateInvestorClassification()` | Investor classification validation |
-| `checkAFSLCompliance()` | AFSL licence requirement assessment |
-| `validateAMLRequirements()` | AML/CTF requirements check |
-| `generateComplianceReport()` | Standard compliance report generation |
-| `generateDetailedComplianceReport()` | Detailed institutional compliance report |
-| `getOptimalTaxTreatment()` | Tax optimisation recommendations |
-| `assessEnvironmentalCompliance()` | Environmental standards assessment |
-| `verifyTokenizationStandards()` | Token standard compliance verification |
-| `assessDigitalAssetsFrameworkCompliance()` | DAF Bill 2025 compliance assessment |
-
----
-
-## 8. Build and Configuration
-
-### TypeScript Configuration
-- Strict mode enabled
-- ES5 target for browser compatibility
-- Bundler module resolution
-- Path aliases via `@/*`
-
-### Tailwind Configuration
-Custom theme extending:
-- `primary-dark`: #1B2A4A
-- `primary-accent`: #0EA5E9
-- `success`: #10B981
-- `warning`: #F59E0B
-- `error`: #EF4444
+## 9. Build and Deployment
 
 ### Vercel Configuration
-```json
-{
-  "framework": "nextjs",
-  "buildCommand": "npm run build",
-  "outputDirectory": ".next",
-  "installCommand": "npm install"
-}
-```
+- Framework: Next.js
+- Build: `npm run build`
+- Output: `.next`
+- Cron: `/api/cron/intelligence` (daily)
 
 ### Environment Variables
 
 | Variable | Required | Scope | Purpose |
 |----------|----------|-------|---------|
-| `ANTHROPIC_API_KEY` | Yes (production) | Server | Claude API authentication |
-| `WREI_API_KEY` | No (demo) | Server | External API authentication |
+| `ANTHROPIC_API_KEY` | Production | Server | Claude API |
+| `POSTGRES_URL` | Production | Server | Database |
+| `CRON_SECRET` | Production | Server | Cron auth |
+| `NEXT_PUBLIC_WHITE_LABEL_BROKER` | Optional | Client | Active broker |
+| `NEXT_PUBLIC_BASE_URL` | Optional | Client | Base URL |
+
+### TypeScript Configuration
+- Strict mode enabled
+- ES5 target for compatibility
+- Bundler module resolution
+- Path aliases via `@/*`
+
+### Tailwind Configuration
+Bloomberg Terminal design tokens in `design-system/tokens/professional-tokens.ts`:
+- Bloomberg orange: `#FF6B1A`
+- Terminal black: `#0A0A0B`
+- Market bullish: `#00C896`
+- Market bearish: `#FF4757`

@@ -1,40 +1,99 @@
 # WREI Trading Platform -- System Functional Architecture
 
-**Document Version:** 2.1
-**Date:** 2026-03-28
-**Update:** Phase 5 - Simplified demo system architecture
+**Document Version:** 3.0
+**Date:** 2026-04-05
+**Update:** P11 complete -- all subsystems documented
 
 ---
 
 ## 1. Application Routes
 
-### Page Routes (App Router)
+### Page Routes (App Router) -- 15 Pages
 
 | Route | File | Type | Purpose |
 |-------|------|------|---------|
-| `/` | `app/page.tsx` | Client | Landing page with hero, feature showcase, market data, pathways |
-| `/negotiate` | `app/negotiate/page.tsx` | Client | AI negotiation interface with dashboard, coaching, and analytics |
+| `/` | `app/page.tsx` | Client | Live trading dashboard with instrument ticker, market data, portfolio overview |
+| `/trade` | `app/trade/page.tsx` | Client | AI-powered trading interface with multi-persona negotiation, bulk mode, order book |
+| `/analyse` | `app/analyse/page.tsx` | Client | Market analysis tools with carbon credit filtering and investment calculator |
+| `/intelligence` | `app/intelligence/page.tsx` | Client | ESC market intelligence: forecast, supply/demand, alerts, performance, backtest, trade analysis |
+| `/client-intelligence` | `app/client-intelligence/page.tsx` | Hybrid | Public white-labelled ESC intelligence page for scheme participants |
+| `/correspondence` | `app/correspondence/page.tsx` | Client | Correspondence management: procurement, drafts, negotiations, settlement, reports, history |
+| `/clients` | `app/clients/page.tsx` | Client | Client management with list/detail views and compliance overview |
+| `/compliance` | `app/compliance/page.tsx` | Client | Regulatory compliance dashboard: ASIC, AUSTRAC, IPART, CER status |
+| `/performance` | `app/performance/page.tsx` | Client | System performance monitoring with API metrics and health status |
+| `/calculator` | `app/calculator/page.tsx` | Client | Investment calculator with IRR, NPV, scenario comparison |
+| `/scenario` | `app/scenario/page.tsx` | Client | Portfolio scenario selector with simulation engine |
+| `/simulate` | `app/simulate/page.tsx` | Client | Trading simulation with Bloomberg-styled scenario engine |
 | `/institutional/portal` | `app/institutional/portal/page.tsx` | Client | 6-step institutional onboarding wizard |
-| `/calculator` | `app/calculator/page.tsx` | Client | Investment calculator with scenario comparison |
-| `/compliance` | `app/compliance/page.tsx` | Client | Regulatory compliance map and status dashboard |
-| `/demo` | `app/demo/page.tsx` | Client | Demo mode landing with data set selection |
-| `/developer` | `app/developer/page.tsx` | Client | API Explorer, Quick Start Guide, documentation |
-| `/scenario` | `app/scenario/page.tsx` | Client | Scenario simulation selector and engine |
-| `/simulate` | `app/simulate/page.tsx` | Client | Alternative simulation entry point |
-| `/performance` | `app/performance/page.tsx` | Client | Performance monitoring dashboard |
+| `/developer` | `app/developer/page.tsx` | Client | Developer portal with REST API v1 documentation and API explorer |
+| `/system` | `app/system/page.tsx` | Client | System management with demo controls and endpoint listings |
 
-### API Routes
+### API Routes -- 53 Endpoints
 
-| Endpoint | File | Methods | Purpose |
-|----------|------|---------|---------|
-| `/api/negotiate` | `app/api/negotiate/route.ts` | POST | Claude API negotiation engine |
-| `/api/analytics` | `app/api/analytics/route.ts` | POST | Financial calculation engine |
-| `/api/analytics/predict` | `app/api/analytics/predict/route.ts` | POST | **Stage 2:** Intelligent predictive analytics |
-| `/api/scenarios/generate` | `app/api/scenarios/generate/route.ts` | POST | **Stage 2:** Dynamic scenario generation |
-| `/api/compliance` | `app/api/compliance/route.ts` | GET, POST | Compliance reporting and assessment |
-| `/api/market-data` | `app/api/market-data/route.ts` | GET | Market data feeds and intelligence |
-| `/api/metadata` | `app/api/metadata/route.ts` | GET | Token metadata queries |
-| `/api/performance` | `app/api/performance/route.ts` | GET, POST | Performance monitoring and testing |
+#### Legacy API (`/api/`) -- 23 Routes
+
+| Endpoint | Methods | Purpose |
+|----------|---------|---------|
+| `/api/negotiate` | POST | Core AI negotiation (Claude Opus 4.6) |
+| `/api/analytics` | POST | Financial calculations (IRR, NPV, Monte Carlo, etc.) |
+| `/api/analytics/predict` | POST | AI predictive analytics and forecasting |
+| `/api/scenarios/generate` | POST | Dynamic AI scenario generation |
+| `/api/compliance` | GET, POST | Compliance assessment and reporting |
+| `/api/market-data` | GET | Market data feeds (carbon, RWA, sentiment) |
+| `/api/market-commentary` | GET | AI-generated market commentary |
+| `/api/metadata` | GET, DELETE | Token metadata queries |
+| `/api/performance` | GET, POST | Performance monitoring and benchmarks |
+| `/api/prices` | GET | All instrument prices with feed health |
+| `/api/trade` | POST | Legacy trade endpoint (redirects to negotiate) |
+| `/api/trades` | GET, POST | Trade listing and recording |
+| `/api/auth/register` | POST | User registration |
+| `/api/auth/login` | POST | Authentication |
+| `/api/auth/logout` | POST | Session invalidation |
+| `/api/auth/me` | GET | Current user info |
+| `/api/clients` | GET, POST | Client CRUD |
+| `/api/clients/[id]` | GET, PUT | Client detail/update |
+| `/api/clients/[id]/holdings` | GET, POST | Client holdings |
+| `/api/clients/[id]/compliance` | GET | Client compliance status |
+
+#### V1 API (`/api/v1/`) -- 29 Routes
+
+| Endpoint | Methods | Purpose |
+|----------|---------|---------|
+| `/api/v1/market/prices` | GET | Current instrument prices |
+| `/api/v1/market/prices/history` | GET | Price history time-series |
+| `/api/v1/market/orderbook` | GET | Order book depth |
+| `/api/v1/market/instruments` | GET | All tradeable instruments |
+| `/api/v1/trades` | GET, POST | Trade CRUD |
+| `/api/v1/trades/[id]` | GET | Trade detail with settlement |
+| `/api/v1/trades/negotiate` | POST | Session-based negotiation |
+| `/api/v1/trades/negotiate/[id]` | GET, POST | Continue negotiation |
+| `/api/v1/clients` | GET, POST | Client management |
+| `/api/v1/clients/[id]` | GET, PUT | Client detail |
+| `/api/v1/clients/[id]/holdings` | GET | Client holdings |
+| `/api/v1/clients/[id]/compliance` | GET | Surrender tracking |
+| `/api/v1/clients/compliance/summary` | GET | All clients' compliance |
+| `/api/v1/correspondence` | GET | List correspondence |
+| `/api/v1/correspondence/procurement` | GET | Procurement recommendations |
+| `/api/v1/correspondence/procurement/generate-rfqs` | POST | Generate RFQ drafts |
+| `/api/v1/correspondence/inbound` | POST | Process inbound offers |
+| `/api/v1/correspondence/reports` | GET, POST | Client reports |
+| `/api/v1/correspondence/threads` | GET | Negotiation threads |
+| `/api/v1/correspondence/threads/[id]` | GET, POST | Thread detail/actions |
+| `/api/v1/correspondence/settlement` | GET | Settlement status |
+| `/api/v1/intelligence/forecast` | GET | Price forecasts |
+| `/api/v1/intelligence/metrics` | GET | Derived market metrics |
+| `/api/v1/intelligence/backtest` | GET | Backtest results |
+| `/api/v1/intelligence/alerts` | GET, POST | Intelligence alerts |
+| `/api/v1/intelligence/counterfactual` | GET | Trade analysis report |
+| `/api/v1/import` | POST | CSV data import |
+| `/api/v1/webhooks` | GET, POST, DELETE | Webhook management |
+| `/api/v1/alerts` | GET, POST, PUT, DELETE | Alert rule management |
+
+#### Cron Jobs -- 1 Route
+
+| Endpoint | Trigger | Purpose |
+|----------|---------|---------|
+| `/api/cron/intelligence` | Daily (CRON_SECRET) | Data ingestion, forecast generation, monitoring |
 
 ---
 
@@ -43,90 +102,111 @@
 ### Root Layout (`app/layout.tsx`)
 ```
 RootLayout
-  -> SimpleDemoProvider (simplified demo mode context injection)
-    -> NavigationShell (persistent navigation, market ticker, demo controls)
-      -> {children} (page content)
+  → BloombergShell (persistent terminal chrome)
+    → TopBar (branding, clock, status)
+    → MarketTicker (scrolling price feed)
+    → NavigationBar (6 consolidated items: TRD, ANA, MKT, PRT, CMP, SYS)
+    → {children} (page content)
+    → CommandBar (terminal prompt, compliance info)
 ```
 
-### Landing Page (`app/page.tsx`)
+### Trading Page (`/trade`)
 ```
-Home
-  -> Hero Section (animated counters, CTA buttons)
-  -> Feature Showcase (6 feature cards with links)
-  -> Market Stats Section (WREI Pricing Index display)
-  -> Pathway Selection (Investor, Developer, Compliance)
-  -> Demo Notice Banner
-```
-
-### Negotiation Page (`app/negotiate/page.tsx`)
-```
-NegotiatePage
-  -> Persona Selector
-  -> Credit Type / Token Type Selection
-  -> Chat Interface (message history, input)
-  -> Analytics Tabs:
-     -> Standard Analytics (phase, classification, emotion)
-     -> Institutional Dashboard
-     -> History (session list, replay, comparison)
-  -> NegotiationStrategyPanel
-  -> CoachingPanel
-  -> Scorecard
-  -> ReplayViewer
-  -> ComparisonDashboard
-  -> ExportModal
-  -> Blockchain Visualisation:
-     -> ProvenanceChain
-     -> MerkleTreeView
-     -> VesselProvenanceCard
+TradePage
+  → InstrumentSelector (8 instruments)
+  → PersonaSelector (15 personas)
+  → ChatInterface (message history, input)
+  → AnalyticsTabs
+    → StandardAnalytics (phase, classification, emotion)
+    → InstitutionalDashboard
+    → History (replay, comparison)
+  → NegotiationStrategyPanel
+  → CoachingPanel
+  → OrderBookPanel
+  → TokenDetailPanel
 ```
 
-### Institutional Portal (`app/institutional/portal/page.tsx`)
+### Intelligence Page (`/intelligence`)
 ```
-InstitutionalPortalPage
-  -> InstitutionalOnboardingWizard
-     -> InstitutionalIdentityForm (Step 1)
-     -> InvestorClassificationAssessment (Step 2)
-     -> KYCAMLVerification (Step 3)
-     -> AFSLComplianceReview (Step 4)
-     -> InvestmentPreferencesConfig (Step 5)
-     -> ComplianceConfirmation (Step 6)
-  -> PipelineTransition (post-onboarding)
+IntelligencePage
+  → TabNavigation [Forecast | Supply & Demand | Alerts | Performance | Model | Trade Analysis]
+  → ForecastPanel (fan chart, horizon table, regime probability, action badge)
+  → SupplyDemandPanel (creation/surrender balance, activity mix)
+  → AlertsFeed (active alerts with severity)
+  → ForecastPerformance (MAPE, directional accuracy, drift detection, P&L)
+  → BacktestReport (model comparison, regime performance)
+  → CounterfactualReport (historical trade analysis)
 ```
 
-### Performance Page (`app/performance/page.tsx`)
+### Correspondence Page (`/correspondence`)
 ```
-PerformancePage
-  -> Quick Stats Header (uptime, response time, success rate, capacity)
-  -> Feature Cards (monitoring, optimisation, load testing)
-  -> Performance Visualisations:
-     -> WREIBarChart (response time distribution)
-     -> WREIAreaChart (API call volume)
-     -> WREIPieChart (request status distribution)
-  -> System Health Indicators
-  -> Performance Specifications
-  -> API Endpoints Table
-  -> PerformanceDashboard component
+CorrespondencePage
+  → TabNavigation [Procurement | Drafts | Negotiations | Settlement | Reports | History]
+  → ProcurementDashboard (risk table, timing signals, RFQ generation)
+  → DraftList (pending approvals with preview)
+  → NegotiationThreadList (active threads, round history)
+  → SettlementTracker (pending settlements, registry links)
+  → ReportList (client reports with status)
+  → CorrespondenceHistory (full archive)
+```
+
+### Client Intelligence Page (`/client-intelligence`)
+```
+ClientIntelligencePage (white-label branding)
+  → BrokerHeader (logo, brand colours)
+  → HeroCards [3-Month Outlook | Current Spot | Model Confidence]
+  → SupplyDemandBalance (creation/surrender, activity mix bar)
+  → ComplianceCalendar (upcoming deadlines)
+  → PolicyTracker (rule changes with impact ratings)
+  → ForecastTable (horizons with direction indicators)
+  → ContactCTA (broker email/phone)
+  → BrandedFooter
 ```
 
 ---
 
 ## 3. Component Catalogue
 
-### Core UI Components
+### Bloomberg Terminal Components (`components/navigation/`, `components/professional/`)
 
-| Component | File | Purpose |
-|-----------|------|---------|
-| `NavigationShell` | `components/navigation/NavigationShell.tsx` | Persistent navigation with 9 route links, mobile menu, demo mode toggle |
-| `InstitutionalDashboard` | `components/InstitutionalDashboard.tsx` | Institutional analytics alongside negotiation |
-| `ProfessionalInterface` | `components/ProfessionalInterface.tsx` | Professional-grade investment analysis interface |
-| `PerformanceDashboard` | `components/PerformanceDashboard.tsx` | System performance metrics display |
-| `PortfolioManager` | `components/PortfolioManager.tsx` | Portfolio management and allocation |
-| `PredictiveAnalyticsDashboard` | `components/PredictiveAnalyticsDashboard.tsx` | Predictive modelling display |
-| `AdvancedAnalytics` | `components/AdvancedAnalytics.tsx` | Advanced analytics views |
-| `AnalyticsHub` | `components/AnalyticsHub.tsx` | Central analytics aggregation |
-| `NegotiationStrategyPanel` | `components/NegotiationStrategyPanel.tsx` | AI strategy transparency panel |
-| `CoreInvestorJourneys` | `components/CoreInvestorJourneys.tsx` | Investor journey orchestration |
-| `MarketIntelligenceDashboard` | `components/MarketIntelligenceDashboard.tsx` | Market intelligence display |
+| Component | Purpose |
+|-----------|---------|
+| `BloombergShell` | Terminal chrome: top bar, nav, command bar with white-label support |
+| `BloombergLayout` | Bloomberg-terminal-style layout wrapper |
+| `ProfessionalDataGrid` | Sortable/filterable institutional data grid |
+| `AccessibilityWrapper` | WCAG 2.1 AA compliance wrapper |
+
+### Intelligence Components (`components/intelligence/`)
+
+| Component | Purpose |
+|-----------|---------|
+| `ForecastPanel` | ESC price fan chart with confidence intervals and action badge |
+| `SupplyDemandPanel` | Creation/surrender balance and activity mix visualisation |
+| `AlertsFeed` | Active intelligence alerts with severity indicators |
+| `BacktestReport` | Model performance comparison across horizons |
+| `CounterfactualReport` | Historical trade analysis with optimal timing assessment |
+| `ForecastPerformance` | Rolling accuracy, drift detection, recommendation P&L tracking |
+| `ClientIntelligencePage` | Public white-labelled ESC market intelligence |
+
+### Correspondence Components (`components/correspondence/`)
+
+| Component | Purpose |
+|-----------|---------|
+| `ProcurementDashboard` | Client shortfall table with timing signals and RFQ generation |
+| `DraftReviewPanel` | Draft approval/edit/reject workflow |
+| `NegotiationThreadView` | Email negotiation thread with round history |
+| `SettlementPanel` | Settlement tracking with registry instruction links |
+| `ReportGenerator` | Client report generation and preview |
+
+### Negotiation Components (`components/negotiation/`)
+
+| Component | Purpose |
+|-----------|---------|
+| `CoachingPanel` | Real-time tactical suggestions |
+| `CommitteePanel` | Multi-stakeholder committee interface |
+| `ComparisonDashboard` | Side-by-side session comparison |
+| `ReplayViewer` | Step-through negotiation replay |
+| `Scorecard` | Post-negotiation performance grading |
 
 ### Chart Components (`components/charts/`)
 
@@ -137,221 +217,108 @@ PerformancePage
 | `WREIPieChart` | Proportional data with legend |
 | `WREIAreaChart` | Area-filled time series with gradient |
 
-All charts use Recharts with Australian currency formatting and the WREI colour palette.
-
 ### Institutional Components (`components/institutional/`)
 
 | Component | Purpose |
 |-----------|---------|
 | `InstitutionalOnboardingWizard` | 6-step onboarding orchestrator |
-| `InstitutionalIdentityForm` | Entity registration (name, type, jurisdiction, AUM) |
-| `InvestorClassificationAssessment` | Wholesale/professional/sophisticated classification |
-| `KYCAMLVerification` | KYC/AML compliance checks and documentation |
-| `AFSLComplianceReview` | Australian Financial Services Licence assessment |
-| `InvestmentPreferencesConfig` | Token type, yield, risk, liquidity preferences |
+| `InstitutionalIdentityForm` | Entity registration |
+| `InvestorClassificationAssessment` | Wholesale/professional classification |
+| `KYCAMLVerification` | KYC/AML compliance checks |
+| `AFSLComplianceReview` | Financial Services Licence assessment |
+| `InvestmentPreferencesConfig` | Token type, yield, risk preferences |
 | `ComplianceConfirmation` | Final review and terms acceptance |
 | `PipelineTransition` | Onboarding-to-negotiation state transfer |
-
-### Negotiation Components (`components/negotiation/`)
-
-| Component | Purpose |
-|-----------|---------|
-| `CoachingPanel` | Real-time tactical suggestions during negotiation |
-| `CommitteePanel` | Multi-stakeholder committee negotiation interface |
-| `ComparisonDashboard` | Side-by-side session comparison |
-| `ReplayViewer` | Step-through negotiation replay |
-| `Scorecard` | Post-negotiation performance grading |
 
 ### Market Components (`components/market/`)
 
 | Component | Purpose |
 |-----------|---------|
-| `MarketTicker` | Scrolling market data ticker (header bar) |
+| `MarketTicker` | Scrolling market data ticker |
 | `MarketStatus` | Market open/closed indicator |
 | `CompetitivePositioning` | Competitive analysis radar chart |
 | `ESGImpactDashboard` | ESG impact metrics and tracking |
-
-### Compliance Components (`components/compliance/`)
-
-| Component | Purpose |
-|-----------|---------|
-| `RegulatoryMap` | Jurisdictional compliance matrix |
-| `ComplianceStatusDashboard` | Real-time compliance status |
-
-### Blockchain Components (`components/blockchain/`)
-
-| Component | Purpose |
-|-----------|---------|
-| `ProvenanceChain` | Verification chain visualisation |
-| `MerkleTreeView` | Merkle tree hash structure display |
-| `VesselProvenanceCard` | Individual vessel provenance details |
-
-### Demo Components (`components/demo/`)
-
-| Component | Purpose |
-|-----------|---------|
-| `SimpleDemoProvider` | Simple context provider for demo data injection |
-| `SimpleDemoToggle` | Basic demo mode activation toggle |
-| `DemoModeToggle` | Demo mode activation button |
-
-~~### Removed Components~~
-~~| `DemoControlBar` | Tour navigation controls |~~
-~~| `TourOverlay` | Step-by-step tour overlay with highlights |~~
-
-### Professional Components (`components/professional/`)
-
-| Component | Purpose |
-|-----------|---------|
-| `BloombergLayout` | Bloomberg-terminal-style layout wrapper |
-| `AccessibilityWrapper` | WCAG 2.1 AA compliance wrapper |
-| `ProfessionalDataGrid` | Sortable/filterable institutional data grid |
 
 ### Scenario Components (`components/scenarios/`)
 
 | Component | Purpose |
 |-----------|---------|
 | `DeFiYieldFarmingScenario` | DeFi yield farming simulation |
-| `ESGImpactScenario` | ESG impact assessment simulation |
+| `ESGImpactScenario` | ESG impact assessment |
 | `FamilyOfficeScenario` | Family office legacy simulation |
-| `InfrastructureFundScenario` | Infrastructure fund discovery simulation |
+| `InfrastructureFundScenario` | Infrastructure fund discovery |
 | `SovereignWealthFundScenario` | Sovereign wealth fund simulation |
 
-### Simulation Components (`components/simulation/`)
+### Export, Calculator, Analytics
 
 | Component | Purpose |
 |-----------|---------|
-| `ScenarioSelector` | Scenario selection interface |
-| `ScenarioSimulationEngine` | Simulation orchestration engine |
-
-### Export Components (`components/export/`)
-
-| Component | Purpose |
-|-----------|---------|
-| `ExportModal` | Multi-format report export dialog |
-
-### Calculator Components (`components/calculator/`)
-
-| Component | Purpose |
-|-----------|---------|
-| `InvestmentCalculator` | Interactive investment modelling tool |
+| `ExportModal` | Multi-format report export (PDF, Excel, CSV, JSON) |
+| `InvestmentCalculator` | Interactive investment modelling |
 | `ScenarioCompare` | Side-by-side scenario comparison |
-
-### Analytics Components (`components/analytics/`)
-
-| Component | Purpose |
-|-----------|---------|
-| `AdvancedAnalyticsSuite` | Advanced analytics aggregation |
-| `IntelligentAnalyticsDashboard` | **Stage 2:** AI-enhanced analytics with predictive insights |
-| `AnalyticsDashboard` | Core analytics dashboard (legacy export) |
-| `RealTimeMetricsWidget` | Real-time performance metrics display |
-| `PerformanceChart` | Chart component for performance data |
-
-### **Stage 2 AI-Enhanced Components**
-
-#### Orchestration System (`components/orchestration/`)
-| Component | Purpose |
-|-----------|---------|
-| `DemoOrchestrator` | **Stage 2 Component 1:** Simplified demo scenario manager with AI insights |
-
-#### Scenario Generation (`components/generation/`)
-| Component | Purpose |
-|-----------|---------|
-| `ScenarioGenerator` | **Stage 2 Component 2:** Dynamic scenario generation with AI-powered content creation |
-
-~~#### Removed: Presentation Layer (`components/presentation/`)~~
-~~| `AdaptivePresentationDashboard` | **Stage 2 Component 4:** Adaptive presentation layer with audience-specific content |~~
-
-#### Multi-Audience System (`components/audience/`)
-| Component | Purpose |
-|-----------|---------|
-| `AudienceSelector` | **Stage 2 Component 5:** Multi-audience interface system with guided tours |
-| `ExecutiveDashboard` | Executive-focused interface with high-level metrics and strategic insights |
-| `TechnicalInterface` | Technical leadership interface with system architecture and performance data |
-| `CompliancePanel` | Compliance-focused interface with regulatory frameworks and audit trails |
-| `MultiAudienceRouter` | Route manager for audience-specific navigation and content delivery |
+| `IntelligentAnalyticsDashboard` | AI-enhanced analytics with predictive insights |
+| `DemoOrchestrator` | Demo scenario management |
+| `ScenarioGenerator` | Dynamic AI-powered scenario creation |
 
 ---
 
 ## 4. Data Flow Architecture
 
-### Negotiation Flow
-
+### AI Negotiation Flow
 ```
-User Input -> NegotiatePage
-  -> sanitiseInput() (defence.ts)
-  -> classifyThreatLevel() (defence.ts)
-  -> POST /api/negotiate
-    -> Build System Prompt (persona + state + market context)
-    -> Append Committee Mode (if active)
-    -> Build Message History
-    -> Claude API Call (claude-opus-4-6)
-    -> Parse JSON Response
-    -> enforceConstraints() (defence.ts)
-      - Price floor enforcement ($22.80 min)
-      - Max concession per round (5%)
-      - Max total concession (20%)
-      - Round progression rules
-    -> validateOutput() (defence.ts)
-    -> Generate Strategy Explanation
-    -> Generate Token Metadata
-    -> Return Response
-  -> Update UI State (negotiationState, messages, classification, emotion)
-  -> Generate Coaching Suggestions
-  -> Update Scorecard
+User Input → NegotiatePage
+  → sanitiseInput() → classifyThreatLevel()
+  → POST /api/negotiate
+    → Build system prompt (persona + state + market + constraints)
+    → Claude API (claude-opus-4-6)
+    → enforceConstraints() [price floor, concession limits]
+    → validateOutput() [strip reasoning, filter canary tokens]
+    → Return response
+  → Update UI (messages, classification, emotion, coaching, scorecard)
 ```
 
-### Institutional Onboarding Flow
-
+### Correspondence Flow
 ```
-User -> InstitutionalPortalPage
-  -> InstitutionalOnboardingWizard
-    -> Step 1: InstitutionalIdentityForm
-       -> Validate entity data
-       -> Store in onboarding state
-    -> Step 2: InvestorClassificationAssessment
-       -> Assess thresholds (net assets, income, AUM)
-       -> Determine classification (retail/wholesale/professional/sophisticated)
-       -> Check s708 exemption eligibility
-    -> Step 3: KYCAMLVerification
-       -> Document verification (corporate structure, beneficial ownership)
-       -> Sanctions screening
-       -> AML risk rating assessment
-    -> Step 4: AFSLComplianceReview
-       -> Licence requirements check
-       -> Exemption status determination
-       -> Compliance officer assignment
-    -> Step 5: InvestmentPreferencesConfig
-       -> Token type selection
-       -> Yield mechanism preference
-       -> Risk/liquidity/concentration parameters
-    -> Step 6: ComplianceConfirmation
-       -> Final review
-       -> Terms acceptance
-  -> onComplete callback with full InstitutionalOnboardingState
-  -> PipelineTransition
-    -> parseNegotiationUrlParams()
-    -> calculateInstitutionalConstraints()
-    -> generatePersonalisedWelcome()
-    -> Navigate to /negotiate with pre-configuration
+Procurement Trigger → evaluateClientNeeds()
+  → Fetch forecast → computeTimingSignal()
+  → ProcurementDashboard
+    → "Generate RFQs" → POST /api/v1/correspondence/procurement/generate-rfqs
+      → AI Draft Engine (Sonnet 4, 512 tokens)
+      → Store as "drafted" correspondence
+    → Broker reviews → approve/edit/reject
+    → "approved" → mark as "sent"
+  → Counterparty replies → POST /api/v1/correspondence/inbound
+    → Offer Parser → structured extraction
+    → AI Counter-Offer (if within constraints)
+    → Store in negotiation thread
+  → Accepted → Trade Confirmation Generator
+    → Settlement Facilitation (TESSA/VEEC instructions)
 ```
 
-### Market Data Flow
-
+### Market Intelligence Flow
 ```
-GET /api/market-data?action=<action>
-  -> validateApiKey()
-  -> checkRateLimit()
-  -> Route to handler:
-     carbon_pricing -> carbonPricingFeed
-     carbon_analytics -> carbonPricingFeed.getAnalytics()
-     rwa_market -> rwaMarketFeed
-     rwa_analytics -> rwaMarketFeed.getAnalytics()
-     market_sentiment -> realTimeDataConnector
-     competitive_analysis -> marketIntelligenceSystem
-     carbon_projections -> marketIntelligenceSystem
-     historical -> carbonPricingFeed.getHistorical()
-     feed_status -> realTimeDataConnector.getStatus()
-  -> Return JSON with metadata (source, timestamp, requestId)
+Daily Cron (/api/cron/intelligence)
+  → Run scrapers (Ecovantage, NMG, IPART, TESSA)
+  → Update market_metrics + price_observations
+  → Python forecast pipeline
+    → Bayesian state-space → OU bounded → XGBoost counterfactual
+    → Ensemble (CV-optimised weights)
+    → Store forecasts at 1w/4w/12w/26w horizons
+  → Anomaly detection → create alert_events if triggered
+  → Intelligence API serves latest data to UI
+```
+
+### Price Feed Flow
+```
+Client request → Feed Manager
+  → Tier 1: Ecovantage/NMG live scraper (15s timeout)
+    → Success: cache in-memory + persist to DB → return
+    → Failure: circuit breaker trips
+  → Tier 2: Price Cache (in-memory → DB lookup)
+    → Hit: return cached price with staleness flag
+    → Miss: fall through
+  → Tier 3: Simulation Engine (bounded random walk)
+    → Always returns a price (instrument-specific parameters)
 ```
 
 ---
@@ -359,23 +326,21 @@ GET /api/market-data?action=<action>
 ## 5. State Management Architecture
 
 ### Client-Side State (React)
-- **NegotiatePage:** Uses `useState` for all negotiation state including messages, scoring, persona selection, session history, replay state, coaching state, committee configuration
-- **InstitutionalPortalPage:** Uses `useState` for onboarding completion state
-- **Each Onboarding Step:** Internal `useState` for form fields and validation
+- **NegotiatePage / TradePage:** `useState` for negotiation state, messages, persona, scoring, coaching
+- **IntelligencePage:** `useState` for active tab, forecast data, alerts
+- **CorrespondencePage:** `useState` for active tab, selected items, draft preview
+- **ClientsPage:** `useState` for client list, selected client, filter state
 
 ### Global State (Zustand)
-- **Simple Demo State Manager:** Zustand store for simplified demo mode, including:
-  - `isActive`, `selectedDataSet`, `demoData`
-  - Data sets: `institutional`, `retail`, `compliance`
-  - Actions: `activateDemo()`, `deactivateDemo()`, `getDemoData()`
+- **Demo State Manager:** `isActive`, `selectedDataSet`, `demoData`
+- Data sets: `institutional`, `retail`, `compliance`
 
-~~### Removed: Complex Demo Features~~
-~~- Tour system with step navigation~~
-~~- Presentation modes and scripting~~
-~~- Complex progress tracking~~
+### Server-Side State (PostgreSQL)
+- All persistent data in PostgreSQL (Vercel Postgres)
+- In-memory caching for price feeds and rate limiting
+- Fire-and-forget DB operations for non-critical persistence (price cache)
 
-### Server-Side State
-- **In-Memory Rate Limiting:** `Map<string, {count, resetTime}>` per API key
-- **Performance Metrics:** `PerformanceMonitor` class with metric history
-- **Token Metadata:** `TokenMetadataSystem` with in-memory token store
-- **No Database:** All state is ephemeral (resets on Vercel deploy per CLAUDE.md design constraint)
+### AI State
+- Conversation context managed per-request (message history in request body)
+- No persistent AI memory across sessions
+- Guard state (rate counters, cost budgets) in-memory with UTC midnight reset

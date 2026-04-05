@@ -1,7 +1,7 @@
 # WREI Trading Platform -- Test Coverage and Quality Assurance
 
-**Document Version:** 1.0
-**Date:** 2026-03-25
+**Document Version:** 2.0
+**Date:** 2026-04-05
 
 ---
 
@@ -26,269 +26,202 @@
 - **Timeout:** 30,000ms per test
 - **Coverage:** Collected from `lib/**/*.{ts,tsx}`
 - **Path mapping:** `@/*` resolves to project root
-- **Exclusions:** Playwright E2E tests, scenario test helpers
 
 ### Playwright Configuration (`playwright.config.ts`)
 
 - **Browser targets:** Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari
 - **Base URL:** http://localhost:3000
 - **Timeout:** 60,000ms per test
-- **Reporters:** HTML, JSON, JUnit, GitHub (CI)
-- **Artifacts:** Screenshots on failure, video on failure, trace on retry
 - **Retries:** 2 in CI, 0 in development
+- **Artifacts:** Screenshots on failure, video on failure, trace on retry
 
 ---
 
 ## 2. Test Suite Inventory
 
-### Unit/Integration Test Suites (66 files, 30,936 lines)
+### Current Metrics (as of P11, 2026-04-05)
 
-#### Core Platform Tests
+| Metric | Value |
+|--------|-------|
+| **Total test suites** | 69 active + 5 E2E = 74 total |
+| **Total test cases** | 1,630 (1,623 passing, 2 failing, 5 skipped) |
+| **Lines of test code** | ~35,000 |
+| **Pass rate** | 99.6% (2 known failures: db-connection schema count) |
+| **Execution time** | ~27 seconds |
 
-| Test File | Focus Area | Category |
-|-----------|-----------|----------|
-| `setup.test.ts` | Test environment validation | Setup |
-| `defence-layer.test.ts` | Input sanitisation, output validation, constraint enforcement | Security |
-| `api-negotiate-route.test.ts` | Negotiation API route | API |
-| `api-defense-integration.test.ts` | API defence layer integration | Security |
-| `negotiation-config.test.ts` | Pricing configuration, constraints | Config |
-| `financial-calculations.test.ts` | IRR, NPV, cash-on-cash, risk profiles | Finance |
-| `integration-system-functionality.test.ts` | Cross-module integration | Integration |
+### Test Files by Category
 
-#### Phase 1-3 Foundation Tests
+#### Core Security & Defence (4 files)
 
-| Test File | Focus Area |
-|-----------|-----------|
-| `phase1-dual-token-architecture.test.ts` | Dual token system types and configuration |
-| `phase2-financial-modeling.test.ts` | Financial modelling engine |
-| `phase3.1-institutional-personas.test.ts` | 11 institutional persona definitions |
-| `phase3.2-advanced-negotiation-contexts.test.ts` | Institutional negotiation contexts |
-| `phase3.3-risk-profile-integration.test.ts` | Risk assessment framework |
+| Test File | Tests | Focus |
+|-----------|-------|-------|
+| `defence-layer.test.ts` | ~30 | Input sanitisation, output validation, constraint enforcement, threat classification |
+| `api-defense-integration.test.ts` | ~15 | Defence layer integration within API routes |
+| `api-negotiate-route.test.ts` | ~20 | Negotiation API route with Claude API coordination |
+| `regulatory-compliance.test.ts` | ~18 | AFSL, investor classification, AML, environmental standards |
 
-#### Phase 4 Architecture Tests
+#### Financial Engine (4 files)
 
-| Test File | Focus Area |
-|-----------|-----------|
-| `phase4.1-four-layer-architecture.test.ts` | Measurement, verification, tokenisation, distribution layers |
-| `phase4.2-integration-workflow.test.ts` | Cross-layer integration workflows |
-| `phase4.2-token-metadata-system.test.ts` | Token metadata storage and queries |
+| Test File | Tests | Focus |
+|-----------|-------|-------|
+| `financial-calculations.test.ts` | ~20 | IRR, NPV, carbon/asset metrics, risk-adjusted returns |
+| `yield-models.test.ts` | ~15 | Revenue share, NAV-accruing, hybrid, dynamic optimisation |
+| `advanced-analytics.test.ts` | ~20 | Predictive modelling, risk analysis, portfolio optimisation |
+| `esg-impact-metrics.test.ts` | ~15 | ESG dashboard calculations, impact metrics, ROI projections |
 
-#### Phase 5 Market Intelligence Tests
+#### Negotiation & Coaching (6 files)
 
-| Test File | Focus Area |
-|-----------|-----------|
-| `phase5.1-market-context-integration.test.ts` | Market context and pricing |
-| `phase5.2-competitive-positioning-system.test.ts` | Competitive analysis engine |
+| Test File | Tests | Focus |
+|-----------|-------|-------|
+| `negotiation-coaching.test.ts` | ~20 | Real-time coaching engine, tactical recommendations |
+| `negotiation-history.test.ts` | ~15 | Session tracking, comparison, global statistics |
+| `negotiation-scoring.test.ts` | ~15 | Score calculations, dimensions, persona benchmarks |
+| `negotiation-config.test.ts` | ~15 | Pricing configuration, constraints, business rules |
+| `committee-mode.test.ts` | ~25 | Committee configuration, voting, turn-taking |
+| `milestone-1.1-ai-negotiation-enhancement.test.ts` | ~15 | Strategy explanations, persona alignment |
 
-#### Phase 6 Dashboard and Interface Tests
+#### Market Data & Intelligence (9 files)
 
-| Test File | Focus Area |
-|-----------|-----------|
-| `phase6.1-basic-dashboard.test.ts` | Basic dashboard functionality |
-| `phase6.1-institutional-dashboard.test.ts` | Institutional dashboard components |
-| `phase6.1-institutional-dashboard-simple.test.ts` | Dashboard simplified tests |
-| `phase6.2-professional-investment-interface.test.tsx` | Professional investment interface |
-| `phase6.2-professional-investment-interface-simplified.test.tsx` | Simplified interface tests |
+| Test File | Tests | Focus |
+|-----------|-------|-------|
+| `milestone-2.1-data-feeds.test.ts` | ~20 | Real-time data feed connector, subscriptions |
+| `milestone-2.2-market-data-api.test.ts` | ~15 | Market data API gateway |
+| `milestone-2.2-analytics-api.test.ts` | ~15 | Analytics API endpoints |
+| `milestone-2.2-compliance-api.test.ts` | ~15 | Compliance API endpoints |
+| `ticker-data.test.ts` | ~10 | Market ticker data provider |
+| `esc-market-context.test.ts` | ~10 | NSW ESC pricing index validation |
+| `milestone-2.3-performance-core.test.ts` | ~15 | Core performance monitoring |
+| `milestone-2.3-api-optimization.test.ts` | ~15 | API caching, endpoint optimisation |
+| `milestone-2.3-performance-monitoring.test.ts` | ~15 | Performance system, load testing |
 
-#### Milestone 1.x Enhancement Tests
+#### Phase Architecture Tests (13 files)
 
-| Test File | Focus Area |
-|-----------|-----------|
-| `milestone-1.1-ai-negotiation-enhancement.test.ts` | Strategy explanations, coaching, committee mode |
-| `milestone-1.2-core-investor-journeys.test.tsx` | Investor journey scenarios |
-| `milestone-1.3-advanced-analytics.test.tsx` | Advanced analytics components |
+| Test File | Tests | Focus |
+|-----------|-------|-------|
+| `phase1-dual-token-architecture.test.ts` | ~20 | Dual token system types |
+| `phase2-financial-modeling.test.ts` | ~20 | Revenue models, analytics |
+| `phase3.1-institutional-personas.test.ts` | ~20 | 6 institutional personas |
+| `phase3.2-advanced-negotiation-contexts.test.ts` | ~15 | Market dynamics, pathways |
+| `phase3.3-risk-profile-integration.test.ts` | ~15 | Risk assessment framework |
+| `phase4.2-token-metadata-system.test.ts` | ~15 | Token metadata, provenance |
+| `phase4.2-integration-workflow.test.ts` | ~15 | Cross-layer integration |
+| `phase5.1-market-context-integration.test.ts` | ~15 | Market intelligence context |
+| `phase5.2-competitive-positioning-system.test.ts` | ~15 | Competitive analysis |
+| `phase6.1-basic-dashboard.test.ts` | ~10 | Dashboard structure |
+| `phase6.1-institutional-dashboard.test.ts` | ~15 | Institutional views |
+| `phase6.1-institutional-dashboard-simple.test.ts` | ~10 | Simplified validation |
+| `phase6.2-professional-investment-interface.test.tsx` | ~15 | Professional interface |
 
-#### Milestone 2.x API and Infrastructure Tests
+#### UI Component Tests (11 files)
 
-| Test File | Focus Area |
-|-----------|-----------|
-| `milestone-2.1-data-feeds.test.ts` | Carbon pricing, RWA, real-time data feeds |
-| `milestone-2.1-institutional-portal.test.tsx` | Institutional onboarding portal |
-| `milestone-2.2-analytics-api.test.ts` | Analytics API endpoint |
-| `milestone-2.2-compliance-api.test.ts` | Compliance API endpoint |
-| `milestone-2.2-market-data-api.test.ts` | Market data API endpoint |
-| `milestone-2.3-api-optimization.test.ts` | API optimisation and caching |
-| `milestone-2.3-performance-core.test.ts` | Core performance metrics |
-| `milestone-2.3-performance-monitoring.test.ts` | Performance monitoring system |
+| Test File | Tests | Focus |
+|-----------|-------|-------|
+| `landing-page.test.tsx` | ~10 | Bloomberg Terminal dashboard |
+| `market-ticker.test.tsx` | ~10 | Scrolling ticker rendering |
+| `chart-components.test.tsx` | ~10 | WREI Recharts components |
+| `investment-calculator.test.tsx` | ~15 | Calculator interactions |
+| `coaching-panel.test.tsx` | ~10 | Coaching UI |
+| `comparison-dashboard.test.tsx` | ~10 | Session comparison |
+| `scorecard.test.tsx` | ~10 | Performance scorecard |
+| `replay-viewer.test.tsx` | ~10 | Replay viewer |
+| `regulatory-map.test.tsx` | ~10 | Compliance visualisation |
+| `provenance-visualiser.test.tsx` | ~10 | Blockchain provenance |
+| `export-modal.test.tsx` | ~10 | Export UI |
 
-#### Component-Level Tests
+#### Integration & Infrastructure (8 files)
 
-| Test File | Focus Area |
-|-----------|-----------|
-| `landing-page.test.tsx` | Landing page rendering and navigation |
-| `navigation-shell.test.tsx` | Navigation shell and routing |
-| `market-ticker.test.tsx` | Market ticker data and display |
-| `chart-components.test.tsx` | WREI chart components |
-| `coaching-panel.test.tsx` | Negotiation coaching panel |
-| `committee-panel.test.tsx` | Committee mode panel |
-| `comparison-dashboard.test.tsx` | Session comparison dashboard |
-| `replay-viewer.test.tsx` | Negotiation replay viewer |
-| `scorecard.test.tsx` | Performance scorecard |
-| `competitive-positioning.test.tsx` | Competitive analysis display |
-| `esg-impact-dashboard.test.tsx` | ESG impact dashboard |
-| `regulatory-map.test.tsx` | Regulatory compliance map |
-| `pipeline-transition.test.tsx` | Onboarding-to-negotiation pipeline |
-| `provenance-visualiser.test.tsx` | Blockchain provenance visualisation |
-| `investment-calculator.test.tsx` | Investment calculator component |
-| `export-modal.test.tsx` | Export modal component |
-| `api-explorer.test.tsx` | API explorer component |
-| `advanced-analytics-suite.test.tsx` | Advanced analytics suite |
+| Test File | Tests | Focus |
+|-----------|-------|-------|
+| `integration-system-functionality.test.ts` | ~20 | Cross-module integration |
+| `core-scenarios-e2e.test.ts` | ~15 | Core platform scenarios |
+| `onboarding-pipeline.test.ts` | ~15 | Pipeline transition |
+| `api-documentation.test.ts` | ~10 | API docs validation |
+| `db-connection.test.ts` | ~10 | Database schema/connection |
+| `demo-state-manager-esc.test.ts` | ~10 | Demo state management |
+| `setup.test.ts` | ~5 | Framework regression |
+| `export-generation.test.ts` | ~10 | Export utilities |
 
-#### Library Module Tests
+#### AI Engine Tests (3 files)
 
-| Test File | Focus Area |
-|-----------|-----------|
-| `ticker-data.test.ts` | Market ticker data generation |
-| `chart-data-transforms.test.ts` | Chart data transformation functions |
-| `negotiation-coaching.test.ts` | Coaching suggestion engine |
-| `negotiation-history.test.ts` | Session history management |
-| `negotiation-scoring.test.ts` | Performance scoring system |
-| `competitive-analysis.test.ts` | Competitive analysis logic |
-| `esg-impact-metrics.test.ts` | ESG impact calculations |
-| `onboarding-pipeline.test.ts` | Onboarding pipeline utilities |
-| `advanced-analytics.test.ts` | Advanced analytics engine |
-| `regulatory-compliance.test.ts` | Regulatory compliance functions |
-| `export-generation.test.ts` | Export utility functions |
-| `yield-models.test.ts` | Yield model calculations |
-| `committee-mode.test.ts` | Committee mode logic |
-| `api-documentation.test.ts` | API documentation system |
+| Test File | Tests | Focus |
+|-----------|-------|-------|
+| `orchestration/orchestration-engine.test.ts` | ~20 | Demo orchestration |
+| `generation/dynamic-scenario-engine.test.ts` | ~20 | Scenario generation |
+| `analytics/intelligent-analytics-engine.test.ts` | ~20 | AI analytics |
 
-#### E2E and Scenario Tests
+#### E2E Tests (5 files)
 
-| Test File | Focus Area |
-|-----------|-----------|
-| `core-scenarios-e2e.test.ts` | Core platform scenarios (Playwright) |
-
-### End-to-End Test Suites (5 files)
-
-| Test File | Focus Area |
-|-----------|-----------|
-| `e2e/scenario-flows/basic-platform.spec.ts` | Basic platform navigation and interaction |
-| `e2e/scenario-flows/infrastructure-fund-complete.spec.ts` | Full infrastructure fund journey |
-| `e2e/scenario-flows/infrastructure-fund-discovery.spec.ts` | Infrastructure fund discovery phase |
-| `e2e/performance/load-time-validation.spec.ts` | Page load time validation |
-| `e2e/visual-regression/ui-consistency.spec.ts` | Visual regression testing |
+| Test File | Focus |
+|-----------|-------|
+| `e2e/scenario-flows/basic-platform.spec.ts` | Navigation and interaction |
+| `e2e/scenario-flows/infrastructure-fund-discovery.spec.ts` | Fund discovery workflow |
+| `e2e/scenario-flows/infrastructure-fund-complete.spec.ts` | Full fund scenario |
+| `e2e/performance/load-time-validation.spec.ts` | Page load performance |
+| `e2e/visual-regression/ui-consistency.spec.ts` | Visual regression |
 
 ---
 
 ## 3. Test Coverage Analysis
 
-### Coverage Summary
+### Coverage by Subsystem
 
-- **Total Test Suites:** 66 unit/integration + 5 E2E = 71 total
-- **Total Tests:** 623+ (as of Milestone 2.3 completion)
-- **Pass Rate:** 100%
-- **Lines of Test Code:** ~31,000 lines
-
-### Coverage by Module
-
-| Module Category | Test Files | Coverage Level |
-|----------------|------------|---------------|
-| Core Types & Config | 3 | High -- All types, pricing config, constraints |
-| Defence/Security | 2 | High -- Sanitisation, validation, enforcement |
-| Financial Calculations | 4 | High -- IRR, NPV, risk profiles, yield models |
-| Negotiation Engine | 5 | High -- Strategy, coaching, scoring, history, committee |
-| Personas | 2 | High -- All 11 personas, institutional contexts |
-| API Endpoints | 5 | High -- All 6 endpoints with action coverage |
-| Architecture Layers | 3 | High -- Measurement, verification, tokenisation |
-| Market Intelligence | 3 | High -- Feeds, competitive analysis, ESG metrics |
-| Regulatory Compliance | 2 | High -- AFSL, AML/CTF, tax, digital assets |
-| UI Components | 16 | Medium-High -- Key components tested, some display-only |
-| Professional Analytics | 3 | High -- Monte Carlo, scenario analysis, metrics |
-| Export/Reporting | 2 | High -- Export utilities, modal |
-| Demo Mode | 0 | Not Covered -- Demo state manager and data sets untested |
-| Simulation Engine | 0 | Not Covered -- Scenario engine and mock API untested |
-| Design System | 0 | Not Covered -- Theme tokens and enhanced theme untested |
-
-### Custom Test Matchers
-
-The test suite includes custom Jest matchers:
-- `toBeValidAUM(min, max)` -- Validates AUM is within institutional range
-- `toHaveValidWREIYield(min, max)` -- Validates yield is within expected range
-- `toContainInstitutionalTerms()` -- Verifies presence of institutional terminology
-- `toBeOneOf(values)` -- Validates value is one of allowed options
+| Subsystem | Test Files | Coverage Level | Notes |
+|-----------|------------|---------------|-------|
+| Negotiation Engine | 6 | High | All personas, constraints, coaching, scoring |
+| Defence/Security | 4 | High | Sanitisation, validation, enforcement, canary tokens |
+| Financial Calculations | 4 | High | IRR, NPV, Monte Carlo, yields, risk profiles |
+| AI Service Router | 3 | Medium | Engine tests cover routing; guards not isolated |
+| Correspondence Engine | 0 | Not Covered | Business logic tested via API routes only |
+| Market Intelligence | 2 | Medium | API endpoints tested; forecasting models in Python |
+| Client Management | 0 | Not Covered | Covered by API route integration tests |
+| Market Data Pipeline | 3 | Medium | Feeds, ticker, ESC context tested |
+| White-Label System | 0 | Not Covered | Runtime resolution only |
+| UI Components | 11 | Medium-High | Key components tested |
+| Database Layer | 1 | Low | Schema validation only |
+| Python Forecasting | 0 | N/A | Python tests not in Jest suite |
 
 ---
 
-## 4. Testing Strategies
+## 4. Quality Gates
 
-### Unit Testing
-- Isolated function testing for all financial calculations
-- Type validation for all TypeScript interfaces
-- Configuration validation for pricing indices and constraints
-- Defence layer pattern matching validation
+### Pre-Session Protocol
 
-### Integration Testing
-- Cross-module data flow (e.g., onboarding -> pipeline -> negotiation)
-- API endpoint request/response cycle testing
-- Architecture layer integration (measurement -> verification -> tokenisation)
-- Market intelligence system aggregation
+Every Claude Code session concludes with:
 
-### Component Testing
-- React Testing Library for UI component rendering
-- User event simulation for interactive components
-- Accessibility attribute verification
-- Conditional rendering validation
-
-### End-to-End Testing
-- Full platform navigation flows
-- Scenario simulation complete journeys
-- Page load performance validation
-- Visual regression detection
-
----
-
-## 5. Quality Gates
-
-### Pre-Commit
-- TypeScript compilation check (`tsc --noEmit`)
-- ESLint (`next lint`)
-- All Jest tests pass
-
-### Pre-Deployment
-- Full test suite (`npm test`)
-- Build verification (`npm run build`)
-- No TypeScript errors
+1. `npm run build` -- must succeed with zero errors
+2. `npx tsc --noEmit` -- must succeed with zero errors
+3. `npm test -- --passWithNoTests` -- must report zero new failures
 
 ### npm Scripts
 
 | Script | Purpose |
 |--------|---------|
 | `npm test` | Run all Jest tests |
-| `npm run test:watch` | Watch mode testing |
-| `npm run test:coverage` | Generate coverage report |
-| `npm run test:phase1` | Phase 1 tests only |
-| `npm run test:phase2` | Phase 2 tests only |
-| `npm run test:phase3` | Phase 3 tests only |
-| `npm run test:integration` | Integration tests only |
-| `npm run test:e2e` | Playwright E2E tests |
+| `npm run test:watch` | Watch mode |
+| `npm run test:coverage` | Coverage report |
+| `npm run test:e2e` | Playwright E2E |
 | `npm run test:e2e:ui` | Playwright with UI |
-| `npm run test:e2e:headed` | Headed browser testing |
-| `npm run test:visual` | Visual regression tests |
-| `npm run test:scenario` | Scenario flow tests |
-| `npm run validate:quality` | Full quality gate (lint + test) |
+| `npm run validate:quality` | Full quality gate |
 
 ---
 
-## 6. Identified Coverage Gaps
+## 5. Known Gaps and Priorities
 
-### Areas Requiring Additional Testing
+### Critical Gaps (should be addressed)
 
-1. **Demo Mode System** -- The `lib/demo-mode/` modules (state manager, data sets, presentation scripts, tour routes) have no dedicated test coverage. While functional, these should be tested for:
-   - Tour step progression logic
-   - Data set injection correctness
-   - Presentation mode switching
-   - Session metrics calculation
+1. **Correspondence Engine** -- No dedicated tests for procurement-trigger, ai-draft-engine, offer-parser, negotiation-manager, settlement-facilitation. These are the core broker workflow modules.
 
-2. **Simulation Engine** -- The `lib/simulation/` modules (scenario engine, mock API gateway, performance tracker) lack tests for:
-   - Scenario context management
-   - State transition logic
-   - Performance tracking accuracy
+2. **Database Queries** -- No tests for query modules (trades, negotiations, correspondence, clients). Currently depend on live DB.
 
-3. **Design System** -- The `design-system/` tokens and theme definitions are untested for:
-   - Token value consistency
-   - Theme application correctness
+3. **Python Forecasting** -- No automated test suite for the forecasting models. Backtesting (`backtest_engine.py`) validates accuracy but is not in CI.
 
-4. **Full E2E Negotiation** -- While the negotiation API is unit-tested, a complete E2E test of a multi-round negotiation with persona selection and scorecard generation would strengthen confidence.
+### Medium Gaps
 
-5. **Export Generation** -- While export utilities are tested, browser-side download mechanics (Blob creation, link clicking) are not fully validated.
+4. **White-Label Resolution** -- No tests for config resolution logic.
+5. **AI Guards** -- Rate limiter, cost guard, timeout guard lack isolated unit tests.
+6. **Client Intelligence Page** -- No component test for the public-facing page.
+
+### Low Priority
+
+7. **Design System** -- Token values untested (low risk, static config).
+8. **Demo Mode** -- State manager tested; tour mechanics are not.
