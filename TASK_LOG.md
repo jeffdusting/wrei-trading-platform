@@ -1,5 +1,65 @@
 # WREI Trading Platform — Task Log
 
+## Session: P8-A — Alert System, Service Health Bar, Production Polish
+
+- **Date:** 2026-04-05
+- **Phase:** P8 (Alert System & Final Production Polish)
+- **Branch:** main
+
+### Summary
+
+Built configurable alert engine with per-type evaluation (price, volume, compliance, settlement, feed health), alert UI components (bell + manager), and a service health status bar for the Bloomberg Terminal footer. Added alert_rules and alert_events tables to the database schema (v6). All integrated into BloombergShell.
+
+---
+
+### Task P8.1 — Alert Engine
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `lib/alerts/types.ts` | 62 | AlertType, AlertSeverity, AlertCondition, AlertRule, AlertEvent, CreateAlertRuleInput |
+| `lib/alerts/alert-rules.ts` | 134 | Per-type evaluation: price_cross, volume_threshold, compliance_deadline, compliance_shortfall, settlement_status, feed_health |
+| `lib/alerts/alert-engine.ts` | 153 | CRUD (createAlertRule, listAlertRules, updateAlertRule, deleteAlertRule), event retrieval, acknowledge, triggerAlert (audit + webhook), evaluateAlerts |
+| `lib/db/schema.ts` | +38 | alert_rules + alert_events tables, schema version 5→6, indexed on org/active and unacknowledged |
+| `app/api/v1/alerts/route.ts` | 153 | GET (rules/events), POST (create rule / acknowledge event), PUT (update rule), DELETE (soft-delete) |
+
+---
+
+### Task P8.2 — Alert UI
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `components/alerts/AlertBell.tsx` | 185 | Bell icon with unacknowledged count badge, dropdown with severity-coded alerts, acknowledge button, outside-click dismiss |
+| `components/alerts/AlertManager.tsx` | 244 | Full alert management panel: rules tab (toggle/delete), history tab (severity/acknowledge), create form (6-field grid) |
+| `components/navigation/BloombergShell.tsx` | +3 | AlertBell integrated into top bar right section |
+
+---
+
+### Task P8.3 — Service Health Status Bar
+
+**Result:** Complete
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `components/navigation/ServiceHealthBar.tsx` | 187 | 5 services (AI Engine, Price Feeds, Database, Settlement, Email), colour-coded dots, click-for-detail modal, error boundary wrapped |
+| `components/navigation/BloombergShell.tsx` | +2 | ServiceHealthBar integrated into footer bar |
+
+---
+
+### Verification
+
+| Check | Result |
+|-------|--------|
+| `npm run build` | Clean — `/api/v1/alerts` route included |
+| `npx tsc --noEmit` | Zero errors |
+| `npm test` | 69 suites, 1630 tests (1623 passed, 5 skipped, 2 failed — 1 pre-existing duplicate file) |
+| Test delta | db-connection.test.ts updated for 18 tables, passing |
+
+---
+
 ## Session: P6-B — API Documentation
 
 - **Date:** 2026-04-05

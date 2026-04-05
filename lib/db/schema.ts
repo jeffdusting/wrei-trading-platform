@@ -12,7 +12,7 @@
  *   feed_status      — external data-feed health
  */
 
-export const SCHEMA_VERSION = 5;
+export const SCHEMA_VERSION = 6;
 
 export const CREATE_ORGANISATIONS = `
 CREATE TABLE IF NOT EXISTS organisations (
@@ -287,6 +287,47 @@ CREATE INDEX IF NOT EXISTS idx_webhook_registrations_org
   ON webhook_registrations (organisation_id, is_active);
 `;
 
+export const CREATE_ALERT_RULES = `
+CREATE TABLE IF NOT EXISTS alert_rules (
+  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id           UUID          NOT NULL REFERENCES users(id),
+  organisation_id   UUID          NOT NULL REFERENCES organisations(id),
+  type              VARCHAR(32)   NOT NULL
+                      CHECK (type IN ('price_cross','volume_threshold','compliance_deadline','compliance_shortfall','settlement_status','feed_health')),
+  name              VARCHAR(255)  NOT NULL,
+  instrument        VARCHAR(32),
+  condition         VARCHAR(16)   NOT NULL
+                      CHECK (condition IN ('above','below','equals','crosses')),
+  threshold         NUMERIC(18,4) NOT NULL,
+  is_active         BOOLEAN       NOT NULL DEFAULT true,
+  metadata          JSONB         NOT NULL DEFAULT '{}',
+  created_at        TIMESTAMPTZ   NOT NULL DEFAULT now(),
+  updated_at        TIMESTAMPTZ   NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_alert_rules_org_active
+  ON alert_rules (organisation_id, is_active) WHERE is_active = true;
+`;
+
+export const CREATE_ALERT_EVENTS = `
+CREATE TABLE IF NOT EXISTS alert_events (
+  id                BIGSERIAL PRIMARY KEY,
+  rule_id           UUID          NOT NULL REFERENCES alert_rules(id),
+  type              VARCHAR(32)   NOT NULL,
+  severity          VARCHAR(16)   NOT NULL
+                      CHECK (severity IN ('info','warning','critical')),
+  title             VARCHAR(255)  NOT NULL,
+  message           TEXT,
+  data              JSONB         NOT NULL DEFAULT '{}',
+  acknowledged_at   TIMESTAMPTZ,
+  acknowledged_by   UUID          REFERENCES users(id),
+  created_at        TIMESTAMPTZ   NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_alert_events_rule_time
+  ON alert_events (rule_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_alert_events_unacked
+  ON alert_events (acknowledged_at, created_at DESC) WHERE acknowledged_at IS NULL;
+`;
+
 /** Ordered list of DDL statements — must run in this order due to FK deps. */
 export const ALL_TABLES = [
   CREATE_ORGANISATIONS,  // before users (users references organisations)
@@ -305,4 +346,6 @@ export const ALL_TABLES = [
   CREATE_SURRENDER_TRACKING, // after clients (surrender_tracking references clients)
   CREATE_CORRESPONDENCE,     // after clients, users (FK deps)
   CREATE_WEBHOOK_REGISTRATIONS, // after organisations
+  CREATE_ALERT_RULES,          // after users, organisations
+  CREATE_ALERT_EVENTS,         // after alert_rules, users
 ] as const;

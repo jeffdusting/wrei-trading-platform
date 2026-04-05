@@ -8,6 +8,8 @@ import { MarketTicker } from '@/components/market'
 import SimpleDemoToggle from '@/components/demo/SimpleDemoToggle'
 import { useSimpleDemoMode } from '@/components/demo/SimpleDemoProvider'
 import FeedHealthIndicator from '@/components/market/FeedHealthIndicator'
+import AlertBell from '@/components/alerts/AlertBell'
+import ServiceHealthBar from '@/components/navigation/ServiceHealthBar'
 import { useWhiteLabel } from '@/components/branding/WhiteLabelProvider'
 
 interface NavigationItem {
@@ -145,6 +147,9 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
         </div>
 
         <div className="flex items-center gap-4">
+          {/* Alert Bell — unacknowledged count badge */}
+          <AlertBell />
+
           {/* Demo Mode Toggle - Terminal Style */}
           <SimpleDemoToggle />
 
@@ -296,6 +301,9 @@ export const BloombergShell: FC<BloombergShellProps> = ({ children }) => {
             {wl.footerText}
             {isWhiteLabelled && wl.showAttribution && ' | Powered by WREI'}
           </span>
+
+          {/* Service Health — colour-coded per-service indicators */}
+          <ServiceHealthBar />
 
           {/* Feed Health Status — live/cached/simulated indicator */}
           <FeedHealthIndicator />
