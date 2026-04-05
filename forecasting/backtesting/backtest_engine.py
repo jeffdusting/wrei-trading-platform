@@ -516,3 +516,215 @@ def format_report(result: BacktestResult) -> str:
 
     lines.extend(["", "=" * 72])
     return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Multi-model comparison (P10-C.4)
+# ---------------------------------------------------------------------------
+
+def run_comparative_backtest(
+    csv_path: Optional[str] = None,
+    start_week: int = 52,
+) -> Dict[str, Any]:
+    """
+    Run a comparative backtest across Bayesian, ML, and Ensemble models.
+
+    Returns a dict with metrics for each model variant plus benchmarks.
+    """
+    import sys
+    project_root = str(Path(__file__).resolve().parent.parent.parent)
+    if project_root not in sys.path:
+        sys.path.insert(0, project_root)
+
+    from forecasting.models.counterfactual_model import (
+        load_reconstruction,
+        walk_forward_predict,
+        evaluate_predictions,
+        format_feature_importance,
+    )
+    from forecasting.models.ensemble_forecast import (
+        optimise_weights,
+        run_ensemble_evaluation,
+    )
+
+    # 1. Bayesian-only backtest (existing engine)
+    print("  [1/4] Running Bayesian-only backtest...")
+    engine = BacktestEngine(csv_path)
+    bayesian_result = engine.run(start_week=start_week, model_version="1.0.0-bayesian")
+
+    # 2. ML-only evaluation
+    print("  [2/4] Running ML-only evaluation...")
+    recon_csv = str(Path(__file__).parent.parent / "data" / "esc_reconstruction.csv")
+    recon_df = load_reconstruction(recon_csv)
+    ml_predictions, ml_metrics = walk_forward_predict(recon_df, start_week=start_week, retrain_interval=12)
+    ml_eval = evaluate_predictions(recon_df, ml_predictions, start_week=start_week)
+
+    # 3. Ensemble evaluation
+    print("  [3/4] Running ensemble evaluation...")
+    ensemble_eval = run_ensemble_evaluation(recon_csv, start_week=start_week)
+
+    # 4. Regime-specific ML performance
+    print("  [4/4] Computing regime-specific ML metrics...")
+    prices = recon_df["spot_price"].values
+    actuals_4w = recon_df["price_t_plus_4w"].values
+    actions_actual = recon_df["optimal_action"].values
+
+    # Classify periods
+    stable_idx, transition_idx, policy_idx = classify_periods(engine.df)
+
+    def ml_metrics_for_indices(indices: List[int]) -> Dict[str, float]:
+        """Compute ML MAPE and action accuracy for a subset of weeks."""
+        mape_list = []
+        correct = 0
+        total = 0
+        for t in indices:
+            pred_idx = t - start_week
+            if pred_idx < 0 or pred_idx >= len(ml_predictions):
+                continue
+            pred = ml_predictions[pred_idx]
+            actual = actuals_4w[t] if t < len(actuals_4w) else np.nan
+            if not np.isnan(actual) and actual > 0:
+                mape_list.append(abs(pred.predicted_price_4w - actual) / actual)
+            actual_action = actions_actual[t] if t < len(actions_actual) else None
+            if isinstance(actual_action, str):
+                total += 1
+                if pred.predicted_action == actual_action:
+                    correct += 1
+        return {
+            "mape_4w": float(np.mean(mape_list)) if mape_list else 0.0,
+            "action_accuracy": correct / max(total, 1),
+            "n_weeks": len(mape_list),
+        }
+
+    ml_regime = {
+        "stable": ml_metrics_for_indices(stable_idx),
+        "transition": ml_metrics_for_indices(transition_idx),
+        "policy_window": ml_metrics_for_indices(policy_idx),
+    }
+
+    # Feature importance from ML
+    feature_importance_str = format_feature_importance(ml_metrics)
+
+    return {
+        "bayesian": bayesian_result,
+        "ml_eval": ml_eval,
+        "ensemble_eval": ensemble_eval,
+        "ml_regime": ml_regime,
+        "ml_metrics": ml_metrics,
+        "feature_importance_report": feature_importance_str,
+    }
+
+
+def format_comparative_report(comp: Dict[str, Any]) -> str:
+    """Format a comparative report across all model variants."""
+    bayesian = comp["bayesian"]
+    ml = comp["ml_eval"]
+    ens = comp["ensemble_eval"]
+
+    lines = [
+        "=" * 80,
+        "WREI ESC FORECASTING — COMPARATIVE BACKTEST REPORT",
+        "=" * 80,
+        f"Test period: {bayesian.test_period_start} to {bayesian.test_period_end}",
+        "",
+        "-" * 80,
+        "4-WEEK HORIZON COMPARISON",
+        "-" * 80,
+        f"{'Model':<20} {'MAPE':>8} {'Dir.Acc':>10} {'DecVal':>14} {'Action Acc':>12}",
+    ]
+
+    # Bayesian 4w metrics
+    b4 = bayesian.overall_metrics.get(4)
+    if b4:
+        lines.append(
+            f"{'Bayesian-only':<20} "
+            f"{b4.mape*100:>7.2f}% "
+            f"{b4.directional_accuracy*100:>9.1f}% "
+            f"${b4.decision_value:>13,.0f} "
+            f"{'—':>12}"
+        )
+
+    # ML-only
+    lines.append(
+        f"{'ML-only (XGBoost)':<20} "
+        f"{ml['price_mape']*100:>7.2f}% "
+        f"{'—':>10} "
+        f"{'—':>14} "
+        f"{ml['action_accuracy']*100:>11.1f}%"
+    )
+
+    # Ensemble
+    lines.append(
+        f"{'Ensemble':<20} "
+        f"{ens['ensemble_mape_4w']*100:>7.2f}% "
+        f"{'—':>10} "
+        f"{'—':>14} "
+        f"{'—':>12}"
+    )
+
+    # Benchmarks
+    if b4:
+        lines.extend([
+            "",
+            f"{'Naive (random walk)':<20} {b4.mape_naive*100:>7.2f}%",
+            f"{'SMA-4':<20} {b4.mape_sma4*100:>7.2f}%",
+            f"{'SMA-12':<20} {b4.mape_sma12*100:>7.2f}%",
+        ])
+
+    # Ensemble weights
+    lines.extend([
+        "",
+        "-" * 80,
+        "ENSEMBLE WEIGHTS (optimised by walk-forward cross-validation)",
+        "-" * 80,
+        f"  Bayesian weight: {ens['bayesian_weight']:.2f}",
+        f"  ML weight:       {ens['ml_weight']:.2f}",
+    ])
+
+    # Regime-specific ML performance
+    ml_regime = comp["ml_regime"]
+    lines.extend([
+        "",
+        "-" * 80,
+        "REGIME-SPECIFIC ML PERFORMANCE (4w horizon)",
+        "-" * 80,
+    ])
+    for period, metrics in ml_regime.items():
+        if metrics["n_weeks"] > 0:
+            lines.append(
+                f"  {period:<20} "
+                f"MAPE={metrics['mape_4w']*100:.2f}%  "
+                f"ActionAcc={metrics['action_accuracy']*100:.1f}%  "
+                f"N={metrics['n_weeks']}"
+            )
+
+    # Feature importance
+    lines.extend([
+        "",
+        "-" * 80,
+        "ML FEATURE IMPORTANCE",
+        "-" * 80,
+        comp["feature_importance_report"],
+    ])
+
+    # Bayesian full report
+    lines.extend([
+        "",
+        "-" * 80,
+        "BAYESIAN MODEL — FULL HORIZON METRICS",
+        "-" * 80,
+    ])
+    for h in HORIZONS:
+        m = bayesian.overall_metrics.get(h)
+        if m:
+            lines.append(
+                f"  {h:>3}w: MAPE={m.mape*100:.2f}%  "
+                f"Dir={m.directional_accuracy*100:.1f}%  "
+                f"DecVal=${m.decision_value:,.0f}  "
+                f"Cov80={m.coverage_80*100:.1f}%  "
+                f"Cov95={m.coverage_95*100:.1f}%  "
+                f"N={m.n_observations}"
+            )
+
+    lines.extend(["", "=" * 80])
+    return "\n".join(lines)
