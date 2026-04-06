@@ -107,6 +107,7 @@ export default function AnalysePage() {
   const [chartInstrument, setChartInstrument] = useState('ESC')
   const [chartRange, setChartRange] = useState<TimeRange>('3M')
   const [showHistoricalForecasts, setShowHistoricalForecasts] = useState(false)
+  const [chartExpanded, setChartExpanded] = useState(false)
   const chartData = useCombinedChartData(chartInstrument, TIME_RANGE_DAYS[chartRange])
 
   const tabs = [
@@ -194,148 +195,169 @@ export default function AnalysePage() {
         {/* MARKET OVERVIEW TAB (A6)                                       */}
         {/* ============================================================= */}
         {activeTab === 'overview' && (
-          <div className="space-y-6">
-            {/* Certificate & Token Summary */}
-            <div className="bg-white rounded-lg border border-slate-200">
-              <div className="px-5 py-3 border-b border-slate-200">
-                <div className="bloomberg-section-label">CERTIFICATE & TOKEN SUMMARY</div>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-slate-100">
-                      <th className="text-left px-5 py-2 bloomberg-small-text text-slate-500 font-medium">TICKER</th>
-                      <th className="text-left px-5 py-2 bloomberg-small-text text-slate-500 font-medium">NAME</th>
-                      <th className="text-right px-5 py-2 bloomberg-small-text text-slate-500 font-medium">SPOT PRICE</th>
-                      <th className="text-right px-5 py-2 bloomberg-small-text text-slate-500 font-medium">CREATION VOLUME</th>
-                      <th className="text-left px-5 py-2 bloomberg-small-text text-slate-500 font-medium">SCHEME</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {INSTRUMENT_SUMMARY.map(inst => (
-                      <tr key={inst.ticker} className="border-b border-slate-50 hover:bg-slate-50">
-                        <td className="px-5 py-2.5 bloomberg-data text-blue-600 font-medium">{inst.ticker}</td>
-                        <td className="px-5 py-2.5 bloomberg-body-text text-slate-800">{inst.name}</td>
-                        <td className="px-5 py-2.5 text-right bloomberg-data text-slate-800">A${inst.spot.toFixed(2)}</td>
-                        <td className="px-5 py-2.5 text-right bloomberg-data text-slate-600">{inst.volume}</td>
-                        <td className="px-5 py-2.5 bloomberg-small-text text-slate-500">{inst.scheme}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+          <div className="space-y-4">
+            {/* === Two-column layout: data (left) + chart (right) === */}
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
 
-            {/* Price Chart — integrated into Market Overview */}
-            <div className="bg-white rounded-lg border border-slate-200">
-              <div className="px-5 py-3 border-b border-slate-200 flex items-center justify-between flex-wrap gap-3">
-                <div className="flex items-center gap-4">
-                  <div className="bloomberg-section-label">PRICE CHART</div>
-                  <InstrumentSelector
-                    instruments={[...CHART_INSTRUMENTS]}
-                    selected={chartInstrument}
-                    onChange={setChartInstrument}
-                  />
-                  <TimeRangeSelector
-                    selected={chartRange}
-                    onChange={setChartRange}
-                  />
-                  <label className="flex items-center gap-1.5 bloomberg-small-text text-slate-500 cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={showHistoricalForecasts}
-                      onChange={e => setShowHistoricalForecasts(e.target.checked)}
-                      className="rounded border-slate-300 text-amber-500 focus:ring-amber-500 w-3.5 h-3.5"
+              {/* LEFT COLUMN — data panels (2/5 width) */}
+              <div className="lg:col-span-2 space-y-4">
+                {/* Certificate & Token Summary */}
+                <div className="bg-white rounded-lg border border-slate-200">
+                  <div className="px-4 py-2.5 border-b border-slate-200">
+                    <div className="bloomberg-section-label">CERTIFICATE & TOKEN SUMMARY</div>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-slate-100">
+                          <th className="text-left px-4 py-1.5 bloomberg-small-text text-slate-500 font-medium">TICKER</th>
+                          <th className="text-right px-4 py-1.5 bloomberg-small-text text-slate-500 font-medium">SPOT</th>
+                          <th className="text-right px-4 py-1.5 bloomberg-small-text text-slate-500 font-medium">VOLUME</th>
+                          <th className="text-left px-4 py-1.5 bloomberg-small-text text-slate-500 font-medium">SCHEME</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {INSTRUMENT_SUMMARY.map(inst => (
+                          <tr key={inst.ticker} className="border-b border-slate-50 hover:bg-slate-50">
+                            <td className="px-4 py-1.5 bloomberg-data text-blue-600 font-medium">{inst.ticker}</td>
+                            <td className="px-4 py-1.5 text-right bloomberg-data text-slate-800">A${inst.spot.toFixed(2)}</td>
+                            <td className="px-4 py-1.5 text-right bloomberg-data text-slate-500" style={{ fontSize: '10px' }}>{inst.volume}</td>
+                            <td className="px-4 py-1.5 bloomberg-small-text text-slate-400">{inst.scheme}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Market References — stacked vertically in left column */}
+                <div className="bg-white rounded-lg border border-slate-200 p-4">
+                  <div className="bloomberg-section-label mb-3">VCM MARKET</div>
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between">
+                      <span className="bloomberg-small-text text-slate-600">VCM Spot</span>
+                      <span className="bloomberg-data text-green-600">A${PRICING_INDEX.VCM_SPOT_REFERENCE.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="bloomberg-small-text text-slate-600">dMRV Spot</span>
+                      <span className="bloomberg-data text-blue-600">A${PRICING_INDEX.DMRV_SPOT_REFERENCE.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="bloomberg-small-text text-slate-600">Forward Removal</span>
+                      <span className="bloomberg-data text-blue-600">A${PRICING_INDEX.FORWARD_REMOVAL_REFERENCE}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg border border-slate-200 p-4">
+                  <div className="bloomberg-section-label mb-3">ESC MARKET</div>
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between">
+                      <span className="bloomberg-small-text text-slate-600">ESC Spot</span>
+                      <span className="bloomberg-data text-green-600">A${PRICING_INDEX.ESC_SPOT_REFERENCE.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="bloomberg-small-text text-slate-600">ESC Forward</span>
+                      <span className="bloomberg-data text-blue-600">A${PRICING_INDEX.ESC_FORWARD_REFERENCE.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="bloomberg-small-text text-slate-600">dMRV Premium</span>
+                      <span className="bloomberg-data text-amber-600">+{((PRICING_INDEX.DMRV_PREMIUM_BENCHMARK - 1) * 100).toFixed(0)}%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg border border-slate-200 p-4">
+                  <div className="bloomberg-section-label mb-3">WREI TOKENS</div>
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between">
+                      <span className="bloomberg-small-text text-slate-600">WREI-CC Anchor</span>
+                      <span className="bloomberg-data text-green-600">A$150.00</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="bloomberg-small-text text-slate-600">WREI-ACO NAV</span>
+                      <span className="bloomberg-data text-blue-600">A$1,000.00</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="bloomberg-small-text text-slate-600">ACO Yield</span>
+                      <span className="bloomberg-data text-green-600">28.3% p.a.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* RIGHT COLUMN — Price chart (3/5 width) */}
+              <div className="lg:col-span-3">
+                <div className="bg-white rounded-lg border border-slate-200 h-full">
+                  {/* Chart header with controls */}
+                  <div className="px-4 py-2.5 border-b border-slate-200">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-3">
+                        <InstrumentSelector
+                          instruments={[...CHART_INSTRUMENTS]}
+                          selected={chartInstrument}
+                          onChange={setChartInstrument}
+                        />
+                        <TimeRangeSelector
+                          selected={chartRange}
+                          onChange={setChartRange}
+                        />
+                        <label className="flex items-center gap-1.5 bloomberg-small-text text-slate-500 cursor-pointer select-none">
+                          <input
+                            type="checkbox"
+                            checked={showHistoricalForecasts}
+                            onChange={e => setShowHistoricalForecasts(e.target.checked)}
+                            className="rounded border-slate-300 text-amber-500 focus:ring-amber-500 w-3.5 h-3.5"
+                          />
+                          Hist. Forecasts
+                        </label>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        {chartData.meta && (
+                          <SpotPriceHeader
+                            instrument={chartData.meta.instrument}
+                            spotPrice={chartData.meta.currentSpot}
+                            change={chartData.meta.priceChange24h}
+                            changePct={chartData.meta.priceChangePct}
+                            currency={chartData.meta.currency}
+                          />
+                        )}
+                        <button
+                          onClick={() => setChartExpanded(true)}
+                          className="p-1.5 rounded hover:bg-slate-100 transition-colors"
+                          title="Expand chart"
+                        >
+                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round">
+                            <path d="M9 1h4v4M5 13H1V9M13 1L8.5 5.5M1 13l4.5-4.5" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Chart body */}
+                  {chartData.loading ? (
+                    <div className="p-8 flex items-center justify-center" style={{ minHeight: 440 }}>
+                      <div className="flex items-center gap-3">
+                        <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                        <span className="bloomberg-body-text text-slate-500">Loading chart data...</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <PriceVolumeChart
+                      data={chartData.series}
+                      instrument={chartInstrument}
+                      currency={chartData.meta?.currency}
+                      height={440}
+                      showForecast={true}
+                      showVolume={true}
+                      showHistoricalForecasts={showHistoricalForecasts}
                     />
-                    Historical Forecasts
-                  </label>
-                </div>
-                {chartData.meta && (
-                  <SpotPriceHeader
-                    instrument={chartData.meta.instrument}
-                    spotPrice={chartData.meta.currentSpot}
-                    change={chartData.meta.priceChange24h}
-                    changePct={chartData.meta.priceChangePct}
-                    currency={chartData.meta.currency}
-                  />
-                )}
-              </div>
-              {chartData.loading ? (
-                <div className="p-8 flex items-center justify-center" style={{ height: 380 }}>
-                  <div className="flex items-center gap-3">
-                    <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                    <span className="bloomberg-body-text text-slate-500">Loading chart data...</span>
-                  </div>
-                </div>
-              ) : (
-                <PriceVolumeChart
-                  data={chartData.series}
-                  instrument={chartInstrument}
-                  currency={chartData.meta?.currency}
-                  height={380}
-                  showForecast={true}
-                  showVolume={true}
-                  showHistoricalForecasts={showHistoricalForecasts}
-                />
-              )}
-            </div>
-
-            {/* Market References + Key Metrics */}
-            <div className="grid grid-cols-3 gap-4">
-              <div className="bg-white p-4 rounded-lg border border-slate-200">
-                <div className="bloomberg-section-label mb-3">VCM MARKET</div>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="bloomberg-body-text text-slate-600">VCM Spot</span>
-                    <span className="bloomberg-data text-green-600">A${PRICING_INDEX.VCM_SPOT_REFERENCE.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="bloomberg-body-text text-slate-600">dMRV Spot</span>
-                    <span className="bloomberg-data text-blue-600">A${PRICING_INDEX.DMRV_SPOT_REFERENCE.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="bloomberg-body-text text-slate-600">Forward Removal</span>
-                    <span className="bloomberg-data text-blue-600">A${PRICING_INDEX.FORWARD_REMOVAL_REFERENCE}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-white p-4 rounded-lg border border-slate-200">
-                <div className="bloomberg-section-label mb-3">ESC MARKET</div>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="bloomberg-body-text text-slate-600">ESC Spot</span>
-                    <span className="bloomberg-data text-green-600">A${PRICING_INDEX.ESC_SPOT_REFERENCE.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="bloomberg-body-text text-slate-600">ESC Forward</span>
-                    <span className="bloomberg-data text-blue-600">A${PRICING_INDEX.ESC_FORWARD_REFERENCE.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="bloomberg-body-text text-slate-600">dMRV Premium</span>
-                    <span className="bloomberg-data text-amber-600">+{((PRICING_INDEX.DMRV_PREMIUM_BENCHMARK - 1) * 100).toFixed(0)}%</span>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-white p-4 rounded-lg border border-slate-200">
-                <div className="bloomberg-section-label mb-3">WREI TOKENS</div>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="bloomberg-body-text text-slate-600">WREI-CC Anchor</span>
-                    <span className="bloomberg-data text-green-600">A$150.00</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="bloomberg-body-text text-slate-600">WREI-ACO NAV</span>
-                    <span className="bloomberg-data text-blue-600">A$1,000.00</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="bloomberg-body-text text-slate-600">ACO Yield</span>
-                    <span className="bloomberg-data text-green-600">28.3% p.a.</span>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* AI Market Commentary */}
+            {/* AI Market Commentary — full width below the two columns */}
             <div className="bg-white rounded-lg border border-slate-200">
               <div className="px-5 py-3 border-b border-slate-200 flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -385,6 +407,72 @@ export default function AnalysePage() {
                 )}
               </div>
             </div>
+
+            {/* === Expanded chart modal === */}
+            {chartExpanded && (
+              <div
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+                onClick={() => setChartExpanded(false)}
+              >
+                <div
+                  className="bg-white rounded-lg border border-slate-200 shadow-2xl w-[95vw] max-w-[1400px]"
+                  onClick={e => e.stopPropagation()}
+                >
+                  <div className="px-5 py-3 border-b border-slate-200 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="bloomberg-section-label">PRICE CHART</div>
+                      <InstrumentSelector
+                        instruments={[...CHART_INSTRUMENTS]}
+                        selected={chartInstrument}
+                        onChange={setChartInstrument}
+                      />
+                      <TimeRangeSelector
+                        selected={chartRange}
+                        onChange={setChartRange}
+                      />
+                      <label className="flex items-center gap-1.5 bloomberg-small-text text-slate-500 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={showHistoricalForecasts}
+                          onChange={e => setShowHistoricalForecasts(e.target.checked)}
+                          className="rounded border-slate-300 text-amber-500 focus:ring-amber-500 w-3.5 h-3.5"
+                        />
+                        Historical Forecasts
+                      </label>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      {chartData.meta && (
+                        <SpotPriceHeader
+                          instrument={chartData.meta.instrument}
+                          spotPrice={chartData.meta.currentSpot}
+                          change={chartData.meta.priceChange24h}
+                          changePct={chartData.meta.priceChangePct}
+                          currency={chartData.meta.currency}
+                        />
+                      )}
+                      <button
+                        onClick={() => setChartExpanded(false)}
+                        className="p-1.5 rounded hover:bg-slate-100 transition-colors"
+                        title="Close expanded view"
+                      >
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round">
+                          <path d="M1 1l12 12M13 1L1 13" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <PriceVolumeChart
+                    data={chartData.series}
+                    instrument={chartInstrument}
+                    currency={chartData.meta?.currency}
+                    height={600}
+                    showForecast={true}
+                    showVolume={true}
+                    showHistoricalForecasts={showHistoricalForecasts}
+                  />
+                </div>
+              </div>
+            )}
           </div>
         )}
 
