@@ -285,76 +285,111 @@ export function generateCombinedChartData(
       })),
     ]
 
-    // Seeded random for reproducible forecast volume variance
+    // Two-pass forecast: compute volume first, then derive price from
+    // cumulative supply/demand imbalance. This ensures the price curve
+    // responds to the same dynamics that drive the volume bars.
+
     const volSeed = instrument.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0) * 5555
     const volRand = seededRandom(volSeed)
-
     const maxWeek = anchors[anchors.length - 1].week
+    const round2 = (v: number) => Math.round(v * 100) / 100
+
+    // --- Pass 1: compute weekly volume and cumulative deficit ---
+    interface WeekProjection {
+      week: number
+      date: string
+      creation: number
+      surrender: number
+      weeklyDeficit: number     // surrender - creation (positive = tightening)
+      cumulativeDeficit: number // running total
+      tighteningProb: number
+      surplusProb: number
+    }
+    const projections: WeekProjection[] = []
+    let cumulativeDeficit = 0
+
     for (let w = 1; w <= maxWeek; w++) {
       const futureDate = new Date(now)
       futureDate.setDate(futureDate.getDate() + w * 7)
 
-      // Find surrounding anchors for interpolation
+      // Find surrounding anchors for regime interpolation
       let lo = anchors[0], hi = anchors[anchors.length - 1]
       for (let a = 0; a < anchors.length - 1; a++) {
         if (w >= anchors[a].week && w <= anchors[a + 1].week) {
-          lo = anchors[a]
-          hi = anchors[a + 1]
-          break
+          lo = anchors[a]; hi = anchors[a + 1]; break
         }
       }
-
-      // Linear interpolation between anchor points
       const span = hi.week - lo.week || 1
       const t = (w - lo.week) / span
       const lerp = (a: number, b: number) => a + t * (b - a)
-      const round2 = (v: number) => Math.round(v * 100) / 100
 
-      const forecastPrice = round2(lerp(lo.price, hi.price))
-      const lo80 = round2(lerp(lo.lo80, hi.lo80))
-      const hi80 = round2(lerp(lo.hi80, hi.hi80))
-      const lo95 = round2(lerp(lo.lo95, hi.lo95))
-      const hi95 = round2(lerp(lo.hi95, hi.hi95))
-
-      // Volume projection with meaningful trends and variance.
-      // As tightening probability rises: creation drops (commercial lighting exit
-      // removes ~22%), surrender increases (deadline pressure). Weekly variance
-      // adds realism so bars don't appear flat.
       const tighteningProb = lerp(lo.regime.tightening ?? 0.2, hi.regime.tightening ?? 0.2)
       const surplusProb = lerp(lo.regime.surplus ?? 0.25, hi.regime.surplus ?? 0.25)
 
-      // Structural creation decline: linear erosion over 26 weeks (commercial lighting exit)
-      const weekFraction = w / maxWeek // 0 to 1 over forecast horizon
-      const structuralDecline = 1 - (weekFraction * 0.18) // up to 18% decline by week 26
+      // Structural creation decline (commercial lighting exit)
+      const weekFraction = w / maxWeek
+      const structuralDecline = 1 - (weekFraction * 0.18)
 
-      // Regime-driven adjustment (amplified from original)
+      // Regime-driven adjustments
       const creationRegimeAdj = 1 - (tighteningProb * 0.30) + (surplusProb * 0.15)
       const surrenderRegimeAdj = 1 + (tighteningProb * 0.25) - (surplusProb * 0.10)
 
-      // Seasonal surrender spike: months 6 and 12 (June/December deadlines)
+      // Seasonal surrender spike
       const futureMonth = futureDate.getMonth() + 1
       const surrenderSeasonal = (vp?.seasonalPeaks.includes(futureMonth)) ? 1.5 : 1.0
 
-      // Weekly random variance (±20% for creation, ±25% for surrender)
+      // Weekly random variance
       const creationNoise = 1 + (volRand() - 0.5) * 0.40
       const surrenderNoise = 1 + (volRand() - 0.5) * 0.50
 
-      const forecastCreation = vp
-        ? Math.round(dailyBaseCreation * structuralDecline * creationRegimeAdj * creationNoise)
-        : undefined
-      const forecastSurrender = vp
-        ? Math.round(dailyBaseSurrender * surrenderRegimeAdj * surrenderSeasonal * surrenderNoise)
-        : undefined
+      const creation = vp ? Math.round(dailyBaseCreation * structuralDecline * creationRegimeAdj * creationNoise) : 0
+      const surrender = vp ? Math.round(dailyBaseSurrender * surrenderRegimeAdj * surrenderSeasonal * surrenderNoise) : 0
+
+      const weeklyDeficit = (surrender - creation) * 5 // 5 business days per week
+      cumulativeDeficit += weeklyDeficit
+
+      projections.push({
+        week: w,
+        date: futureDate.toISOString().slice(0, 10),
+        creation, surrender, weeklyDeficit, cumulativeDeficit,
+        tighteningProb, surplusProb,
+      })
+    }
+
+    // --- Pass 2: derive price from volume dynamics ---
+    // Price responds to cumulative deficit: each unit of deficit exerts
+    // upward pressure, scaled so the total deficit over 26 weeks produces
+    // a price change consistent with the model's point forecasts.
+    const totalDeficit = projections[projections.length - 1]?.cumulativeDeficit ?? 1
+    const endAnchorPrice = anchors[anchors.length - 1].price
+    const totalPriceMove = endAnchorPrice - currentSpot // e.g. 26.80 - 23.10 = 3.70
+    // Price sensitivity: how much price moves per unit of cumulative deficit
+    const priceSensitivity = totalDeficit !== 0 ? totalPriceMove / totalDeficit : 0
+
+    for (const proj of projections) {
+      // Price driven by cumulative supply/demand imbalance
+      const deficitDrivenPrice = currentSpot + (proj.cumulativeDeficit * priceSensitivity)
+      const forecastPrice = round2(deficitDrivenPrice)
+
+      // CI bands: widen proportionally with sqrt of time (diffusion)
+      // anchored to match the demo anchor CI widths at their horizons
+      const sqrtW = Math.sqrt(proj.week)
+      const sqrtMax = Math.sqrt(maxWeek)
+      const ciProgress = sqrtW / sqrtMax // 0 to 1, faster early, slower late
+
+      const endAnchor = anchors[anchors.length - 1]
+      const halfWidth80 = ((endAnchor.hi80 - endAnchor.lo80) / 2) * ciProgress
+      const halfWidth95 = ((endAnchor.hi95 - endAnchor.lo95) / 2) * ciProgress
 
       series.push({
-        date: futureDate.toISOString().slice(0, 10),
+        date: proj.date,
         forecast: cap(forecastPrice),
-        forecastLow80: lo80,
-        forecastHigh80: cap(hi80),
-        forecastLow95: lo95,
-        forecastHigh95: cap(hi95),
-        creationVolume: forecastCreation,
-        surrenderVolume: forecastSurrender,
+        forecastLow80: round2(forecastPrice - halfWidth80),
+        forecastHigh80: cap(round2(forecastPrice + halfWidth80)),
+        forecastLow95: round2(forecastPrice - halfWidth95),
+        forecastHigh95: cap(round2(forecastPrice + halfWidth95)),
+        creationVolume: proj.creation || undefined,
+        surrenderVolume: proj.surrender || undefined,
         isForecast: true,
       })
     }
