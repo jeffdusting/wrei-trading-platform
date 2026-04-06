@@ -52,6 +52,9 @@ interface DemoForecast {
   ci80: { lower: number; upper: number }
   ci95: { lower: number; upper: number }
   regimeProbabilities: Record<string, number>
+  // Volume forecasts derived from regime probabilities and public creation/surrender rates
+  forecastCreationVolume?: number
+  forecastSurrenderVolume?: number
 }
 
 const ESC_FORECASTS: DemoForecast[] = [
@@ -253,9 +256,22 @@ export function generateCombinedChartData(
     }
 
     const now = new Date()
+    const vp = VOLUME_PARAMS[instrument]
+    const dailyBaseCreation = vp ? vp.annualCreation / 260 : 0
+    const dailyBaseSurrender = vp ? vp.annualSurrender / 260 : 0
+
     for (const fc of forecasts) {
       const futureDate = new Date(now)
       futureDate.setDate(futureDate.getDate() + fc.horizonWeeks * 7)
+
+      // Forecast volume: adjust base rates by regime probability
+      // Tightening = lower creation, higher surrender pressure
+      // Surplus = higher creation, lower surrender
+      const tighteningProb = fc.regimeProbabilities.tightening ?? 0.2
+      const surplusProb = fc.regimeProbabilities.surplus ?? 0.25
+      const creationAdj = 1 - (tighteningProb * 0.15) + (surplusProb * 0.10)
+      const surrenderAdj = 1 + (tighteningProb * 0.10) - (surplusProb * 0.05)
+
       series.push({
         date: futureDate.toISOString().slice(0, 10),
         forecast: fc.priceForecast,
@@ -263,6 +279,8 @@ export function generateCombinedChartData(
         forecastHigh80: fc.ci80.upper,
         forecastLow95: fc.ci95.lower,
         forecastHigh95: fc.ci95.upper,
+        creationVolume: vp ? Math.round(dailyBaseCreation * creationAdj) : undefined,
+        surrenderVolume: vp ? Math.round(dailyBaseSurrender * surrenderAdj) : undefined,
         isForecast: true,
       })
     }
