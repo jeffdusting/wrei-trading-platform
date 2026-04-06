@@ -285,6 +285,10 @@ export function generateCombinedChartData(
       })),
     ]
 
+    // Seeded random for reproducible forecast volume variance
+    const volSeed = instrument.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0) * 5555
+    const volRand = seededRandom(volSeed)
+
     const maxWeek = anchors[anchors.length - 1].week
     for (let w = 1; w <= maxWeek; w++) {
       const futureDate = new Date(now)
@@ -312,11 +316,35 @@ export function generateCombinedChartData(
       const lo95 = round2(lerp(lo.lo95, hi.lo95))
       const hi95 = round2(lerp(lo.hi95, hi.hi95))
 
-      // Interpolate regime probabilities for volume projection
+      // Volume projection with meaningful trends and variance.
+      // As tightening probability rises: creation drops (commercial lighting exit
+      // removes ~22%), surrender increases (deadline pressure). Weekly variance
+      // adds realism so bars don't appear flat.
       const tighteningProb = lerp(lo.regime.tightening ?? 0.2, hi.regime.tightening ?? 0.2)
       const surplusProb = lerp(lo.regime.surplus ?? 0.25, hi.regime.surplus ?? 0.25)
-      const creationAdj = 1 - (tighteningProb * 0.15) + (surplusProb * 0.10)
-      const surrenderAdj = 1 + (tighteningProb * 0.10) - (surplusProb * 0.05)
+
+      // Structural creation decline: linear erosion over 26 weeks (commercial lighting exit)
+      const weekFraction = w / maxWeek // 0 to 1 over forecast horizon
+      const structuralDecline = 1 - (weekFraction * 0.18) // up to 18% decline by week 26
+
+      // Regime-driven adjustment (amplified from original)
+      const creationRegimeAdj = 1 - (tighteningProb * 0.30) + (surplusProb * 0.15)
+      const surrenderRegimeAdj = 1 + (tighteningProb * 0.25) - (surplusProb * 0.10)
+
+      // Seasonal surrender spike: months 6 and 12 (June/December deadlines)
+      const futureMonth = futureDate.getMonth() + 1
+      const surrenderSeasonal = (vp?.seasonalPeaks.includes(futureMonth)) ? 1.5 : 1.0
+
+      // Weekly random variance (±20% for creation, ±25% for surrender)
+      const creationNoise = 1 + (volRand() - 0.5) * 0.40
+      const surrenderNoise = 1 + (volRand() - 0.5) * 0.50
+
+      const forecastCreation = vp
+        ? Math.round(dailyBaseCreation * structuralDecline * creationRegimeAdj * creationNoise)
+        : undefined
+      const forecastSurrender = vp
+        ? Math.round(dailyBaseSurrender * surrenderRegimeAdj * surrenderSeasonal * surrenderNoise)
+        : undefined
 
       series.push({
         date: futureDate.toISOString().slice(0, 10),
@@ -325,8 +353,8 @@ export function generateCombinedChartData(
         forecastHigh80: cap(hi80),
         forecastLow95: lo95,
         forecastHigh95: cap(hi95),
-        creationVolume: vp ? Math.round(dailyBaseCreation * creationAdj) : undefined,
-        surrenderVolume: vp ? Math.round(dailyBaseSurrender * surrenderAdj) : undefined,
+        creationVolume: forecastCreation,
+        surrenderVolume: forecastSurrender,
         isForecast: true,
       })
     }
