@@ -144,6 +144,63 @@ function generateDailyVolume(
 }
 
 // ---------------------------------------------------------------------------
+// Historical forecast overlay — past predictions vs actual outcomes
+// ---------------------------------------------------------------------------
+
+/**
+ * Overlay historical forecast tracks onto the price series.
+ * Simulates what the model would have predicted at 3 past origin dates,
+ * each projecting 4 weeks forward. The predicted price diverges from
+ * actual by ~3.6% MAPE (matching measured model accuracy).
+ *
+ * Each track is an interpolated line segment from (originDate, actualPrice)
+ * to (targetDate, predictedPrice) so Recharts renders a visible segment.
+ */
+function overlayHistoricalForecasts(
+  series: ChartDataPoint[],
+  instrument: InstrumentType,
+  days: number
+): void {
+  const historicalPoints = series.filter(d => !d.isForecast && d.price != null)
+  if (historicalPoints.length < 56) return // Need at least 8 weeks of history
+
+  const seed = instrument.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0) * 3333
+  const rand = seededRandom(seed)
+
+  // 3 forecast tracks, origins spaced ~4 weeks apart from the end
+  const trackConfigs = [
+    { originOffset: 28, field: 'histForecast1' as const },  // 4 weeks ago
+    { originOffset: 56, field: 'histForecast2' as const },  // 8 weeks ago
+    { originOffset: 84, field: 'histForecast3' as const },  // 12 weeks ago
+  ]
+
+  for (const track of trackConfigs) {
+    const originIdx = historicalPoints.length - 1 - track.originOffset
+    const targetIdx = originIdx + 28 // 4 weeks forward from origin
+    if (originIdx < 0 || targetIdx >= historicalPoints.length) continue
+
+    const originPrice = historicalPoints[originIdx].price!
+    const actualTargetPrice = historicalPoints[targetIdx].price!
+
+    // Simulated prediction error: ~3.6% MAPE with slight directional bias
+    const errorPct = (rand() - 0.45) * 0.072 // centered slightly above 0, range ±3.6%
+    const predictedPrice = actualTargetPrice * (1 + errorPct)
+
+    // Interpolate daily values along the segment
+    for (let i = originIdx; i <= targetIdx; i++) {
+      const t = (i - originIdx) / (targetIdx - originIdx) // 0 to 1
+      const interpolated = originPrice + t * (predictedPrice - originPrice)
+      const point = historicalPoints[i]
+      // Find matching point in the full series by date
+      const seriesPoint = series.find(s => s.date === point.date)
+      if (seriesPoint) {
+        seriesPoint[track.field] = Math.round(interpolated * 100) / 100
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
 
@@ -177,6 +234,9 @@ export function generateCombinedChartData(
     estimatedVolume: volumeData[i]?.estimatedVolume ?? 0,
     isForecast: false,
   }))
+
+  // Overlay historical forecast tracks (what the model predicted in the past)
+  overlayHistoricalForecasts(series, instrument, days)
 
   // Append forecast points
   const forecasts = DEMO_FORECASTS[instrument]

@@ -24,7 +24,10 @@ interface PriceVolumeChartProps {
   height?: number
   showForecast?: boolean
   showVolume?: boolean
+  showHistoricalForecasts?: boolean
 }
+
+const HIST_FORECAST_COLOR = '#F59E0B' // amber — distinguishes from blue price/forecast
 
 const PriceVolumeChart: FC<PriceVolumeChartProps> = ({
   data,
@@ -33,6 +36,7 @@ const PriceVolumeChart: FC<PriceVolumeChartProps> = ({
   height = 420,
   showForecast = true,
   showVolume = true,
+  showHistoricalForecasts = false,
 }) => {
   const prefix = currency === 'AUD' ? 'A$' : '$'
 
@@ -52,6 +56,11 @@ const PriceVolumeChart: FC<PriceVolumeChartProps> = ({
       if (d.forecast != null) prices.push(d.forecast)
       if (d.forecastHigh95 != null) prices.push(d.forecastHigh95)
       if (d.forecastLow95 != null) prices.push(d.forecastLow95)
+      if (showHistoricalForecasts) {
+        if (d.histForecast1 != null) prices.push(d.histForecast1)
+        if (d.histForecast2 != null) prices.push(d.histForecast2)
+        if (d.histForecast3 != null) prices.push(d.histForecast3)
+      }
       if (d.creationVolume != null) volumes.push(d.creationVolume)
       if (d.surrenderVolume != null) volumes.push(d.surrenderVolume)
     }
@@ -239,6 +248,51 @@ const PriceVolumeChart: FC<PriceVolumeChartProps> = ({
             connectNulls={false}
             isAnimationActive={false}
           />
+
+          {/* --- Historical forecast tracks (amber dashed segments) --- */}
+          {showHistoricalForecasts && (
+            <>
+              <Line
+                yAxisId="price"
+                type="monotone"
+                dataKey="histForecast1"
+                name="Predicted (4w ago)"
+                stroke={HIST_FORECAST_COLOR}
+                strokeWidth={1.5}
+                strokeDasharray="4 2"
+                dot={false}
+                connectNulls={false}
+                isAnimationActive={false}
+                opacity={0.8}
+              />
+              <Line
+                yAxisId="price"
+                type="monotone"
+                dataKey="histForecast2"
+                name="Predicted (8w ago)"
+                stroke={HIST_FORECAST_COLOR}
+                strokeWidth={1.5}
+                strokeDasharray="4 2"
+                dot={false}
+                connectNulls={false}
+                isAnimationActive={false}
+                opacity={0.6}
+              />
+              <Line
+                yAxisId="price"
+                type="monotone"
+                dataKey="histForecast3"
+                name="Predicted (12w ago)"
+                stroke={HIST_FORECAST_COLOR}
+                strokeWidth={1.5}
+                strokeDasharray="4 2"
+                dot={false}
+                connectNulls={false}
+                isAnimationActive={false}
+                opacity={0.4}
+              />
+            </>
+          )}
 
           {/* --- Forecast centre line (dashed) --- */}
           {showForecast && (

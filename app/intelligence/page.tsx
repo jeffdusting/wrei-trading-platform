@@ -29,6 +29,7 @@ const IntelligencePage: FC = () => {
   const tokens = useDesignTokens('retail')
   const [activeTab, setActiveTab] = useState<TabId>('forecast')
   const [forecastInstrument, setForecastInstrument] = useState('ESC')
+  const [showHistForecasts, setShowHistForecasts] = useState(false)
   const chartData = useCombinedChartData(forecastInstrument, 180)
 
   return (
@@ -75,13 +76,24 @@ const IntelligencePage: FC = () => {
       <div>
         {activeTab === 'forecast' && (
           <div className="space-y-4">
-            {/* Instrument selector + spot price */}
+            {/* Instrument selector + toggle + spot price */}
             <div className="flex items-center justify-between flex-wrap gap-3">
-              <InstrumentSelector
-                instruments={[...CHART_INSTRUMENTS]}
-                selected={forecastInstrument}
-                onChange={setForecastInstrument}
-              />
+              <div className="flex items-center gap-4">
+                <InstrumentSelector
+                  instruments={[...CHART_INSTRUMENTS]}
+                  selected={forecastInstrument}
+                  onChange={setForecastInstrument}
+                />
+                <label className="flex items-center gap-1.5 bloomberg-small-text text-slate-500 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={showHistForecasts}
+                    onChange={e => setShowHistForecasts(e.target.checked)}
+                    className="rounded border-slate-300 text-amber-500 focus:ring-amber-500 w-3.5 h-3.5"
+                  />
+                  Historical Forecasts
+                </label>
+              </div>
               {chartData.meta && (
                 <SpotPriceHeader
                   instrument={chartData.meta.instrument}
@@ -102,6 +114,7 @@ const IntelligencePage: FC = () => {
                 height={350}
                 showForecast={true}
                 showVolume={true}
+                showHistoricalForecasts={showHistForecasts}
               />
             )}
 

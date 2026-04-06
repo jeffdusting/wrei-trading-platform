@@ -14,6 +14,10 @@ export interface ChartDataPoint {
   forecastLow95?: number           // 95% CI lower bound
   forecastHigh95?: number          // 95% CI upper bound
   isForecast: boolean              // true for future data points
+  // Historical forecast tracks — what the model predicted for this date in the past
+  histForecast1?: number           // Forecast made ~4 weeks before this date
+  histForecast2?: number           // Forecast made ~8 weeks before this date
+  histForecast3?: number           // Forecast made ~12 weeks before this date
 }
 
 export interface ChartMeta {
