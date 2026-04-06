@@ -20,7 +20,8 @@
 | 07 | [Deployment and Operations](./07-DEPLOYMENT-AND-OPERATIONS.md) | 1.0 | Setup, build, Vercel deployment (needs update for DB and cron) | DevOps, developers |
 | 08 | [Library Module Reference](./08-LIBRARY-MODULE-REFERENCE.md) | 1.0 | Library module inventory (needs update for P5-P11 modules) | Developers |
 | 09 | [Gap Analysis and Review](./09-GAP-ANALYSIS-AND-REVIEW.md) | 2.0 | Documentation coverage audit, gap identification, priorities | Product, engineering leads |
-| 10 | [System Specification](./10-SYSTEM-SPECIFICATION.md) | 1.0 | All 7 subsystems: negotiation, correspondence, intelligence, clients, AI router, market data, white-label | Architects, developers, QA |
+| 10 | [System Specification](./10-SYSTEM-SPECIFICATION.md) | 1.1 | All 7 subsystems: negotiation, correspondence, intelligence, clients, AI router, market data, white-label | Architects, developers, QA |
+| 11 | [Forecasting Model Specification](./11-FORECASTING-MODEL-SPECIFICATION.md) | 1.0 | Bayesian state-space, bounded OU, XGBoost ensemble, penalty ceiling, backtesting, chart display | Data science, developers, analysts |
 | -- | [Test Plan](./testing/test-plan.md) | 2.0 | Test strategy, 5 layers, regression suite (REG-A1 to REG-G3), gate protocol | QA, developers |
 
 ---

@@ -154,9 +154,17 @@ ESC price forecasting, supply/demand analysis, anomaly detection, and continuous
 | ML Counterfactual | `forecasting/models/counterfactual_model.py` | XGBoost walk-forward for 4w price, action, decision value |
 | Ensemble | `forecasting/models/ensemble_forecast.py` | CV-optimised weighted average minimising MAPE |
 
-### Forecast Horizons
-- 1 week, 4 weeks, 12 weeks, 26 weeks
-- Output: point forecast, 80% CI, 95% CI, regime probabilities
+### Forecast Horizons and Output
+- Anchor horizons: 1 week, 4 weeks, 12 weeks, 26 weeks (6 months)
+- Chart display: weekly interpolation produces 26 data points for smooth visualisation
+- Output per horizon: point forecast, 80% CI, 95% CI, regime probabilities
+- **Penalty rate ceiling:** All forecasts and CI bands are capped at the instrument penalty rate (ESC: A$29.48, VEEC: A$120.00). The OU model uses a reflecting boundary at the penalty rate. CI bands compress asymmetrically near the ceiling.
+- **Volume forecast:** Creation and surrender volumes projected from public IPART/CER annual rates, adjusted by regime probability (tightening reduces creation, increases surrender)
+
+### Chart Integration
+- `/analyse` — Market Overview tab: 2-column layout with price+volume+forecast chart (right), instrument data (left). Supports ESC/VEEC instrument selection, 1W-1Y time range, historical forecast overlay toggle, click-to-expand modal.
+- `/intelligence` — Forecast tab: price+volume+forecast chart above the ForecastPanel detail card.
+- Historical forecast overlay: 3 amber dashed tracks showing past model predictions (4w/8w/12w ago) vs actual, with ~3.6% MAPE error. Tooltip shows predicted price and error percentage.
 
 ### Data Sources
 

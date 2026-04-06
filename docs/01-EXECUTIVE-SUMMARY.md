@@ -51,7 +51,8 @@ The platform supports two operational modes:
 | AI Negotiation Engine | Implemented | Claude Opus 4.6 with 15 buyer personas, emotional intelligence, committee mode |
 | Bloomberg Terminal Interface | Implemented | Professional data-dense UI with 6 consolidated navigation items, market ticker, command bar |
 | AI Correspondence Engine | Implemented | RFQ drafting, offer parsing, counter-offer generation, trade confirmations, client reports |
-| ESC Market Intelligence | Implemented | Bayesian + ML ensemble forecasting, supply/demand analysis, anomaly detection, policy monitoring |
+| ESC Market Intelligence | Implemented | Bayesian + ML ensemble forecasting (6-month horizon, penalty-capped), supply/demand analysis, anomaly detection, policy monitoring |
+| Price & Volume Charts | Implemented | Recharts ComposedChart with price history, forecast overlay (weekly interpolated), volume bars, CI bands, historical forecast accuracy toggle |
 | Procurement Triggers | Implemented | Forecast-connected timing signals with deadline override logic |
 | Client Management | Implemented | Entity management, holdings tracking, compliance monitoring, surrender progress |
 | Settlement Facilitation | Implemented | TESSA/VEEC registry instructions, overdue follow-up, status tracking |
