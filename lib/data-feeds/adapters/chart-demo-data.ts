@@ -268,29 +268,63 @@ export function generateCombinedChartData(
     const dailyBaseSurrender = vp ? vp.annualSurrender / 260 : 0
 
     const ceiling = PENALTY_CEILINGS[instrument]
+    const cap = (v: number) => ceiling ? Math.min(v, ceiling) : v
 
-    for (const fc of forecasts) {
+    // Build weekly interpolated forecast from the sparse horizon points.
+    // The forecast anchors are at weeks 0 (now), 1, 4, 12, 26.
+    // We interpolate to produce a point every week for a smooth curve.
+    const currentSpot = lastHistPoint?.price ?? simParams.spot
+    const anchors = [
+      { week: 0, price: currentSpot, lo80: currentSpot, hi80: currentSpot, lo95: currentSpot, hi95: currentSpot, regime: forecasts[0]?.regimeProbabilities ?? {} },
+      ...forecasts.map(fc => ({
+        week: fc.horizonWeeks,
+        price: fc.priceForecast,
+        lo80: fc.ci80.lower, hi80: fc.ci80.upper,
+        lo95: fc.ci95.lower, hi95: fc.ci95.upper,
+        regime: fc.regimeProbabilities,
+      })),
+    ]
+
+    const maxWeek = anchors[anchors.length - 1].week
+    for (let w = 1; w <= maxWeek; w++) {
       const futureDate = new Date(now)
-      futureDate.setDate(futureDate.getDate() + fc.horizonWeeks * 7)
+      futureDate.setDate(futureDate.getDate() + w * 7)
 
-      // Enforce penalty rate ceiling on all price forecasts and CI bands
-      const cap = (v: number) => ceiling ? Math.min(v, ceiling) : v
+      // Find surrounding anchors for interpolation
+      let lo = anchors[0], hi = anchors[anchors.length - 1]
+      for (let a = 0; a < anchors.length - 1; a++) {
+        if (w >= anchors[a].week && w <= anchors[a + 1].week) {
+          lo = anchors[a]
+          hi = anchors[a + 1]
+          break
+        }
+      }
 
-      // Forecast volume: adjust base rates by regime probability
-      // Tightening = lower creation, higher surrender pressure
-      // Surplus = higher creation, lower surrender
-      const tighteningProb = fc.regimeProbabilities.tightening ?? 0.2
-      const surplusProb = fc.regimeProbabilities.surplus ?? 0.25
+      // Linear interpolation between anchor points
+      const span = hi.week - lo.week || 1
+      const t = (w - lo.week) / span
+      const lerp = (a: number, b: number) => a + t * (b - a)
+      const round2 = (v: number) => Math.round(v * 100) / 100
+
+      const forecastPrice = round2(lerp(lo.price, hi.price))
+      const lo80 = round2(lerp(lo.lo80, hi.lo80))
+      const hi80 = round2(lerp(lo.hi80, hi.hi80))
+      const lo95 = round2(lerp(lo.lo95, hi.lo95))
+      const hi95 = round2(lerp(lo.hi95, hi.hi95))
+
+      // Interpolate regime probabilities for volume projection
+      const tighteningProb = lerp(lo.regime.tightening ?? 0.2, hi.regime.tightening ?? 0.2)
+      const surplusProb = lerp(lo.regime.surplus ?? 0.25, hi.regime.surplus ?? 0.25)
       const creationAdj = 1 - (tighteningProb * 0.15) + (surplusProb * 0.10)
       const surrenderAdj = 1 + (tighteningProb * 0.10) - (surplusProb * 0.05)
 
       series.push({
         date: futureDate.toISOString().slice(0, 10),
-        forecast: cap(fc.priceForecast),
-        forecastLow80: fc.ci80.lower,
-        forecastHigh80: cap(fc.ci80.upper),
-        forecastLow95: fc.ci95.lower,
-        forecastHigh95: cap(fc.ci95.upper),
+        forecast: cap(forecastPrice),
+        forecastLow80: lo80,
+        forecastHigh80: cap(hi80),
+        forecastLow95: lo95,
+        forecastHigh95: cap(hi95),
         creationVolume: vp ? Math.round(dailyBaseCreation * creationAdj) : undefined,
         surrenderVolume: vp ? Math.round(dailyBaseSurrender * surrenderAdj) : undefined,
         isForecast: true,
