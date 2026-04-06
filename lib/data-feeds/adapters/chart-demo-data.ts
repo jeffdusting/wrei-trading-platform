@@ -238,9 +238,20 @@ export function generateCombinedChartData(
   // Overlay historical forecast tracks (what the model predicted in the past)
   overlayHistoricalForecasts(series, instrument, days)
 
-  // Append forecast points
+  // Append forecast points — bridge from current price into future forecasts
   const forecasts = DEMO_FORECASTS[instrument]
   if (forecasts) {
+    // Bridge point: the last historical date also gets a forecast value = current spot
+    // This connects the price line to the forecast line with no gap at NOW
+    const lastHistPoint = series[series.length - 1]
+    if (lastHistPoint && lastHistPoint.price != null) {
+      lastHistPoint.forecast = lastHistPoint.price
+      lastHistPoint.forecastLow80 = lastHistPoint.price
+      lastHistPoint.forecastHigh80 = lastHistPoint.price
+      lastHistPoint.forecastLow95 = lastHistPoint.price
+      lastHistPoint.forecastHigh95 = lastHistPoint.price
+    }
+
     const now = new Date()
     for (const fc of forecasts) {
       const futureDate = new Date(now)

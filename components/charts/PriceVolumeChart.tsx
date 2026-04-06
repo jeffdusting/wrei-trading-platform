@@ -74,7 +74,7 @@ const PriceVolumeChart: FC<PriceVolumeChartProps> = ({
       // Scale volume axis so bars occupy bottom ~25% of chart
       volumeDomain: [0, maxVol * 4] as [number, number],
     }
-  }, [data])
+  }, [data, showHistoricalForecasts])
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return ''
