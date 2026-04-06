@@ -369,7 +369,7 @@ class ESCStateSpaceModel:
         self,
         new_observations: Dict[str, Any],
         horizons: Optional[List[int]] = None,
-        penalty_rate: float = 36.20,
+        penalty_rate: float = 29.48,
     ) -> ForecastResult:
         """
         Incorporate new data and produce updated forecasts.
@@ -524,7 +524,7 @@ def test_update_and_forecast():
     })
     assert len(result.price_forecasts) == 4  # default horizons
     for fc in result.price_forecasts:
-        assert fc.upper_95 <= 36.20 + 0.5  # near penalty ceiling at most
+        assert fc.upper_95 <= 29.48 + 0.5  # near penalty ceiling at most
         assert fc.lower_95 >= 0
 
 

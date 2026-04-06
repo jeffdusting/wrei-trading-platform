@@ -227,7 +227,7 @@ def forecast_at_horizons(
 def forecast(
     current_price: float,
     regime: str = "balanced",
-    penalty_rate: float = 36.20,
+    penalty_rate: float = 29.48,
     horizons: Optional[List[int]] = None,
     custom_params: Optional[OURegimeParams] = None,
     n_paths: int = 5000,
@@ -285,15 +285,15 @@ def test_mean_reversion():
 
 def test_bounded_by_penalty_rate():
     """No forecast path exceeds the penalty rate."""
-    params = OURegimeParams(theta=0.05, mu=34.0, sigma=2.0)
-    penalty = 36.20
-    paths = simulate_paths(34.0, params, penalty, n_steps=52, n_paths=3000)
+    params = OURegimeParams(theta=0.05, mu=27.0, sigma=2.0)
+    penalty = 29.48
+    paths = simulate_paths(27.0, params, penalty, n_steps=52, n_paths=3000)
     assert np.all(paths <= penalty), "Some paths exceeded the penalty rate ceiling"
 
 
 def test_confidence_intervals_widen():
     """Confidence intervals widen with forecast horizon."""
-    results = forecast(24.0, regime="balanced", penalty_rate=36.20, horizons=[1, 4, 12, 26])
+    results = forecast(24.0, regime="balanced", horizons=[1, 4, 12, 26])
     widths = [(r.upper_80 - r.lower_80) for r in results]
     for i in range(1, len(widths)):
         assert widths[i] >= widths[i - 1] * 0.95, (
@@ -337,7 +337,7 @@ if __name__ == "__main__":
 
     # Demo forecast
     print("\n--- Demo: balanced regime, current price $24.00 ---")
-    results = forecast(24.0, regime="balanced", penalty_rate=36.20)
+    results = forecast(24.0, regime="balanced")
     for r in results:
         print(f"  {r.horizon_weeks:2d}w: ${r.mean:.2f}  "
               f"80%=[${r.lower_80:.2f}, ${r.upper_80:.2f}]  "

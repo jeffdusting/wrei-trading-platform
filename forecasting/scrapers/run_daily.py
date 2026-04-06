@@ -112,8 +112,8 @@ def compute_derived_metrics(
         "instrument_type": "ESC",
     }
 
-    # Penalty rate (2025 CPI-adjusted estimate)
-    penalty_rate = 36.20
+    # Penalty rate (IPART 2026 ESS)
+    penalty_rate = 29.48
     metrics["penalty_rate"] = penalty_rate
 
     if spot_price:

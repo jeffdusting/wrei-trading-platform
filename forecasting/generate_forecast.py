@@ -35,7 +35,7 @@ from forecasting.models.state_space import (
 
 HORIZONS = [1, 4, 12, 26]
 MODEL_VERSION = "1.0.0"
-DEFAULT_PENALTY_RATE = 36.20
+DEFAULT_PENALTY_RATE = 29.48  # IPART 2026 ESS penalty rate
 
 
 def load_latest_from_db() -> dict | None:

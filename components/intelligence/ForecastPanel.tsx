@@ -22,6 +22,11 @@ interface ForecastData {
 }
 
 // Demo data when API/DB not available
+// ESC penalty rate A$29.48 (IPART 2026) creates an effective price ceiling.
+// No rational buyer pays above the penalty rate — CI bands must respect this.
+// Upper bands compress as they approach the ceiling (asymmetric distribution).
+const ESC_PENALTY_RATE = 29.48
+
 const DEMO_FORECASTS: ForecastHorizon[] = [
   {
     horizonWeeks: 1,
@@ -40,14 +45,14 @@ const DEMO_FORECASTS: ForecastHorizon[] = [
   {
     horizonWeeks: 12,
     priceForecast: 25.50,
-    confidenceIntervals: { ci80: { lower: 22.00, upper: 29.00 }, ci95: { lower: 20.50, upper: 30.50 } },
+    confidenceIntervals: { ci80: { lower: 22.00, upper: 28.50 }, ci95: { lower: 20.50, upper: 29.48 } },
     regimeProbabilities: { surplus: 0.20, balanced: 0.45, tightening: 0.35 },
     metadata: null,
   },
   {
     horizonWeeks: 26,
-    priceForecast: 27.20,
-    confidenceIntervals: { ci80: { lower: 21.00, upper: 33.40 }, ci95: { lower: 18.50, upper: 35.90 } },
+    priceForecast: 26.80,
+    confidenceIntervals: { ci80: { lower: 21.00, upper: 29.00 }, ci95: { lower: 18.50, upper: 29.48 } },
     regimeProbabilities: { surplus: 0.15, balanced: 0.40, tightening: 0.45 },
     metadata: null,
   },

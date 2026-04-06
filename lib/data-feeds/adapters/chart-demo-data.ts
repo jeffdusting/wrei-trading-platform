@@ -57,11 +57,18 @@ interface DemoForecast {
   forecastSurrenderVolume?: number
 }
 
+// Penalty rates create effective price ceilings per instrument.
+// No rational buyer pays above the penalty — CI bands must respect this.
+const PENALTY_CEILINGS: Partial<Record<InstrumentType, number>> = {
+  ESC: 29.48,   // IPART 2026 ESS penalty rate
+  VEEC: 120.00, // VEU penalty rate
+}
+
 const ESC_FORECASTS: DemoForecast[] = [
   { horizonWeeks: 1, priceForecast: 23.85, ci80: { lower: 23.10, upper: 24.60 }, ci95: { lower: 22.50, upper: 25.20 }, regimeProbabilities: { surplus: 0.25, balanced: 0.55, tightening: 0.20 } },
   { horizonWeeks: 4, priceForecast: 24.30, ci80: { lower: 22.80, upper: 25.80 }, ci95: { lower: 21.90, upper: 26.70 }, regimeProbabilities: { surplus: 0.25, balanced: 0.55, tightening: 0.20 } },
-  { horizonWeeks: 12, priceForecast: 25.50, ci80: { lower: 22.00, upper: 29.00 }, ci95: { lower: 20.50, upper: 30.50 }, regimeProbabilities: { surplus: 0.20, balanced: 0.45, tightening: 0.35 } },
-  { horizonWeeks: 26, priceForecast: 27.20, ci80: { lower: 21.00, upper: 33.40 }, ci95: { lower: 18.50, upper: 35.90 }, regimeProbabilities: { surplus: 0.15, balanced: 0.40, tightening: 0.45 } },
+  { horizonWeeks: 12, priceForecast: 25.50, ci80: { lower: 22.00, upper: 28.50 }, ci95: { lower: 20.50, upper: 29.48 }, regimeProbabilities: { surplus: 0.20, balanced: 0.45, tightening: 0.35 } },
+  { horizonWeeks: 26, priceForecast: 26.80, ci80: { lower: 21.00, upper: 29.00 }, ci95: { lower: 18.50, upper: 29.48 }, regimeProbabilities: { surplus: 0.15, balanced: 0.40, tightening: 0.45 } },
 ]
 
 const VEEC_FORECASTS: DemoForecast[] = [
@@ -260,9 +267,14 @@ export function generateCombinedChartData(
     const dailyBaseCreation = vp ? vp.annualCreation / 260 : 0
     const dailyBaseSurrender = vp ? vp.annualSurrender / 260 : 0
 
+    const ceiling = PENALTY_CEILINGS[instrument]
+
     for (const fc of forecasts) {
       const futureDate = new Date(now)
       futureDate.setDate(futureDate.getDate() + fc.horizonWeeks * 7)
+
+      // Enforce penalty rate ceiling on all price forecasts and CI bands
+      const cap = (v: number) => ceiling ? Math.min(v, ceiling) : v
 
       // Forecast volume: adjust base rates by regime probability
       // Tightening = lower creation, higher surrender pressure
@@ -274,11 +286,11 @@ export function generateCombinedChartData(
 
       series.push({
         date: futureDate.toISOString().slice(0, 10),
-        forecast: fc.priceForecast,
+        forecast: cap(fc.priceForecast),
         forecastLow80: fc.ci80.lower,
-        forecastHigh80: fc.ci80.upper,
+        forecastHigh80: cap(fc.ci80.upper),
         forecastLow95: fc.ci95.lower,
-        forecastHigh95: fc.ci95.upper,
+        forecastHigh95: cap(fc.ci95.upper),
         creationVolume: vp ? Math.round(dailyBaseCreation * creationAdj) : undefined,
         surrenderVolume: vp ? Math.round(dailyBaseSurrender * surrenderAdj) : undefined,
         isForecast: true,
