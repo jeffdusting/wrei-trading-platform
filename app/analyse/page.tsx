@@ -3,6 +3,13 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { PRICING_INDEX } from '@/lib/negotiation-config'
+import PriceVolumeChart from '@/components/charts/PriceVolumeChart'
+import InstrumentSelector from '@/components/charts/InstrumentSelector'
+import TimeRangeSelector from '@/components/charts/TimeRangeSelector'
+import SpotPriceHeader from '@/components/charts/SpotPriceHeader'
+import { useCombinedChartData } from '@/components/charts/hooks/useCombinedChartData'
+import { CHART_INSTRUMENTS, TIME_RANGE_DAYS } from '@/components/charts/types'
+import type { TimeRange } from '@/components/charts/types'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -96,8 +103,14 @@ export default function AnalysePage() {
   const [filterCoBenefits, setFilterCoBenefits] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState('')
 
+  // Price Charts state
+  const [chartInstrument, setChartInstrument] = useState('ESC')
+  const [chartRange, setChartRange] = useState<TimeRange>('3M')
+  const chartData = useCombinedChartData(chartInstrument, TIME_RANGE_DAYS[chartRange])
+
   const tabs = [
     { id: 'overview', label: 'Market Overview' },
+    { id: 'charts', label: 'Price Charts' },
     { id: 'carbon', label: 'Carbon Credits' },
     { id: 'calculator', label: 'Investment Calculator' },
     { id: 'scenarios', label: 'Market Scenarios' },
@@ -318,6 +331,96 @@ export default function AnalysePage() {
                 )}
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ============================================================= */}
+        {/* PRICE CHARTS TAB                                               */}
+        {/* ============================================================= */}
+        {activeTab === 'charts' && (
+          <div className="space-y-4">
+            {/* Controls row */}
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-4">
+                <InstrumentSelector
+                  instruments={[...CHART_INSTRUMENTS]}
+                  selected={chartInstrument}
+                  onChange={setChartInstrument}
+                />
+                <TimeRangeSelector
+                  selected={chartRange}
+                  onChange={setChartRange}
+                />
+              </div>
+              {chartData.meta && (
+                <SpotPriceHeader
+                  instrument={chartData.meta.instrument}
+                  spotPrice={chartData.meta.currentSpot}
+                  change={chartData.meta.priceChange24h}
+                  changePct={chartData.meta.priceChangePct}
+                  currency={chartData.meta.currency}
+                />
+              )}
+            </div>
+
+            {/* Chart */}
+            {chartData.loading ? (
+              <div className="bg-white rounded-lg border border-slate-200 p-8 flex items-center justify-center" style={{ height: 420 }}>
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                  <span className="bloomberg-body-text text-slate-500">Loading chart data...</span>
+                </div>
+              </div>
+            ) : chartData.error ? (
+              <div className="bg-white rounded-lg border border-slate-200 p-8 text-center">
+                <p className="bloomberg-body-text text-red-500">{chartData.error}</p>
+                <button onClick={chartData.refresh} className="mt-2 text-xs text-blue-600 hover:text-blue-800">
+                  Retry
+                </button>
+              </div>
+            ) : (
+              <PriceVolumeChart
+                data={chartData.series}
+                instrument={chartInstrument}
+                currency={chartData.meta?.currency}
+                height={420}
+                showForecast={true}
+                showVolume={true}
+              />
+            )}
+
+            {/* Regime + model info */}
+            {chartData.meta?.regimeProbabilities && Object.keys(chartData.meta.regimeProbabilities).length > 0 && (
+              <div className="bg-white rounded-lg border border-slate-200 p-4">
+                <div className="bloomberg-small-text text-slate-500 mb-2 font-medium">REGIME PROBABILITY</div>
+                <div className="flex gap-1 h-5 rounded overflow-hidden">
+                  {Object.entries(chartData.meta.regimeProbabilities).map(([regime, prob]) => {
+                    const colors: Record<string, string> = {
+                      surplus: '#10B981', balanced: '#6B7280', tightening: '#EF4444',
+                    }
+                    return (
+                      <div
+                        key={regime}
+                        className="flex items-center justify-center text-white font-medium"
+                        style={{
+                          width: `${(prob as number) * 100}%`,
+                          backgroundColor: colors[regime] ?? '#6B7280',
+                          fontSize: '9px',
+                          minWidth: (prob as number) > 0.1 ? undefined : 0,
+                        }}
+                        title={`${regime}: ${((prob as number) * 100).toFixed(1)}%`}
+                      >
+                        {(prob as number) > 0.15 ? `${regime} ${((prob as number) * 100).toFixed(0)}%` : ''}
+                      </div>
+                    )
+                  })}
+                </div>
+                <div className="mt-2 flex items-center gap-4 bloomberg-small-text text-slate-500">
+                  <span>Model: {chartData.meta.modelVersion ?? '—'}</span>
+                  <span>Updated: {chartData.meta.forecastGeneratedAt ? new Date(chartData.meta.forecastGeneratedAt).toLocaleDateString('en-AU') : '—'}</span>
+                </div>
+              </div>
+            )}
           </div>
         )}
 

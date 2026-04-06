@@ -3,6 +3,11 @@
 import { FC, useState } from 'react'
 import { useDesignTokens } from '@/design-system/tokens/professional-tokens'
 import ForecastPanel from '@/components/intelligence/ForecastPanel'
+import PriceVolumeChart from '@/components/charts/PriceVolumeChart'
+import InstrumentSelector from '@/components/charts/InstrumentSelector'
+import SpotPriceHeader from '@/components/charts/SpotPriceHeader'
+import { useCombinedChartData } from '@/components/charts/hooks/useCombinedChartData'
+import { CHART_INSTRUMENTS } from '@/components/charts/types'
 import SupplyDemandPanel from '@/components/intelligence/SupplyDemandPanel'
 import AlertsFeed from '@/components/intelligence/AlertsFeed'
 import BacktestReport from '@/components/intelligence/BacktestReport'
@@ -23,6 +28,8 @@ type TabId = (typeof TABS)[number]['id']
 const IntelligencePage: FC = () => {
   const tokens = useDesignTokens('retail')
   const [activeTab, setActiveTab] = useState<TabId>('forecast')
+  const [forecastInstrument, setForecastInstrument] = useState('ESC')
+  const chartData = useCombinedChartData(forecastInstrument, 180)
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
@@ -67,12 +74,45 @@ const IntelligencePage: FC = () => {
       {/* Tab content */}
       <div>
         {activeTab === 'forecast' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div className="lg:col-span-2">
-              <ForecastPanel />
+          <div className="space-y-4">
+            {/* Instrument selector + spot price */}
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <InstrumentSelector
+                instruments={[...CHART_INSTRUMENTS]}
+                selected={forecastInstrument}
+                onChange={setForecastInstrument}
+              />
+              {chartData.meta && (
+                <SpotPriceHeader
+                  instrument={chartData.meta.instrument}
+                  spotPrice={chartData.meta.currentSpot}
+                  change={chartData.meta.priceChange24h}
+                  changePct={chartData.meta.priceChangePct}
+                  currency={chartData.meta.currency}
+                />
+              )}
             </div>
-            <div>
-              <AlertsFeed />
+
+            {/* Price + volume + forecast chart */}
+            {!chartData.loading && chartData.series.length > 0 && (
+              <PriceVolumeChart
+                data={chartData.series}
+                instrument={forecastInstrument}
+                currency={chartData.meta?.currency}
+                height={350}
+                showForecast={true}
+                showVolume={true}
+              />
+            )}
+
+            {/* Existing forecast detail + alerts */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <div className="lg:col-span-2">
+                <ForecastPanel />
+              </div>
+              <div>
+                <AlertsFeed />
+              </div>
             </div>
           </div>
         )}
