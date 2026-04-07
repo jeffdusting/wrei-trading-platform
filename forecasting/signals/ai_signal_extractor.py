@@ -30,7 +30,9 @@ import requests
 ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
 DEFAULT_MODEL = "claude-sonnet-4-20250514"
 MAX_TOKENS = 500
+MAX_EXTRACTION_TOKENS = 512
 ANTHROPIC_VERSION = "2023-06-01"
+MAX_CALLS_PER_RUN = 30
 
 
 def _get_api_key() -> str:
@@ -133,7 +135,140 @@ def _call_claude(prompt: str, system: str, max_retries: int = 2) -> Dict[str, An
 
 
 # ---------------------------------------------------------------------------
-# Extraction functions
+# Enhanced signal extraction (P2-C)
+# ---------------------------------------------------------------------------
+
+ENHANCED_SYSTEM_PROMPT = (
+    "You are an expert analyst of the Australian Energy Savings Certificate (ESC) "
+    "market. You are extracting structured market signals from a document to feed "
+    "into a quantitative forecasting model.\n\n"
+    "The ESC market operates under the NSW Energy Savings Scheme (ESS), administered "
+    "by IPART. Key dynamics:\n"
+    "- ESC prices are bounded above by the IPART penalty rate (currently A$29.48/certificate)\n"
+    "- Supply is driven by certificate creation from accredited activities (commercial "
+    "lighting phase-out completing Dec 2026 removes ~22% of creation volume)\n"
+    "- Demand is driven by obligated entity surrender requirements\n"
+    "- The market has three regimes: surplus (oversupplied, prices low), balanced, "
+    "tightening (undersupplied, prices approach penalty ceiling)\n\n"
+    "Analyse the following document and extract a structured signal. Be conservative "
+    "— only flag a signal as active if the document contains specific, actionable "
+    "information that would change a trader's view of ESC supply, demand, or pricing "
+    "within the next 26 weeks.\n\n"
+    "Respond with ONLY a JSON object matching this exact schema:\n"
+    "{\n"
+    '    "policy_signal_active": true/false,\n'
+    '    "supply_impact_pct": float between -1.0 and 1.0 (negative = supply reduction, positive = supply increase),\n'
+    '    "demand_impact_pct": float between -1.0 and 1.0 (negative = demand reduction, positive = demand increase),\n'
+    '    "signal_confidence": float between 0.0 and 1.0,\n'
+    '    "signal_horizon_weeks": integer 1-26,\n'
+    '    "regime_override_prob": float between 0.0 and 1.0 (probability the market regime should change as a result),\n'
+    '    "regime_override_direction": "tightening" or "surplus" or "none",\n'
+    '    "event_category": one of "rule_change", "penalty_determination", "activity_phaseout", '
+    '"scheme_expansion", "compliance_enforcement", "political_signal", "market_commentary", "cross_scheme"\n'
+    "}"
+)
+
+VALID_EVENT_CATEGORIES = {
+    "rule_change", "penalty_determination", "activity_phaseout",
+    "scheme_expansion", "compliance_enforcement", "political_signal",
+    "market_commentary", "cross_scheme",
+}
+
+VALID_REGIME_DIRECTIONS = {"tightening", "surplus", "none"}
+
+
+def extract_signal(document: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Extract an enhanced structured signal from a single document.
+
+    Args:
+        document: Dict with keys from the ingestion pipeline —
+            source_name, document_type, title, published_date, content_text.
+
+    Returns:
+        Dict with the enhanced signal schema including signal_source,
+        signal_confidence, signal_horizon_weeks, regime_override_prob,
+        regime_override_direction, and event_category.
+    """
+    source_name = document.get("source_name", "unknown")
+    document_type = document.get("document_type", "unknown")
+    published_date = document.get("published_date", "unknown")
+    title = document.get("title", "")
+    content_text = document.get("content_text", "")
+
+    prompt = (
+        f"Document source: {source_name}\n"
+        f"Document type: {document_type}\n"
+        f"Published: {published_date}\n"
+        f"Title: {title}\n\n"
+        f"Content:\n{content_text[:8000]}"
+    )
+
+    api_key = _get_api_key()
+    headers = {
+        "x-api-key": api_key,
+        "anthropic-version": ANTHROPIC_VERSION,
+        "content-type": "application/json",
+    }
+    payload = {
+        "model": DEFAULT_MODEL,
+        "max_tokens": MAX_EXTRACTION_TOKENS,
+        "temperature": 0,
+        "system": ENHANCED_SYSTEM_PROMPT,
+        "messages": [{"role": "user", "content": prompt}],
+    }
+
+    result: Dict[str, Any] = {}
+    for attempt in range(3):
+        try:
+            resp = requests.post(
+                ANTHROPIC_API_URL,
+                headers=headers,
+                json=payload,
+                timeout=30,
+            )
+            resp.raise_for_status()
+            text = resp.json()["content"][0]["text"].strip()
+            if text.startswith("```"):
+                text = text.split("\n", 1)[1] if "\n" in text else text[3:]
+                if text.endswith("```"):
+                    text = text[:-3]
+                text = text.strip()
+            result = json.loads(text)
+            break
+        except (requests.RequestException, json.JSONDecodeError, KeyError) as exc:
+            if attempt < 2:
+                time.sleep(1.0 * (attempt + 1))
+                continue
+            raise RuntimeError(
+                f"Signal extraction failed after 3 attempts: {exc}"
+            ) from exc
+
+    # Normalise and clamp values
+    signal: Dict[str, Any] = {
+        "policy_signal_active": bool(result.get("policy_signal_active", False)),
+        "supply_impact_pct": max(-1.0, min(1.0, float(result.get("supply_impact_pct", 0.0)))),
+        "demand_impact_pct": max(-1.0, min(1.0, float(result.get("demand_impact_pct", 0.0)))),
+        "signal_source": source_name,
+        "signal_confidence": max(0.0, min(1.0, float(result.get("signal_confidence", 0.5)))),
+        "signal_horizon_weeks": max(1, min(26, int(result.get("signal_horizon_weeks", 12)))),
+        "regime_override_prob": max(0.0, min(1.0, float(result.get("regime_override_prob", 0.0)))),
+        "regime_override_direction": (
+            result.get("regime_override_direction", "none")
+            if result.get("regime_override_direction") in VALID_REGIME_DIRECTIONS
+            else "none"
+        ),
+        "event_category": (
+            result.get("event_category", "market_commentary")
+            if result.get("event_category") in VALID_EVENT_CATEGORIES
+            else "market_commentary"
+        ),
+    }
+    return signal
+
+
+# ---------------------------------------------------------------------------
+# Legacy extraction functions (preserved for backward compatibility)
 # ---------------------------------------------------------------------------
 
 POLICY_SYSTEM = (
@@ -297,29 +432,64 @@ def extract_legislative_signal(
 
 
 # ---------------------------------------------------------------------------
-# Batch processing
+# Batch processing (P2-C — ingestion pipeline integration)
 # ---------------------------------------------------------------------------
 
 def extract_signals_batch(
-    documents: List[Dict[str, str]],
-) -> List[PolicySignal]:
+    documents: List[Dict[str, Any]],
+    db_path: Optional[str] = None,
+) -> List[Dict[str, Any]]:
     """
-    Process a batch of policy documents and extract signals.
+    Process queued documents from the ingestion pipeline and extract signals.
 
-    Each document dict should have keys: text, document_type, publication_date.
-    Rate-limited to avoid API throttling.
+    Each document dict should match the schema returned by
+    ``IntelligencePipeline.get_pending_documents()`` — keys include id,
+    source_name, document_type, title, published_date, content_text.
+
+    Results are written back to the SQLite database via ``mark_extracted``.
+    A maximum of MAX_CALLS_PER_RUN (30) API calls are made per invocation;
+    remaining documents are left queued for the next run.
+
+    Args:
+        documents: List of document dicts from the ingestion pipeline.
+        db_path: Optional path to the SQLite DB.  When *None* the pipeline
+            default is used.
+
+    Returns:
+        List of active signal dicts (only those with policy_signal_active=True).
     """
-    signals = []
-    for i, doc in enumerate(documents):
-        signal = extract_policy_signal(
-            document_text=doc["text"],
-            document_type=doc["document_type"],
-            publication_date=doc["publication_date"],
-        )
-        signals.append(signal)
-        if i < len(documents) - 1:
+    # Lazy import to avoid circular dependency at module level
+    from forecasting.ingestion.pipeline import IntelligencePipeline
+
+    pipeline = IntelligencePipeline(db_path=db_path)
+    active_signals: List[Dict[str, Any]] = []
+    calls_made = 0
+
+    for doc in documents:
+        if calls_made >= MAX_CALLS_PER_RUN:
+            break
+
+        doc_id = doc.get("id")
+        try:
+            signal = extract_signal(doc)
+            calls_made += 1
+
+            # Write result back to SQLite
+            if doc_id is not None:
+                pipeline.mark_extracted(doc_id, json.dumps(signal))
+
+            if signal.get("policy_signal_active"):
+                active_signals.append(signal)
+
+        except Exception:
+            # Skip failed documents — they remain queued (signal_extracted=0)
+            continue
+
+        # Rate-limit delay between calls
+        if calls_made < MAX_CALLS_PER_RUN and calls_made < len(documents):
             time.sleep(0.5)
-    return signals
+
+    return active_signals
 
 
 # ---------------------------------------------------------------------------
