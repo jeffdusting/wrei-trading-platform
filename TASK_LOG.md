@@ -1,5 +1,54 @@
 # WREI Trading Platform — Task Log
 
+## Forecasting Advancement — Session A (Audit Remediation)
+**Date:** 2026-04-07
+**Status:** COMPLETE
+
+### Task 1: Persist Missing Analysis Artefacts
+- `forecasting/analysis/feature_independence_report.json` — 35 features, 28 highly correlated pairs (|r|>0.8), 20 features with VIF>10
+- `forecasting/analysis/ensemble_weight_history.json` — weight log from `run_ensemble_evaluation()`
+- `generate_forward_curve()` now loads latest spot price from `esc_reconstruction.csv` instead of hardcoded $23.50; warns if current_price equals balanced regime mu
+- `test_bounded_by_penalty_rate()` now loads current year's penalty rate from `penalty_rates.json` instead of hardcoded $29.48
+
+### Task 2: Statistical Significance Testing
+- Binomial test: directional accuracy 53.7% (n=270, p=0.1238) — not significant at 5%
+- Diebold-Mariano test: DM=-2.589, p=0.0096 — naive significantly outperforms model on squared error loss (expected on synthetic data where naive random walk is hard to beat)
+- Both tests added to `backtest_engine.py` (`binomial_test_directional_accuracy()`, `diebold_mariano_test()`) and integrated into `ModelScorecard`
+- Results: `forecasting/analysis/statistical_significance.json`
+
+### Task 3: Ensemble Weight Investigation
+- Full-data optimal weight: Bayesian=0.15, ML=0.85
+- Walk-forward window analysis: weight varies from 0.00 to 1.00 across windows (26w mean=0.27, 52w mean=0.17, 78w mean=0.12, 104w mean=0.09)
+- Not consistently below 0.15 → clamping NOT applied (MAPE impact of clamping would be +0.02%)
+- Verdict: **Borderline — ML-dominant on average but Bayesian contributes meaningfully in some windows**
+- Report: `forecasting/analysis/ensemble_weight_investigation.md`
+
+### Files Created/Modified
+- `forecasting/models/ensemble_forecast.py` — `_load_latest_spot_price()`, balanced mu warning
+- `forecasting/models/ou_bounded.py` — `_load_current_penalty_rate()`, Path import
+- `forecasting/backtesting/backtest_engine.py` — `binomial_test_directional_accuracy()`, `diebold_mariano_test()`, ModelScorecard fields
+- `forecasting/scripts/generate_analysis_artefacts.py` (new)
+- `forecasting/scripts/run_statistical_tests.py` (new)
+- `forecasting/scripts/investigate_ensemble_weights.py` (new)
+- `forecasting/analysis/feature_independence_report.json` (new)
+- `forecasting/analysis/ensemble_weight_history.json` (new)
+- `forecasting/analysis/statistical_significance.json` (new)
+- `forecasting/analysis/ensemble_weight_investigation.md` (new)
+- `forecasting/analysis/ensemble_weight_investigation.json` (new)
+
+### Tests Run
+| Check | Result |
+|-------|--------|
+| Python test suite (50/50) | **PASS** |
+| TypeScript build (`npm run build`) | **PASS** |
+| TypeScript type check (`tsc --noEmit`) | **PASS** |
+| All artefact files exist | **PASS** |
+
+### Next Session
+- Session B: Historical backfill, genuine data validation
+
+---
+
 ## Forecasting Model Improvement — Phase 4 (Regression)
 **Date:** 2026-04-07
 **Status:** COMPLETE

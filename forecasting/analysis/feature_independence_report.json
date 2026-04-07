@@ -1,0 +1,327 @@
+{
+  "n_features": 35,
+  "n_observations": 326,
+  "feature_names": [
+    "spot_price",
+    "creation_velocity_4w",
+    "creation_velocity_12w",
+    "creation_velocity_trend",
+    "cumulative_surplus",
+    "surplus_runway_years",
+    "days_to_surrender",
+    "penalty_rate",
+    "price_to_penalty_ratio",
+    "activity_cl_pct",
+    "activity_heer_pct",
+    "activity_iheab_pct",
+    "activity_piamv_pct",
+    "policy_signal_active",
+    "policy_supply_impact_pct",
+    "policy_demand_impact_pct",
+    "broker_sentiment",
+    "supply_concern_level",
+    "creation_trend_accelerating",
+    "creation_trend_decelerating",
+    "estimated_shadow_supply",
+    "regime_surplus_prob",
+    "regime_balanced_prob",
+    "regime_tightening_prob",
+    "signal_confidence",
+    "signal_horizon_weeks",
+    "regime_override_prob",
+    "event_cat_rule_change",
+    "event_cat_penalty_determination",
+    "event_cat_activity_phaseout",
+    "event_cat_scheme_expansion",
+    "event_cat_compliance_enforcement",
+    "event_cat_political_signal",
+    "event_cat_market_commentary",
+    "event_cat_cross_scheme"
+  ],
+  "high_correlation_pairs": [
+    {
+      "feature_a": "activity_cl_pct",
+      "feature_b": "activity_iheab_pct",
+      "correlation": -0.998
+    },
+    {
+      "feature_a": "activity_cl_pct",
+      "feature_b": "activity_heer_pct",
+      "correlation": -0.9976
+    },
+    {
+      "feature_a": "activity_cl_pct",
+      "feature_b": "activity_piamv_pct",
+      "correlation": -0.9962
+    },
+    {
+      "feature_a": "activity_iheab_pct",
+      "feature_b": "activity_piamv_pct",
+      "correlation": 0.9947
+    },
+    {
+      "feature_a": "penalty_rate",
+      "feature_b": "activity_piamv_pct",
+      "correlation": 0.9931
+    },
+    {
+      "feature_a": "activity_heer_pct",
+      "feature_b": "activity_iheab_pct",
+      "correlation": 0.9927
+    },
+    {
+      "feature_a": "activity_heer_pct",
+      "feature_b": "activity_piamv_pct",
+      "correlation": 0.9889
+    },
+    {
+      "feature_a": "cumulative_surplus",
+      "feature_b": "surplus_runway_years",
+      "correlation": 0.987
+    },
+    {
+      "feature_a": "cumulative_surplus",
+      "feature_b": "penalty_rate",
+      "correlation": 0.9818
+    },
+    {
+      "feature_a": "penalty_rate",
+      "feature_b": "activity_cl_pct",
+      "correlation": -0.98
+    },
+    {
+      "feature_a": "penalty_rate",
+      "feature_b": "activity_iheab_pct",
+      "correlation": 0.9788
+    },
+    {
+      "feature_a": "cumulative_surplus",
+      "feature_b": "activity_piamv_pct",
+      "correlation": 0.9714
+    },
+    {
+      "feature_a": "penalty_rate",
+      "feature_b": "activity_heer_pct",
+      "correlation": 0.967
+    },
+    {
+      "feature_a": "cumulative_surplus",
+      "feature_b": "activity_cl_pct",
+      "correlation": -0.9577
+    },
+    {
+      "feature_a": "cumulative_surplus",
+      "feature_b": "activity_iheab_pct",
+      "correlation": 0.9542
+    },
+    {
+      "feature_a": "surplus_runway_years",
+      "feature_b": "penalty_rate",
+      "correlation": 0.9495
+    },
+    {
+      "feature_a": "cumulative_surplus",
+      "feature_b": "activity_heer_pct",
+      "correlation": 0.9458
+    },
+    {
+      "feature_a": "spot_price",
+      "feature_b": "price_to_penalty_ratio",
+      "correlation": 0.9378
+    },
+    {
+      "feature_a": "creation_velocity_4w",
+      "feature_b": "creation_velocity_12w",
+      "correlation": 0.9308
+    },
+    {
+      "feature_a": "surplus_runway_years",
+      "feature_b": "activity_piamv_pct",
+      "correlation": 0.9292
+    },
+    {
+      "feature_a": "surplus_runway_years",
+      "feature_b": "activity_cl_pct",
+      "correlation": -0.9072
+    },
+    {
+      "feature_a": "surplus_runway_years",
+      "feature_b": "activity_iheab_pct",
+      "correlation": 0.902
+    },
+    {
+      "feature_a": "spot_price",
+      "feature_b": "regime_tightening_prob",
+      "correlation": 0.8991
+    },
+    {
+      "feature_a": "surplus_runway_years",
+      "feature_b": "activity_heer_pct",
+      "correlation": 0.8917
+    },
+    {
+      "feature_a": "activity_heer_pct",
+      "feature_b": "regime_tightening_prob",
+      "correlation": 0.8246
+    },
+    {
+      "feature_a": "activity_cl_pct",
+      "feature_b": "regime_tightening_prob",
+      "correlation": -0.8156
+    },
+    {
+      "feature_a": "activity_piamv_pct",
+      "feature_b": "regime_tightening_prob",
+      "correlation": 0.8068
+    },
+    {
+      "feature_a": "activity_iheab_pct",
+      "feature_b": "regime_tightening_prob",
+      "correlation": 0.8027
+    }
+  ],
+  "vif": {
+    "spot_price": {
+      "vif": 10597.82
+    },
+    "creation_velocity_4w": {
+      "vif": 1834.2
+    },
+    "creation_velocity_12w": {
+      "vif": 1744.64
+    },
+    "creation_velocity_trend": {
+      "vif": 253.84
+    },
+    "cumulative_surplus": {
+      "vif": 13630.83
+    },
+    "surplus_runway_years": {
+      "vif": 5237.18
+    },
+    "days_to_surrender": {
+      "vif": 3.17
+    },
+    "penalty_rate": {
+      "vif": 7009.38
+    },
+    "price_to_penalty_ratio": {
+      "vif": 6520.07
+    },
+    "activity_cl_pct": {
+      "vif": 10000000000.0
+    },
+    "activity_heer_pct": {
+      "vif": 10000000000.0
+    },
+    "activity_iheab_pct": {
+      "vif": 10000000000.0
+    },
+    "activity_piamv_pct": {
+      "vif": 10000000000.0
+    },
+    "policy_signal_active": {
+      "vif": 2.81
+    },
+    "policy_supply_impact_pct": {
+      "vif": 3.11
+    },
+    "policy_demand_impact_pct": {
+      "vif": 5.57
+    },
+    "broker_sentiment": {
+      "vif": 34.65
+    },
+    "supply_concern_level": {
+      "vif": 30.46
+    },
+    "creation_trend_accelerating": {
+      "vif": 13.56
+    },
+    "creation_trend_decelerating": {
+      "vif": 11.77
+    },
+    "estimated_shadow_supply": {
+      "vif": 10.98
+    },
+    "regime_surplus_prob": {
+      "vif": 58431639.54
+    },
+    "regime_balanced_prob": {
+      "vif": 90365330.16
+    },
+    "regime_tightening_prob": {
+      "vif": 120625030.54
+    },
+    "signal_confidence": {
+      "vif": Infinity,
+      "note": "constant column"
+    },
+    "signal_horizon_weeks": {
+      "vif": Infinity,
+      "note": "constant column"
+    },
+    "regime_override_prob": {
+      "vif": Infinity,
+      "note": "constant column"
+    },
+    "event_cat_rule_change": {
+      "vif": Infinity,
+      "note": "constant column"
+    },
+    "event_cat_penalty_determination": {
+      "vif": Infinity,
+      "note": "constant column"
+    },
+    "event_cat_activity_phaseout": {
+      "vif": Infinity,
+      "note": "constant column"
+    },
+    "event_cat_scheme_expansion": {
+      "vif": Infinity,
+      "note": "constant column"
+    },
+    "event_cat_compliance_enforcement": {
+      "vif": Infinity,
+      "note": "constant column"
+    },
+    "event_cat_political_signal": {
+      "vif": Infinity,
+      "note": "constant column"
+    },
+    "event_cat_market_commentary": {
+      "vif": Infinity,
+      "note": "constant column"
+    },
+    "event_cat_cross_scheme": {
+      "vif": Infinity,
+      "note": "constant column"
+    }
+  },
+  "summary": {
+    "n_high_corr_pairs": 28,
+    "max_vif": 10000000000.0,
+    "features_with_vif_above_10": [
+      "spot_price",
+      "creation_velocity_4w",
+      "creation_velocity_12w",
+      "creation_velocity_trend",
+      "cumulative_surplus",
+      "surplus_runway_years",
+      "penalty_rate",
+      "price_to_penalty_ratio",
+      "activity_cl_pct",
+      "activity_heer_pct",
+      "activity_iheab_pct",
+      "activity_piamv_pct",
+      "broker_sentiment",
+      "supply_concern_level",
+      "creation_trend_accelerating",
+      "creation_trend_decelerating",
+      "estimated_shadow_supply",
+      "regime_surplus_prob",
+      "regime_balanced_prob",
+      "regime_tightening_prob"
+    ]
+  }
+}

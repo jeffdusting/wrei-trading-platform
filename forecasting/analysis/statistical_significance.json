@@ -1,0 +1,12 @@
+{
+  "directional_accuracy": {
+    "observed": 0.5370370370370371,
+    "n": 270,
+    "pvalue": 0.12375429259514482
+  },
+  "diebold_mariano": {
+    "statistic": -2.589,
+    "pvalue": 0.009624,
+    "interpretation": "Naive significantly outperforms model (p < 0.05)"
+  }
+}

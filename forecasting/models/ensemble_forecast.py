@@ -307,13 +307,47 @@ class EnsembleForecaster:
         regime: str = "balanced",
         penalty_rate: float = 35.86,
     ) -> None:
-        self.current_price = current_price or 23.50
+        import logging
+
+        logger = logging.getLogger(__name__)
+
+        if current_price is not None:
+            self.current_price = current_price
+        else:
+            # Load latest spot price from data_assembly reconstruction
+            self.current_price = self._load_latest_spot_price()
+
         self.regime = regime
         self.penalty_rate = penalty_rate
 
         if regime not in DEFAULT_REGIMES:
             raise ValueError(f"Unknown regime '{regime}'. Must be one of: {list(DEFAULT_REGIMES.keys())}")
         self.ou_params = DEFAULT_REGIMES[regime]
+
+        # Warn if current_price equals balanced regime mu (no market signal)
+        if abs(self.current_price - DEFAULT_REGIMES["balanced"].mu) < 0.01:
+            logger.warning(
+                "current_price (%.2f) equals balanced regime mu — "
+                "no market signal in the forecast. Consider providing "
+                "an explicit current_price.",
+                self.current_price,
+            )
+
+    @staticmethod
+    def _load_latest_spot_price() -> float:
+        """Load the latest observation's spot price from the reconstruction dataset."""
+        try:
+            import pandas as pd
+
+            csv_path = Path(__file__).parent.parent / "data" / "esc_reconstruction.csv"
+            if csv_path.exists():
+                df = pd.read_csv(csv_path)
+                last_price = df["spot_price"].dropna().iloc[-1]
+                return float(last_price)
+        except Exception:
+            pass
+        # Fallback to balanced regime mu
+        return DEFAULT_REGIMES["balanced"].mu
 
     def _ou_expected_price(self, t: float) -> float:
         """

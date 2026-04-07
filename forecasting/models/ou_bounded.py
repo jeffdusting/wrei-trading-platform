@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
@@ -283,10 +284,26 @@ def test_mean_reversion():
     assert mean_at_52_high < 30.0, f"Expected convergence toward mu=25, got {mean_at_52_high:.2f}"
 
 
+def _load_current_penalty_rate() -> float:
+    """Load the current year's ESC penalty rate from the JSON reference file."""
+    import json
+    from datetime import datetime
+
+    json_path = Path(__file__).parent.parent / "reference_data" / "penalty_rates.json"
+    try:
+        with open(json_path, "r") as f:
+            data = json.load(f)
+        rates = {int(y): float(r) for y, r in data["esc"]["rates"].items()}
+        current_year = datetime.now().year
+        return rates.get(current_year, rates[max(rates.keys())])
+    except Exception:
+        return 35.86  # fallback
+
+
 def test_bounded_by_penalty_rate():
     """No forecast path exceeds the penalty rate."""
     params = OURegimeParams(theta=0.05, mu=27.0, sigma=2.0)
-    penalty = 29.48
+    penalty = _load_current_penalty_rate()
     paths = simulate_paths(27.0, params, penalty, n_steps=52, n_paths=3000)
     assert np.all(paths <= penalty), "Some paths exceeded the penalty rate ceiling"
 

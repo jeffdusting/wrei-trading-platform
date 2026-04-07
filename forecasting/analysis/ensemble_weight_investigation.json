@@ -1,0 +1,58 @@
+{
+  "full_data_weight": {
+    "bayesian": 0.15,
+    "ml": 0.85,
+    "mape": 0.037015
+  },
+  "clamped_comparison": {
+    "unclamped_mape": 0.037015,
+    "clamped_mape": 0.037218,
+    "mape_impact": 0.000203,
+    "mape_impact_pct": "0.0203%",
+    "clamped_bayesian_weight": 0.2
+  },
+  "window_analysis": [
+    {
+      "window_size": 26,
+      "n_evaluations": 248,
+      "mean_bayesian_weight": 0.271,
+      "std_bayesian_weight": 0.3504,
+      "min_bayesian_weight": 0.0,
+      "max_bayesian_weight": 1.0,
+      "pct_below_0.15": 0.5444,
+      "pct_above_0.85": 0.1331
+    },
+    {
+      "window_size": 52,
+      "n_evaluations": 222,
+      "mean_bayesian_weight": 0.1694,
+      "std_bayesian_weight": 0.2713,
+      "min_bayesian_weight": 0.0,
+      "max_bayesian_weight": 1.0,
+      "pct_below_0.15": 0.6486,
+      "pct_above_0.85": 0.0586
+    },
+    {
+      "window_size": 78,
+      "n_evaluations": 196,
+      "mean_bayesian_weight": 0.1237,
+      "std_bayesian_weight": 0.2379,
+      "min_bayesian_weight": 0.0,
+      "max_bayesian_weight": 1.0,
+      "pct_below_0.15": 0.6939,
+      "pct_above_0.85": 0.051
+    },
+    {
+      "window_size": 104,
+      "n_evaluations": 170,
+      "mean_bayesian_weight": 0.0853,
+      "std_bayesian_weight": 0.2124,
+      "min_bayesian_weight": 0.0,
+      "max_bayesian_weight": 1.0,
+      "pct_below_0.15": 0.8,
+      "pct_above_0.85": 0.0412
+    }
+  ],
+  "is_effectively_single_model": false,
+  "verdict": "The ensemble is genuinely multi-model"
+}

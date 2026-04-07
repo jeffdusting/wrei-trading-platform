@@ -1,0 +1,10 @@
+{
+  "history": [
+    {
+      "timestamp": "2026-04-07T09:40:11.460972",
+      "bayesian_weight": 0.15,
+      "ml_weight": 0.85,
+      "validation_mape": 0.037015
+    }
+  ]
+}

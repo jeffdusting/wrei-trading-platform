@@ -106,6 +106,9 @@ class ModelScorecard:
     avg_win_value: float
     avg_loss_value: float
     regime_accuracy: Dict[str, float] = field(default_factory=dict)
+    directional_accuracy_pvalue: Optional[float] = None
+    dm_statistic: Optional[float] = None
+    dm_pvalue: Optional[float] = None
 
 
 @dataclass
@@ -439,6 +442,108 @@ class BacktestEngine:
 
 
 # ---------------------------------------------------------------------------
+# Statistical significance tests
+# ---------------------------------------------------------------------------
+
+def binomial_test_directional_accuracy(
+    correct: int,
+    total: int,
+    null_p: float = 0.5,
+) -> Dict[str, Any]:
+    """
+    Binomial test: is directional accuracy significantly better than chance?
+
+    Args:
+        correct: number of correct directional predictions
+        total: total directional predictions
+        null_p: null hypothesis probability (default 0.5 for random)
+
+    Returns:
+        dict with observed accuracy, n, and two-sided p-value.
+    """
+    from scipy.stats import binomtest
+
+    result = binomtest(correct, total, null_p, alternative="greater")
+    return {
+        "observed": correct / max(total, 1),
+        "n": total,
+        "pvalue": float(result.pvalue),
+    }
+
+
+def diebold_mariano_test(
+    forecast_errors: np.ndarray,
+    naive_errors: np.ndarray,
+    loss: str = "squared",
+) -> Dict[str, Any]:
+    """
+    Diebold-Mariano test: are ensemble forecast errors significantly different
+    from naive model errors?
+
+    Uses the standard DM test with squared error loss, two-sided.
+
+    Args:
+        forecast_errors: array of (forecast - actual) for the model
+        naive_errors: array of (naive_forecast - actual)
+        loss: "squared" or "absolute"
+
+    Returns:
+        dict with DM statistic, p-value, and interpretation.
+    """
+    from scipy.stats import norm
+
+    if loss == "squared":
+        d = naive_errors ** 2 - forecast_errors ** 2
+    else:
+        d = np.abs(naive_errors) - np.abs(forecast_errors)
+
+    n = len(d)
+    if n < 5:
+        return {
+            "statistic": float("nan"),
+            "pvalue": float("nan"),
+            "interpretation": "Insufficient data for DM test",
+        }
+
+    d_mean = float(np.mean(d))
+    # HAC variance estimate (Newey-West with automatic lag selection)
+    # Use lag = int(n^(1/3)) as a rule of thumb
+    max_lag = max(1, int(n ** (1.0 / 3.0)))
+    gamma_0 = float(np.var(d, ddof=1))
+    autocovariances = 0.0
+    for k in range(1, max_lag + 1):
+        weight = 1.0 - k / (max_lag + 1.0)  # Bartlett kernel
+        gamma_k = float(np.cov(d[k:], d[:-k], ddof=1)[0, 1])
+        autocovariances += 2.0 * weight * gamma_k
+
+    variance = (gamma_0 + autocovariances) / n
+    if variance <= 0:
+        return {
+            "statistic": float("nan"),
+            "pvalue": float("nan"),
+            "interpretation": "Non-positive variance estimate",
+        }
+
+    dm_stat = d_mean / np.sqrt(variance)
+    # Two-sided test
+    p_value = 2.0 * (1.0 - norm.cdf(abs(dm_stat)))
+
+    if p_value < 0.05:
+        if dm_stat > 0:
+            interp = "Model significantly outperforms naive (p < 0.05)"
+        else:
+            interp = "Naive significantly outperforms model (p < 0.05)"
+    else:
+        interp = "No significant difference between model and naive"
+
+    return {
+        "statistic": round(float(dm_stat), 4),
+        "pvalue": round(float(p_value), 6),
+        "interpretation": interp,
+    }
+
+
+# ---------------------------------------------------------------------------
 # Scorecard generation
 # ---------------------------------------------------------------------------
 
@@ -519,6 +624,22 @@ def generate_scorecard(
         if regime_total[r] > 0
     }
 
+    # Statistical significance tests
+    binom_result = binomial_test_directional_accuracy(correct_dir, total_dir)
+
+    # Diebold-Mariano: collect forecast and naive errors
+    forecast_errs = []
+    naive_errs = []
+    for rec in records:
+        actual = rec.actuals.get(horizon)
+        if actual is None:
+            continue
+        forecast_errs.append(rec.forecasts[horizon] - actual)
+        naive_errs.append(rec.current_price - actual)
+    dm_result = diebold_mariano_test(
+        np.array(forecast_errs), np.array(naive_errs)
+    ) if len(forecast_errs) >= 5 else {"statistic": None, "pvalue": None}
+
     return ModelScorecard(
         model_name=name,
         mape_4w=float(np.mean(ape_list)) if ape_list else 0.0,
@@ -530,6 +651,9 @@ def generate_scorecard(
         avg_win_value=float(np.mean(wins)) if wins else 0.0,
         avg_loss_value=float(np.mean(losses)) if losses else 0.0,
         regime_accuracy=regime_acc,
+        directional_accuracy_pvalue=binom_result["pvalue"],
+        dm_statistic=dm_result.get("statistic"),
+        dm_pvalue=dm_result.get("pvalue"),
     )
 
 
