@@ -1,5 +1,47 @@
 # WREI Trading Platform — Task Log
 
+## Forecasting Model Improvement — Phase 4 (Regression)
+**Date:** 2026-04-07
+**Status:** COMPLETE
+**Git Tag:** forecasting-v2.0.0
+
+### Regression Verdict
+- **PASS**: Improved model does not degrade directional accuracy or decision value on synthetic data
+
+### Key Metrics
+- Directional accuracy: 53.7% (baseline) -> 53.7% (improved) — no degradation
+- Decision value: A$1,480,000 (baseline) -> A$1,480,000 (improved) — no degradation
+- MAPE (synthetic): 3.72% (baseline) -> 3.72% (improved) — no change
+- Sharpe ratio: 3.01 (baseline) -> 3.01 (improved) — no change
+
+### Files Created
+- `forecasting/tests/test_regression.py` (new) — 27 regression tests across 9 categories
+- `forecasting/analysis/REGRESSION_REPORT.md` (new) — Full comparison report
+
+### Tests Run
+| Check | Result |
+|-------|--------|
+| Regression test suite (27/27) | **PASS** |
+| Full Python test suite (50/50) | **PASS** |
+| All Python modules import cleanly | **PASS** |
+| TypeScript build (`npm run build`) | **PASS** |
+| TypeScript type check (`tsc --noEmit`) | **PASS** |
+
+### Completion Checklist
+- [x] P1 gate passed
+- [x] P2-A gate passed
+- [x] P2-B gate passed
+- [x] P2-C gate passed
+- [x] P2-D gate passed
+- [x] P3 gate passed
+- [x] P4 regression report shows PASS
+- [x] All Python modules import cleanly
+- [x] TypeScript build passes
+- [x] REGRESSION_REPORT.md generated
+- [x] Tagged forecasting-v2.0.0
+
+---
+
 ## Forecasting Model Improvement — Phase 3 (Enhancements)
 **Date:** 2026-04-07
 **Status:** COMPLETE
