@@ -1,5 +1,33 @@
 # WREI Trading Platform — Task Log
 
+## Forecasting Model Improvement — Phase 2-C (Signals)
+**Date:** 2026-04-07
+**Status:** COMPLETE
+**Git Tag:** forecasting-p2c-signals
+
+### Files Modified
+- `forecasting/signals/ai_signal_extractor.py` — added `extract_signal()` with enhanced schema, rewrote `extract_signals_batch()` for pipeline integration
+
+### Implementation Details
+- **`extract_signal(document)`** — new function accepting ingestion pipeline document dicts, returns enhanced schema with `signal_source`, `signal_confidence`, `signal_horizon_weeks`, `regime_override_prob`, `regime_override_direction`, `event_category`
+- **Enhanced system prompt** — ESC market-aware prompt with conservative extraction guidance, regime awareness, event categorisation
+- **`extract_signals_batch(documents, db_path)`** — rewritten to: integrate with `IntelligencePipeline`, enforce 30-call rate limit per run, write results back via `mark_extracted()`, return only active signals
+- **Backward compatibility** — all existing `PolicySignal`, `BrokerSentiment`, `LegislativeSignal` dataclasses and extraction functions preserved unchanged
+- **Value clamping** — all output fields normalised and clamped to valid ranges; invalid enum values default safely
+
+### Tests Run
+| Check | Result |
+|-------|--------|
+| Gate 1: `extract_signal` importable + signature | **PASS** |
+| Gate 2: `extract_signals_batch` importable + signature | **PASS** |
+| Gate 3: Test suite (16/16) | **PASS** |
+
+### Next Phase
+- Read `docs/forecasting-improvement/06-P2D-INTEGRATION.md`
+- Prerequisites: All 3 gate checks pass (confirmed)
+
+---
+
 ## Forecasting Model Improvement — Phase 2-B (Ingestion)
 **Date:** 2026-04-07
 **Status:** COMPLETE
