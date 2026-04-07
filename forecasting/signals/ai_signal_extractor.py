@@ -42,6 +42,38 @@ def _get_api_key() -> str:
     return key
 
 
+_CALIBRATION_CACHE: Optional[Dict[str, Any]] = None
+
+
+def _load_calibration_factors() -> Dict[str, float]:
+    """
+    Load calibration scaling factors from signal_calibration.json.
+
+    Returns default (1.0) factors if the file does not exist.
+    """
+    global _CALIBRATION_CACHE
+    if _CALIBRATION_CACHE is not None:
+        return _CALIBRATION_CACHE
+
+    cal_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..", "calibration", "signal_calibration.json",
+    )
+    try:
+        with open(cal_path, "r") as f:
+            data = json.load(f)
+        _CALIBRATION_CACHE = {
+            "supply_scaling_factor": float(data.get("supply_scaling_factor", 1.0)),
+            "demand_scaling_factor": float(data.get("demand_scaling_factor", 1.0)),
+        }
+    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+        _CALIBRATION_CACHE = {
+            "supply_scaling_factor": 1.0,
+            "demand_scaling_factor": 1.0,
+        }
+    return _CALIBRATION_CACHE
+
+
 # ---------------------------------------------------------------------------
 # Data types
 # ---------------------------------------------------------------------------
@@ -245,10 +277,18 @@ def extract_signal(document: Dict[str, Any]) -> Dict[str, Any]:
             ) from exc
 
     # Normalise and clamp values
+    raw_supply = max(-1.0, min(1.0, float(result.get("supply_impact_pct", 0.0))))
+    raw_demand = max(-1.0, min(1.0, float(result.get("demand_impact_pct", 0.0))))
+
+    # Apply calibration scaling factors if available
+    cal = _load_calibration_factors()
+    supply_scaled = raw_supply * cal["supply_scaling_factor"]
+    demand_scaled = raw_demand * cal["demand_scaling_factor"]
+
     signal: Dict[str, Any] = {
         "policy_signal_active": bool(result.get("policy_signal_active", False)),
-        "supply_impact_pct": max(-1.0, min(1.0, float(result.get("supply_impact_pct", 0.0)))),
-        "demand_impact_pct": max(-1.0, min(1.0, float(result.get("demand_impact_pct", 0.0)))),
+        "supply_impact_pct": max(-1.0, min(1.0, supply_scaled)),
+        "demand_impact_pct": max(-1.0, min(1.0, demand_scaled)),
         "signal_source": source_name,
         "signal_confidence": max(0.0, min(1.0, float(result.get("signal_confidence", 0.5)))),
         "signal_horizon_weeks": max(1, min(26, int(result.get("signal_horizon_weeks", 12)))),

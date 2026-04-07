@@ -109,6 +109,7 @@ class ModelScorecard:
     directional_accuracy_pvalue: Optional[float] = None
     dm_statistic: Optional[float] = None
     dm_pvalue: Optional[float] = None
+    adjusted_decision_value: Optional[float] = None
 
 
 @dataclass
@@ -640,6 +641,12 @@ def generate_scorecard(
         np.array(forecast_errs), np.array(naive_errs)
     ) if len(forecast_errs) >= 5 else {"statistic": None, "pvalue": None}
 
+    # Compute market-impact-adjusted decision value
+    from forecasting.models.market_impact import adjust_value_for_impact
+    adj_decision_value = adjust_value_for_impact(
+        cumulative, NOTIONAL_POSITION, "ESC",
+    )
+
     return ModelScorecard(
         model_name=name,
         mape_4w=float(np.mean(ape_list)) if ape_list else 0.0,
@@ -654,6 +661,7 @@ def generate_scorecard(
         directional_accuracy_pvalue=binom_result["pvalue"],
         dm_statistic=dm_result.get("statistic"),
         dm_pvalue=dm_result.get("pvalue"),
+        adjusted_decision_value=adj_decision_value,
     )
 
 

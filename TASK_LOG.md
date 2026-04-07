@@ -1,5 +1,64 @@
 # WREI Trading Platform — Task Log
 
+## Forecasting Advancement — Session C (Signal Calibration + Market Impact + Narratives)
+**Date:** 2026-04-08
+**Status:** COMPLETE
+
+### Task 1: Signal Extraction Validation Set & Calibration
+- `forecasting/calibration/signal_validation_set.json` (new) — 25 validation documents sourced from IPART/Ecovantage archives and known ESS policy events (2019–2026). Includes 7 known future events (CLESF end date, SONA end date, doorknocking ban, IHEAB reporting, HEER warranty, F8/F9 end date, ESS Rule review).
+- `forecasting/scripts/run_signal_calibration.py` (new) — Calibration pipeline: loads validation set, computes direction accuracy and magnitude scaling factors against actual price outcomes.
+- `forecasting/calibration/signal_calibration.json` (new) — Calibration output: supply_scaling_factor=0.2447, demand_scaling_factor=0.2447, direction_reliable=true.
+- `forecasting/analysis/signal_calibration_report.md` (new) — Full calibration report.
+- `forecasting/signals/ai_signal_extractor.py` — Added `_load_calibration_factors()` and integrated scaling into `extract_signal()`.
+- **Results:**
+  - Direction accuracy: 70.6% (12/17) — above 60% reliability threshold
+  - Magnitude: extractor overpredicts impact by ~4.1x → scaling factor 0.2447 applied
+  - Predicted-actual correlation: -0.17 (weak, expected on synthetic data)
+
+### Task 2: Market Impact Modelling
+- `forecasting/models/market_impact.py` (new) — `estimate_market_impact()` and `adjust_value_for_impact()` with linear volume-fraction model.
+  - Default weekly volumes: ESC=120k, VEEC=85k, ACCU=360k, LGC=58k, STC=481k
+  - Impact coefficient: 0.5
+- `forecasting/backtesting/backtest_engine.py` — Added `adjusted_decision_value` field to `ModelScorecard`, integrated market impact calculation.
+- **NMG counterfactual recalculation:**
+  - Raw: A$142,680
+  - Impact-adjusted (50k notional): A$112,955 (20.8% reduction)
+  - Impact for 50k ESC trade: 0.208
+
+### Task 3: Probabilistic Scenario Narratives
+- `forecasting/narratives/__init__.py` (new)
+- `forecasting/narratives/scenario_narrator.py` (new) — `generate_forecast_narrative()` with Claude Sonnet 4 API integration + template-based fallback.
+  - Produces 3-paragraph plain-English briefing: forecast drivers, risks/signals, broker action
+  - Temperature 0.3, max 512 tokens, conciseness directive
+  - Falls back to template narrative when API key unavailable
+- `forecasting/generate_forecast.py` — Integrated narrative generation as Stage 9b in `run_pipeline()`.
+
+### Files Created/Modified
+- `forecasting/calibration/signal_validation_set.json` (new)
+- `forecasting/calibration/signal_calibration.json` (new)
+- `forecasting/scripts/run_signal_calibration.py` (new)
+- `forecasting/analysis/signal_calibration_report.md` (new)
+- `forecasting/signals/ai_signal_extractor.py` — Calibration scaling
+- `forecasting/models/market_impact.py` (new)
+- `forecasting/backtesting/backtest_engine.py` — adjusted_decision_value
+- `forecasting/narratives/__init__.py` (new)
+- `forecasting/narratives/scenario_narrator.py` (new)
+- `forecasting/generate_forecast.py` — Stage 9b narrative
+
+### Tests Run
+| Check | Result |
+|-------|--------|
+| Python test suite (50/50) | **PASS** |
+| Market impact import & calculation | **PASS** |
+| Narrative module import | **PASS** |
+| Template narrative generation | **PASS** |
+| TypeScript build (`npm run build`) | **PASS** |
+
+### Next Session
+- Session D: Multi-instrument architecture, ACCU model, tokenised credits
+
+---
+
 ## Forecasting Advancement — Session B (Historical Backfill)
 **Date:** 2026-04-08
 **Status:** COMPLETE

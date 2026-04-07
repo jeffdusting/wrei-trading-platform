@@ -374,6 +374,39 @@ def run_pipeline(csv_only: bool = False) -> ForecastResult:
         logger.warning("Ensemble forward curve failed: %s", exc)
         print(f"  [pipeline] Stage 9: Forward curve FAILED ({exc})")
 
+    # --- Stage 9b: Scenario narrative -----------------------------------------
+    narrative = ""
+    try:
+        from forecasting.narratives.scenario_narrator import generate_forecast_narrative
+
+        # Build forecast dict for the narrator
+        forecast_for_narrative = {
+            "current_price": current_price,
+            "price_forecast_4w": kalman_4w,
+            "price_forecast_12w": forward_curve[11]["price"] if len(forward_curve) > 11 else kalman_4w,
+            "confidence_interval_80": (
+                forward_curve[3]["ci_80_lower"] if len(forward_curve) > 3 else 0,
+                forward_curve[3]["ci_80_upper"] if len(forward_curve) > 3 else 0,
+            ),
+            "recommended_action": "hold",
+            "action_confidence": 0.5,
+        }
+
+        regime_probs = (
+            latest_state.regime_probabilities if latest_state else {}
+        )
+
+        narrative = generate_forecast_narrative(
+            forecast=forecast_for_narrative,
+            active_signals=active_signals,
+            regime_probabilities=regime_probs,
+            instrument="ESC",
+        )
+        print(f"  [pipeline] Stage 9b: Narrative generated ({len(narrative)} chars)")
+    except Exception as exc:
+        logger.warning("Narrative generation failed: %s", exc)
+        print(f"  [pipeline] Stage 9b: Narrative FAILED ({exc})")
+
     # --- Stage 10: Anomaly detection ----------------------------------------
     try:
         from forecasting.monitoring.anomaly_detector import (

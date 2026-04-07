@@ -1,0 +1,9 @@
+{
+  "supply_scaling_factor": 0.2447,
+  "demand_scaling_factor": 0.2447,
+  "direction_reliable": true,
+  "direction_accuracy": 0.7059,
+  "n_validation_docs": 25,
+  "n_with_actuals": 17,
+  "calibrated_at": "2026-04-08"
+}
