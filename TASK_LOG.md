@@ -1,5 +1,37 @@
 # WREI Trading Platform — Task Log
 
+## Forecasting Model Improvement — Phase 2-D (Integration)
+**Date:** 2026-04-07
+**Status:** COMPLETE
+**Git Tag:** forecasting-p2d-integration
+
+### Files Modified
+- `forecasting/models/counterfactual_model.py` — XGBoost feature expansion (11 signal features, confidence-based zero-masking)
+- `forecasting/monitoring/anomaly_detector.py` — `detect_policy_event_anomalies()` for policy_event_detected anomaly type
+- `forecasting/generate_forecast.py` — `run_pipeline()` with 12-stage orchestration, per-stage error handling
+
+### Implementation Details
+- **P2.4a XGBoost:** FEATURES_INDEPENDENT expanded from 24 → 35 features. Signal features zero-masked when signal_confidence < 0.5. `prepare_features()` uses `reindex()` to handle missing columns gracefully.
+- **P2.4b Regime override:** Wired in `run_pipeline()` stage 5 — calls `override_regime_probability()` when regime_override_prob > 0.7 AND signal_confidence > 0.8.
+- **P2.4c Anomaly detector:** `detect_policy_event_anomalies(signals)` triggers on relevance_score > 0.7, signal_confidence > 0.6, policy_signal_active=True. Severity medium/high based on confidence threshold 0.8.
+- **P2.5 Pipeline:** 12-stage `run_pipeline()` with graceful degradation — scraper failures skip that source, ingestion failures fall back to existing data, signal extraction failures zero-fill XGBoost features.
+
+### Tests Run
+| Check | Result |
+|-------|--------|
+| Gate 1: All 6 new scrapers import | **PASS** |
+| Gate 2: Ingestion pipeline operational | **PASS** |
+| Gate 3: Signal extractor schema | **PASS** |
+| Gate 4: Feature expansion (11 signal features, 35 total independent) | **PASS** |
+| Gate 5: Pipeline orchestration includes ingestion | **PASS** |
+| Gate 6: Test suite (16/16) | **PASS** |
+
+### Next Phase
+- Read `docs/forecasting-improvement/07-P3-ENHANCEMENTS.md`
+- Prerequisites: All 6 gate checks pass (confirmed)
+
+---
+
 ## Forecasting Model Improvement — Phase 2-C (Signals)
 **Date:** 2026-04-07
 **Status:** COMPLETE
