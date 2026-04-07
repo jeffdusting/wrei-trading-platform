@@ -40,3 +40,6 @@ next-env.d.ts
 .build-prompts/
 build.sh
 build.log
+
+# forecasting pipeline runtime data
+forecasting/data/*.db

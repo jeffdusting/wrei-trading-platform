@@ -1,5 +1,37 @@
 # WREI Trading Platform — Task Log
 
+## Forecasting Model Improvement — Phase 2-B (Ingestion)
+**Date:** 2026-04-07
+**Status:** COMPLETE
+**Git Tag:** forecasting-p2b-ingestion
+
+### Files Created
+- `forecasting/ingestion/__init__.py` — package init
+- `forecasting/ingestion/pipeline.py` — `IntelligencePipeline` class (4-stage pipeline: dedup, relevance classification, content normalisation, SQLite storage)
+
+### Files Modified
+- `.gitignore` — added `forecasting/data/*.db` to prevent runtime SQLite DBs from being committed
+
+### Pipeline Design
+- **Stage 1 (Dedup):** SHA-256 hash check against in-memory set + DB. Re-publishes with newer dates flagged for re-extraction.
+- **Stage 2 (Relevance):** Two-stage filter — keyword match (16 ESC terms) then Claude Haiku AI scoring (0.0–1.0). Tiers: <0.3 discarded, 0.3–0.7 batch, >0.7 fast-track. Graceful fallback (score=0.5) when API key unavailable.
+- **Stage 3 (Normalise):** HTML strip, whitespace collapse, truncate to 10,000 chars.
+- **Stage 4 (Store):** SQLite at `forecasting/data/intelligence_documents.db` with `public_intelligence_documents` table + 3 indexes.
+- **Utility methods:** `get_pending_documents(tier)` for retrieval, `mark_extracted(doc_id, signal_json)` for P2-C integration.
+
+### Tests Run
+| Check | Result |
+|-------|--------|
+| Gate 1: Pipeline processes test doc | **PASS** — 1 doc ingested, score=0.5 (API key fallback), tier=batch |
+| Gate 2: SQLite schema verified | **PASS** — table + 4 indexes present |
+| Gate 3: Test suite (16/16) | **PASS** |
+
+### Next Phase
+- Read `docs/forecasting-improvement/05-P2C-SIGNALS.md`
+- Prerequisites: All 3 gate checks pass (confirmed)
+
+---
+
 ## Forecasting Model Improvement — Phase 2-A (Scrapers)
 **Date:** 2026-04-07
 **Status:** COMPLETE
