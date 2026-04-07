@@ -1,0 +1,24 @@
+{
+  "generated_at": "2026-04-07T10:42:34.757592",
+  "ecovantage_observations": 6,
+  "nmg_observations": 0,
+  "cer_accu_observations": 0,
+  "date_range": {
+    "start": "2026-04-03",
+    "end": "2026-04-03"
+  },
+  "cross_validation": {
+    "weeks_compared": 0,
+    "discrepancies_over_050": 0,
+    "max_discrepancy": 0.0
+  },
+  "instruments_covered": [
+    "ACCU",
+    "ESC",
+    "LGC",
+    "PRC",
+    "STC",
+    "VEEC"
+  ],
+  "errors": []
+}

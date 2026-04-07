@@ -17,10 +17,12 @@ import csv
 import json
 import math
 import os
+import sqlite3
 from datetime import date, timedelta
-from typing import Any
+from typing import Any, Optional
 
 import numpy as np
+import pandas as pd
 
 
 # ---------------------------------------------------------------------------
@@ -220,7 +222,12 @@ def days_to_next_surrender(week_date: date) -> int:
 # ---------------------------------------------------------------------------
 
 def assemble_dataset() -> list[dict[str, Any]]:
-    """Assemble the complete weekly ESC dataset from 2019 to 2025."""
+    """Assemble the hybrid dataset (genuine + synthetic)."""
+    return assemble_hybrid_dataset()
+
+
+def _assemble_dataset_internal() -> list[dict[str, Any]]:
+    """Assemble the complete synthetic weekly ESC dataset from 2019 to 2025."""
     rows: list[dict[str, Any]] = []
 
     for year in range(2019, 2026):
@@ -302,8 +309,138 @@ def assemble_dataset() -> list[dict[str, Any]]:
     return rows
 
 
+# ---------------------------------------------------------------------------
+# Genuine data loading from SQLite
+# ---------------------------------------------------------------------------
+
+DB_PATH = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "data",
+    "intelligence_documents.db",
+)
+
+
+def load_genuine_observations() -> pd.DataFrame:
+    """
+    Read genuine weekly ESC prices from the SQLite database.
+
+    Returns a DataFrame with columns matching the synthetic dataset:
+    week_ending, spot_price, data_quality, plus any additional columns
+    from the genuine observations (creation_volume, source_name).
+    """
+    if not os.path.exists(DB_PATH):
+        return pd.DataFrame()
+
+    conn = sqlite3.connect(DB_PATH)
+    try:
+        # Check if the genuine_price_observations table exists
+        tables = conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='genuine_price_observations'"
+        ).fetchall()
+        if not tables:
+            return pd.DataFrame()
+
+        # Load ESC genuine observations (primary instrument for the model)
+        rows = conn.execute("""
+            SELECT week_ending, spot_price, creation_volume, source_name
+            FROM genuine_price_observations
+            WHERE instrument = 'ESC'
+            ORDER BY week_ending
+        """).fetchall()
+
+        if not rows:
+            return pd.DataFrame()
+
+        df = pd.DataFrame(rows, columns=["week_ending", "spot_price", "creation_volume", "source_name"])
+        df["data_quality"] = "genuine_weekly"
+
+        return df
+    finally:
+        conn.close()
+
+
+def assemble_hybrid_dataset() -> list[dict[str, Any]]:
+    """
+    Assemble a hybrid dataset combining synthetic and genuine data.
+
+    For any week where genuine data exists, replaces the synthetic
+    observation. Marks data_quality as 'genuine_weekly' or
+    'synthetic_monthly' accordingly.
+
+    Returns:
+        List of row dicts with the same structure as assemble_dataset().
+    """
+    # Get synthetic dataset
+    synthetic_rows = _assemble_synthetic_dataset()
+
+    # Load genuine observations
+    genuine_df = load_genuine_observations()
+    if genuine_df.empty:
+        return synthetic_rows
+
+    # Build lookup of genuine prices by week_ending
+    genuine_lookup: dict[str, dict[str, Any]] = {}
+    for _, row in genuine_df.iterrows():
+        week = row["week_ending"]
+        genuine_lookup[week] = {
+            "spot_price": float(row["spot_price"]),
+            "creation_volume": int(row["creation_volume"]) if pd.notna(row["creation_volume"]) else None,
+            "data_quality": "genuine_weekly",
+        }
+
+    # Merge: replace synthetic with genuine where available
+    merged_rows: list[dict[str, Any]] = []
+    for row in synthetic_rows:
+        week = row["week_ending"]
+        if week in genuine_lookup:
+            genuine = genuine_lookup[week]
+            row["spot_price"] = genuine["spot_price"]
+            row["data_quality"] = genuine["data_quality"]
+            # Update creation volume if available
+            if genuine["creation_volume"] is not None:
+                row["creation_volume_total"] = genuine["creation_volume"]
+            # Recalculate derived fields
+            penalty_rate = row.get("penalty_rate", 0)
+            if penalty_rate > 0:
+                row["price_to_penalty_ratio"] = round(
+                    genuine["spot_price"] / penalty_rate, 4
+                )
+        merged_rows.append(row)
+
+    # Also add genuine observations that fall outside the synthetic range
+    synthetic_weeks = {r["week_ending"] for r in synthetic_rows}
+    for week, genuine in genuine_lookup.items():
+        if week not in synthetic_weeks:
+            # Create a minimal row for this week
+            week_date = date.fromisoformat(week)
+            year = week_date.year
+            penalty_rate = PENALTY_RATES.get(year, PENALTY_RATES[max(PENALTY_RATES.keys())])
+            merged_rows.append({
+                "week_ending": week,
+                "spot_price": genuine["spot_price"],
+                "creation_volume_total": genuine["creation_volume"] or 0,
+                "creation_by_activity": json.dumps({}),
+                "cumulative_surplus": CUMULATIVE_SURPLUS.get(year, 0),
+                "annual_demand": ANNUAL_DEMAND.get(year, 0),
+                "penalty_rate": penalty_rate,
+                "days_to_surrender": days_to_next_surrender(week_date),
+                "price_to_penalty_ratio": round(genuine["spot_price"] / penalty_rate, 4) if penalty_rate > 0 else 0,
+                "policy_events": json.dumps(get_active_policies(week_date)),
+                "data_quality": "genuine_weekly",
+            })
+
+    # Sort by week_ending
+    merged_rows.sort(key=lambda r: r["week_ending"])
+    return merged_rows
+
+
+def _assemble_synthetic_dataset() -> list[dict[str, Any]]:
+    """Assemble the pure synthetic dataset (original logic)."""
+    return _assemble_dataset_internal()
+
+
 def get_genuine_observation_count() -> int:
-    """Return count of non-synthetic observations. Returns 0 until live scrapers accumulate real weekly data."""
+    """Return count of non-synthetic observations from the hybrid dataset."""
     rows = assemble_dataset()
     return sum(1 for r in rows if not r.get("data_quality", "").startswith("synthetic"))
 

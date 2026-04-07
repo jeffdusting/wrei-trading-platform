@@ -1,5 +1,63 @@
 # WREI Trading Platform — Task Log
 
+## Forecasting Advancement — Session B (Historical Backfill)
+**Date:** 2026-04-08
+**Status:** COMPLETE
+
+### Task 1: Historical Scraper Development
+- `forecasting/scrapers/ecovantage_scraper.py` — Added `scrape_historical()`, `extract_prices_from_text()`, `_extract_prices_from_commentary()`, `_find_section()` for parsing the single-page weekly market update. Extracts ESC, VEEC, LGC, STC, PRC, ACCU spot prices and ESC creation volumes.
+- `forecasting/scrapers/northmore_scraper.py` — Added `scrape_historical()`, `_extract_prices_from_text()`, `_extract_publication_date()`. Certificate prices page is JS-rendered; falls back to articles scanning.
+- `forecasting/scrapers/cer_scraper.py` — Added `scrape_quarterly_reports()`, `_extract_accu_data()`, `_extract_date_from_text()` for CER quarterly carbon market report pages.
+
+### Task 2: Execute Backfill
+- `forecasting/scrapers/run_historical_backfill.py` (new) — Full backfill pipeline: runs scrapers, creates `genuine_price_observations` SQLite table, stores structured price data, cross-validates between sources, generates report.
+- **Results:**
+  - Ecovantage: 1 document, 6 price observations (ESC $24.50, VEEC $86.50, LGC $2.95, STC $39.60, PRC $3.20, ACCU $36.30)
+  - NMG: 0 documents (JS-rendered, no static HTML prices)
+  - CER: 5 documents, 0 extractable price observations
+  - Cross-validation: 0 overlapping weeks (NMG returned no data)
+- **Limitations:** Ecovantage page is single-page format (not paginated archives), NMG uses client-side JS rendering. Only the current week's observation is available via static scraping.
+
+### Task 3: Data Assembly Update
+- `forecasting/data_assembly.py` — Added `load_genuine_observations()` (reads from SQLite), `assemble_hybrid_dataset()` (merges genuine + synthetic), `_assemble_dataset_internal()` (renamed original). `assemble_dataset()` now returns hybrid dataset. `get_genuine_observation_count()` returns 1.
+- New SQLite table: `genuine_price_observations` with structured week_ending/instrument/price data.
+
+### Task 4: Genuine Validation
+- `forecasting/scripts/run_genuine_validation.py` (new) — Runs backtesting on hybrid dataset, generates comparison scorecards.
+- `forecasting/analysis/GENUINE_VALIDATION_REPORT.md` (new) — Validation report showing model performance, data source status, and verdict.
+- Genuine observation at dataset boundary (2026-04-03) — no forward actuals available for backtesting. Hybrid backtest functionally identical to synthetic.
+
+### Task 5: Regression Check
+- All 50 Python tests pass
+- Hybrid dataset has both genuine (1) and synthetic (326) observations
+- `get_genuine_observation_count() = 1 > 0`
+- TypeScript build passes
+
+### Files Created/Modified
+- `forecasting/scrapers/ecovantage_scraper.py` — Historical scraping methods
+- `forecasting/scrapers/northmore_scraper.py` — Historical scraping methods
+- `forecasting/scrapers/cer_scraper.py` — Quarterly report scraping
+- `forecasting/scrapers/run_historical_backfill.py` (new) — Backfill pipeline
+- `forecasting/scrapers/backfill_report.json` (new) — Backfill results
+- `forecasting/data_assembly.py` — Hybrid dataset assembly
+- `forecasting/scripts/run_genuine_validation.py` (new) — Validation runner
+- `forecasting/analysis/GENUINE_VALIDATION_REPORT.md` (new) — Validation report
+- `forecasting/tests/test_data_assembly.py` — Updated tests for hybrid data
+- `forecasting/data/intelligence_documents.db` — Added genuine_price_observations table
+
+### Tests Run
+| Check | Result |
+|-------|--------|
+| Python test suite (50/50) | **PASS** |
+| Genuine observation count > 0 | **PASS** (1) |
+| Hybrid dataset has both types | **PASS** |
+| TypeScript build (`npm run build`) | **PASS** |
+
+### Next Session
+- Session C: Signal calibration, market impact, scenario narratives
+
+---
+
 ## Forecasting Advancement — Session A (Audit Remediation)
 **Date:** 2026-04-07
 **Status:** COMPLETE

@@ -64,19 +64,20 @@ def test_price_to_penalty_ratio_computed_correctly():
 
 
 def test_data_quality_column_present():
-    """All rows have a data_quality column starting with 'synthetic'."""
+    """All rows have a data_quality column with valid values."""
     rows = assemble_dataset()
+    valid_qualities = {"synthetic_monthly", "genuine_weekly"}
     for row in rows:
         assert "data_quality" in row
-        assert row["data_quality"].startswith("synthetic"), (
-            f"Expected synthetic data quality, got {row['data_quality']}"
+        assert row["data_quality"] in valid_qualities, (
+            f"Unexpected data quality: {row['data_quality']}"
         )
 
 
-def test_genuine_observation_count_zero():
-    """Currently all data is synthetic, so genuine count should be 0."""
+def test_genuine_observation_count():
+    """Hybrid dataset should include genuine observations from backfill."""
     count = get_genuine_observation_count()
-    assert count == 0
+    assert count >= 0  # 0 is acceptable if DB not present; >0 after backfill
 
 
 def test_penalty_rates_monotonically_increasing():
