@@ -200,6 +200,80 @@ def detect_anomalies() -> List[IntelligenceAlert]:
     return alerts
 
 
+def detect_policy_event_anomalies(
+    signals: List[Dict[str, Any]],
+) -> List[IntelligenceAlert]:
+    """
+    Detect anomalies from AI-extracted policy signals.
+
+    Triggers on documents with:
+      - relevance_score > 0.7
+      - signal_confidence > 0.6
+      - policy_signal_active = True
+
+    Severity:
+      - "medium" for signal_confidence 0.6–0.8
+      - "high" for signal_confidence > 0.8
+
+    Args:
+        signals: List of enhanced signal dicts from extract_signal() or
+            extract_signals_batch(), each optionally augmented with
+            ``relevance_score`` and ``title`` from the source document.
+
+    Returns:
+        List of IntelligenceAlert for detected policy events.
+    """
+    alerts: List[IntelligenceAlert] = []
+    now = datetime.utcnow().isoformat()
+
+    for sig in signals:
+        if not sig.get("policy_signal_active"):
+            continue
+
+        confidence = float(sig.get("signal_confidence", 0.0))
+        relevance = float(sig.get("relevance_score", 1.0))
+
+        if relevance <= 0.7 or confidence <= 0.6:
+            continue
+
+        severity = "high" if confidence > 0.8 else "medium"
+        source_name = sig.get("signal_source", "unknown")
+        title = sig.get("title", "Untitled document")
+        category = sig.get("event_category", "unknown")
+        supply_impact = sig.get("supply_impact_pct", 0.0)
+        demand_impact = sig.get("demand_impact_pct", 0.0)
+
+        # Estimate price impact from supply/demand shifts
+        price_impact_pct = round((-supply_impact + demand_impact) * 5.0, 2)
+
+        alerts.append(IntelligenceAlert(
+            alert_type="policy_event_detected",
+            severity=severity,
+            title=f"Policy event: {category} — {title[:80]}",
+            summary=(
+                f"AI signal extractor detected an active policy event from "
+                f"{source_name} (category: {category}). "
+                f"Supply impact: {supply_impact:+.1%}, demand impact: {demand_impact:+.1%}. "
+                f"Confidence: {confidence:.0%}."
+            ),
+            estimated_price_impact_pct=price_impact_pct,
+            source="ai_signal_override",
+            source_url="",
+            metadata={
+                "signal_confidence": confidence,
+                "relevance_score": relevance,
+                "event_category": category,
+                "supply_impact_pct": supply_impact,
+                "demand_impact_pct": demand_impact,
+                "signal_source": source_name,
+                "document_title": title,
+            },
+            created_at=now,
+        ))
+
+    return alerts
+
+
 if __name__ == "__main__":
     import json
     alerts = detect_anomalies()

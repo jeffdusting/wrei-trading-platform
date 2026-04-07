@@ -69,8 +69,30 @@ FEATURES_FULL = [
     "regime_surplus_prob",
     "regime_balanced_prob",
     "regime_tightening_prob",
+    # AI signal features (P2-D)
+    "signal_confidence",
+    "signal_horizon_weeks",
+    "regime_override_prob",
+    "event_cat_rule_change",
+    "event_cat_penalty_determination",
+    "event_cat_activity_phaseout",
+    "event_cat_scheme_expansion",
+    "event_cat_compliance_enforcement",
+    "event_cat_political_signal",
+    "event_cat_market_commentary",
+    "event_cat_cross_scheme",
+    # Kalman forecasts (excluded from independent set)
     "kalman_forecast_4w",
     "kalman_forecast_12w",
+]
+
+# Signal feature names for confidence-based zero-masking
+SIGNAL_FEATURES = [
+    "signal_confidence", "signal_horizon_weeks", "regime_override_prob",
+    "event_cat_rule_change", "event_cat_penalty_determination",
+    "event_cat_activity_phaseout", "event_cat_scheme_expansion",
+    "event_cat_compliance_enforcement", "event_cat_political_signal",
+    "event_cat_market_commentary", "event_cat_cross_scheme",
 ]
 
 # Independent feature set: excludes Kalman forecasts to avoid circular dependency
@@ -129,9 +151,22 @@ def load_reconstruction(csv_path: Optional[str] = None) -> pd.DataFrame:
 
 
 def prepare_features(df: pd.DataFrame) -> Tuple[np.ndarray, List[str]]:
-    """Extract feature matrix from the reconstruction DataFrame."""
-    X = df[FEATURE_COLUMNS].copy()
+    """Extract feature matrix from the reconstruction DataFrame.
+
+    Signal features with signal_confidence < 0.5 are zero-masked to prevent
+    low-confidence signals from introducing noise.
+    """
+    # Add any missing columns as zeros (signal features may not exist in older datasets)
+    X = df.reindex(columns=FEATURE_COLUMNS, fill_value=0.0).copy()
     X = X.fillna(0.0)
+
+    # Zero-mask signal features where signal_confidence < 0.5
+    if "signal_confidence" in X.columns:
+        low_conf_mask = X["signal_confidence"] < 0.5
+        for feat in SIGNAL_FEATURES:
+            if feat in X.columns:
+                X.loc[low_conf_mask, feat] = 0.0
+
     return X.values, FEATURE_COLUMNS
 
 
