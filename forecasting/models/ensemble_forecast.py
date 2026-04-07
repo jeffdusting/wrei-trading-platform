@@ -299,6 +299,9 @@ class EnsembleForecaster:
     """
     High-level ensemble forecaster providing forward curve construction
     and weight transparency.
+
+    Accepts an optional InstrumentConfig to customise penalty ceiling,
+    regime parameters, and boundary type for non-ESC instruments.
     """
 
     def __init__(
@@ -306,26 +309,44 @@ class EnsembleForecaster:
         current_price: Optional[float] = None,
         regime: str = "balanced",
         penalty_rate: float = 35.86,
+        instrument_config: Optional[Any] = None,
     ) -> None:
         import logging
 
         logger = logging.getLogger(__name__)
 
+        self.instrument_config = instrument_config
+
+        # Resolve penalty rate and boundary from config
+        if instrument_config is not None:
+            from forecasting.models.ou_bounded import regimes_from_config
+            self._regimes = regimes_from_config(instrument_config)
+            self.has_penalty_ceiling = instrument_config.has_penalty_ceiling
+            if instrument_config.has_penalty_ceiling and instrument_config.penalty_rate is not None:
+                self.penalty_rate = instrument_config.penalty_rate
+            elif instrument_config.soft_upper_bound is not None:
+                self.penalty_rate = instrument_config.soft_upper_bound
+            else:
+                self.penalty_rate = penalty_rate
+        else:
+            self._regimes = DEFAULT_REGIMES
+            self.has_penalty_ceiling = True
+            self.penalty_rate = penalty_rate
+
         if current_price is not None:
             self.current_price = current_price
         else:
-            # Load latest spot price from data_assembly reconstruction
             self.current_price = self._load_latest_spot_price()
 
         self.regime = regime
-        self.penalty_rate = penalty_rate
 
-        if regime not in DEFAULT_REGIMES:
-            raise ValueError(f"Unknown regime '{regime}'. Must be one of: {list(DEFAULT_REGIMES.keys())}")
-        self.ou_params = DEFAULT_REGIMES[regime]
+        if regime not in self._regimes:
+            raise ValueError(f"Unknown regime '{regime}'. Must be one of: {list(self._regimes.keys())}")
+        self.ou_params = self._regimes[regime]
 
         # Warn if current_price equals balanced regime mu (no market signal)
-        if abs(self.current_price - DEFAULT_REGIMES["balanced"].mu) < 0.01:
+        balanced_mu = self._regimes.get("balanced", DEFAULT_REGIMES["balanced"]).mu
+        if abs(self.current_price - balanced_mu) < 0.01:
             logger.warning(
                 "current_price (%.2f) equals balanced regime mu — "
                 "no market signal in the forecast. Consider providing "
@@ -426,8 +447,9 @@ class EnsembleForecaster:
             ci_80_half = 1.282 * ou_std * disagreement_factor
             ci_95_half = 1.960 * ou_std * disagreement_factor
 
-            # Enforce penalty rate ceiling and zero floor
-            price = min(price, self.penalty_rate)
+            # Enforce penalty rate ceiling (hard for compliance, soft clamp for others)
+            if self.has_penalty_ceiling:
+                price = min(price, self.penalty_rate)
             price = max(price, 0.0)
 
             curve.append({

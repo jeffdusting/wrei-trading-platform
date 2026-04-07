@@ -143,21 +143,40 @@ class CounterfactualPrediction:
 # Model training
 # ---------------------------------------------------------------------------
 
-def load_reconstruction(csv_path: Optional[str] = None) -> pd.DataFrame:
-    """Load the reconstruction dataset."""
+def load_reconstruction(csv_path: Optional[str] = None, instrument_config: Optional[Any] = None) -> pd.DataFrame:
+    """Load the reconstruction dataset.
+
+    Args:
+        csv_path: Override CSV path.
+        instrument_config: Optional InstrumentConfig — future use for
+            instrument-specific datasets.
+    """
     if csv_path is None:
         csv_path = str(Path(__file__).parent.parent / "data" / "esc_reconstruction.csv")
     return pd.read_csv(csv_path)
 
 
-def prepare_features(df: pd.DataFrame) -> Tuple[np.ndarray, List[str]]:
+def prepare_features(
+    df: pd.DataFrame,
+    instrument_config: Optional[Any] = None,
+) -> Tuple[np.ndarray, List[str]]:
     """Extract feature matrix from the reconstruction DataFrame.
 
     Signal features with signal_confidence < 0.5 are zero-masked to prevent
     low-confidence signals from introducing noise.
+
+    Args:
+        df: Reconstruction DataFrame.
+        instrument_config: Optional InstrumentConfig — if provided, uses
+            instrument-specific feature columns instead of the default ESC set.
     """
+    if instrument_config is not None and hasattr(instrument_config, "feature_columns") and instrument_config.feature_columns:
+        columns = instrument_config.feature_columns
+    else:
+        columns = FEATURE_COLUMNS
+
     # Add any missing columns as zeros (signal features may not exist in older datasets)
-    X = df.reindex(columns=FEATURE_COLUMNS, fill_value=0.0).copy()
+    X = df.reindex(columns=columns, fill_value=0.0).copy()
     X = X.fillna(0.0)
 
     # Zero-mask signal features where signal_confidence < 0.5

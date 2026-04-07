@@ -31,12 +31,17 @@ import numpy as np
 import pandas as pd
 from filterpy.kalman import KalmanFilter
 
+from typing import TYPE_CHECKING as _TC
+
 from forecasting.models.ou_bounded import (
     DEFAULT_REGIMES,
     OUForecast,
     OURegimeParams,
     forecast_at_horizons,
 )
+
+if _TC:
+    from forecasting.instruments.config import InstrumentConfig
 
 
 # ---------------------------------------------------------------------------
@@ -148,17 +153,32 @@ class ForecastResult:
 
 class ESCStateSpaceModel:
     """
-    Kalman filter state-space model for ESC market dynamics.
+    Kalman filter state-space model for market dynamics.
 
     State vector x = [true_surplus, creation_momentum, demand_pressure, regime_indicator]
     Observation y  = [spot_price, creation_volume, price_to_penalty_ratio]
+
+    Accepts an optional InstrumentConfig to customise observation mappings
+    and regime parameters for non-ESC instruments.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, instrument_config: Optional["InstrumentConfig"] = None) -> None:
         self.kf = KalmanFilter(dim_x=N_STATES, dim_z=N_OBS)
         self.regime_probs = np.array([0.2, 0.6, 0.2])  # prior: mostly balanced
         self.history: List[StateEstimate] = []
         self._initialised = False
+        self.instrument_config = instrument_config
+
+        # Build instrument-specific regime map
+        if instrument_config is not None and instrument_config.ou_parameters:
+            from forecasting.models.ou_bounded import regimes_from_config
+            self._regimes = regimes_from_config(instrument_config)
+            self._regime_mu_map = {
+                name: self._regimes[name].mu for name in instrument_config.regime_names
+            }
+        else:
+            self._regimes = DEFAULT_REGIMES
+            self._regime_mu_map = REGIME_MU_MAP
 
     def initialise(
         self,
@@ -191,12 +211,21 @@ class ESCStateSpaceModel:
         # Observation matrix C
         # Price is primarily driven by surplus (inverse) and demand pressure
         # Creation volume directly observes creation_momentum
-        # Price-to-penalty maps from regime_indicator
-        self.kf.H = np.array([
-            [-2.0,  0.0,   3.0,  4.0],   # spot_price ~ -surplus + demand + regime
-            [ 0.0,  1.0,   0.0,  0.0],   # creation_volume ~ creation_momentum
-            [ 0.0,  0.0,   0.2,  0.5],   # price_to_penalty ~ demand + regime
-        ])
+        # Price-to-penalty (or price-to-CCM for ACCUs) maps from regime_indicator
+        if (self.instrument_config is not None
+                and self.instrument_config.price_reference_label == "CCM_price"):
+            # ACCU: price-to-CCM observation has weaker regime linkage
+            self.kf.H = np.array([
+                [-1.5,  0.0,   2.5,  3.5],   # spot_price (ACCU has wider range)
+                [ 0.0,  1.0,   0.0,  0.0],   # issuance_volume ~ creation_momentum
+                [ 0.0,  0.0,   0.15, 0.35],  # price_to_CCM ~ demand + regime
+            ])
+        else:
+            self.kf.H = np.array([
+                [-2.0,  0.0,   3.0,  4.0],   # spot_price ~ -surplus + demand + regime
+                [ 0.0,  1.0,   0.0,  0.0],   # creation_volume ~ creation_momentum
+                [ 0.0,  0.0,   0.2,  0.5],   # price_to_penalty ~ demand + regime
+            ])
 
         # Process noise covariance Q
         self.kf.Q = np.diag([0.01, 0.005, 0.02, 0.005])
@@ -227,7 +256,7 @@ class ESCStateSpaceModel:
         # Emission likelihood: Gaussian around each regime's OU mu
         likelihoods = np.zeros(3)
         for i, name in enumerate(REGIME_NAMES):
-            mu = REGIME_MU_MAP[name]
+            mu = self._regime_mu_map.get(name, REGIME_MU_MAP.get(name, 23.5))
             sigma = 3.0  # observation noise for regime classification
             likelihoods[i] = math.exp(-0.5 * ((spot_price - mu) / sigma) ** 2)
 
@@ -529,10 +558,13 @@ def load_historical_data(csv_path: Optional[str] = None) -> pd.DataFrame:
     return pd.read_csv(csv_path)
 
 
-def run_full_filter(csv_path: Optional[str] = None) -> ESCStateSpaceModel:
+def run_full_filter(
+    csv_path: Optional[str] = None,
+    instrument_config: Optional["InstrumentConfig"] = None,
+) -> ESCStateSpaceModel:
     """Load data, initialise model, run filter, return fitted model."""
     df = load_historical_data(csv_path)
-    model = ESCStateSpaceModel()
+    model = ESCStateSpaceModel(instrument_config=instrument_config)
     model.run_filter(df)
     return model
 

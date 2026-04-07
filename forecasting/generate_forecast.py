@@ -175,9 +175,14 @@ def generate(csv_only: bool = False) -> ForecastResult:
     return result
 
 
-def run_pipeline(csv_only: bool = False) -> ForecastResult:
+def run_pipeline(csv_only: bool = False, instrument: str = "ESC") -> ForecastResult:
     """
     Full forecast pipeline with intelligence ingestion.
+
+    Args:
+        csv_only: If True, skip database operations.
+        instrument: Instrument code (default "ESC"). Loads config from
+            the instrument registry and passes to all model components.
 
     Sequence:
       1. Run new source scrapers → collect ScrapedDocument lists
@@ -197,6 +202,15 @@ def run_pipeline(csv_only: bool = False) -> ForecastResult:
     crashes the pipeline.
     """
     from forecasting.scrapers.base import ScrapedDocument
+
+    # Load instrument configuration
+    instrument_config = None
+    try:
+        from forecasting.instruments.registry import get_instrument
+        instrument_config = get_instrument(instrument)
+        print(f"  [pipeline] Instrument: {instrument_config.code} ({instrument_config.name})")
+    except (ImportError, KeyError) as exc:
+        logger.warning("Instrument config not available for %s: %s — using ESC defaults", instrument, exc)
 
     all_scraped: list[ScrapedDocument] = []
     active_signals: list[dict] = []
@@ -268,7 +282,7 @@ def run_pipeline(csv_only: bool = False) -> ForecastResult:
 
     # --- Stage 4: Kalman filter ---------------------------------------------
     try:
-        model = run_full_filter()
+        model = run_full_filter(instrument_config=instrument_config)
         print(f"  [pipeline] Stage 4: Kalman filter run ({len(model.history)} states)")
     except Exception as exc:
         raise RuntimeError(f"Kalman filter failed — cannot continue: {exc}") from exc
@@ -363,6 +377,7 @@ def run_pipeline(csv_only: bool = False) -> ForecastResult:
         ef = EnsembleForecaster(
             current_price=current_price,
             regime=regime_name,
+            instrument_config=instrument_config,
         )
         forward_curve = ef.generate_forward_curve(
             horizon_weeks=26,

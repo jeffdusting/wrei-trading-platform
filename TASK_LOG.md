@@ -1,5 +1,67 @@
 # WREI Trading Platform — Task Log
 
+## Forecasting Advancement — Session D (Multi-Instrument Architecture)
+**Date:** 2026-04-08
+**Status:** COMPLETE
+
+### Task 1: Instrument Configuration Schema & Registry
+- `forecasting/instruments/__init__.py` (new) — Package init with public exports
+- `forecasting/instruments/config.py` (new) — `InstrumentConfig` dataclass with 25+ fields covering price boundaries, supply/demand dynamics, regime structure, data sources, settlement, and XGBoost features
+- `forecasting/instruments/registry.py` (new) — `INSTRUMENT_REGISTRY` with 4 instruments:
+  - **ESC**: penalty_rate=35.86, IPART CPI-adjusted, TESSA settlement, 24 XGBoost features
+  - **VEEC**: penalty_rate=100.00, ESC Victoria, wider OU spread from ceiling
+  - **ACCU**: no penalty ceiling, CCM price reference ($79.20), soft upper bound $80, ANREU settlement
+  - **LGC**: skeleton config, generation-based supply, RET shortfall charge reference
+
+### Task 2: Model Refactoring
+- `forecasting/models/ou_bounded.py` — Added `regimes_from_config()`, `BoundedOUModel` class, `reflecting_boundary` parameter to `simulate_paths()`/`forecast_at_horizons()`. `forecast()` accepts `instrument_config`. Backward compatible.
+- `forecasting/models/state_space.py` — `ESCStateSpaceModel.__init__()` accepts `instrument_config`. Instance-level `_regime_mu_map` for HMM emission model. ACCU-specific H matrix (price-to-CCM). `run_full_filter()` passes config.
+- `forecasting/models/counterfactual_model.py` — `load_reconstruction()` and `prepare_features()` accept `instrument_config` for instrument-specific feature columns.
+- `forecasting/models/ensemble_forecast.py` — `EnsembleForecaster.__init__()` accepts `instrument_config`. Uses `has_penalty_ceiling` for ceiling enforcement in forward curve.
+- `forecasting/generate_forecast.py` — `run_pipeline()` accepts `instrument` parameter (default "ESC"), loads config from registry, passes to Kalman filter and ensemble.
+
+### Task 3: ACCU Model Training
+- **Status:** Insufficient data (1 genuine observation, threshold = 20)
+- `forecasting/analysis/ACCU_VALIDATION_REPORT.md` (new) — Stub report documenting data gap, required sources, recommended collection approach, and preliminary config validation.
+- Single ACCU observation ($36.30, 2026-04-03) consistent with balanced regime mu ($35.00).
+
+### Task 4: WREI-CC and WREI-ACO Derivative Models
+- `forecasting/models/token_pricing.py` (new) — `forecast_wrei_cc()`: WREI-CC = underlying × verification_premium × (1 - liquidity_discount). Default premium 1.5×, discount 15%, basis risk CI widening 5%.
+- `forecasting/models/aco_yield.py` (new) — `forecast_wrei_aco()` stub: indicative yield from carbon price trajectory + fleet assumptions. Full DCF model deferred.
+
+### Files Created/Modified
+- `forecasting/instruments/__init__.py` (new)
+- `forecasting/instruments/config.py` (new)
+- `forecasting/instruments/registry.py` (new)
+- `forecasting/models/ou_bounded.py` — instrument_config support, BoundedOUModel
+- `forecasting/models/state_space.py` — instrument_config support
+- `forecasting/models/counterfactual_model.py` — instrument_config support
+- `forecasting/models/ensemble_forecast.py` — instrument_config support
+- `forecasting/generate_forecast.py` — instrument parameter
+- `forecasting/models/token_pricing.py` (new)
+- `forecasting/models/aco_yield.py` (new)
+- `forecasting/analysis/ACCU_VALIDATION_REPORT.md` (new)
+
+### Tests Run
+| Check | Result |
+|-------|--------|
+| Python test suite (50/50) | **PASS** |
+| BoundedOUModel ESC (backward compat) | **PASS** |
+| BoundedOUModel ACCU (new instrument) | **PASS** |
+| Instrument registry (4 instruments) | **PASS** |
+| WREI-CC forecast | **PASS** |
+| WREI-ACO forecast (stub) | **PASS** |
+| TypeScript build (`npm run build`) | **PASS** |
+
+### Advancement Programme Complete
+All four sessions (A–D) have been executed:
+- **Session A:** Audit remediation, statistical tests, ensemble weight investigation
+- **Session B:** Historical backfill, genuine data validation
+- **Session C:** Signal calibration, market impact, scenario narratives
+- **Session D:** Multi-instrument architecture, ACCU stub, tokenised credit models
+
+---
+
 ## Forecasting Advancement — Session C (Signal Calibration + Market Impact + Narratives)
 **Date:** 2026-04-08
 **Status:** COMPLETE

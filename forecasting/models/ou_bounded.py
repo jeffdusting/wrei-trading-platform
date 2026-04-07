@@ -19,10 +19,13 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 
 import numpy as np
 from scipy.optimize import minimize
+
+if TYPE_CHECKING:
+    from forecasting.instruments.config import InstrumentConfig
 
 
 # ---------------------------------------------------------------------------
@@ -43,6 +46,19 @@ DEFAULT_REGIMES: Dict[str, OURegimeParams] = {
     "balanced": OURegimeParams(theta=0.08, mu=23.5, sigma=1.0),
     "tightening": OURegimeParams(theta=0.15, mu=27.0, sigma=1.4),
 }
+
+
+def regimes_from_config(config: InstrumentConfig) -> Dict[str, OURegimeParams]:
+    """Build regime params dict from an InstrumentConfig."""
+    regimes: Dict[str, OURegimeParams] = {}
+    for name in config.regime_names:
+        p = config.ou_parameters.get(name, {})
+        regimes[name] = OURegimeParams(
+            theta=p.get("theta", 0.08),
+            mu=p.get("mu", 23.5),
+            sigma=p.get("sigma", 1.0),
+        )
+    return regimes
 
 
 # ---------------------------------------------------------------------------
@@ -142,9 +158,15 @@ def simulate_paths(
     n_paths: int = 5000,
     dt: float = 1.0,
     rng: Optional[np.random.Generator] = None,
+    reflecting_boundary: bool = True,
 ) -> np.ndarray:
     """
-    Simulate OU paths with reflecting boundary at penalty_rate.
+    Simulate OU paths with optional reflecting boundary at penalty_rate.
+
+    Args:
+        reflecting_boundary: If True (default), prices exceeding penalty_rate
+            are reflected back. If False, penalty_rate acts as a soft cap
+            (paths are not reflected but are clamped).
 
     Returns:
         Array of shape (n_paths, n_steps + 1) including the initial price.
@@ -165,10 +187,11 @@ def simulate_paths(
         expected = paths[:, t - 1] * exp_neg_theta_dt + params.mu * (1.0 - exp_neg_theta_dt)
         paths[:, t] = expected + noise
 
-        # Reflecting boundary: prices that exceed the penalty rate are
-        # reflected back below it
-        over = paths[:, t] > penalty_rate
-        paths[over, t] = 2.0 * penalty_rate - paths[over, t]
+        if reflecting_boundary:
+            # Reflecting boundary: prices that exceed the penalty rate are
+            # reflected back below it
+            over = paths[:, t] > penalty_rate
+            paths[over, t] = 2.0 * penalty_rate - paths[over, t]
 
         # Floor at zero (prices cannot be negative)
         paths[:, t] = np.maximum(paths[:, t], 0.0)
@@ -188,6 +211,7 @@ def forecast_at_horizons(
     n_paths: int = 5000,
     dt: float = 1.0,
     rng: Optional[np.random.Generator] = None,
+    reflecting_boundary: bool = True,
 ) -> List[OUForecast]:
     """
     Generate price forecasts at specified horizons (in weeks).
@@ -197,7 +221,8 @@ def forecast_at_horizons(
     """
     max_horizon = max(horizons)
     paths = simulate_paths(
-        current_price, params, penalty_rate, max_horizon, n_paths, dt, rng
+        current_price, params, penalty_rate, max_horizon, n_paths, dt, rng,
+        reflecting_boundary=reflecting_boundary,
     )
 
     results = []
@@ -232,17 +257,20 @@ def forecast(
     horizons: Optional[List[int]] = None,
     custom_params: Optional[OURegimeParams] = None,
     n_paths: int = 5000,
+    instrument_config: Optional[InstrumentConfig] = None,
 ) -> List[OUForecast]:
     """
     High-level forecast interface.
 
     Args:
-        current_price: Current ESC spot price (AUD).
+        current_price: Current spot price (AUD).
         regime: One of 'surplus', 'balanced', 'tightening'.
-        penalty_rate: Penalty rate ceiling (AUD per ESC).
+        penalty_rate: Penalty rate ceiling (AUD per certificate).
         horizons: Forecast horizons in weeks (default [1, 4, 12, 26]).
         custom_params: Override regime params with custom OURegimeParams.
         n_paths: Number of Monte Carlo paths.
+        instrument_config: Optional InstrumentConfig — overrides penalty_rate
+            and regime params from the config.
 
     Returns:
         List of OUForecast objects at each horizon.
@@ -250,12 +278,24 @@ def forecast(
     if horizons is None:
         horizons = [1, 4, 12, 26]
 
+    # Determine reflecting boundary and effective penalty rate from config
+    reflecting = True
+    if instrument_config is not None:
+        reflecting = instrument_config.has_penalty_ceiling
+        if instrument_config.has_penalty_ceiling and instrument_config.penalty_rate is not None:
+            penalty_rate = instrument_config.penalty_rate
+        elif instrument_config.soft_upper_bound is not None:
+            penalty_rate = instrument_config.soft_upper_bound
+        regimes = regimes_from_config(instrument_config)
+    else:
+        regimes = DEFAULT_REGIMES
+
     if custom_params is not None:
         params = custom_params
     else:
-        if regime not in DEFAULT_REGIMES:
-            raise ValueError(f"Unknown regime '{regime}'. Must be one of: {list(DEFAULT_REGIMES.keys())}")
-        params = DEFAULT_REGIMES[regime]
+        if regime not in regimes:
+            raise ValueError(f"Unknown regime '{regime}'. Must be one of: {list(regimes.keys())}")
+        params = regimes[regime]
 
     return forecast_at_horizons(
         current_price=current_price,
@@ -263,7 +303,62 @@ def forecast(
         penalty_rate=penalty_rate,
         horizons=horizons,
         n_paths=n_paths,
+        reflecting_boundary=reflecting,
     )
+
+
+# ---------------------------------------------------------------------------
+# BoundedOUModel class (instrument-aware wrapper)
+# ---------------------------------------------------------------------------
+
+class BoundedOUModel:
+    """
+    Instrument-aware OU model wrapper.
+
+    Loads regime parameters from an InstrumentConfig if provided,
+    otherwise defaults to the ESC configuration.
+    """
+
+    def __init__(
+        self,
+        instrument_config: Optional[InstrumentConfig] = None,
+    ) -> None:
+        if instrument_config is not None:
+            self.config = instrument_config
+            self.regimes = regimes_from_config(instrument_config)
+            self.reflecting = instrument_config.has_penalty_ceiling
+            if instrument_config.has_penalty_ceiling and instrument_config.penalty_rate is not None:
+                self.penalty_rate = instrument_config.penalty_rate
+            elif instrument_config.soft_upper_bound is not None:
+                self.penalty_rate = instrument_config.soft_upper_bound
+            else:
+                self.penalty_rate = 100.0  # safe fallback
+        else:
+            self.config = None
+            self.regimes = DEFAULT_REGIMES
+            self.reflecting = True
+            self.penalty_rate = 35.86
+
+    def forecast(
+        self,
+        current_price: float,
+        regime: str = "balanced",
+        horizons: Optional[List[int]] = None,
+        n_paths: int = 5000,
+    ) -> List[OUForecast]:
+        """Generate forecasts using this model's configuration."""
+        if horizons is None:
+            horizons = [1, 4, 12, 26]
+        if regime not in self.regimes:
+            raise ValueError(f"Unknown regime '{regime}'. Must be one of: {list(self.regimes.keys())}")
+        return forecast_at_horizons(
+            current_price=current_price,
+            params=self.regimes[regime],
+            penalty_rate=self.penalty_rate,
+            horizons=horizons,
+            n_paths=n_paths,
+            reflecting_boundary=self.reflecting,
+        )
 
 
 # ---------------------------------------------------------------------------
