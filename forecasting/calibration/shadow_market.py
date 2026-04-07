@@ -223,6 +223,199 @@ def calibrate(
 
 
 # ---------------------------------------------------------------------------
+# TESSA transfer velocity cross-validation (P3.4)
+# ---------------------------------------------------------------------------
+
+# Default TESSA transfer parameters (from historical TESSA registry data)
+DEFAULT_TESSA_HISTORICAL_AVG_4W = 420_000  # Average 4-week transfer volume
+DEFAULT_TESSA_DIVERGENCE_THRESHOLD = 0.20  # 20% above/below triggers signal
+
+
+class ShadowMarketCalibrator:
+    """
+    Enhanced shadow market calibrator with TESSA transfer velocity
+    cross-validation.
+    """
+
+    def __init__(
+        self,
+        inventory_csv: Optional[str] = None,
+        visible_surplus: int = DEFAULT_VISIBLE_SURPLUS,
+        nmg_annual_volume: int = DEFAULT_NMG_ANNUAL_VOLUME,
+        market_annual_volume: int = DEFAULT_MARKET_ANNUAL_VOLUME,
+        prior_shadow_fraction: float = DEFAULT_PRIOR_SHADOW_FRACTION,
+        tessa_historical_avg_4w: int = DEFAULT_TESSA_HISTORICAL_AVG_4W,
+    ) -> None:
+        self.inventory_csv = inventory_csv
+        self.visible_surplus = visible_surplus
+        self.nmg_annual_volume = nmg_annual_volume
+        self.market_annual_volume = market_annual_volume
+        self.prior_shadow_fraction = prior_shadow_fraction
+        self.tessa_historical_avg_4w = tessa_historical_avg_4w
+
+    def _get_tessa_recent_volume(self) -> Optional[int]:
+        """
+        Attempt to get recent 4-week TESSA transfer volume from the
+        scraper or cached data. Returns None if unavailable.
+        """
+        try:
+            tessa_data_path = Path(__file__).parent.parent / "data" / "tessa_transfers.json"
+            if tessa_data_path.exists():
+                with open(tessa_data_path, "r") as f:
+                    data = json.load(f)
+                if "recent_4w_volume" in data:
+                    return int(data["recent_4w_volume"])
+        except Exception:
+            pass
+        return None
+
+    def _tessa_velocity_signal(
+        self, recent_4w_volume: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """
+        Compute TESSA transfer velocity signal.
+
+        If transfer volume over last 4 weeks exceeds historical average
+        by >20%, market is drawing down inventory (shadow supply shrinking).
+        If >20% below, inventory is building (shadow supply growing).
+
+        Returns:
+            { "direction": "shrinking" | "growing" | "neutral",
+              "velocity_ratio": float,
+              "confidence": float }
+        """
+        volume = recent_4w_volume or self._get_tessa_recent_volume()
+
+        if volume is None:
+            return {
+                "direction": "neutral",
+                "velocity_ratio": 1.0,
+                "confidence": 0.0,
+            }
+
+        ratio = volume / max(self.tessa_historical_avg_4w, 1)
+        threshold = DEFAULT_TESSA_DIVERGENCE_THRESHOLD
+
+        if ratio > 1.0 + threshold:
+            direction = "shrinking"  # High transfers = drawing down inventory
+        elif ratio < 1.0 - threshold:
+            direction = "growing"    # Low transfers = inventory building
+        else:
+            direction = "neutral"
+
+        # Confidence scales with how far from the neutral band
+        deviation = abs(ratio - 1.0)
+        confidence = min(1.0, deviation / 0.5)  # Full confidence at 50% deviation
+
+        return {
+            "direction": direction,
+            "velocity_ratio": round(ratio, 4),
+            "confidence": round(confidence, 4),
+        }
+
+    def _cross_validate(
+        self,
+        nmg_multiplier: float,
+        tessa_signal: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        """
+        Cross-validate the NMG-derived shadow multiplier against TESSA
+        transfer velocity.
+
+        NMG multiplier > 1.0 means shadow supply exists (inventory building).
+        TESSA velocity signal indicates whether transfers are drawing down
+        or building inventory.
+
+        Returns:
+            { "agrees": bool, "divergence_detected": bool,
+              "divergence_severity": str | None,
+              "shadow_uncertainty": float }
+        """
+        # NMG signal: multiplier > 1.6 suggests significant shadow supply
+        nmg_direction = "growing" if nmg_multiplier > 1.2 else "shrinking"
+
+        tessa_direction = tessa_signal["direction"]
+        tessa_confidence = tessa_signal["confidence"]
+
+        # Check for divergence
+        divergence = False
+        if tessa_confidence > 0.3 and tessa_direction != "neutral":
+            # They diverge if NMG says growing but TESSA says shrinking, or vice versa
+            if nmg_direction != tessa_direction:
+                divergence = True
+
+        # Shadow uncertainty: base 0.3, reduced by cross-validation agreement
+        if tessa_confidence < 0.1:
+            # No TESSA data — high uncertainty
+            uncertainty = 0.5
+        elif divergence:
+            # Signals disagree — high uncertainty
+            uncertainty = 0.6
+        else:
+            # Signals agree — lower uncertainty, scaled by TESSA confidence
+            uncertainty = max(0.15, 0.4 - 0.25 * tessa_confidence)
+
+        severity = None
+        if divergence:
+            severity = "high" if tessa_confidence > 0.6 else "medium"
+
+        return {
+            "agrees": not divergence,
+            "divergence_detected": divergence,
+            "divergence_severity": severity,
+            "shadow_uncertainty": round(uncertainty, 4),
+            "nmg_direction": nmg_direction,
+            "tessa_direction": tessa_direction,
+        }
+
+    def estimate_with_cross_validation(
+        self, tessa_recent_4w_volume: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """
+        Run shadow market estimation with TESSA cross-validation.
+
+        Returns dict with shadow_multiplier, shadow_uncertainty,
+        tessa_signal, cross_validation, and anomalies.
+        """
+        # Step 1: Run NMG calibration
+        cal = calibrate(
+            inventory_csv=self.inventory_csv,
+            visible_surplus=self.visible_surplus,
+            nmg_annual_volume=self.nmg_annual_volume,
+            market_annual_volume=self.market_annual_volume,
+            prior_shadow_fraction=self.prior_shadow_fraction,
+        )
+
+        # Step 2: TESSA velocity signal
+        tessa_signal = self._tessa_velocity_signal(tessa_recent_4w_volume)
+
+        # Step 3: Cross-validate
+        xval = self._cross_validate(cal.nmg_shadow_multiplier, tessa_signal)
+
+        # Step 4: Build anomalies list
+        anomalies = []
+        if xval["divergence_detected"]:
+            anomalies.append({
+                "type": "shadow_market_divergence",
+                "severity": xval["divergence_severity"],
+                "message": (
+                    f"NMG inventory suggests shadow supply is {xval['nmg_direction']}, "
+                    f"but TESSA transfers suggest it is {xval['tessa_direction']} "
+                    f"(velocity ratio: {tessa_signal['velocity_ratio']:.2f})"
+                ),
+            })
+
+        return {
+            "shadow_multiplier": cal.nmg_shadow_multiplier,
+            "shadow_uncertainty": xval["shadow_uncertainty"],
+            "calibration": asdict(cal),
+            "tessa_signal": tessa_signal,
+            "cross_validation": xval,
+            "anomalies": anomalies,
+        }
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 

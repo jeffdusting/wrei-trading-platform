@@ -322,14 +322,57 @@ def run_pipeline(csv_only: bool = False) -> ForecastResult:
         )
     print(f"  [pipeline] Stage 6-7: Forecast generated ({latest_state.regime_name})")
 
-    # --- Stage 8: XGBoost (via existing generate path) ----------------------
+    # --- Stage 8: XGBoost + Volume forecast ----------------------------------
     # XGBoost walk-forward is computationally expensive and runs on the
     # reconstruction dataset during training. The expanded features are
     # available via FEATURES_INDEPENDENT for the next training cycle.
-    print("  [pipeline] Stage 8: XGBoost feature set expanded (training deferred)")
+    volume_result = None
+    try:
+        from forecasting.models.volume_forecast import VolumeForecaster
 
-    # --- Stage 9: Ensemble combiner (deferred to P3) ------------------------
-    print("  [pipeline] Stage 9: Ensemble combiner (deferred to P3)")
+        vf = VolumeForecaster()
+        volume_result = vf.forecast(horizon_weeks=26)
+        print(f"  [pipeline] Stage 8: Volume forecast generated "
+              f"(creation wk1={volume_result.creation_forecast[0]:,.0f}, "
+              f"surrender wk1={volume_result.surrender_forecast[0]:,.0f})")
+    except Exception as exc:
+        logger.warning("Volume forecast failed: %s — continuing without volume data", exc)
+        print(f"  [pipeline] Stage 8: Volume forecast FAILED ({exc})")
+
+    # --- Stage 9: Ensemble forward curve -------------------------------------
+    try:
+        from forecasting.models.ensemble_forecast import EnsembleForecaster
+
+        # Use latest state's regime and price for the forward curve
+        regime_name = latest_state.regime_name if latest_state else "balanced"
+        current_price = None
+        if result and result.price_forecasts:
+            # Use the 1w forecast as current implied price
+            for fc in result.price_forecasts:
+                if fc.horizon_weeks == 1:
+                    current_price = fc.mean
+                    break
+
+        kalman_4w = None
+        if result and result.price_forecasts:
+            for fc in result.price_forecasts:
+                if fc.horizon_weeks == 4:
+                    kalman_4w = fc.mean
+                    break
+
+        ef = EnsembleForecaster(
+            current_price=current_price,
+            regime=regime_name,
+        )
+        forward_curve = ef.generate_forward_curve(
+            horizon_weeks=26,
+            kalman_4w_forecast=kalman_4w,
+        )
+        print(f"  [pipeline] Stage 9: Forward curve generated "
+              f"(wk1=${forward_curve[0]['price']:.2f}, wk26=${forward_curve[25]['price']:.2f})")
+    except Exception as exc:
+        logger.warning("Ensemble forward curve failed: %s", exc)
+        print(f"  [pipeline] Stage 9: Forward curve FAILED ({exc})")
 
     # --- Stage 10: Anomaly detection ----------------------------------------
     try:

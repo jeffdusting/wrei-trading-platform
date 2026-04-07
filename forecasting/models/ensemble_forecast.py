@@ -258,9 +258,11 @@ def run_ensemble_evaluation(
     valid_idx = valid[valid_mask]
 
     if len(valid_idx) >= 10:
-        w_bay, w_ml, _ = optimise_weights(
+        w_bay, w_ml, best_mape = optimise_weights(
             bayesian[valid_idx], ml_forecasts[valid_idx], actuals[valid_idx]
         )
+        # Log weights for transparency (P3.3)
+        log_ensemble_weights(w_bay, w_ml, best_mape)
     else:
         w_bay, w_ml = 0.5, 0.5
 
@@ -287,6 +289,195 @@ def run_ensemble_evaluation(
         "n_evaluated": len(ensemble_mape_list),
         "ml_metrics": {k: {"cv_mean": v.cv_score_mean, "cv_std": v.cv_score_std} for k, v in ml_metrics.items()},
     }
+
+
+# ---------------------------------------------------------------------------
+# EnsembleForecaster class (P3.2 forward curve + P3.3 weight transparency)
+# ---------------------------------------------------------------------------
+
+class EnsembleForecaster:
+    """
+    High-level ensemble forecaster providing forward curve construction
+    and weight transparency.
+    """
+
+    def __init__(
+        self,
+        current_price: Optional[float] = None,
+        regime: str = "balanced",
+        penalty_rate: float = 35.86,
+    ) -> None:
+        self.current_price = current_price or 23.50
+        self.regime = regime
+        self.penalty_rate = penalty_rate
+
+        if regime not in DEFAULT_REGIMES:
+            raise ValueError(f"Unknown regime '{regime}'. Must be one of: {list(DEFAULT_REGIMES.keys())}")
+        self.ou_params = DEFAULT_REGIMES[regime]
+
+    def _ou_expected_price(self, t: float) -> float:
+        """
+        OU analytical expected price at time t (weeks).
+
+        E[P(t)] = mu + (P(0) - mu) * exp(-theta * t)
+        """
+        mu = self.ou_params.mu
+        theta = self.ou_params.theta
+        return mu + (self.current_price - mu) * np.exp(-theta * t)
+
+    def _ou_variance(self, t: float) -> float:
+        """
+        OU analytical variance at time t (weeks).
+
+        Var[P(t)] = (sigma^2 / (2*theta)) * (1 - exp(-2*theta*t))
+        """
+        sigma = self.ou_params.sigma
+        theta = self.ou_params.theta
+        return (sigma ** 2 / (2.0 * theta)) * (1.0 - np.exp(-2.0 * theta * t))
+
+    def generate_forward_curve(
+        self,
+        horizon_weeks: int = 26,
+        kalman_4w_forecast: Optional[float] = None,
+    ) -> List[Dict[str, Any]]:
+        """
+        Produce 26 weekly point forecasts with CI bands.
+
+        The Kalman filter state estimate drives the short end (1w-4w),
+        the OU analytical solution drives the long end (4w-26w),
+        with a blending zone at 4w-8w.
+
+        Each entry: { "week": int, "price": float, "ci_80_lower": float,
+                      "ci_80_upper": float, "ci_95_lower": float,
+                      "ci_95_upper": float }
+        """
+        # If no Kalman forecast provided, use OU for the short end too
+        kalman_4w = kalman_4w_forecast or self._ou_expected_price(4.0)
+
+        # Build Kalman short-end curve (linear interp from current to 4w forecast)
+        def kalman_price_at(t: float) -> float:
+            if t <= 0:
+                return self.current_price
+            frac = min(t / 4.0, 1.0)
+            return self.current_price + frac * (kalman_4w - self.current_price)
+
+        curve: List[Dict[str, Any]] = []
+
+        for week in range(1, horizon_weeks + 1):
+            t = float(week)
+            ou_price = self._ou_expected_price(t)
+            ou_var = self._ou_variance(t)
+            ou_std = np.sqrt(max(ou_var, 0.0))
+
+            if t <= 4.0:
+                # Short end: Kalman-driven
+                price = kalman_price_at(t)
+            elif t <= 8.0:
+                # Blending zone: linear blend from Kalman to OU
+                blend = (t - 4.0) / 4.0  # 0 at week 4, 1 at week 8
+                price = (1.0 - blend) * kalman_price_at(t) + blend * ou_price
+            else:
+                # Long end: OU analytical
+                price = ou_price
+
+            # CI bands from OU analytical variance at each point
+            # Apply ensemble CI expansion when models disagree
+            disagreement_factor = 1.0
+            if kalman_4w_forecast is not None and t <= 8.0:
+                disagreement = abs(kalman_4w - self._ou_expected_price(4.0))
+                disagreement_factor = 1.0 + 0.1 * min(
+                    disagreement / max(self.current_price, 1.0), 1.0
+                )
+
+            ci_80_half = 1.282 * ou_std * disagreement_factor
+            ci_95_half = 1.960 * ou_std * disagreement_factor
+
+            # Enforce penalty rate ceiling and zero floor
+            price = min(price, self.penalty_rate)
+            price = max(price, 0.0)
+
+            curve.append({
+                "week": week,
+                "price": round(price, 4),
+                "ci_80_lower": round(max(0.0, price - ci_80_half), 4),
+                "ci_80_upper": round(min(self.penalty_rate, price + ci_80_half), 4),
+                "ci_95_lower": round(max(0.0, price - ci_95_half), 4),
+                "ci_95_upper": round(min(self.penalty_rate, price + ci_95_half), 4),
+            })
+
+        return curve
+
+    def get_weight_history(self) -> List[Dict[str, Any]]:
+        """
+        Return the historical ensemble weight series from the log file.
+
+        Each entry: { "timestamp": str, "bayesian_weight": float,
+                      "ml_weight": float, "validation_mape": float }
+        """
+        import json
+
+        history_path = Path(__file__).parent.parent / "analysis" / "ensemble_weight_history.json"
+        if not history_path.exists():
+            return []
+
+        with open(history_path, "r") as f:
+            data = json.load(f)
+        return data.get("history", [])
+
+
+def log_ensemble_weights(
+    bayesian_weight: float,
+    ml_weight: float,
+    validation_mape: float,
+    timestamp: Optional[str] = None,
+) -> None:
+    """
+    Append ensemble weights to the persistent weight history log.
+
+    Warns if weight consistently converges toward 0.0 or 1.0 (single-model).
+    """
+    import json
+    import logging
+    from datetime import datetime
+
+    logger = logging.getLogger(__name__)
+
+    history_path = Path(__file__).parent.parent / "analysis" / "ensemble_weight_history.json"
+    history_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # Load existing
+    if history_path.exists():
+        with open(history_path, "r") as f:
+            data = json.load(f)
+    else:
+        data = {"history": []}
+
+    # Append new entry
+    entry = {
+        "timestamp": timestamp or datetime.utcnow().isoformat(),
+        "bayesian_weight": round(bayesian_weight, 4),
+        "ml_weight": round(ml_weight, 4),
+        "validation_mape": round(validation_mape, 6),
+    }
+    data["history"].append(entry)
+
+    # Write back
+    with open(history_path, "w") as f:
+        json.dump(data, f, indent=2)
+
+    # Check for single-model convergence (last 4 windows)
+    recent = data["history"][-4:]
+    if len(recent) >= 4:
+        bay_weights = [e["bayesian_weight"] for e in recent]
+        all_near_zero = all(w < 0.1 for w in bay_weights)
+        all_near_one = all(w > 0.9 for w in bay_weights)
+        if all_near_zero or all_near_one:
+            dominant = "Bayesian" if all_near_one else "ML"
+            logger.warning(
+                "Ensemble is effectively single-model (%s dominant) — "
+                "review model independence. Last 4 weights: %s",
+                dominant, bay_weights,
+            )
 
 
 # ---------------------------------------------------------------------------

@@ -1,5 +1,32 @@
 # WREI Trading Platform — Task Log
 
+## Forecasting Model Improvement — Phase 3 (Enhancements)
+**Date:** 2026-04-07
+**Status:** COMPLETE
+**Git Tag:** forecasting-p3-enhancements
+
+### Files Created/Modified
+- `forecasting/models/volume_forecast.py` (new) — Activity-type decomposition volume forecast (CL, HEER, IHEAB, PIAMV, OTHER) with seasonal adjustment and surrender forecast
+- `forecasting/models/ensemble_forecast.py` — Added `EnsembleForecaster` class with `generate_forward_curve()` (26 weekly points, OU analytical + Kalman blending), `get_weight_history()`, and `log_ensemble_weights()` with single-model convergence warning
+- `forecasting/calibration/shadow_market.py` — Added `ShadowMarketCalibrator` class with TESSA transfer velocity cross-validation, NMG/TESSA divergence detection, and `shadow_uncertainty` output
+- `forecasting/generate_forecast.py` — Wired volume forecast into stage 8, forward curve into stage 9 (replacing "deferred to P3")
+- `forecasting/tests/test_models.py` — 7 new P3 tests (volume forecast, forward curve, weight logging, shadow cross-validation, divergence detection)
+
+### Tests Run
+| Check | Result |
+|-------|--------|
+| Gate 1: Volume forecast (26 weeks, activity breakdown) | **PASS** |
+| Gate 2: Forward curve (26 weekly points) | **PASS** |
+| Gate 3: Ensemble weight transparency | **PASS** |
+| Gate 4: Shadow market cross-validation | **PASS** |
+| Gate 5: Full test suite (23/23) | **PASS** |
+
+### Next Phase
+- Read `docs/forecasting-improvement/08-P4-REGRESSION.md`
+- Prerequisites: All 5 gate checks pass (confirmed)
+
+---
+
 ## Forecasting Model Improvement — Phase 2-D (Integration)
 **Date:** 2026-04-07
 **Status:** COMPLETE

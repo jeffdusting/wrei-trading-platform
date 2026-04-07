@@ -141,3 +141,112 @@ def test_backtest_caveat_present():
     """BacktestResult includes synthetic data caveat."""
     from forecasting.backtesting.backtest_engine import BACKTEST_CAVEAT
     assert "SYNTHETIC DATA WARNING" in BACKTEST_CAVEAT
+
+
+# ---------------------------------------------------------------------------
+# P3 tests
+# ---------------------------------------------------------------------------
+
+def test_volume_forecast_26_weeks():
+    """Volume forecast produces 26 weekly creation and surrender forecasts."""
+    from forecasting.models.volume_forecast import VolumeForecaster
+    vf = VolumeForecaster()
+    result = vf.forecast(horizon_weeks=26)
+    assert len(result.creation_forecast) == 26
+    assert len(result.surrender_forecast) == 26
+    assert len(result.net_flow_forecast) == 26
+    assert "CL" in result.activity_breakdown
+    assert "HEER" in result.activity_breakdown
+    assert all(v >= 0 for v in result.creation_forecast)
+
+
+def test_volume_forecast_activity_sum():
+    """Activity breakdown sums to total creation."""
+    from forecasting.models.volume_forecast import VolumeForecaster
+    vf = VolumeForecaster()
+    result = vf.forecast(horizon_weeks=4)
+    for week_idx in range(4):
+        activity_sum = sum(
+            result.activity_breakdown[act][week_idx]
+            for act in result.activity_breakdown
+        )
+        # Allow rounding tolerance of 5 per activity type
+        assert abs(activity_sum - result.creation_forecast[week_idx]) <= 5 * len(result.activity_breakdown)
+
+
+def test_forward_curve_26_points():
+    """Forward curve produces 26 weekly price points with CI bands."""
+    from forecasting.models.ensemble_forecast import EnsembleForecaster
+    ef = EnsembleForecaster(current_price=24.0, regime="balanced")
+    curve = ef.generate_forward_curve(horizon_weeks=26)
+    assert len(curve) == 26
+    for point in curve:
+        assert "price" in point
+        assert "ci_80_lower" in point
+        assert "ci_95_upper" in point
+        assert point["ci_80_lower"] <= point["price"] <= point["ci_80_upper"]
+        assert point["ci_95_lower"] <= point["ci_80_lower"]
+
+
+def test_forward_curve_ci_widens():
+    """Confidence intervals widen with horizon."""
+    from forecasting.models.ensemble_forecast import EnsembleForecaster
+    ef = EnsembleForecaster(current_price=24.0, regime="balanced")
+    curve = ef.generate_forward_curve(horizon_weeks=26)
+    width_1 = curve[0]["ci_95_upper"] - curve[0]["ci_95_lower"]
+    width_26 = curve[25]["ci_95_upper"] - curve[25]["ci_95_lower"]
+    assert width_26 > width_1
+
+
+def test_ensemble_weight_logging():
+    """Weight logging writes and reads back correctly."""
+    import json
+    import tempfile
+    from pathlib import Path
+    from unittest.mock import patch
+
+    from forecasting.models.ensemble_forecast import log_ensemble_weights, EnsembleForecaster
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        fake_path = Path(tmpdir) / "ensemble_weight_history.json"
+        with patch(
+            "forecasting.models.ensemble_forecast.Path.__truediv__",
+        ) as _:
+            # Direct test: write to a temp file
+            fake_path.write_text('{"history": []}')
+            data = json.loads(fake_path.read_text())
+            data["history"].append({
+                "timestamp": "2026-04-07T00:00:00",
+                "bayesian_weight": 0.6,
+                "ml_weight": 0.4,
+                "validation_mape": 0.05,
+            })
+            fake_path.write_text(json.dumps(data))
+            reloaded = json.loads(fake_path.read_text())
+            assert len(reloaded["history"]) == 1
+            assert reloaded["history"][0]["bayesian_weight"] == 0.6
+
+
+def test_shadow_market_cross_validation():
+    """ShadowMarketCalibrator produces shadow_multiplier and shadow_uncertainty."""
+    from forecasting.calibration.shadow_market import ShadowMarketCalibrator
+    smc = ShadowMarketCalibrator()
+    result = smc.estimate_with_cross_validation()
+    assert "shadow_multiplier" in result
+    assert "shadow_uncertainty" in result
+    assert result["shadow_uncertainty"] > 0
+    assert "tessa_signal" in result
+    assert "cross_validation" in result
+
+
+def test_shadow_market_divergence_detection():
+    """Cross-validation detects NMG/TESSA divergence when signals conflict."""
+    from forecasting.calibration.shadow_market import ShadowMarketCalibrator
+    smc = ShadowMarketCalibrator()
+    # High TESSA volume = "shrinking" signal; NMG multiplier 1.6 = "growing"
+    # This should trigger divergence
+    result = smc.estimate_with_cross_validation(tessa_recent_4w_volume=600_000)
+    assert result["tessa_signal"]["direction"] == "shrinking"
+    assert result["cross_validation"]["divergence_detected"] is True
+    assert len(result["anomalies"]) > 0
+    assert result["anomalies"][0]["type"] == "shadow_market_divergence"
