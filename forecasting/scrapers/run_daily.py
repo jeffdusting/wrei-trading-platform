@@ -24,6 +24,14 @@ from northmore_scraper import scrape_northmore_gordon
 from tessa_scraper import TessaScraper
 from ipart_scraper import scrape_ipart_news
 
+# Document scrapers (P2-A) — return list[ScrapedDocument]
+from forecasting.scrapers.nsw_gazette_scraper import scrape as scrape_nsw_gazette
+from forecasting.scrapers.dcceew_scraper import scrape as scrape_dcceew
+from forecasting.scrapers.cer_scraper import scrape as scrape_cer
+from forecasting.scrapers.hansard_scraper import scrape as scrape_hansard
+from forecasting.scrapers.media_scraper import scrape as scrape_media
+from forecasting.scrapers.aer_scraper import scrape as scrape_aer
+
 DB_URL = os.environ.get("POSTGRES_URL") or os.environ.get("DATABASE_URL")
 
 
@@ -112,8 +120,12 @@ def compute_derived_metrics(
         "instrument_type": "ESC",
     }
 
-    # Penalty rate (IPART 2026 ESS)
-    penalty_rate = 29.48
+    # Penalty rate from reference data
+    try:
+        from forecasting.data_assembly import PENALTY_RATES
+        penalty_rate = PENALTY_RATES.get(date.today().year, PENALTY_RATES[max(PENALTY_RATES.keys())])
+    except Exception:
+        penalty_rate = 35.86  # fallback: 2026 IPART scheme penalty rate
     metrics["penalty_rate"] = penalty_rate
 
     if spot_price:
@@ -180,7 +192,7 @@ def run_all(dry_run: bool = False) -> dict[str, Any]:
     conn = None if dry_run else get_db_connection()
 
     # --- Ecovantage ---
-    print("[1/4] Ecovantage...")
+    print("[1/10] Ecovantage...")
     try:
         eco_data = scrape_ecovantage()
         if eco_data:
@@ -195,7 +207,7 @@ def run_all(dry_run: bool = False) -> dict[str, Any]:
         print(f"  ERROR: {e}", file=sys.stderr)
 
     # --- Northmore Gordon ---
-    print("[2/4] Northmore Gordon...")
+    print("[2/10] Northmore Gordon...")
     try:
         nmg_data = scrape_northmore_gordon()
         if nmg_data:
@@ -209,7 +221,7 @@ def run_all(dry_run: bool = False) -> dict[str, Any]:
         print(f"  ERROR: {e}", file=sys.stderr)
 
     # --- TESSA ---
-    print("[3/4] TESSA...")
+    print("[3/10] TESSA...")
     tessa = TessaScraper()
     try:
         summary = tessa.scrape_registry_summary()
@@ -224,7 +236,7 @@ def run_all(dry_run: bool = False) -> dict[str, Any]:
         tessa.close()
 
     # --- IPART ---
-    print("[4/4] IPART...")
+    print("[4/10] IPART...")
     try:
         ipart_items = scrape_ipart_news()
         if ipart_items:
@@ -237,6 +249,27 @@ def run_all(dry_run: bool = False) -> dict[str, Any]:
     except Exception as e:
         results["scrapers"]["ipart"] = {"status": "error", "error": str(e)}
         print(f"  ERROR: {e}", file=sys.stderr)
+
+    # --- Document scrapers (P2-A) ---
+    doc_scrapers = [
+        ("nsw_gazette", scrape_nsw_gazette),
+        ("dcceew", scrape_dcceew),
+        ("cer", scrape_cer),
+        ("hansard", scrape_hansard),
+        ("media", scrape_media),
+        ("aer", scrape_aer),
+    ]
+    for idx, (name, scrape_fn) in enumerate(doc_scrapers, start=5):
+        print(f"[{idx}/10] {name}...")
+        try:
+            docs = scrape_fn()
+            results["scrapers"][name] = {
+                "status": "ok" if docs else "no_data",
+                "documents_count": len(docs),
+            }
+        except Exception as e:
+            results["scrapers"][name] = {"status": "error", "error": str(e)}
+            print(f"  ERROR: {e}", file=sys.stderr)
 
     # --- Derived metrics ---
     spot_price = None

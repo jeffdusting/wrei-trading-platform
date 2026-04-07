@@ -22,6 +22,34 @@ from typing import Any
 
 import numpy as np
 
+
+# ---------------------------------------------------------------------------
+# Penalty rate loading from reference data
+# ---------------------------------------------------------------------------
+
+def _load_penalty_rates_from_json() -> dict[int, float]:
+    """Load ESC penalty rates from the authoritative JSON reference file."""
+    json_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "reference_data",
+        "penalty_rates.json",
+    )
+    with open(json_path, "r") as f:
+        data = json.load(f)
+    return {int(year): float(rate) for year, rate in data["esc"]["rates"].items()}
+
+
+def load_veec_penalty_rates() -> dict[int, float]:
+    """Load VEEC penalty rates from the authoritative JSON reference file."""
+    json_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "reference_data",
+        "penalty_rates.json",
+    )
+    with open(json_path, "r") as f:
+        data = json.load(f)
+    return {int(year): float(rate) for year, rate in data["veec"]["rates"].items()}
+
 # ---------------------------------------------------------------------------
 # Embedded historical data tables
 # ---------------------------------------------------------------------------
@@ -87,16 +115,9 @@ CUMULATIVE_SURPLUS: dict[int, int] = {
     2025: 8_300_000,  # Projected (demand catching up)
 }
 
-# Penalty rates (AUD per ESC shortfall) — CPI-adjusted, from IPART
-PENALTY_RATES: dict[int, float] = {
-    2019: 28.52,
-    2020: 29.12,
-    2021: 29.56,
-    2022: 31.66,
-    2023: 33.76,
-    2024: 35.05,
-    2025: 36.20,  # Estimated CPI adjustment
-}
+# Penalty rates (AUD per ESC shortfall) — loaded from reference_data/penalty_rates.json
+# Source: IPART CPI-adjusted rates. See JSON file for verification status.
+PENALTY_RATES: dict[int, float] = _load_penalty_rates_from_json()
 
 # Activity breakdown ratios (approximate % of total creation)
 # commercial_lighting declined from ~55% in 2019 to ~25% by 2025
@@ -260,6 +281,10 @@ def assemble_dataset() -> list[dict[str, Any]]:
             # Policy events active at this date
             active_policies = get_active_policies(week_ending)
 
+            # Data quality: all current data is interpolated from monthly prices
+            # Monthly prices are available for all years (ANNUAL_SPOT_PRICES has 12 values/year)
+            data_quality = "synthetic_monthly"
+
             rows.append({
                 "week_ending": week_ending.isoformat(),
                 "spot_price": spot_price,
@@ -271,9 +296,16 @@ def assemble_dataset() -> list[dict[str, Any]]:
                 "days_to_surrender": dts,
                 "price_to_penalty_ratio": price_to_penalty,
                 "policy_events": json.dumps(active_policies),
+                "data_quality": data_quality,
             })
 
     return rows
+
+
+def get_genuine_observation_count() -> int:
+    """Return count of non-synthetic observations. Returns 0 until live scrapers accumulate real weekly data."""
+    rows = assemble_dataset()
+    return sum(1 for r in rows if not r.get("data_quality", "").startswith("synthetic"))
 
 
 def write_csv(rows: list[dict[str, Any]], output_path: str) -> None:
@@ -295,6 +327,7 @@ def write_csv(rows: list[dict[str, Any]], output_path: str) -> None:
         "days_to_surrender",
         "price_to_penalty_ratio",
         "policy_events",
+        "data_quality",
     ]
 
     with open(output_path, "w", newline="") as f:
@@ -316,12 +349,14 @@ def main() -> None:
     # Summary statistics
     prices = [r["spot_price"] for r in rows]
     volumes = [r["creation_volume_total"] for r in rows]
+    genuine = sum(1 for r in rows if not r.get("data_quality", "").startswith("synthetic"))
     print(f"\nDataset summary:")
     print(f"  Period: {rows[0]['week_ending']} to {rows[-1]['week_ending']}")
     print(f"  Rows: {len(rows)}")
     print(f"  Price range: ${min(prices):.2f} – ${max(prices):.2f}")
     print(f"  Avg weekly creation: {int(np.mean(volumes)):,}")
     print(f"  Total creation (all years): {sum(volumes):,}")
+    print(f"  Genuine observations: {genuine} (synthetic: {len(rows) - genuine})")
 
 
 if __name__ == "__main__":

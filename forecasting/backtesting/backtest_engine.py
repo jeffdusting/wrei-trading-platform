@@ -48,6 +48,13 @@ BUY_SELL_THRESHOLD = 0.50   # AUD — minimum forecast move to trigger signal
 FLAT_THRESHOLD = 0.25       # AUD — within this is "flat"
 POLICY_WINDOW_WEEKS = 8
 
+BACKTEST_CAVEAT = (
+    "SYNTHETIC DATA WARNING: All training and validation data is interpolated "
+    "from monthly/annual sources. Reported metrics (MAPE, directional accuracy, "
+    "decision value) have not been validated against genuine weekly market observations. "
+    "Treat as indicative of model structure quality, not predictive accuracy."
+)
+
 
 @dataclass
 class ForecastRecord:
@@ -87,6 +94,21 @@ class RegimeMetrics:
 
 
 @dataclass
+class ModelScorecard:
+    """Unified scorecard for model evaluation. Primary metrics: directional_accuracy, cumulative_decision_value."""
+    model_name: str
+    mape_4w: float
+    directional_accuracy: float
+    cumulative_decision_value: float
+    sharpe_ratio: float
+    max_drawdown: float
+    win_rate: float
+    avg_win_value: float
+    avg_loss_value: float
+    regime_accuracy: Dict[str, float] = field(default_factory=dict)
+
+
+@dataclass
 class BacktestResult:
     """Complete backtest output."""
     run_at: str
@@ -96,6 +118,7 @@ class BacktestResult:
     overall_metrics: Dict[int, MetricSet]
     regime_metrics: List[RegimeMetrics]
     forecast_records: List[ForecastRecord]
+    caveat: str = BACKTEST_CAVEAT
 
 
 # ---------------------------------------------------------------------------
@@ -416,6 +439,151 @@ class BacktestEngine:
 
 
 # ---------------------------------------------------------------------------
+# Scorecard generation
+# ---------------------------------------------------------------------------
+
+def generate_scorecard(
+    name: str,
+    records: List[ForecastRecord],
+    prices: np.ndarray,
+    horizon: int = 4,
+) -> ModelScorecard:
+    """Generate a ModelScorecard for a model's forecast records at a given horizon."""
+    trade_pnls: List[float] = []
+    correct_dir = 0
+    total_dir = 0
+    ape_list: List[float] = []
+    regime_correct: Dict[str, int] = {}
+    regime_total: Dict[str, int] = {}
+
+    for rec in records:
+        actual = rec.actuals.get(horizon)
+        if actual is None:
+            continue
+        forecast_price = rec.forecasts[horizon]
+        current = rec.current_price
+
+        # MAPE
+        if actual > 0:
+            ape_list.append(abs(forecast_price - actual) / actual)
+
+        # Directional accuracy
+        actual_dir = actual - current
+        forecast_dir = forecast_price - current
+        actual_label = "flat" if abs(actual_dir) < FLAT_THRESHOLD else ("up" if actual_dir > 0 else "down")
+        forecast_label = "flat" if abs(forecast_dir) < FLAT_THRESHOLD else ("up" if forecast_dir > 0 else "down")
+        if actual_label == forecast_label:
+            correct_dir += 1
+        total_dir += 1
+
+        # Regime tracking
+        regime = rec.regime
+        regime_total[regime] = regime_total.get(regime, 0) + 1
+        if actual_label == forecast_label:
+            regime_correct[regime] = regime_correct.get(regime, 0) + 1
+
+        # Trade P&L
+        if forecast_price - current > BUY_SELL_THRESHOLD:
+            pnl = (actual - current) * NOTIONAL_POSITION
+            trade_pnls.append(pnl)
+        elif current - forecast_price > BUY_SELL_THRESHOLD:
+            pnl = (current - actual) * NOTIONAL_POSITION
+            trade_pnls.append(pnl)
+
+    # Compute scorecard metrics
+    wins = [p for p in trade_pnls if p > 0]
+    losses = [p for p in trade_pnls if p <= 0]
+    cumulative = sum(trade_pnls)
+
+    # Sharpe ratio (annualised from weekly trades)
+    if trade_pnls and np.std(trade_pnls) > 0:
+        sharpe = float(np.mean(trade_pnls) / np.std(trade_pnls) * np.sqrt(52))
+    else:
+        sharpe = 0.0
+
+    # Max drawdown
+    running = 0.0
+    peak = 0.0
+    max_dd = 0.0
+    for pnl in trade_pnls:
+        running += pnl
+        if running > peak:
+            peak = running
+        dd = peak - running
+        if dd > max_dd:
+            max_dd = dd
+
+    regime_acc = {
+        r: regime_correct.get(r, 0) / regime_total[r]
+        for r in regime_total
+        if regime_total[r] > 0
+    }
+
+    return ModelScorecard(
+        model_name=name,
+        mape_4w=float(np.mean(ape_list)) if ape_list else 0.0,
+        directional_accuracy=correct_dir / max(total_dir, 1),
+        cumulative_decision_value=cumulative,
+        sharpe_ratio=sharpe,
+        max_drawdown=max_dd,
+        win_rate=len(wins) / max(len(trade_pnls), 1),
+        avg_win_value=float(np.mean(wins)) if wins else 0.0,
+        avg_loss_value=float(np.mean(losses)) if losses else 0.0,
+        regime_accuracy=regime_acc,
+    )
+
+
+def generate_scorecard_comparison(scorecards: List[ModelScorecard]) -> str:
+    """Format a comparison table of ModelScorecards."""
+    lines = [
+        "",
+        "=" * 100,
+        f"{'CAVEAT':^100}",
+        "=" * 100,
+        BACKTEST_CAVEAT,
+        "",
+        "=" * 100,
+        "MODEL SCORECARD COMPARISON",
+        "=" * 100,
+        f"{'Model':<22} {'MAPE 4w':>8} {'DirAcc':>8} {'DecVal':>14} {'Sharpe':>8} "
+        f"{'MaxDD':>12} {'WinRate':>8} {'AvgWin':>12} {'AvgLoss':>12}",
+        "-" * 100,
+    ]
+    for sc in scorecards:
+        lines.append(
+            f"{sc.model_name:<22} "
+            f"{sc.mape_4w*100:>7.2f}% "
+            f"{sc.directional_accuracy*100:>7.1f}% "
+            f"${sc.cumulative_decision_value:>13,.0f} "
+            f"{sc.sharpe_ratio:>8.2f} "
+            f"${sc.max_drawdown:>11,.0f} "
+            f"{sc.win_rate*100:>7.1f}% "
+            f"${sc.avg_win_value:>11,.0f} "
+            f"${sc.avg_loss_value:>11,.0f}"
+        )
+
+    # Regime-specific breakdown
+    all_regimes = set()
+    for sc in scorecards:
+        all_regimes.update(sc.regime_accuracy.keys())
+    if all_regimes:
+        lines.extend(["", "-" * 100, "REGIME-SPECIFIC DIRECTIONAL ACCURACY", "-" * 100])
+        header = f"{'Model':<22}"
+        for r in sorted(all_regimes):
+            header += f" {r:>12}"
+        lines.append(header)
+        for sc in scorecards:
+            row = f"{sc.model_name:<22}"
+            for r in sorted(all_regimes):
+                acc = sc.regime_accuracy.get(r, 0.0)
+                row += f" {acc*100:>11.1f}%"
+            lines.append(row)
+
+    lines.extend(["", "=" * 100])
+    return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
 # Serialisation
 # ---------------------------------------------------------------------------
 
@@ -472,12 +640,15 @@ def format_report(result: BacktestResult) -> str:
         "=" * 72,
         "WREI ESC Forecasting Model — Backtest Report",
         "=" * 72,
+        "",
+        BACKTEST_CAVEAT,
+        "",
         f"Model version: {result.model_version}",
         f"Test period:   {result.test_period_start} to {result.test_period_end}",
         f"Run at:        {result.run_at}",
         "",
         "-" * 72,
-        "OVERALL METRICS",
+        "OVERALL METRICS (Primary: Dir.Acc, DecVal)",
         "-" * 72,
         f"{'Horizon':>10} {'MAPE':>8} {'Naive':>8} {'SMA4':>8} {'SMA12':>8} "
         f"{'Dir.Acc':>8} {'DecVal':>12} {'Cov80':>7} {'Cov95':>7} {'N':>5}",

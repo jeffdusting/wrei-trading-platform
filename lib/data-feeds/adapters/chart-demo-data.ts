@@ -60,8 +60,8 @@ interface DemoForecast {
 // Penalty rates create effective price ceilings per instrument.
 // No rational buyer pays above the penalty — CI bands must respect this.
 const PENALTY_CEILINGS: Partial<Record<InstrumentType, number>> = {
-  ESC: 29.48,   // IPART 2026 ESS penalty rate
-  VEEC: 120.00, // VEU penalty rate
+  ESC: 35.86,   // IPART 2026 ESS scheme penalty rate (from reference_data/penalty_rates.json)
+  VEEC: 100.00, // VEU penalty rate (Victorian Government confirmed A$100 for 2026)
 }
 
 const ESC_FORECASTS: DemoForecast[] = [

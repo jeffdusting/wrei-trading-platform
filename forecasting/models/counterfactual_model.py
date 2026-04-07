@@ -43,7 +43,8 @@ if project_root not in sys.path:
 # Feature definitions
 # ---------------------------------------------------------------------------
 
-FEATURE_COLUMNS = [
+# Full feature set including Kalman forecasts (creates circular dependency with ensemble)
+FEATURES_FULL = [
     "spot_price",
     "creation_velocity_4w",
     "creation_velocity_12w",
@@ -71,6 +72,15 @@ FEATURE_COLUMNS = [
     "kalman_forecast_4w",
     "kalman_forecast_12w",
 ]
+
+# Independent feature set: excludes Kalman forecasts to avoid circular dependency
+# where XGBoost partially learns to weight Kalman output, inflating ensemble complementarity
+FEATURES_INDEPENDENT = [f for f in FEATURES_FULL if f not in ("kalman_forecast_4w", "kalman_forecast_12w")]
+
+# Default: use independent features to ensure clean ensemble composition
+use_independent_features: bool = True
+
+FEATURE_COLUMNS = FEATURES_INDEPENDENT if use_independent_features else FEATURES_FULL
 
 TARGET_PRICE_4W = "price_t_plus_4w"
 TARGET_ACTION = "optimal_action"
@@ -125,10 +135,22 @@ def prepare_features(df: pd.DataFrame) -> Tuple[np.ndarray, List[str]]:
     return X.values, FEATURE_COLUMNS
 
 
+def compute_sample_weights(df: pd.DataFrame) -> np.ndarray:
+    """Compute sample weights by data quality: genuine=1.0, synthetic=0.5."""
+    if "data_quality" not in df.columns:
+        return np.full(len(df), 0.5)
+    return np.where(
+        df["data_quality"].str.startswith("synthetic", na=True),
+        0.5,
+        1.0,
+    )
+
+
 def train_price_model(
     X_train: np.ndarray,
     y_train: np.ndarray,
     n_cv_folds: int = 5,
+    sample_weights: Optional[np.ndarray] = None,
 ) -> Tuple[Any, ModelMetrics]:
     """Train XGBoost regression model for 4-week price prediction."""
     if xgb is None:
@@ -153,13 +175,15 @@ def train_price_model(
     for train_idx, val_idx in tscv.split(X_train):
         if len(val_idx) < 2:
             continue
-        model.fit(X_train[train_idx], y_train[train_idx])
+        sw = sample_weights[train_idx] if sample_weights is not None else None
+        model.fit(X_train[train_idx], y_train[train_idx], sample_weight=sw)
         preds = model.predict(X_train[val_idx])
         mape = np.mean(np.abs((y_train[val_idx] - preds) / np.maximum(y_train[val_idx], 1.0)))
         cv_scores.append(mape)
 
     # Final fit on all training data
-    model.fit(X_train, y_train)
+    sw = sample_weights if sample_weights is not None else None
+    model.fit(X_train, y_train, sample_weight=sw)
 
     # Feature importance
     importance = dict(zip(FEATURE_COLUMNS, model.feature_importances_.tolist()))

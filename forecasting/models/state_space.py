@@ -60,13 +60,23 @@ REGIME_TIGHTENING_THRESHOLD = 0.67
 # Regime HMM
 # ---------------------------------------------------------------------------
 
-# Transition matrix: rows = from, cols = to
-# [surplus, balanced, tightening]
-HMM_TRANSITION = np.array([
+# Conservative transition matrix: original values, high self-transition (2-4 week detection lag)
+TRANSITION_CONSERVATIVE = np.array([
     [0.92, 0.07, 0.01],  # surplus is sticky
     [0.05, 0.90, 0.05],  # balanced transitions both ways
     [0.01, 0.07, 0.92],  # tightening is sticky
 ])
+
+# Responsive transition matrix: reduced self-transition for faster regime detection (~1-2 week lag)
+# Freed probability distributed proportionally to adjacent regime transitions
+TRANSITION_RESPONSIVE = np.array([
+    [0.85, 0.13, 0.02],  # surplus: 7% freed → ~5.7% to balanced, ~1.3% to tightening
+    [0.08, 0.84, 0.08],  # balanced: 6% freed → split evenly
+    [0.02, 0.13, 0.85],  # tightening: 7% freed → ~5.7% to balanced, ~1.3% to surplus
+])
+
+# Default: use responsive for faster regime detection
+HMM_TRANSITION = TRANSITION_RESPONSIVE
 
 REGIME_NAMES = ["surplus", "balanced", "tightening"]
 REGIME_MU_MAP = {
@@ -369,7 +379,7 @@ class ESCStateSpaceModel:
         self,
         new_observations: Dict[str, Any],
         horizons: Optional[List[int]] = None,
-        penalty_rate: float = 29.48,
+        penalty_rate: float = 35.86,
     ) -> ForecastResult:
         """
         Incorporate new data and produce updated forecasts.
@@ -456,6 +466,51 @@ class ESCStateSpaceModel:
             shadow_surplus=round(shadow, 0),
             confidence_lower=round(max(0, shadow - 1.96 * std_surplus * (1 - registered_fraction)), 0),
             confidence_upper=round(shadow + 1.96 * std_surplus * (1 - registered_fraction), 0),
+        )
+
+    def override_regime_probability(
+        self,
+        regime: str,
+        probability: float,
+        source: str,
+    ) -> None:
+        """
+        Force-update the regime indicator when a high-confidence policy event is detected.
+
+        Args:
+            regime: Target regime name ("surplus", "balanced", "tightening")
+            probability: Probability to assign [0, 1]
+            source: Description of the signal source (for logging)
+        """
+        if regime not in REGIME_NAMES:
+            raise ValueError(f"Unknown regime: {regime}. Must be one of {REGIME_NAMES}")
+        if not 0.0 <= probability <= 1.0:
+            raise ValueError(f"Probability must be in [0, 1], got {probability}")
+
+        idx = REGIME_NAMES.index(regime)
+        # Distribute remaining probability proportionally among other regimes
+        remaining = 1.0 - probability
+        old_probs = self.regime_probs.copy()
+        other_total = sum(old_probs[i] for i in range(3) if i != idx)
+
+        for i in range(3):
+            if i == idx:
+                self.regime_probs[i] = probability
+            elif other_total > 0:
+                self.regime_probs[i] = old_probs[i] / other_total * remaining
+            else:
+                self.regime_probs[i] = remaining / 2.0
+
+        # Apply to the state vector
+        regime_ind = self._regime_indicator_from_probs()
+        if self._initialised:
+            self.kf.x[3, 0] = regime_ind
+
+        import sys
+        print(
+            f"[REGIME OVERRIDE] {regime}={probability:.2f} from {source} | "
+            f"probs={dict(zip(REGIME_NAMES, self.regime_probs.tolist()))}",
+            file=sys.stderr,
         )
 
     def get_latest_state(self) -> Optional[StateEstimate]:

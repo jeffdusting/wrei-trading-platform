@@ -1,5 +1,150 @@
 # WREI Trading Platform — Task Log
 
+## Forecasting Model Improvement — Phase 2-A (Scrapers)
+**Date:** 2026-04-07
+**Status:** COMPLETE
+**Git Tag:** forecasting-p2a-scrapers
+
+### Pre-Phase Remediation: Penalty Rate Correction
+
+IPART spreadsheet (`Relevant-information-for-scheme-participants-13-January-2026.XLSX`) confirmed all ESC scheme penalty rates. P1 rates were using base rates rather than scheme penalty rates (base × ~0.94). All 8 files corrected:
+
+| Year | Old (Base) | Corrected (Scheme) | Source |
+|------|-----------|-------------------|--------|
+| 2019 | $28.52 | $28.56 | IPART col F |
+| 2020 | $29.12 | $29.02 | IPART col F |
+| 2021 | $29.56 | $29.09 | IPART col F |
+| 2022 | $31.66 | $29.95 | IPART col F |
+| 2023 | $33.76 | $32.04 | IPART col F |
+| 2024 | $35.05 | $33.84 | IPART col F |
+| 2025 | $36.20 | $34.84 | IPART col F |
+| 2026 | $37.29 | $35.86 | IPART col F |
+
+Files updated: `penalty_rates.json`, `chart-demo-data.ts`, `ForecastPanel.tsx`, `state_space.py`, `ou_bounded.py`, `run_daily.py`, `conftest.py`, `test_models.py`
+
+### Files Created
+- `forecasting/scrapers/base.py` — `ScrapedDocument` dataclass with SHA-256 content hashing
+- `forecasting/scrapers/nsw_gazette_scraper.py` — NSW Government Gazette (doc type: gazette)
+- `forecasting/scrapers/dcceew_scraper.py` — DCCEEW climate/energy policy (doc type: federal_policy)
+- `forecasting/scrapers/cer_scraper.py` — Clean Energy Regulator (doc type: registry_update)
+- `forecasting/scrapers/hansard_scraper.py` — NSW Parliament Hansard (doc type: hansard)
+- `forecasting/scrapers/media_scraper.py` — AFR, SMH, RenewEconomy, AEMO, EEC (doc type: media)
+- `forecasting/scrapers/aer_scraper.py` — Australian Energy Regulator (doc type: regulatory)
+
+### Files Modified
+- `forecasting/scrapers/run_daily.py` — integrated all 6 new scrapers (pipeline now 10 stages)
+
+### Tests Run
+| Check | Result |
+|-------|--------|
+| Gate 1: ScrapedDocument instantiation | **PASS** |
+| Gate 2: All 6 scrapers import | **PASS** |
+| Gate 3: All scrapers have scrape() + SOURCE_NAME | **PASS** |
+| Gate 4: Test suite (16/16) | **PASS** |
+| TypeScript compilation | **PASS** |
+
+### Next Phase
+- Read `docs/forecasting-improvement/04-P2B-INGESTION.md`
+- Prerequisites: All 4 gate checks pass (confirmed)
+
+---
+
+## Forecasting Model Improvement — Phase 0 (Discovery)
+**Date:** 2026-04-06
+**Status:** COMPLETE
+**Git Tag:** forecasting-p0-discovery
+
+### Summary
+Read all 28 forecasting files (Python + TypeScript + architecture docs) plus 6 additional Python files discovered. Key findings: zero test coverage, all training data synthetic (interpolated from monthly), penalty rate $29.48 for 2026 is incorrect, XGBoost uses Kalman forecasts as features creating circular dependency, HMM self-transition 90-92% causes 2-4 week regime detection lag.
+
+### Next Phase
+- Read `docs/forecasting-improvement/02-P1-FOUNDATION.md`
+- Prerequisites: Discovery summary confirmed by operator
+
+---
+
+## Forecasting Model Improvement — Phase 1 (Foundation)
+**Date:** 2026-04-06
+**Status:** COMPLETE
+**Git Tag:** forecasting-p1-foundation
+
+### Tasks Completed
+
+**P1.0 — Test Infrastructure Setup**
+- Installed pytest 8.4.2
+- Created `forecasting/tests/__init__.py`, `conftest.py`, `test_data_assembly.py` (7 tests), `test_models.py` (9 tests)
+- All 16 tests pass
+
+**P1.1 — Penalty Rate Reconciliation**
+- Created `forecasting/reference_data/penalty_rates.json` (ESC 2019-2026, VEEC 2024-2026)
+- Updated `forecasting/data_assembly.py` to load rates from JSON (lines 27-46, 101-102)
+- Updated `forecasting/generate_forecast.py` — dynamic rate loading from JSON (line 38-41)
+- Updated `forecasting/scrapers/run_daily.py` — dynamic rate loading (lines 115-120)
+- Updated `forecasting/models/state_space.py` — default penalty_rate 37.29 (line 373)
+- Updated `lib/data-feeds/adapters/chart-demo-data.ts` — ESC ceiling 37.29, VEEC ceiling 100.00 (lines 62-65)
+- Updated `components/intelligence/ForecastPanel.tsx` — ESC penalty rate 37.29, CI bands updated (lines 25-28, 48, 55)
+
+**P1.2 — Training Data Quality Flagging**
+- Added `data_quality` column ("synthetic_monthly") to assembled dataset (data_assembly.py)
+- Added `get_genuine_observation_count()` function (data_assembly.py)
+- Added `DATA_QUALITY_NOTE` to ensemble_forecast.py (EnsembleForecast dataclass)
+- Added `BACKTEST_CAVEAT` to backtest_engine.py
+- Added `compute_sample_weights()` to counterfactual_model.py (genuine=1.0, synthetic=0.5)
+- Updated `train_price_model()` to accept optional sample_weights parameter
+
+**P1.3 — XGBoost Feature Independence**
+- Created `FEATURES_FULL` (26 features) and `FEATURES_INDEPENDENT` (24 features) in counterfactual_model.py
+- Default: `use_independent_features = True` — excludes kalman_forecast_4w/12w
+- `FEATURE_COLUMNS` dynamically set based on configuration
+
+**P1.4 — Regime Detection Lag Reduction**
+- Created `TRANSITION_CONSERVATIVE` (original 0.90-0.92) and `TRANSITION_RESPONSIVE` (0.84-0.85) in state_space.py
+- Default: `HMM_TRANSITION = TRANSITION_RESPONSIVE`
+- Added `override_regime_probability()` method to ESCStateSpaceModel for external signal injection
+
+**P1.5 — Backtesting Metric Reframe**
+- Added `ModelScorecard` dataclass with directional_accuracy, cumulative_decision_value, sharpe_ratio, max_drawdown, win_rate, avg_win/loss, regime_accuracy
+- Added `generate_scorecard()` function
+- Added `generate_scorecard_comparison()` for formatted multi-model comparison table
+- Updated `format_report()` to include synthetic data caveat and mark Dir.Acc/DecVal as primary metrics
+
+### Penalty Rates Used
+| Year | Rate (AUD) |
+|------|------------|
+| 2019 | $28.52 |
+| 2020 | $29.12 |
+| 2021 | $29.56 |
+| 2022 | $31.66 |
+| 2023 | $33.76 |
+| 2024 | $35.05 |
+| 2025 | $36.20 |
+| 2026 | $37.29 (CPI estimate — REQUIRES MANUAL VERIFICATION) |
+
+IPART confirmed scheme rates: 2021=$29.09, 2022=$29.95. Codebase values may reflect base rates before 0.94 conversion factor.
+
+### Tests Run
+| Check | Result |
+|-------|--------|
+| Gate 0: pytest installed + test infra | **PASS** |
+| Gate 1: Penalty rates from JSON | **PASS** — 7 years loaded |
+| Gate 2: data_quality column | **PASS** — 0 genuine, 326 synthetic |
+| Gate 3: Feature independence | **PASS** — 24 independent features |
+| Gate 4: Responsive transition | **PASS** — all self-transition ≤ 0.85 |
+| Gate 5: Scorecard structure | **PASS** |
+| Gate 6: Full test suite | **PASS** — 16/16 tests |
+| TypeScript compilation | **PASS** |
+
+### Known Issues
+- IPART spreadsheet timed out during automated fetch — penalty rates use codebase estimates for 2019-2025
+- 2022-2025 rates may be ~4-6% too high if they reflect base rates rather than scheme penalty rates (base × 0.94)
+- Feature independence comparison report (forecasting/analysis/feature_independence_report.json) not generated — requires full backtest run which is slow; deferred to P4
+
+### Next Phase
+- Read `docs/forecasting-improvement/03-P2-INGESTION.md`
+- Prerequisites: All 7 gate checks pass (confirmed), discovery summary confirmed by operator
+
+---
+
 ## Session: P11-B — Forecast-Connected Procurement, Client Intelligence, Performance Dashboard
 
 - **Date:** 2026-04-05

@@ -227,7 +227,7 @@ def forecast_at_horizons(
 def forecast(
     current_price: float,
     regime: str = "balanced",
-    penalty_rate: float = 29.48,
+    penalty_rate: float = 35.86,
     horizons: Optional[List[int]] = None,
     custom_params: Optional[OURegimeParams] = None,
     n_paths: int = 5000,

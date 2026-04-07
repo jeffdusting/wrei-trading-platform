@@ -44,6 +44,13 @@ from forecasting.models.counterfactual_model import (
 # Data types
 # ---------------------------------------------------------------------------
 
+DATA_QUALITY_NOTE = (
+    "Trained on interpolated data only. Backtesting metrics reflect synthetic "
+    "validation. Genuine weekly observation accumulation begins when live "
+    "scrapers are operational."
+)
+
+
 @dataclass
 class EnsembleForecast:
     """Combined forecast from Bayesian + ML models."""
@@ -59,6 +66,7 @@ class EnsembleForecast:
     ml_weight: float
     bayesian_price_4w: float
     ml_price_4w: float
+    data_quality_note: str = DATA_QUALITY_NOTE
 
 
 # ---------------------------------------------------------------------------

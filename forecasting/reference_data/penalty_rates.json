@@ -1,0 +1,28 @@
+{
+  "esc": {
+    "source": "IPART 'Relevant information for scheme participants' spreadsheet, 13 January 2026 (column F — Scheme Penalty Rate, $AUD per ESC)",
+    "note": "ESS scheme penalty rate per certificate. Base penalty rate (column E) is CPI-adjusted annually under clause 15 of Schedule 4A to the Electricity Supply Act 1995 (NSW), then multiplied by the energy conversion factor (~0.94 from 2016 onwards) to produce the scheme penalty rate (column F). Values below are the IPART-confirmed scheme penalty rates.",
+    "base_penalty_rate_2009": 24.50,
+    "rates": {
+      "2019": 28.56,
+      "2020": 29.02,
+      "2021": 29.09,
+      "2022": 29.95,
+      "2023": 32.04,
+      "2024": 33.84,
+      "2025": 34.84,
+      "2026": 35.86
+    },
+    "verification_status": "VERIFIED — all rates sourced from IPART spreadsheet 'Relevant-information-for-scheme-participants-13-January-2026.XLSX', column F (Scheme Penalty Rate). Verified 7 April 2026."
+  },
+  "veec": {
+    "source": "Essential Services Commission of Victoria / Victorian Energy Efficiency Target Regulations 2018",
+    "note": "VEEC shortfall penalty per certificate under the Victorian Energy Upgrades program",
+    "rates": {
+      "2024": 90.00,
+      "2025": 90.00,
+      "2026": 100.00
+    },
+    "verification_status": "VERIFIED — ESC confirmed $90 for 2024, Victorian Government confirmed $100 for 2026"
+  }
+}
