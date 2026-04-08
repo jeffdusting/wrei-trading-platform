@@ -1,6 +1,6 @@
 'use client'
 
-import { FC, useState, useEffect, useMemo } from 'react'
+import { FC, useState, useEffect, useMemo, useCallback } from 'react'
 import type { Jurisdiction } from '@enterprise/lib/diagnostic/scheme-rules'
 import { getYieldFormula } from '@enterprise/lib/diagnostic/scheme-rules'
 
@@ -14,6 +14,7 @@ export const YieldEstimator: FC<YieldEstimatorProps> = ({ jurisdiction, methodCo
   const [spotPrice, setSpotPrice] = useState<number | null>(null)
   const [forecastPrice, setForecastPrice] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
+  const [downloadingPdf, setDownloadingPdf] = useState(false)
 
   const formula = getYieldFormula(jurisdiction, methodCode)
 
@@ -66,6 +67,43 @@ export const YieldEstimator: FC<YieldEstimatorProps> = ({ jurisdiction, methodCo
 
   const currentValue = spotPrice ? yieldEstimate * spotPrice : null
   const forecastValue = forecastPrice ? yieldEstimate * forecastPrice : null
+
+  const handleDownloadPdf = useCallback(async () => {
+    setDownloadingPdf(true)
+    try {
+      const res = await fetch('/api/pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          projectName: `${methodCode} Assessment — ${jurisdiction}`,
+          jurisdiction,
+          scheme: jurisdiction === 'NSW' ? 'ESS' : 'VEU',
+          method: methodCode,
+          eligible: true,
+          yieldEstimate,
+          yieldUnit: formula?.unit ?? 'ESC',
+          currentPrice: spotPrice,
+          forecastPrice,
+          currentValue: currentValue ? Math.round(currentValue) : undefined,
+          forecastValue: forecastValue ? Math.round(forecastValue) : undefined,
+        }),
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `certificate-assessment-${methodCode.toLowerCase()}.pdf`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    } catch {
+      // PDF generation may fail if pdfkit isn't available in build
+    } finally {
+      setDownloadingPdf(false)
+    }
+  }, [jurisdiction, methodCode, yieldEstimate, spotPrice, forecastPrice, currentValue, forecastValue, formula])
 
   if (!formula) {
     return (
@@ -143,6 +181,17 @@ export const YieldEstimator: FC<YieldEstimatorProps> = ({ jurisdiction, methodCo
                 @ A${forecastPrice?.toFixed(2) ?? '—'}/cert
               </div>
             </div>
+          </div>
+
+          {/* Download PDF Button */}
+          <div className="mt-4 pt-3 border-t border-slate-200">
+            <button
+              onClick={handleDownloadPdf}
+              disabled={downloadingPdf}
+              className="px-4 py-2 rounded bloomberg-nav-item font-medium bg-blue-600 text-white hover:bg-blue-700 transition-all disabled:opacity-50"
+            >
+              {downloadingPdf ? 'Generating PDF...' : 'Download Assessment PDF'}
+            </button>
           </div>
         </div>
       )}

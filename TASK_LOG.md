@@ -1,5 +1,39 @@
 # WREI Trading Platform — Task Log
 
+## D5: PDF Generation + Integration + Verification (Downer Enterprise)
+**Date:** 2026-04-09
+**Status:** COMPLETE
+
+### Actions
+- Installed pdfkit for server-side PDF generation
+- Created branded Certificate Opportunity Assessment PDF template (Downer blue header, project details, eligibility, yield table, disclaimer)
+- Created /api/pdf POST route — accepts assessment data, returns branded PDF blob
+- Added "Download Assessment PDF" button to YieldEstimator component
+- Verified forecast integration in YieldEstimator (spot + 26-week forecast pricing from enterprise API)
+- Produced comprehensive VERIFICATION_REPORT.md documenting all pages, API routes, shared modules, E2E workflow, and broker regression
+- All 6 phases (D0–D5) complete in single session
+
+### Build Verification
+- Enterprise build: PASS (6 pages + 9 API routes + middleware)
+- Broker build: PASS (no regression)
+- Broker tests: 1616 passed / 1 failed (pre-existing) / 3 skipped
+
+### Broker Files Modified (entire programme)
+- `.gitignore` — added enterprise/ ignore rules (zero functional impact)
+- `lib/config/white-label.ts` — added Downer branding entry (additive only)
+
+### Programme Summary
+| Phase | Commit | Key Deliverables |
+|-------|--------|-----------------|
+| D0 | 150cc14 | SHARED_MODULE_MAP.md — 23 lib modules, 8 components, 6 API routes mapped |
+| D1 | 6845620 | Enterprise Next.js scaffold, EnterpriseShell, DB schema, path aliases |
+| D2 | 23f7504 | SSO middleware, shared intelligence integration, dashboard with demo data |
+| D3 | 907a4f6 | Diagnostic Engine (ESS/VEU rules, 4-step wizard), Attribution Tool (3-step) |
+| D4 | 6bb6fca | Pipeline Kanban (6 stages, 12 demo projects), Entity Portfolio (tree + exposure) |
+| D5 | (this) | PDF generation, verification report, programme complete |
+
+---
+
 ## D4: Project Pipeline Kanban + Client Portfolio (Downer Enterprise)
 **Date:** 2026-04-09
 **Status:** COMPLETE
