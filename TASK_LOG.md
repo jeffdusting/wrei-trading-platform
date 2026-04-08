@@ -1,5 +1,80 @@
 # WREI Trading Platform — Task Log
 
+## Forecasting Advancement — Session I (VCM Benchmark + Tokenised Credits + ACO Yield)
+**Date:** 2026-04-09
+**Status:** COMPLETE
+
+### Task 1: VCM Benchmark Data Acquisition
+- CBL/Xpansiv GEO prices: 117 weekly observations (2024-01 to 2026-03)
+- N-GEO derived (2.8× premium): 117 observations
+- C-GEO derived (4.5× premium): 117 observations
+- Verra VCS registry: 6 project type records, retirement trend 2020–2025
+- CoinGecko on-chain tokens: BCT, NCT, KLIMA — 33 price records (live API confirmed)
+- Backfill report: `forecasting/scrapers/vcm_backfill_report.json`
+
+### Task 2: VCM Instrument Configurations
+- GEO: voluntary, 3 regimes (risk_off/balanced/quality_rotation), USD pricing
+- N-GEO: nature-based premium, higher volatility (mu=$2.20–$5.50)
+- C-GEO: CORSIA-eligible, tech removal premium (mu=$4.50–$9.50)
+- All added to INSTRUMENT_REGISTRY
+
+### Task 3: VCM Model Training
+- GEO: 4w MAPE=8.83%, dir_acc=60.8% (117 obs)
+- N-GEO: 4w MAPE=8.38%, dir_acc=60.8% (117 obs)
+- C-GEO: 4w MAPE=11.23%, dir_acc=60.8% (117 obs)
+- Validation report: `forecasting/analysis/VCM_VALIDATION_REPORT.md`
+
+### Task 4: Tokenised Carbon Credit Pricing Model
+- Full TokenPricingModel class with forecast(), forecast_with_ci(), calibrate_from_observed()
+- Token configs: WREI-CC (50% verification premium), BCT (GEO-backed), NCT (N-GEO-backed)
+- CoinGecko API integration for BCT/NCT/KLIMA live prices
+- Calibration: minimises basis between model and observed on-chain prices
+
+### Task 5: WREI-ACO Yield Model
+- Full ACOYieldModel with DCF NAV calculation and scenario analysis
+- Fleet params from WR-STR-008: 50 units, 75% utilisation, 45% OpEx ratio
+- Base NAV=$58.25/token, equity yield=19.3%, carbon contribution=3.0%
+- Sensitivity: $0.32 NAV per A$1 ACCU price change
+- Report: `forecasting/analysis/ACO_YIELD_REPORT.md`
+
+### Task 6: Cross-Instrument Correlation
+- 7 instruments analysed, 4 with sufficient overlapping data
+- 6 pairs tested for lead/lag (max 8 weeks), 3 significant relationships
+- Report: `forecasting/analysis/CROSS_INSTRUMENT_REPORT.md`
+
+### Files Created/Modified
+| File | Lines | Purpose |
+|------|-------|---------|
+| `forecasting/scrapers/vcm_data_acquisition.py` | 420 | VCM data acquisition pipeline |
+| `forecasting/scripts/run_vcm_validation.py` | 280 | VCM model training + validation |
+| `forecasting/models/token_pricing.py` | 320 | Tokenised credit pricing model |
+| `forecasting/models/aco_yield.py` | 340 | ACO yield / DCF NAV model |
+| `forecasting/analysis/cross_instrument_correlation.py` | 310 | Correlation + lead/lag analysis |
+| `forecasting/analysis/VCM_VALIDATION_REPORT.md` | ~100 | VCM validation report |
+| `forecasting/analysis/ACO_YIELD_REPORT.md` | ~80 | ACO yield scenario report |
+| `forecasting/analysis/CROSS_INSTRUMENT_REPORT.md` | ~80 | Correlation report |
+| `forecasting/scrapers/vcm_backfill_report.json` | - | VCM data report |
+| `forecasting/instruments/registry.py` | mod | +GEO, N-GEO, C-GEO configs |
+
+### Verification
+- pytest: 81 passed
+- All instruments in registry: ACCU, GEO, N-GEO, C-GEO ✓
+- Token pricing model: WREI-CC A$44.62 from A$35.00 underlying ✓
+- npm build: successful
+
+### Advancement Programme Status
+- **Session A:** Audit remediation, statistical tests, ensemble weights
+- **Session B:** Historical backfill, genuine data validation
+- **Session C:** Signal calibration, market impact, scenario narratives
+- **Session D:** Multi-instrument architecture, ACCU stub, tokenised credit models
+- **Session E:** Performance verification, forecast data inventory
+- **Session F:** Participant intelligence, shadow supply decomposition
+- **Session G:** Genuine data acquisition, definitive validation, ablation testing
+- **Session H:** ACCU forecasting model — trained and validated
+- **Session I:** VCM benchmark, tokenised credit pricing, ACO yield model ← COMPLETE
+
+---
+
 ## Forecasting Advancement — Session H (ACCU Forecasting Model)
 **Date:** 2026-04-09
 **Status:** COMPLETE

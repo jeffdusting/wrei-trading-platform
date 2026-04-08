@@ -1,0 +1,68 @@
+{
+  "generated_at": "2026-04-08T22:01:27.473252",
+  "market": "VCM",
+  "sources": {
+    "C-GEO": {
+      "observation_count": 117,
+      "date_range": [
+        "2024-01-05",
+        "2026-03-27"
+      ]
+    },
+    "GEO": {
+      "observation_count": 117,
+      "date_range": [
+        "2024-01-05",
+        "2026-03-27"
+      ]
+    },
+    "N-GEO": {
+      "observation_count": 117,
+      "date_range": [
+        "2024-01-05",
+        "2026-03-27"
+      ]
+    }
+  },
+  "summary": {
+    "total_vcm_observations": 351,
+    "instruments": [
+      "GEO",
+      "N-GEO",
+      "C-GEO"
+    ],
+    "onchain_tokens": [
+      "BCT",
+      "NCT",
+      "KLIMA"
+    ]
+  },
+  "verra_registry": {
+    "project_type_records": 6,
+    "total_issued": 1420000000,
+    "total_retired": 680000000
+  },
+  "onchain_tokens": {
+    "BCT": {
+      "count": 11,
+      "range": [
+        "2024-01-01",
+        "2026-04-09"
+      ]
+    },
+    "KLIMA": {
+      "count": 11,
+      "range": [
+        "2024-01-01",
+        "2026-04-09"
+      ]
+    },
+    "NCT": {
+      "count": 11,
+      "range": [
+        "2024-01-01",
+        "2026-04-09"
+      ]
+    }
+  }
+}

@@ -262,6 +262,173 @@ LGC_CONFIG = InstrumentConfig(
 
 
 # ---------------------------------------------------------------------------
+# GEO — Global Emissions Offset (CBL/Xpansiv benchmark)
+# ---------------------------------------------------------------------------
+
+GEO_CONFIG = InstrumentConfig(
+    code="GEO",
+    name="Global Emissions Offset",
+    currency="USD",
+    market_type="voluntary",
+
+    has_penalty_ceiling=False,
+    penalty_rate=None,
+    penalty_rate_source=None,
+    price_floor=0.10,
+
+    supply_driver="project_issuance",
+    supply_data_source="Verra+GoldStandard",
+    known_supply_shocks=[],
+
+    demand_driver="corporate_voluntary",
+    compliance_deadlines=[],
+    demand_data_source="CBL/Xpansiv",
+
+    regime_count=3,
+    regime_names=["risk_off", "balanced", "quality_rotation"],
+    ou_parameters={
+        # Calibrated from CBL GEO weekly data (2024-01 to 2026-03)
+        "risk_off":          {"theta": 0.04, "mu": 0.80, "sigma": 0.15},
+        "balanced":          {"theta": 0.07, "mu": 1.30, "sigma": 0.20},
+        "quality_rotation":  {"theta": 0.12, "mu": 2.00, "sigma": 0.35},
+    },
+
+    price_scrapers=["cbl_xpansiv"],
+    volume_scrapers=["cbl_xpansiv"],
+
+    settlement_type="registry",
+    settlement_registry="Verra",
+
+    price_reference=None,
+    price_reference_label="none",
+
+    soft_upper_bound=10.0,
+
+    feature_columns=[
+        "spot_price", "creation_velocity_4w", "creation_velocity_12w",
+        "creation_velocity_trend", "cumulative_surplus",
+        "policy_signal_active", "broker_sentiment",
+        "regime_surplus_prob", "regime_balanced_prob", "regime_tightening_prob",
+        "vcu_retirement_rate_trend",
+        "corporate_netzero_announcement_index",
+        "quality_premium_spread",
+    ],
+)
+
+
+# ---------------------------------------------------------------------------
+# N-GEO — Nature-based Global Emissions Offset
+# ---------------------------------------------------------------------------
+
+NGEO_CONFIG = InstrumentConfig(
+    code="N-GEO",
+    name="Nature-based Global Emissions Offset",
+    currency="USD",
+    market_type="voluntary",
+
+    has_penalty_ceiling=False,
+    penalty_rate=None,
+    penalty_rate_source=None,
+    price_floor=0.30,
+
+    supply_driver="project_issuance",
+    supply_data_source="Verra+GoldStandard",
+    known_supply_shocks=[],
+
+    demand_driver="corporate_voluntary",
+    compliance_deadlines=[],
+    demand_data_source="CBL/Xpansiv",
+
+    regime_count=3,
+    regime_names=["risk_off", "balanced", "quality_rotation"],
+    ou_parameters={
+        # N-GEO: higher volatility, nature-based premium dynamics
+        "risk_off":          {"theta": 0.03, "mu": 2.20, "sigma": 0.40},
+        "balanced":          {"theta": 0.06, "mu": 3.60, "sigma": 0.55},
+        "quality_rotation":  {"theta": 0.10, "mu": 5.50, "sigma": 0.80},
+    },
+
+    price_scrapers=["cbl_xpansiv"],
+    volume_scrapers=["cbl_xpansiv"],
+
+    settlement_type="registry",
+    settlement_registry="Verra",
+
+    price_reference=None,
+    price_reference_label="none",
+
+    soft_upper_bound=25.0,
+
+    feature_columns=[
+        "spot_price", "creation_velocity_4w", "creation_velocity_12w",
+        "creation_velocity_trend", "cumulative_surplus",
+        "policy_signal_active", "broker_sentiment",
+        "regime_surplus_prob", "regime_balanced_prob", "regime_tightening_prob",
+        "vcu_retirement_rate_trend",
+        "corporate_netzero_announcement_index",
+        "quality_premium_spread",
+    ],
+)
+
+
+# ---------------------------------------------------------------------------
+# C-GEO — Technology-based / CORSIA-eligible Global Emissions Offset
+# ---------------------------------------------------------------------------
+
+CGEO_CONFIG = InstrumentConfig(
+    code="C-GEO",
+    name="CORSIA-eligible Global Emissions Offset",
+    currency="USD",
+    market_type="voluntary",
+
+    has_penalty_ceiling=False,
+    penalty_rate=None,
+    penalty_rate_source=None,
+    price_floor=1.00,
+
+    supply_driver="project_issuance",
+    supply_data_source="Verra+GoldStandard+ICAO",
+    known_supply_shocks=[],
+
+    demand_driver="corporate_voluntary",
+    compliance_deadlines=[
+        {"date": "01-01", "label": "CORSIA compliance phase"},
+    ],
+    demand_data_source="CBL/Xpansiv",
+
+    regime_count=3,
+    regime_names=["risk_off", "balanced", "quality_rotation"],
+    ou_parameters={
+        # C-GEO: lower volatility, CORSIA demand-driven
+        "risk_off":          {"theta": 0.05, "mu": 4.50, "sigma": 0.50},
+        "balanced":          {"theta": 0.08, "mu": 6.50, "sigma": 0.70},
+        "quality_rotation":  {"theta": 0.14, "mu": 9.50, "sigma": 1.00},
+    },
+
+    price_scrapers=["cbl_xpansiv"],
+    volume_scrapers=["cbl_xpansiv"],
+
+    settlement_type="registry",
+    settlement_registry="Verra",
+
+    price_reference=None,
+    price_reference_label="none",
+
+    soft_upper_bound=30.0,
+
+    feature_columns=[
+        "spot_price", "creation_velocity_4w", "creation_velocity_12w",
+        "creation_velocity_trend", "cumulative_surplus",
+        "policy_signal_active", "broker_sentiment",
+        "regime_surplus_prob", "regime_balanced_prob", "regime_tightening_prob",
+        "vcu_retirement_rate_trend",
+        "corsia_phase_timeline",
+        "quality_premium_spread",
+    ],
+)
+
+
+# ---------------------------------------------------------------------------
 # Registry
 # ---------------------------------------------------------------------------
 
@@ -270,6 +437,9 @@ INSTRUMENT_REGISTRY: Dict[str, InstrumentConfig] = {
     "VEEC": VEEC_CONFIG,
     "ACCU": ACCU_CONFIG,
     "LGC": LGC_CONFIG,
+    "GEO": GEO_CONFIG,
+    "N-GEO": NGEO_CONFIG,
+    "C-GEO": CGEO_CONFIG,
 }
 
 
@@ -279,7 +449,7 @@ def get_instrument(code: str) -> InstrumentConfig:
 
     Raises KeyError if the instrument is not registered.
     """
-    code_upper = code.upper()
+    code_upper = code.upper().strip()
     if code_upper not in INSTRUMENT_REGISTRY:
         raise KeyError(
             f"Unknown instrument '{code}'. "
