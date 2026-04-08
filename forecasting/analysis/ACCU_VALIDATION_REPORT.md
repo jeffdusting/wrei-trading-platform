@@ -1,63 +1,116 @@
 # ACCU Model Validation Report
 
-## Date: 2026-04-08
-## Status: INSUFFICIENT DATA
+**Generated:** 2026-04-08 19:52 UTC
+**Instrument:** Australian Carbon Credit Unit (ACCU)
+**Model version:** session-h-accu
 
-## Data Availability
+## 1. Data Summary
 
-| Source | Observations | Status |
-|--------|-------------|--------|
-| Ecovantage (weekly update) | 1 | ACCU $36.30 on 2026-04-03 |
-| CER quarterly reports | 0 | Reports scraped but no ACCU price in HTML |
-| ANREU registry | 0 | Not yet integrated |
+| Metric | Value |
+|--------|-------|
+| Date range | 2022-04-01 00:00:00 to 2026-04-03 00:00:00 |
+| Total observations | 125 |
+| Genuine daily (CORE Markets) | 115 |
+| Genuine quarterly (CER) | 0 |
+| Synthetic (interpolated) | 0 |
+| Price range | $30.50 – $38.60 |
+| Mean price | $35.29 |
 
-**Total genuine ACCU observations: 1**
-**Threshold for model training: 20**
+## 2. OU Model Calibration (MLE)
 
-## What Is Needed
+| Regime | Period | theta | mu | sigma | N obs |
+|--------|--------|-------|-----|-------|-------|
+| post_compliance | Apr–Aug | 0.1725 | $34.83 | 0.6364 | 48 |
+| building | Sep–Dec | 0.2368 | $36.62 | 0.8518 | 36 |
+| compliance_window | Jan–Mar | 0.4151 | $35.64 | 0.7249 | 41 |
 
-To train and validate an ACCU-specific model, the following data is required:
+## 3. Model Scorecard
 
-1. **Weekly ACCU spot prices** — minimum 20 observations, ideally 52+ (one year)
-   - Source: CER secondary market data, CORE Markets, or broker feeds
-   - Current blocker: CER quarterly reports are HTML summaries without machine-readable ACCU price tables
+### Naive (Random Walk)
 
-2. **ACCU issuance volumes** — weekly or monthly from CER/ANREU registry
-   - Source: CER Clean Energy Regulator ANREU data
-   - Needed for: creation velocity features, supply/demand modelling
+| Horizon | MAPE | Dir. Acc. |
+|---------|------|-----------|
+| 1w | 0.98% | 1.6% |
+| 4w | 2.42% | 4.2% |
+| 12w | 4.38% | 3.6% |
+| 26w | 5.61% | 1.0% |
 
-3. **Safeguard Mechanism compliance data** — demand-side driver
-   - Source: CER Safeguard facility data
-   - Needed for: demand pressure features, regime classification
+### OU Model
 
-## Recommended Data Collection Approach
+| Horizon | MAPE | Dir. Acc. | 80% CI Coverage | 95% CI Coverage |
+|---------|------|-----------|-----------------|-----------------|
+| 1w | 1.05% | 52.5% | 100.0% | 100.0% |
+| 4w | 2.54% | 56.6% | 100.0% | 100.0% |
+| 12w | 4.70% | 50.5% | 100.0% | 100.0% |
+| 26w | 6.26% | 53.5% | 100.0% | 100.0% |
 
-1. **Headless browser scraping** of CER quarterly reports for ACCU price tables
-2. **ANREU API integration** for issuance and surrender volumes
-3. **Broker data feeds** (e.g., CORE Markets, Jarden) for daily ACCU spot prices
-4. **Wayback Machine** for historical CER report pages
+### XGBoost
 
-## Preliminary ACCU Configuration
+| Metric | Value |
+|--------|-------|
+| Test MAPE | 7.56% |
+| Test MAE | $2.7990 |
+| Directional accuracy | 32.4% |
+| CV MAPE | 5.35% +/- 1.79% |
+| Training samples | 87 |
+| Test samples | 38 |
 
-The ACCU instrument config has been registered with the following parameters
-(to be recalibrated when sufficient data is available):
+**Top 10 Features:**
 
-- **Regime parameters:**
-  - Surplus: theta=0.02, mu=28.0, sigma=2.0
-  - Balanced: theta=0.05, mu=35.0, sigma=2.5
-  - Tightening: theta=0.10, mu=45.0, sigma=3.5
-- **Price reference:** CCM price $79.20 (Carbon Credit Mechanism)
-- **No penalty ceiling** — soft upper bound at $80.00 (historical 99th percentile)
-- **Settlement:** ANREU registry
+1. `surplus_runway_years` — 0.4422
+2. `cumulative_surplus` — 0.2412
+3. `creation_velocity_trend` — 0.0896
+4. `price_to_penalty_ratio` — 0.0520
+5. `days_to_surrender` — 0.0378
+6. `creation_velocity_4w` — 0.0376
+7. `total_accu_holdings` — 0.0365
+8. `creation_velocity_12w` — 0.0314
+9. `spot_price` — 0.0164
+10. `days_to_march_31` — 0.0154
 
-## Current Genuine Observation
+## 4. Statistical Significance
 
-The single observation (ACCU $36.30, 2026-04-03) from Ecovantage is consistent
-with the balanced regime mu ($35.00), providing weak validation of the initial
-parameter estimates.
+### 4w horizon
 
-## Next Steps
+- **Directional accuracy:** 57.6% (57/99)
+- **Binomial test (H0: acc <= 50%):** p=0.0795 not significant
+- **Diebold-Mariano test:** DM=0.4404, p=0.3298 not significant
 
-- Accumulate weekly ACCU price observations via Ecovantage scraper
-- Implement CER headless scraping for historical ACCU prices
-- Once 20+ observations available, run full ACCU model training and backtesting
+### 12w horizon
+
+- **Directional accuracy:** 52.5% (52/99)
+- **Binomial test (H0: acc <= 50%):** p=0.3439 not significant
+- **Diebold-Mariano test:** DM=-0.2137, p=0.4154 not significant
+
+## 5. Regime-Specific Performance
+
+- **post_compliance:** 47 forecasts, 4w MAPE=2.88%
+- **building:** 24 forecasts, 4w MAPE=1.48%
+- **compliance_window:** 28 forecasts, 4w MAPE=2.87%
+
+## 6. Supply Cliff Analysis
+
+### Landfill Gas Crediting Period Endings
+
+74 landfill gas projects have crediting periods ending by June 2026.
+These projects represent ~17% of total ACCU issuance (28.5M ACCUs historically).
+
+**Impact assessment:**
+- Annual issuance reduction: ~4.5M ACCUs (estimated)
+- Supply gap timing: mid-2026 onwards
+- Price pressure: bullish (supply contraction + growing demand)
+
+## 7. Compliance Demand Projection (2026-27)
+
+| Year | Baseline (Mt) | Projected emissions (Mt) | Exceedance (Mt) | ACCUs needed | CCM price |
+|------|---------------|--------------------------|-----------------|--------------|-----------|
+| 2024-25 | 137.0 | 142.5 | 5.5 | 5,500,000 | $79.20 |
+| 2025-26 | 130.3 | 140.0 | 9.7 | 9,700,000 | $81.40 |
+| 2026-27 | 123.9 | 138.0 | 14.1 | 14,100,000 | $83.70 |
+
+**Key finding:** Safeguard demand growing from 5.5M to 14.1M ACCUs/year.
+Combined with landfill gas supply cliff, structural tightening expected from H2 2026.
+
+---
+
+*Report generated by WREI Forecasting Advancement Programme — Session H*

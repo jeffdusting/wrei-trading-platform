@@ -186,7 +186,7 @@ def prepare_features(
             if feat in X.columns:
                 X.loc[low_conf_mask, feat] = 0.0
 
-    return X.values, FEATURE_COLUMNS
+    return X.values, list(columns)
 
 
 def compute_sample_weights(df: pd.DataFrame) -> np.ndarray:

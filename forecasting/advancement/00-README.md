@@ -24,6 +24,8 @@ for the full strategic context, black hat critique, and architecture design.
 | E | `05-SESSION-E.md` | Advancement verification, forecast performance analysis, data source inventory |
 | F | `06-SESSION-F.md` | Participant demand/supply intelligence, shadow supply decomposition |
 | G | `07-SESSION-G.md` | Genuine data acquisition (Playwright), definitive validation, ablation testing |
+| H | `08-SESSION-H.md` | ACCU forecasting model: data acquisition, parameterisation, training, validation |
+| I | `09-SESSION-I.md` | VCM benchmark, tokenised credit pricing, ACO yield model, cross-instrument correlation |
 
 ## Context Management
 

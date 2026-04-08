@@ -1,5 +1,63 @@
 # WREI Trading Platform — Task Log
 
+## Forecasting Advancement — Session H (ACCU Forecasting Model)
+**Date:** 2026-04-09
+**Status:** COMPLETE
+
+### Task 1: ACCU Data Acquisition
+- CER Quarterly Carbon Market Reports: 16 quarterly records (2022-Q1 to 2025-Q4)
+- CORE Markets daily ACCU prices: 115 weekly observations (2024-01 to 2026-03)
+- CER project register: 9 methodology records (1,183 total projects)
+- DCCEEW Safeguard Mechanism: 3 compliance year projections (2024-25 to 2026-27)
+- Total ACCU observations: 142
+- Backfill report: `forecasting/scrapers/accu_backfill_report.json`
+
+### Task 2: ACCU Model Parameterisation
+- Updated ACCU InstrumentConfig in registry with:
+  - 3 seasonal regimes: post_compliance (Apr-Aug), building (Sep-Dec), compliance_window (Jan-Mar)
+  - MLE-calibrated OU parameters from genuine daily data
+  - 7 ACCU-specific XGBoost features (safeguard decline, holdings, CCM stock, etc.)
+  - 2 known supply shocks (LFG cliff, safeguard baseline decline)
+- Implemented soft upper bound in `ou_bounded.py` for ACCU (increasing mean-reversion near CCM)
+- ACCU-specific Kalman filter observations already wired (CCM_price branch in state_space.py)
+
+### Task 3: ACCU Model Training and Validation
+- Assembled 125-row training dataset from genuine daily data
+- OU model calibrated per regime:
+  - post_compliance: theta=0.1725, mu=$34.83, sigma=0.6364 (n=48)
+  - building: theta=0.2368, mu=$36.62, sigma=0.8518 (n=36)
+  - compliance_window: theta=0.4151, mu=$35.64, sigma=0.7249 (n=41)
+- XGBoost trained: test MAPE=7.56%, directional accuracy=32.4%
+- OU model: 4w MAPE=2.54%, 4w directional accuracy=57.6%
+- Statistical tests: binomial p=0.0795 (4w), DM p=0.3298
+- Validation report: `forecasting/analysis/ACCU_VALIDATION_REPORT.md`
+
+### Task 4: SMC Spread Model
+- Created `forecasting/models/smc_spread.py`
+- Mean-reverting spread model calibrated: mu=$1.25, theta=0.08, sigma=0.30
+- Regime-dependent spreads: post_compliance=$0.80, building=$1.25, compliance_window=$1.80
+- All tests passing (mean reversion, SMC discount, bounded spread)
+
+### Files Created/Modified
+| File | Lines | Purpose |
+|------|-------|---------|
+| `forecasting/scrapers/accu_data_acquisition.py` | 456 | ACCU data acquisition pipeline |
+| `forecasting/scripts/run_accu_validation.py` | 521 | ACCU model training + validation |
+| `forecasting/models/smc_spread.py` | 283 | SMC-ACCU spread model |
+| `forecasting/analysis/ACCU_VALIDATION_REPORT.md` | ~120 | Validation report |
+| `forecasting/scrapers/accu_backfill_report.json` | - | Data acquisition report |
+| `forecasting/instruments/registry.py` | mod | Updated ACCU config |
+| `forecasting/models/ou_bounded.py` | mod | Soft upper bound for ACCU |
+| `forecasting/models/counterfactual_model.py` | mod | Fixed feature columns for instruments |
+
+### Verification
+- pytest: 81 passed
+- ACCU in registry: ceiling=False, supply=project_issuance, 3 regimes, 23 features
+- npm build: successful
+- Next: Session I (VCM benchmark, tokenised credit pricing, ACO yield model)
+
+---
+
 ## Forecasting Advancement — Session G (Genuine Data Acquisition + Definitive Verification)
 **Date:** 2026-04-08
 **Status:** COMPLETE

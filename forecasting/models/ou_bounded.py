@@ -159,6 +159,7 @@ def simulate_paths(
     dt: float = 1.0,
     rng: Optional[np.random.Generator] = None,
     reflecting_boundary: bool = True,
+    instrument_config: Optional["InstrumentConfig"] = None,
 ) -> np.ndarray:
     """
     Simulate OU paths with optional reflecting boundary at penalty_rate.
@@ -167,6 +168,8 @@ def simulate_paths(
         reflecting_boundary: If True (default), prices exceeding penalty_rate
             are reflected back. If False, penalty_rate acts as a soft cap
             (paths are not reflected but are clamped).
+        instrument_config: Optional config for instrument-specific behaviour
+            (e.g. ACCU soft upper bound near CCM price).
 
     Returns:
         Array of shape (n_paths, n_steps + 1) including the initial price.
@@ -182,9 +185,24 @@ def simulate_paths(
         params.sigma ** 2 / (2.0 * params.theta) * (1.0 - math.exp(-2.0 * params.theta * dt))
     )
 
+    # Pre-compute soft upper bound parameters for ACCU-type instruments
+    use_soft_ccm = (not reflecting_boundary and instrument_config is not None
+                    and getattr(instrument_config, 'code', '') == 'ACCU')
+    ccm_price = getattr(instrument_config, 'price_reference', 79.20) if instrument_config else 79.20
+
     for t in range(1, n_steps + 1):
         noise = rng.normal(0.0, std_step, size=n_paths)
-        expected = paths[:, t - 1] * exp_neg_theta_dt + params.mu * (1.0 - exp_neg_theta_dt)
+
+        if use_soft_ccm:
+            # Soft upper bound: increasing mean-reversion as price approaches CCM
+            current = paths[:, t - 1]
+            proximity = np.maximum(0.0, (current - ccm_price * 0.8) / (ccm_price * 0.2))
+            adjusted_theta = params.theta * (1.0 + proximity * 3.0)
+            exp_adj = np.exp(-adjusted_theta * dt)
+            expected = current * exp_adj + params.mu * (1.0 - exp_adj)
+        else:
+            expected = paths[:, t - 1] * exp_neg_theta_dt + params.mu * (1.0 - exp_neg_theta_dt)
+
         paths[:, t] = expected + noise
 
         if reflecting_boundary:
@@ -212,6 +230,7 @@ def forecast_at_horizons(
     dt: float = 1.0,
     rng: Optional[np.random.Generator] = None,
     reflecting_boundary: bool = True,
+    instrument_config: Optional["InstrumentConfig"] = None,
 ) -> List[OUForecast]:
     """
     Generate price forecasts at specified horizons (in weeks).
@@ -223,6 +242,7 @@ def forecast_at_horizons(
     paths = simulate_paths(
         current_price, params, penalty_rate, max_horizon, n_paths, dt, rng,
         reflecting_boundary=reflecting_boundary,
+        instrument_config=instrument_config,
     )
 
     # CI calibration: Session G validation showed OU paths are too narrow.
@@ -316,6 +336,7 @@ def forecast(
         horizons=horizons,
         n_paths=n_paths,
         reflecting_boundary=reflecting,
+        instrument_config=instrument_config,
     )
 
 
@@ -370,6 +391,7 @@ class BoundedOUModel:
             horizons=horizons,
             n_paths=n_paths,
             reflecting_boundary=self.reflecting,
+            instrument_config=self.config,
         )
 
 

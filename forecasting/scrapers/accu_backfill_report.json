@@ -1,0 +1,77 @@
+{
+  "generated_at": "2026-04-08T19:46:23.833325",
+  "instrument": "ACCU",
+  "sources": {
+    "cer_quarterly_genuine_quarterly": {
+      "source_name": "cer_quarterly",
+      "data_quality": "genuine_quarterly",
+      "observation_count": 16,
+      "date_range": [
+        "2022-04-01",
+        "2026-01-02"
+      ]
+    },
+    "core_markets_genuine_daily": {
+      "source_name": "core_markets",
+      "data_quality": "genuine_daily",
+      "observation_count": 115,
+      "date_range": [
+        "2024-01-12",
+        "2026-04-03"
+      ]
+    },
+    "ecovantage_genuine_weekly": {
+      "source_name": "ecovantage",
+      "data_quality": "genuine_weekly",
+      "observation_count": 1,
+      "date_range": [
+        "2026-04-03",
+        "2026-04-03"
+      ]
+    },
+    "ecovantage_live_genuine_weekly": {
+      "source_name": "ecovantage_live",
+      "data_quality": "genuine_weekly",
+      "observation_count": 1,
+      "date_range": [
+        "2026-04-03",
+        "2026-04-03"
+      ]
+    },
+    "ecovantage_wayback_genuine_weekly": {
+      "source_name": "ecovantage_wayback",
+      "data_quality": "genuine_weekly",
+      "observation_count": 9,
+      "date_range": [
+        "2024-09-06",
+        "2025-12-05"
+      ]
+    }
+  },
+  "summary": {
+    "total_accu_price_observations": 142,
+    "quarterly_data_points": 16,
+    "project_methodologies": 9,
+    "safeguard_years_projected": 3,
+    "data_quality_assessment": "genuine_daily from CORE Markets + genuine_quarterly from CER. Project register and safeguard data from CER/DCCEEW publications."
+  },
+  "quarterly_data": {
+    "count": 16,
+    "date_range": [
+      "2022-03-31",
+      "2025-12-31"
+    ]
+  },
+  "project_register": {
+    "total_projects": 1183,
+    "total_issuance": 166000000,
+    "ending_within_12m": 103
+  },
+  "safeguard_data": {
+    "compliance_years": 3,
+    "range": [
+      "2024-25",
+      "2026-27"
+    ]
+  }
+}

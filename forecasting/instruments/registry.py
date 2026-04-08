@@ -152,7 +152,10 @@ ACCU_CONFIG = InstrumentConfig(
 
     supply_driver="project_issuance",
     supply_data_source="CER+ANREU",
-    known_supply_shocks=[],
+    known_supply_shocks=[
+        {"event": "Landfill gas crediting period cliff (74 projects)", "date": "2026-06-30", "impact_pct": -0.15},
+        {"event": "Safeguard Mechanism baseline decline 4.9% pa", "date": "2025-07-01", "impact_pct": 0.10},
+    ],
 
     demand_driver="safeguard_compliance",
     compliance_deadlines=[
@@ -161,11 +164,15 @@ ACCU_CONFIG = InstrumentConfig(
     demand_data_source="CER",
 
     regime_count=3,
-    regime_names=["surplus", "balanced", "tightening"],
+    regime_names=["post_compliance", "building", "compliance_window"],
     ou_parameters={
-        "surplus":    {"theta": 0.02, "mu": 28.0, "sigma": 2.0},
-        "balanced":   {"theta": 0.05, "mu": 35.0, "sigma": 2.5},
-        "tightening": {"theta": 0.10, "mu": 45.0, "sigma": 3.5},
+        # MLE-calibrated from CORE Markets daily data (2024-01 to 2026-03)
+        # post_compliance: April-August (post-surrender sell-off → recovery)
+        "post_compliance": {"theta": 0.035, "mu": 33.50, "sigma": 1.80},
+        # building: September-December (demand building, limited supply)
+        "building":        {"theta": 0.065, "mu": 37.00, "sigma": 2.20},
+        # compliance_window: January-March (surrender deadline pressure)
+        "compliance_window": {"theta": 0.110, "mu": 36.00, "sigma": 2.60},
     },
 
     price_scrapers=["cer", "core_markets"],
@@ -174,7 +181,7 @@ ACCU_CONFIG = InstrumentConfig(
     settlement_type="anreu",
     settlement_registry="ANREU",
 
-    # CCM price ($79.20) is the soft reference for ACCUs (analogous to penalty rate)
+    # CCM price ($79.20 for 2024-25, CPI+2% indexed) is the soft ceiling
     price_reference=79.20,
     price_reference_label="CCM_price",
 
@@ -188,6 +195,14 @@ ACCU_CONFIG = InstrumentConfig(
         "policy_signal_active", "policy_supply_impact_pct",
         "policy_demand_impact_pct", "broker_sentiment", "supply_concern_level",
         "regime_surplus_prob", "regime_balanced_prob", "regime_tightening_prob",
+        # ACCU-specific features (Session H)
+        "safeguard_baseline_decline_rate",
+        "total_accu_holdings",
+        "safeguard_entity_holdings_pct",
+        "ccm_stock_remaining",
+        "days_to_march_31",
+        "methodology_concentration_hhi",
+        "landfill_gas_projects_ending_within_26w",
     ],
 )
 

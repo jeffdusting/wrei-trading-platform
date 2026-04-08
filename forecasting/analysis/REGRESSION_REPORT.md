@@ -1,5 +1,5 @@
 # Forecasting Model Regression Report
-## Date: 2026-04-08T01:40:07.337304
+## Date: 2026-04-08T19:54:20.105034
 ## Model Version: 2.0.0
 
 ### Warning: SYNTHETIC DATA NOTICE
@@ -32,9 +32,9 @@ conservative HMM (self-transition ~0.92). Reduced detection lag: ~1-2 weeks vs ~
 ### 5. Volume Forecast Accuracy
 | Metric | Value |
 |--------|-------|
-| Week 1 creation forecast | 106,980 |
-| Week 1 surrender forecast | 103,868 |
-| Week 1 net flow | 3,112 |
+| Week 1 creation forecast | 106,998 |
+| Week 1 surrender forecast | 103,877 |
+| Week 1 net flow | 3,121 |
 | Activity types modelled | 5 |
 | CL phase-out modelled | Yes (31 Dec 2026) |
 
