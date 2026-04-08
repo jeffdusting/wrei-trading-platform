@@ -280,6 +280,50 @@ def run_pipeline(csv_only: bool = False, instrument: str = "ESC") -> ForecastRes
         logger.warning("Signal extraction failed: %s — XGBoost will use zero-filled signal features", exc)
         print(f"  [pipeline] Stage 3: FAILED ({exc})")
 
+    # --- Stage 3b: Participant demand intelligence ---------------------------
+    demand_features: dict = {}
+    try:
+        from forecasting.participants.demand_intelligence import (
+            RetailerObligationEstimator,
+        )
+        estimator = RetailerObligationEstimator()
+        compliance_year = datetime.now().year
+        demand_features = estimator.get_xgboost_features(compliance_year)
+        print(f"  [pipeline] Stage 3b: Demand intelligence — "
+              f"top5 obligation={demand_features.get('top5_retailer_obligation_total', 0):,.0f}, "
+              f"HHI={demand_features.get('obligation_concentration_hhi', 0):.0f}")
+    except Exception as exc:
+        logger.warning("Demand intelligence failed: %s — continuing without", exc)
+        print(f"  [pipeline] Stage 3b: Demand intelligence FAILED ({exc})")
+
+    # --- Stage 3c: Supply-side ACP intelligence -------------------------------
+    supply_features: dict = {}
+    try:
+        from forecasting.participants.supply_intelligence import (
+            ACPConcentrationAnalyser,
+        )
+        analyser = ACPConcentrationAnalyser()
+        supply_features = analyser.get_xgboost_features()
+        print(f"  [pipeline] Stage 3c: Supply intelligence — "
+              f"pipeline 26w={supply_features.get('creation_pipeline_26w_total', 0):,.0f}, "
+              f"vulnerability={supply_features.get('supply_vulnerability_score', 0):.0f}")
+    except Exception as exc:
+        logger.warning("Supply intelligence failed: %s — continuing without", exc)
+        print(f"  [pipeline] Stage 3c: Supply intelligence FAILED ({exc})")
+
+    # --- Stage 3d: Shadow supply decomposition --------------------------------
+    shadow_decomposed = None
+    try:
+        from forecasting.calibration.shadow_decomposition import ShadowSupplyDecomposer
+        decomposer = ShadowSupplyDecomposer()
+        shadow_decomposed = decomposer.total_shadow_estimate()
+        print(f"  [pipeline] Stage 3d: Shadow decomposition — "
+              f"multiplier={shadow_decomposed['shadow_multiplier']:.2f}× "
+              f"(simple={shadow_decomposed['comparison_to_simple_multiplier']['simple_multiplier']}×)")
+    except Exception as exc:
+        logger.warning("Shadow decomposition failed: %s — using simple multiplier", exc)
+        print(f"  [pipeline] Stage 3d: Shadow decomposition FAILED ({exc})")
+
     # --- Stage 4: Kalman filter ---------------------------------------------
     try:
         model = run_full_filter(instrument_config=instrument_config)

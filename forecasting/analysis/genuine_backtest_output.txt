@@ -1,0 +1,86 @@
+  [1/4] Running Bayesian-only backtest...
+  [2/4] Running ML-only evaluation...
+  [3/4] Running ensemble evaluation...
+  Loading reconstruction data...
+  Running ML walk-forward predictions...
+  Optimising ensemble weights...
+  [4/4] Computing regime-specific ML metrics...
+================================================================================
+WREI ESC FORECASTING — COMPARATIVE BACKTEST REPORT
+================================================================================
+Test period: 2020-01-03 to 2026-04-03
+
+--------------------------------------------------------------------------------
+4-WEEK HORIZON COMPARISON
+--------------------------------------------------------------------------------
+Model                    MAPE    Dir.Acc         DecVal   Action Acc
+Bayesian-only           5.85%      52.4% $    1,054,500            —
+ML-only (XGBoost)       3.76%          —              —        62.0%
+Ensemble                3.70%          —              —            —
+
+Naive (random walk)     2.03%
+SMA-4                   2.78%
+SMA-12                  4.68%
+
+--------------------------------------------------------------------------------
+ENSEMBLE WEIGHTS (optimised by walk-forward cross-validation)
+--------------------------------------------------------------------------------
+  Bayesian weight: 0.15
+  ML weight:       0.85
+
+--------------------------------------------------------------------------------
+REGIME-SPECIFIC ML PERFORMANCE (4w horizon)
+--------------------------------------------------------------------------------
+  stable               MAPE=2.91%  ActionAcc=55.6%  N=27
+  transition           MAPE=3.84%  ActionAcc=39.6%  N=48
+  policy_window        MAPE=3.74%  ActionAcc=60.9%  N=161
+
+--------------------------------------------------------------------------------
+ML FEATURE IMPORTANCE
+--------------------------------------------------------------------------------
+
+  price_regression — top 10 features:
+     1. regime_surplus_prob                 0.5412
+     2. spot_price                          0.2167
+     3. regime_tightening_prob              0.1578
+     4. price_to_penalty_ratio              0.0411
+     5. cumulative_surplus                  0.0241
+     6. regime_balanced_prob                0.0064
+     7. estimated_shadow_supply             0.0049
+     8. broker_sentiment                    0.0029
+     9. creation_velocity_trend             0.0016
+    10. policy_demand_impact_pct            0.0010
+
+  action_classification — top 10 features:
+     1. broker_sentiment                    0.1290
+     2. surplus_runway_years                0.0837
+     3. penalty_rate                        0.0770
+     4. days_to_surrender                   0.0648
+     5. cumulative_surplus                  0.0644
+     6. activity_cl_pct                     0.0634
+     7. policy_supply_impact_pct            0.0608
+     8. spot_price                          0.0554
+     9. creation_velocity_12w               0.0509
+    10. price_to_penalty_ratio              0.0484
+
+  value_regression — top 10 features:
+     1. activity_cl_pct                     0.4118
+     2. creation_trend_accelerating         0.2308
+     3. penalty_rate                        0.1420
+     4. supply_concern_level                0.0826
+     5. cumulative_surplus                  0.0512
+     6. surplus_runway_years                0.0262
+     7. broker_sentiment                    0.0212
+     8. creation_trend_decelerating         0.0079
+     9. days_to_surrender                   0.0072
+    10. spot_price                          0.0047
+
+--------------------------------------------------------------------------------
+BAYESIAN MODEL — FULL HORIZON METRICS
+--------------------------------------------------------------------------------
+    1w: MAPE=4.38%  Dir=50.0%  DecVal=$-266,000  Cov80=69.7%  Cov95=70.8%  N=274
+    4w: MAPE=5.85%  Dir=52.4%  DecVal=$1,054,500  Cov80=68.6%  Cov95=69.7%  N=271
+   12w: MAPE=8.97%  Dir=57.4%  DecVal=$3,690,500  Cov80=58.2%  Cov95=66.5%  N=263
+   26w: MAPE=13.80%  Dir=55.4%  DecVal=$1,028,000  Cov80=34.1%  Cov95=47.8%  N=249
+
+================================================================================

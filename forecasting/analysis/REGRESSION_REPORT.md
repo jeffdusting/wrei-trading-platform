@@ -1,5 +1,5 @@
 # Forecasting Model Regression Report
-## Date: 2026-04-07T06:59:49.671083
+## Date: 2026-04-08T01:40:07.337304
 ## Model Version: 2.0.0
 
 ### Warning: SYNTHETIC DATA NOTICE
@@ -9,11 +9,11 @@ All training, validation, and backtesting data in this report is interpolated fr
 
 | Metric | Baseline (v1.0) | Improved (v2.0) | Change |
 |--------|-----------------|-----------------|--------|
-| MAPE (4w, synthetic) | 3.72% | 3.72% | +0.00% |
-| Directional Accuracy | 53.7% | 53.7% | +0.00% |
-| Cumulative Decision Value | A$1,480,000 | A$1,480,000 | +0 |
-| Sharpe Ratio | 3.01 | 3.01 | +0.00 |
-| Max Drawdown | A$1,290,000 | A$1,290,000 | +0 |
+| MAPE (4w, synthetic) | 5.85% | 5.85% | +0.00% |
+| Directional Accuracy | 52.4% | 52.4% | +0.00% |
+| Cumulative Decision Value | A$1,054,500 | A$1,054,500 | +0 |
+| Sharpe Ratio | 2.17 | 2.17 | +0.00 |
+| Max Drawdown | A$1,632,000 | A$1,632,000 | +0 |
 
 ### 2. Penalty Rate Correction Impact
 Forecasts compared using corrected IPART rates vs flat $29.48 at 5 sample dates.
@@ -32,9 +32,9 @@ conservative HMM (self-transition ~0.92). Reduced detection lag: ~1-2 weeks vs ~
 ### 5. Volume Forecast Accuracy
 | Metric | Value |
 |--------|-------|
-| Week 1 creation forecast | 106,963 |
-| Week 1 surrender forecast | 103,860 |
-| Week 1 net flow | 3,102 |
+| Week 1 creation forecast | 106,980 |
+| Week 1 surrender forecast | 103,868 |
+| Week 1 net flow | 3,112 |
 | Activity types modelled | 5 |
 | CL phase-out modelled | Yes (31 Dec 2026) |
 

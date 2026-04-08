@@ -5,6 +5,18 @@
       "bayesian_weight": 0.15,
       "ml_weight": 0.85,
       "validation_mape": 0.037015
+    },
+    {
+      "timestamp": "2026-04-08T00:11:18.827982",
+      "bayesian_weight": 0.15,
+      "ml_weight": 0.85,
+      "validation_mape": 0.037015
+    },
+    {
+      "timestamp": "2026-04-08T00:27:05.506157",
+      "bayesian_weight": 0.15,
+      "ml_weight": 0.85,
+      "validation_mape": 0.037015
     }
   ]
 }

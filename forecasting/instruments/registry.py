@@ -70,6 +70,14 @@ ESC_CONFIG = InstrumentConfig(
         "creation_trend_accelerating", "creation_trend_decelerating",
         "estimated_shadow_supply", "regime_surplus_prob", "regime_balanced_prob",
         "regime_tightening_prob",
+        # Demand-side participant features (Session F)
+        "top5_retailer_obligation_total", "obligation_concentration_hhi",
+        "days_to_next_surrender_deadline", "retailer_stress_signal_count",
+        "demand_media_signal_score",
+        # Supply-side participant features (Session F)
+        "top10_acp_creation_share", "active_acp_count",
+        "methods_ending_within_26w", "creation_pipeline_26w_total",
+        "supply_vulnerability_score",
     ],
 )
 

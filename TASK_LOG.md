@@ -1,5 +1,96 @@
 # WREI Trading Platform — Task Log
 
+## Forecasting Advancement — Session F (Participant Intelligence + Shadow Supply)
+**Date:** 2026-04-08
+**Status:** COMPLETE
+
+### Task 1: Demand-Side Participant Intelligence
+- `forecasting/participants/__init__.py` (new) — Package init with public exports
+- `forecasting/participants/demand_intelligence.py` (new) — 3 classes:
+  - **SchemeParticipantRegistry**: 8 participants loaded (Big 3 + 5 smaller retailers), ~91% market coverage
+  - **RetailerObligationEstimator**: Per-retailer obligation estimates from market share × ESS targets, quarterly demand scheduling, HHI concentration, XGBoost feature output
+  - **RetailerMediaMonitor**: Signal injection framework with net demand score aggregation
+
+### Task 2: Supply-Side ACP Intelligence
+- `forecasting/participants/supply_intelligence.py` (new) — 3 classes:
+  - **ACPRegistry**: 10 ACPs loaded (top 10 by creation volume), ending-method exposure tracking
+  - **CreationPipelineEstimator**: 26-week forward creation schedule by method, accounts for CLESF/SONA/F8F9 end dates
+  - **ACPConcentrationAnalyser**: Top-N creation share, method-level concentration, supply vulnerability score, XGBoost feature output
+- Supply vulnerability: HIGH — top 3 ACPs produce >60% in some methods
+
+### Task 3: Shadow Supply Decomposition
+- `forecasting/calibration/shadow_decomposition.py` (new) — `ShadowSupplyDecomposer` with 5 pools:
+  - ACP Pipeline: 1,724,402 (confidence 0.4)
+  - ACP Inventory: 738,456 (confidence 0.3)
+  - Broker Inventory: 1,230,760 (confidence 0.4)
+  - Forward-Committed: 640,000 (confidence 0.2)
+  - Participant Surplus: 664,000 (confidence 0.3)
+- Decomposed multiplier: 2.11× (vs simple 1.6×)
+- Pool shift detection for anomaly alerting
+
+### Task 4: Model Integration and Testing
+- `forecasting/generate_forecast.py` — Added stages 3b (demand intelligence), 3c (supply intelligence), 3d (shadow decomposition) to pipeline
+- `forecasting/instruments/registry.py` — Added 10 new XGBoost features to ESC feature_columns (5 demand, 5 supply)
+- `forecasting/tests/test_participants.py` (new) — 17 tests covering all participant classes
+- `forecasting/tests/test_shadow_decomposition.py` (new) — 14 tests covering decomposition, fallback, anomaly detection
+- **Total: 81/81 tests pass**, Next.js build passes
+
+### Task 5: Forecast Improvement Roadmap
+- `forecasting/analysis/FORECAST_IMPROVEMENT_ROADMAP.md` (new) — Comprehensive roadmap with 8 prioritised recommendations, commercial implications, data gap analysis
+
+### Files Created/Modified
+- `forecasting/participants/__init__.py` (new)
+- `forecasting/participants/demand_intelligence.py` (new)
+- `forecasting/participants/supply_intelligence.py` (new)
+- `forecasting/calibration/shadow_decomposition.py` (new)
+- `forecasting/generate_forecast.py` — pipeline stages 3b-3d
+- `forecasting/instruments/registry.py` — 10 new feature_columns
+- `forecasting/tests/test_participants.py` (new)
+- `forecasting/tests/test_shadow_decomposition.py` (new)
+- `forecasting/analysis/FORECAST_IMPROVEMENT_ROADMAP.md` (new)
+
+---
+
+## Forecasting Advancement — Session E (Performance Verification + Data Inventory)
+**Date:** 2026-04-08
+**Status:** COMPLETE
+
+### Task 1: Structural Verification
+- All Session A–D files present (15/15)
+- Import chain: PASS (all modules import cleanly)
+- Test suite: 50/50 PASS
+- Next.js build: PASS
+
+### Task 2: Genuine Data Quality
+- 327 total observations, 1 genuine (0.3%)
+- Genuine: ESC A$24.50 on 2026-04-03 (Ecovantage)
+- Backfill: 6 Ecovantage observations scraped, only 1 ESC weekly price (single-page format)
+- NMG: 0 (JS-rendered), CER: 0 (no ACCU price in HTML)
+
+### Task 3: Forecast Performance Analysis
+- Comparative backtest: Naive 2.03% MAPE vs Ensemble 3.70% vs ML 3.76%
+- Directional accuracy 52.4% NOT significant (p=0.124)
+- DM test: naive significantly outperforms on MAPE (p=0.010)
+- 1-week autocorrelation: 1.000 — extremely persistent prices
+- ML best during policy windows (60.9% action accuracy), worst during transitions (39.6%)
+- Market impact: 50k ESC trade = 20.8% impact (79.2% value retention)
+- Multi-instrument: ESC trained (synthetic), VEEC/LGC config only, ACCU 1 observation
+
+### Task 4: Performance Analysis Report
+- `forecasting/analysis/PERFORMANCE_ANALYSIS_REPORT.md` (new) — Comprehensive report covering implementation integrity, forecast accuracy, component assessment, improvement areas, and 7 prioritised recommendations
+
+### Task 5: Participant Data Source Inventory
+- `forecasting/analysis/PARTICIPANT_DATA_INVENTORY.md` (new) — Catalogued demand-side (8 sources), supply-side (5 sources), shadow indicators (6 sources), cross-instrument (7 sources)
+- Key findings: IPART targets page, ACP register, TESSA registry all publicly accessible; NMG paid; AEMO free CSVs
+- Recommended scraper priority: IPART targets → ACP register → TESSA (Playwright) → DemandManager → AEMO
+
+### Files Created
+- `forecasting/analysis/PERFORMANCE_ANALYSIS_REPORT.md` (new)
+- `forecasting/analysis/PARTICIPANT_DATA_INVENTORY.md` (new)
+- `forecasting/analysis/genuine_backtest_output.txt` (new)
+
+---
+
 ## Forecasting Advancement — Session D (Multi-Instrument Architecture)
 **Date:** 2026-04-08
 **Status:** COMPLETE

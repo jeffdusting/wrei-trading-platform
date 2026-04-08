@@ -19,16 +19,16 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'WREI Platform | Bloomberg Terminal Interface',
-  description: 'WREI carbon credit trading platform with institutional Bloomberg Terminal interface. Experience professional-grade carbon credit trading with real-time verification and AI-powered negotiation.',
-  keywords: 'carbon credits, bloomberg terminal, institutional trading, verification, WREI, sustainability, ESG, dMRV',
-  authors: [{ name: 'WREI Platform' }],
-  creator: 'WREI Platform',
-  publisher: 'WREI Platform',
-  metadataBase: new URL('https://wrei-trading-platform.vercel.app'),
+  title: 'WREI Trading Platform',
+  description: 'WREI energy saving certificate, carbon credit, and tokenised asset trading platform. Experience professional-grade carbon credit trading with real-time verification and AI-powered negotiation.',
+  keywords: 'carbon credits, energy savings scheme, institutional trading, verification, WREI, sustainability, ESG, dMRV',
+  authors: [{ name: 'Water Roads Pty Ltd' }],
+  creator: 'Water Roads Pty Ltd',
+  publisher: 'Water Roads Pty Ltd',
+  metadataBase: new URL('https://wrei.cbslab.app'),
   openGraph: {
-    title: 'WREI Platform | Bloomberg Terminal Interface',
-    description: 'Experience institutional-grade carbon credit trading with Bloomberg Terminal interface',
+    title: 'WREI Trading Platform',
+    description: 'Experience institutional-grade carbon credit trading',
     type: 'website',
     locale: 'en_AU',
     siteName: 'WREI Platform',
