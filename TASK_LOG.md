@@ -1,5 +1,47 @@
 # WREI Trading Platform — Task Log
 
+## D1: Enterprise Project Scaffold (Downer Enterprise)
+**Date:** 2026-04-09
+**Status:** COMPLETE
+
+### Actions
+- Created enterprise/ Next.js 14 project with package.json, tsconfig.json, next.config.js, tailwind.config.ts
+- Configured path aliases: @enterprise/*, @shared/lib/*, @shared/components/*, @shared/design-system/*
+- Used experimental.externalDir + webpack aliases + transpilePackages to resolve shared imports
+- Created EnterpriseShell component with Downer branding (blue #003DA5 / light blue #00A9E0)
+- Enterprise nav: Dashboard, Origination (ORG), Attribution (ATR), Pipeline (PIP), Intelligence (MKT), Compliance (CMP)
+- Added Downer to white-label registry (lib/config/white-label.ts — additive, no broker regression)
+- Created enterprise database schema.sql with 6 shared base tables + 5 enterprise tables
+- Created enterprise-queries.ts with full CRUD for diagnostic, attribution, pipeline, entity, compliance
+- Created 6 enterprise pages: dashboard, diagnostic (stub), attribution (stub), pipeline (stub), portfolio (stub), intelligence (with forecast fetch)
+- Created /api/intelligence/forecast route with DB fallback
+
+### Build Verification
+- Enterprise build: PASS (10 routes, 1 dynamic API, 9 static pages)
+- Broker build: PASS (no regression — only additive white-label change)
+
+### Enterprise Structure
+```
+enterprise/
+├── package.json, tsconfig.json, next.config.js, tailwind.config.ts, postcss.config.js
+├── .env.local (NEXT_PUBLIC_WHITE_LABEL_BROKER=downer)
+├── components/EnterpriseShell.tsx
+├── lib/database/schema.sql, enterprise-queries.ts
+└── app/
+    ├── layout.tsx, globals.css, page.tsx (dashboard)
+    ├── diagnostic/page.tsx (stub — D3)
+    ├── attribution/page.tsx (stub — D3)
+    ├── pipeline/page.tsx (stub — D4)
+    ├── portfolio/page.tsx (stub — D4)
+    ├── intelligence/page.tsx (forecast table)
+    └── api/intelligence/forecast/route.ts
+```
+
+### Next
+- D2: Enterprise shell enhancements + SSO middleware + intelligence integration
+
+---
+
 ## D0: Discovery — Shared Module Mapping (Downer Enterprise)
 **Date:** 2026-04-09
 **Status:** COMPLETE

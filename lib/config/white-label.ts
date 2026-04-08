@@ -75,12 +75,28 @@ export const NORTHMORE_GORDON_BRANDING: WhiteLabelConfig = {
   showAttribution: true,
 }
 
+/** Downer — enterprise deployment (environmental certificate intelligence) */
+export const DOWNER_BRANDING: WhiteLabelConfig = {
+  businessName: 'DOWNER',
+  terminalCode: 'DW',
+  logoUrl: null,
+  primaryColour: '#003DA5',
+  accentColour: '#00A9E0',
+  primaryTextColour: '#FFFFFF',
+  contactEmail: 'certificates@downer.com.au',
+  contactPhone: null,
+  footerText: 'Downer Environmental Certificate Intelligence Platform',
+  showAttribution: true,
+}
+
 /** Registry of available white-label configs keyed by broker slug */
 export const WHITE_LABEL_REGISTRY: Record<string, WhiteLabelConfig> = {
   'demand-manager': DEMAND_MANAGER_BRANDING,
   'dm': DEMAND_MANAGER_BRANDING,
   'northmore-gordon': NORTHMORE_GORDON_BRANDING,
   'nmg': NORTHMORE_GORDON_BRANDING,
+  'downer': DOWNER_BRANDING,
+  'dw': DOWNER_BRANDING,
 }
 
 /**
