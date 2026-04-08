@@ -1,5 +1,28 @@
 # WREI Trading Platform — Task Log
 
+## D4: Project Pipeline Kanban + Client Portfolio (Downer Enterprise)
+**Date:** 2026-04-09
+**Status:** COMPLETE
+
+### Actions
+- Installed @dnd-kit/core, @dnd-kit/sortable, @dnd-kit/utilities for drag-and-drop
+- Created 4 pipeline components: KanbanBoard (6-stage columns), PipelineCard (colour-coded by stage), PipelineAggregation (weighted totals), PipelineFilters (division/client/scheme/stage/sort)
+- Pipeline page with 12 demo projects across 3 Downer divisions (Rail, Mining, Utilities)
+- Created /api/pipeline (GET/POST/PUT/DELETE) for pipeline CRUD with stage weight auto-assignment
+- Created 3 portfolio components: EntityHierarchy (tree view with expand/collapse), ExposureDashboard (shortfall/penalty/deadline table), ComplianceCountdown (traffic light deadlines)
+- Portfolio page with demo Downer Group hierarchy: 3 divisions, 7 entities, ESS/VEU obligations
+- IPART penalty rates: ESC A$35.86, VEEC A$67.76
+- Created /api/portfolio (GET/POST/PUT) for entity hierarchy CRUD
+
+### Build Verification
+- Enterprise build: PASS (16 routes + 8 API endpoints — pipeline 3.52 kB, portfolio 3.35 kB)
+- Broker build: PASS (no regression)
+
+### Next
+- D5: PDF generation + forecast integration + verification
+
+---
+
 ## D3: Diagnostic Engine + Cost Attribution Tool (Downer Enterprise)
 **Date:** 2026-04-09
 **Status:** COMPLETE
