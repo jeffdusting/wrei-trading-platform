@@ -1,0 +1,143 @@
+{
+  "label": "hybrid",
+  "n_genuine": 14,
+  "n_total": 327,
+  "test_period": "2020-01-03 to 2026-04-03",
+  "metrics": {
+    "1": {
+      "mape_model": 4.38,
+      "mape_naive": 0.52,
+      "mape_sma4": 1.28,
+      "directional_accuracy": 50.0,
+      "decision_value": -266000.0,
+      "coverage_80": 69.7,
+      "coverage_95": 70.8,
+      "n_observations": 274
+    },
+    "4": {
+      "mape_model": 5.85,
+      "mape_naive": 2.03,
+      "mape_sma4": 2.78,
+      "directional_accuracy": 52.4,
+      "decision_value": 1054500.0,
+      "coverage_80": 68.6,
+      "coverage_95": 69.7,
+      "n_observations": 271
+    },
+    "12": {
+      "mape_model": 8.97,
+      "mape_naive": 5.84,
+      "mape_sma4": 6.54,
+      "directional_accuracy": 57.4,
+      "decision_value": 3690500.0,
+      "coverage_80": 58.2,
+      "coverage_95": 66.5,
+      "n_observations": 263
+    },
+    "26": {
+      "mape_model": 13.8,
+      "mape_naive": 11.26,
+      "mape_sma4": 11.83,
+      "directional_accuracy": 55.4,
+      "decision_value": 1028000.0,
+      "coverage_80": 34.1,
+      "coverage_95": 47.8,
+      "n_observations": 249
+    }
+  },
+  "regime_metrics": {
+    "stable": {
+      "n_weeks": 28,
+      "mape_4w": 5.84,
+      "directional_accuracy_4w": 44.4,
+      "decision_value_4w": 505500.0
+    },
+    "transition": {
+      "n_weeks": 48,
+      "mape_4w": 9.58,
+      "directional_accuracy_4w": 62.5,
+      "decision_value_4w": 1244000.0
+    },
+    "policy_window": {
+      "n_weeks": 161,
+      "mape_4w": 5.83,
+      "directional_accuracy_4w": 57.8,
+      "decision_value_4w": 1406000.0
+    }
+  },
+  "binomial_test_4w": {
+    "accuracy": 52.4,
+    "n": 271,
+    "successes": 142,
+    "null_probability": 0.3333333333333333,
+    "p_value": 0.0,
+    "significant_at_005": "True",
+    "significant_at_010": "True"
+  },
+  "dm_test_4w": {
+    "dm_statistic": 4.568,
+    "p_value": 0.0,
+    "n": 271,
+    "model_beats_naive": "False",
+    "significant_at_005": "True"
+  },
+  "ci_calibration": {
+    "1": {
+      "target_80": 0.8,
+      "actual_80": 0.697,
+      "target_95": 0.95,
+      "actual_95": 0.708,
+      "n": 274,
+      "needs_widening_80": true,
+      "needs_widening_95": true,
+      "expansion_factor_80": 1.148
+    },
+    "4": {
+      "target_80": 0.8,
+      "actual_80": 0.686,
+      "target_95": 0.95,
+      "actual_95": 0.697,
+      "n": 271,
+      "needs_widening_80": true,
+      "needs_widening_95": true,
+      "expansion_factor_80": 1.166
+    },
+    "12": {
+      "target_80": 0.8,
+      "actual_80": 0.582,
+      "target_95": 0.95,
+      "actual_95": 0.665,
+      "n": 263,
+      "needs_widening_80": true,
+      "needs_widening_95": true,
+      "expansion_factor_80": 1.375
+    },
+    "26": {
+      "target_80": 0.8,
+      "actual_80": 0.341,
+      "target_95": 0.95,
+      "actual_95": 0.478,
+      "n": 249,
+      "needs_widening_80": true,
+      "needs_widening_95": true,
+      "expansion_factor_80": 2.344
+    }
+  },
+  "genuine_vs_synthetic": {
+    "genuine_count": 1,
+    "synthetic_count": 274,
+    "genuine_4w": {
+      "mape": 0.0,
+      "directional_accuracy": 0.0,
+      "decision_value": 0.0
+    }
+  },
+  "genuine_characteristics": {
+    "count": 14,
+    "mean": 20.11,
+    "std": 4.39,
+    "min": 13.5,
+    "max": 26.5,
+    "autocorrelation_1": 0.792
+  }
+}

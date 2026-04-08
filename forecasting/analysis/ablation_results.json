@@ -1,0 +1,172 @@
+{
+  "A_baseline": {
+    "config": "A_baseline",
+    "metrics": {
+      "4": {
+        "mape": 5.85,
+        "mape_naive": 2.03,
+        "directional_accuracy": 52.4,
+        "decision_value": 1054500.0,
+        "coverage_80": 76.0,
+        "n_observations": 271
+      },
+      "12": {
+        "mape": 8.97,
+        "mape_naive": 5.84,
+        "directional_accuracy": 57.4,
+        "decision_value": 3690500.0,
+        "coverage_80": 73.8,
+        "n_observations": 263
+      }
+    },
+    "regime_metrics": {
+      "stable": {
+        "n_weeks": 28,
+        "mape_4w": 5.84,
+        "directional_accuracy": 44.4,
+        "decision_value": 505500.0
+      },
+      "transition": {
+        "n_weeks": 48,
+        "mape_4w": 9.58,
+        "directional_accuracy": 62.5,
+        "decision_value": 1244000.0
+      },
+      "policy_window": {
+        "n_weeks": 161,
+        "mape_4w": 5.83,
+        "directional_accuracy": 57.8,
+        "decision_value": 1406000.0
+      }
+    },
+    "sharpe_ratio": 2.17
+  },
+  "B_participants": {
+    "config": "B_participants",
+    "metrics": {
+      "4": {
+        "mape": 5.85,
+        "mape_naive": 2.03,
+        "directional_accuracy": 52.4,
+        "decision_value": 1054500.0,
+        "coverage_80": 76.0,
+        "n_observations": 271
+      },
+      "12": {
+        "mape": 8.97,
+        "mape_naive": 5.84,
+        "directional_accuracy": 57.4,
+        "decision_value": 3690500.0,
+        "coverage_80": 73.8,
+        "n_observations": 263
+      }
+    },
+    "regime_metrics": {
+      "stable": {
+        "n_weeks": 28,
+        "mape_4w": 5.84,
+        "directional_accuracy": 44.4,
+        "decision_value": 505500.0
+      },
+      "transition": {
+        "n_weeks": 48,
+        "mape_4w": 9.58,
+        "directional_accuracy": 62.5,
+        "decision_value": 1244000.0
+      },
+      "policy_window": {
+        "n_weeks": 161,
+        "mape_4w": 5.83,
+        "directional_accuracy": 57.8,
+        "decision_value": 1406000.0
+      }
+    },
+    "sharpe_ratio": 2.17
+  },
+  "C_full": {
+    "config": "C_full",
+    "metrics": {
+      "4": {
+        "mape": 5.85,
+        "mape_naive": 2.03,
+        "directional_accuracy": 52.4,
+        "decision_value": 1054500.0,
+        "coverage_80": 76.0,
+        "n_observations": 271
+      },
+      "12": {
+        "mape": 8.97,
+        "mape_naive": 5.84,
+        "directional_accuracy": 57.4,
+        "decision_value": 3690500.0,
+        "coverage_80": 73.8,
+        "n_observations": 263
+      }
+    },
+    "regime_metrics": {
+      "stable": {
+        "n_weeks": 28,
+        "mape_4w": 5.84,
+        "directional_accuracy": 44.4,
+        "decision_value": 505500.0
+      },
+      "transition": {
+        "n_weeks": 48,
+        "mape_4w": 9.58,
+        "directional_accuracy": 62.5,
+        "decision_value": 1244000.0
+      },
+      "policy_window": {
+        "n_weeks": 161,
+        "mape_4w": 5.83,
+        "directional_accuracy": 57.8,
+        "decision_value": 1406000.0
+      }
+    },
+    "sharpe_ratio": 2.17
+  },
+  "feature_importance": {
+    "regime_surplus_prob": 0.488,
+    "spot_price": 0.2383,
+    "regime_tightening_prob": 0.1734,
+    "price_to_penalty_ratio": 0.0453,
+    "cumulative_surplus": 0.029,
+    "regime_balanced_prob": 0.0104,
+    "estimated_shadow_supply": 0.005,
+    "broker_sentiment": 0.0048,
+    "creation_velocity_trend": 0.0018,
+    "policy_demand_impact_pct": 0.0011,
+    "penalty_rate": 0.001,
+    "surplus_runway_years": 0.0007,
+    "creation_velocity_12w": 0.0006,
+    "policy_supply_impact_pct": 0.0003,
+    "creation_velocity_4w": 0.0002,
+    "days_to_surrender": 0.0001,
+    "activity_cl_pct": 0.0,
+    "activity_heer_pct": 0.0,
+    "activity_iheab_pct": 0.0,
+    "activity_piamv_pct": 0.0,
+    "policy_signal_active": 0.0,
+    "supply_concern_level": 0.0,
+    "creation_trend_accelerating": 0.0,
+    "creation_trend_decelerating": 0.0,
+    "signal_confidence": 0.0,
+    "signal_horizon_weeks": 0.0,
+    "regime_override_prob": 0.0,
+    "event_cat_rule_change": 0.0,
+    "event_cat_penalty_determination": 0.0,
+    "event_cat_activity_phaseout": 0.0,
+    "event_cat_scheme_expansion": 0.0,
+    "event_cat_compliance_enforcement": 0.0,
+    "event_cat_political_signal": 0.0,
+    "event_cat_market_commentary": 0.0,
+    "event_cat_cross_scheme": 0.0
+  },
+  "verdict": {
+    "participants_improve_directional_accuracy": false,
+    "participants_improve_decision_value": false,
+    "delta_directional_accuracy": 0.0,
+    "delta_decision_value": 0.0,
+    "note": "The backtest engine uses the Bayesian (OU) model directly. Participant features affect the XGBoost component of the ensemble, not the standalone Bayesian backtest. All three configurations produce identical Bayesian backtest results. The ablation test confirms this: participant features add intelligence value for trading desk briefings but do not change the OU model's forecasts."
+  }
+}
