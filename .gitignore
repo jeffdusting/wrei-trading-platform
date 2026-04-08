@@ -43,3 +43,7 @@ build.log
 
 # forecasting pipeline runtime data
 forecasting/data/*.db
+
+# macOS Finder duplicates
+*\ 2.*
+*\ 3.*

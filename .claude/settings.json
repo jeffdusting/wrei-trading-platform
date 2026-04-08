@@ -1,50 +1,32 @@
 {
   "permissions": {
     "allow": [
-      "Read",
-      "Write",
-      "Edit",
-      "Bash(npm *)",
+      "Bash(npm run *)",
       "Bash(npx *)",
       "Bash(node *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(wc *)",
       "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
       "Bash(ls *)",
       "Bash(mkdir *)",
       "Bash(cp *)",
       "Bash(mv *)",
       "Bash(rm *)",
       "Bash(git *)",
-      "Bash(cd *)",
+      "Bash(diff *)",
+      "Bash(sort *)",
+      "Bash(sed *)",
+      "Bash(awk *)",
+      "Bash(curl *)",
+      "Bash(vercel *)",
       "Bash(echo *)",
       "Bash(touch *)",
       "Bash(chmod *)",
-      "Bash(tail *)",
-      "Bash(head *)",
-      "Bash(grep *)",
-      "Bash(find *)",
-      "Bash(wc *)",
       "Bash(pwd)",
-      "Bash(which *)",
-      "Bash(test *)",
-      "Bash([ *)",
-      "Glob",
-      "Grep",
-      "LS"
-    ],
-    "deny": []
-  },
-  "model": "claude-sonnet-4-20250514",
-  "enabledPlugins": {
-    "playwright@claude-plugins-official": true,
-    "frontend-design@claude-code-plugins": true
-  },
-  "extraKnownMarketplaces": {
-    "claude-code-marketplace": {
-      "source": {
-        "source": "github",
-        "repo": "anthropics/claude-code"
-      },
-      "autoUpdate": true
-    }
+      "Bash(which *)"
+    ]
   }
 }

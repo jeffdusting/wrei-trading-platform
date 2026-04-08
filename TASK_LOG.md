@@ -1,5 +1,24 @@
 # WREI Trading Platform — Task Log
 
+## Project Cleanup — Downer Enterprise Preparation
+**Date:** 2026-04-09
+**Status:** COMPLETE
+
+### Actions
+- Removed 56 macOS Finder duplicate files (`* 2.*` pattern)
+- Added .gitignore rules to prevent future duplicates
+- Archived completed forecasting improvement programme (P0–P4) to docs/_archive/
+- Archived 12 gate reports + 5 CC phase prompts to docs/_archive/standalone/
+- Archived DEPENDENCY_ANALYSIS.md and POST_IMPLEMENTATION_ASSESSMENT.md
+- Architecture docs, TASK_LOG, forecasting code/data: untouched
+- Cleanup report: docs/_archive/CLEANUP_REPORT.md
+
+### Next
+- Insert Downer build plan files into docs/downer-enterprise/
+- Begin D0 (Discovery) using the Downer enterprise bootstrap prompt
+
+---
+
 ## Forecasting Advancement — Session I (VCM Benchmark + Tokenised Credits + ACO Yield)
 **Date:** 2026-04-09
 **Status:** COMPLETE
