@@ -14,6 +14,11 @@ const nextConfig = {
       '@shared/lib': path.resolve(__dirname, '../lib'),
       '@shared/components': path.resolve(__dirname, '../components'),
       '@shared/design-system': path.resolve(__dirname, '../design-system'),
+      // Shared components use @/ imports from the broker root
+      // Map @/ to parent directory so shared component imports resolve
+      '@/design-system': path.resolve(__dirname, '../design-system'),
+      '@/lib': path.resolve(__dirname, '../lib'),
+      '@/components': path.resolve(__dirname, '../components'),
     }
     return config
   },

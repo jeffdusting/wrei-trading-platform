@@ -1,5 +1,33 @@
 # WREI Trading Platform — Task Log
 
+## D2: Enterprise Shell + SSO + Intelligence Integration (Downer Enterprise)
+**Date:** 2026-04-09
+**Status:** COMPLETE
+
+### Actions
+- Added `@/` webpack aliases in next.config.js for shared component `@/design-system`, `@/lib`, `@/components` imports
+- Created SSO middleware stub (enterprise/middleware.ts) — dev auto-auth, production Bearer/SAML placeholder
+- Created auth API route (enterprise/app/api/auth/route.ts) — dev stub with test user
+- Created matching intelligence API routes at `/api/v1/intelligence/forecast|metrics|alerts` to support shared components
+- Updated intelligence page to import shared ForecastPanel, SupplyDemandPanel, AlertsFeed from broker codebase
+- Updated enterprise dashboard with demo data (pipeline summary, compliance, market snapshot, recent assessments)
+- Shared component integration verified — ForecastPanel, SupplyDemandPanel, AlertsFeed all compile and bundle
+
+### Build Verification
+- Enterprise build: PASS (14 routes, 4 dynamic APIs, 1 middleware, 9 static pages)
+- Intelligence page: 7.29 kB (shared components bundled successfully)
+- Broker build: PASS (no regression)
+
+### Key Technical Decisions
+- Mapped `@/` prefix aliases (not just `@shared/`) because shared components use `@/design-system/...` imports from the broker root
+- SSO uses stub middleware approach per D2 spec 2d — full SAML integration deferred to production config
+- Intelligence page uses identical fetch paths as broker so shared components work without modification
+
+### Next
+- D3: Diagnostic Engine + Cost Attribution Tool
+
+---
+
 ## D1: Enterprise Project Scaffold (Downer Enterprise)
 **Date:** 2026-04-09
 **Status:** COMPLETE
