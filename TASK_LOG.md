@@ -1,5 +1,48 @@
 # WREI Trading Platform — Task Log
 
+## D3: Diagnostic Engine + Cost Attribution Tool (Downer Enterprise)
+**Date:** 2026-04-09
+**Status:** COMPLETE
+
+### Actions
+- Created scheme-rules.ts with ESS (NSW) and VEU (VIC) rule sets: 9 ESS methods, 4 VEU methods, disqualifiers, yield formulas
+- ESS eligible methods: HEER, IHEAB, MBM, PIAMV, ROOA; ending/ended: CLESF, SONA, F8, F9
+- VEU methods: RDUE, VHEER, VIHEAB, VMBM
+- Activity → Method mapping: Commercial Lighting, HVAC, Motors, Hot Water, Refrigeration, Building Shell
+- Yield formulas with real Schedule A-style calculations for HEER, IHEAB, MBM, PIAMV, ROOA (ESS) and VHEER, VIHEAB, VMBM, RDUE (VEU)
+- Created 4 diagnostic components: JurisdictionRouter, ActivityClassifier, EligibilityGate, YieldEstimator
+- Diagnostic page: 4-step wizard with progress indicator (Jurisdiction → Activity → Eligibility → Yield)
+- YieldEstimator fetches spot/forecast prices from enterprise intelligence API
+- Created 3 attribution components: StakeholderMapper, CostResponsibilityTree, NominationReadiness
+- Attribution page: 3-step workflow (Stakeholders → Cost Responsibility → Nomination Readiness)
+- NominationReadiness: determines eligible energy saver, flags split-incentive issues, lists required actions
+- Created /api/diagnostic (GET/POST) and /api/attribution (GET/POST) routes
+
+### Build Verification
+- Enterprise build: PASS (16 routes — diagnostic 5.75 kB, attribution 3.39 kB)
+- Broker build: PASS (no regression)
+
+### Files Created
+| File | Purpose |
+|------|---------|
+| enterprise/lib/diagnostic/scheme-rules.ts | ESS/VEU rule sets, methods, disqualifiers, yield formulas |
+| enterprise/components/diagnostic/JurisdictionRouter.tsx | NSW/VIC jurisdiction selector |
+| enterprise/components/diagnostic/ActivityClassifier.tsx | Activity type → method mapping |
+| enterprise/components/diagnostic/EligibilityGate.tsx | Yes/no eligibility questions with hard stops |
+| enterprise/components/diagnostic/YieldEstimator.tsx | Certificate yield calculation + spot/forecast pricing |
+| enterprise/components/attribution/StakeholderMapper.tsx | Asset owner / operator / tenant identification |
+| enterprise/components/attribution/CostResponsibilityTree.tsx | 4-question decision tree for cost responsibility |
+| enterprise/components/attribution/NominationReadiness.tsx | Eligible saver determination + split-incentive detection |
+| enterprise/app/diagnostic/page.tsx | Full diagnostic workflow page |
+| enterprise/app/attribution/page.tsx | Full attribution workflow page |
+| enterprise/app/api/diagnostic/route.ts | Diagnostic CRUD API |
+| enterprise/app/api/attribution/route.ts | Attribution CRUD API |
+
+### Next
+- D4: Project Pipeline Kanban + Client Portfolio with entity hierarchy
+
+---
+
 ## D2: Enterprise Shell + SSO + Intelligence Integration (Downer Enterprise)
 **Date:** 2026-04-09
 **Status:** COMPLETE
