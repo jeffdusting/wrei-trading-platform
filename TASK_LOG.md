@@ -1,5 +1,31 @@
 # WREI Trading Platform — Task Log
 
+## D0: Discovery — Shared Module Mapping (Downer Enterprise)
+**Date:** 2026-04-09
+**Status:** COMPLETE
+
+### Actions
+- Mapped 23 shared library modules across lib/data-feeds/, lib/db/, lib/ai/, lib/config/, lib/defence.ts
+- Mapped 8 shared components: 3 intelligence panels, 2 chart wrappers, BloombergShell, BloombergLayout, ClientIntelligencePage
+- Mapped 6 API routes: 3 generic (forecast, prices, instruments), 3 broker-specific (clients, compliance, cron)
+- Verified build baseline: 0 TS errors, 1616 tests passed (1 stale assertion failure — pre-existing), build clean
+
+### Key Findings
+- BloombergShell has hardcoded broker nav (9 paths) + 3 context providers — enterprise needs EnterpriseShell wrapper
+- Intelligence panels (ForecastPanel, SupplyDemandPanel, AlertsFeed) use hardcoded `/api/v1/intelligence/*` paths — enterprise must provide matching routes
+- Chart components (WREILineChart, WREIBarChart) are fully generic — zero app dependencies
+- White-label registry needs additive Downer entry (no existing behaviour changed)
+- Database module at lib/db/ (not lib/database/) — schema v7, 25 DDL statements
+- No circular dependencies detected; price-cache.ts has lazy DB import (safe, fire-and-forget)
+
+### Output
+- `docs/downer-enterprise/SHARED_MODULE_MAP.md` (162 lines)
+
+### Next
+- D1: Enterprise scaffold — create Next.js project, configure shared imports, verify build
+
+---
+
 ## Project Cleanup — Downer Enterprise Preparation
 **Date:** 2026-04-09
 **Status:** COMPLETE
