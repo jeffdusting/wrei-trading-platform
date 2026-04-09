@@ -20,6 +20,11 @@ const nextConfig = {
       '@/lib': path.resolve(__dirname, '../lib'),
       '@/components': path.resolve(__dirname, '../components'),
     }
+    // Ensure shared files outside enterprise/ resolve packages from enterprise/node_modules
+    config.resolve.modules = [
+      path.resolve(__dirname, 'node_modules'),
+      'node_modules',
+    ]
     return config
   },
   transpilePackages: ['../lib', '../components', '../design-system'],
